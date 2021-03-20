@@ -19,7 +19,7 @@ public class testGame {
         players.add(new Player("coco", 4));
 
         assertEquals(Integer.valueOf(2), players.get(1).turnID );
-        //assertEquals(String.valueOf("javis"), players.get(2).nickname);
+        assertEquals("javis", players.get(2).nickname);
 
     }
 

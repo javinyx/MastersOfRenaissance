@@ -14,9 +14,10 @@ public class Game {
         currPlayer = null;
     }
     public void createPlayer(String nickname){
-        if(totalPlayers==4){
+        /*if(totalPlayers == 4){
             //lanciare eccezione tooManyPlayers
-        }
+            //se arriva a 4 disabilita metodo da controller
+        }*/
         totalPlayers++;
         players.add(new Player(nickname, totalPlayers));
     }

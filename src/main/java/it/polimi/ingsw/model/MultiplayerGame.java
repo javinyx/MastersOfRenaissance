@@ -1,11 +1,20 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.model;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MultiplayerGame extends Game{
-    private List<Player> activePlayers;
+public class MultiplayerGame implements Game, Observer {
+    private List<ProPlayer> players;
+    private List<ProPlayer> activePlayers;
+    //private Market market;
+    private int getTurnID;
+    private int currPos;
+    private String nickname;
+    private Observer observer;
+    private int totalPlayers;
+    private ProPlayer currPlayer;
+    private ProPlayer winner;
 
     void MultiplayerGame(){
         players = new ArrayList<>();
@@ -17,7 +26,7 @@ public class MultiplayerGame extends Game{
 
     public void createPlayer(String nickname){
         totalPlayers++;
-        Player p = new Player(nickname, totalPlayers);
+        ProPlayer p = new ProPlayer(nickname, totalPlayers);
         players.add(p);
         p.registerObserver(this);
         activePlayers.add(p);
@@ -29,7 +38,7 @@ public class MultiplayerGame extends Game{
         return users;
     }
 
-    public void updateEnd(Player player){
+    public void updateEnd(ProPlayer player){
         if(player.getTurnID()<4){
             //let all the players on the caller's left side to play their last turn
         }
@@ -37,5 +46,8 @@ public class MultiplayerGame extends Game{
         /*create a list with all the possibile winners by victoryPoints and then choose which one
         * by counting their resources if needed. In the end, choose the final winner and end the match*/
     }
+
+    public void updateEnd(Player player){}
+    public void updatePosition(Player player){}
 }
 

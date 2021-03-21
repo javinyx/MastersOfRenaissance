@@ -1,4 +1,4 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,13 +6,11 @@ import java.util.List;
 public class Player implements Observable{
 
     private String nickname;
-    private final int turnID;
     private int currPos;
     private List<ProductionCard> prodCards;
     private Observer observer;
 
-    public Player(String nickname, int turnID){
-        this.turnID = turnID;
+    public Player(String nickname){
         this.nickname = nickname;
         this.prodCards = new ArrayList<>();
     }
@@ -20,9 +18,6 @@ public class Player implements Observable{
 
     public String getNickname(){
         return nickname;
-    }
-    public int getTurnID(){
-        return turnID;
     }
 
     public int getVictoryPoints(){

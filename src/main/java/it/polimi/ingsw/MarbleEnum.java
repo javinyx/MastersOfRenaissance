@@ -5,5 +5,6 @@ public enum MarbleEnum {
     STONE,
     SHIELD,
     SERVANT,
-    FAITH
+    FAITH,
+    WHITE
 }

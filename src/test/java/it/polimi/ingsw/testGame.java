@@ -20,6 +20,7 @@ public class testGame {
 
         assertEquals(Integer.valueOf(2), players.get(1).turnID );
         assertEquals("javis", players.get(2).nickname);
+        assertEquals("luca", players.get(0).nickname);
 
     }
 

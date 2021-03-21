@@ -8,7 +8,6 @@ public class Game {
     private List<Player> players;
     private int totalPlayers;
 
-
     public Game(){
         players = new ArrayList<>();
         totalPlayers = 0;

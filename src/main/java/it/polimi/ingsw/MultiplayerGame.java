@@ -23,6 +23,12 @@ public class MultiplayerGame extends Game{
         activePlayers.add(p);
     }
 
+    public List<Player> getPlayers(){
+        List<Player> users = new ArrayList<>();
+        users.addAll(players);
+        return users;
+    }
+
     public void updateEnd(Player player){
         if(player.getTurnID()<4){
             //let all the players on the caller's left side to play their last turn

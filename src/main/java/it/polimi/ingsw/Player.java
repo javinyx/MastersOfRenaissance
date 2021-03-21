@@ -5,10 +5,11 @@ import java.util.List;
 
 public class Player implements Observable{
 
-    String nickname;
-    int turnID;
-    List<ProductionCard> prodCards;
-    Observer observer;
+    private String nickname;
+    private final int turnID;
+    private int currPos;
+    private List<ProductionCard> prodCards;
+    private Observer observer;
 
     public Player(String nickname, int turnID){
         this.turnID = turnID;
@@ -16,6 +17,10 @@ public class Player implements Observable{
         this.prodCards = new ArrayList<>();
     }
 
+
+    public String getNickname(){
+        return nickname;
+    }
     public int getTurnID(){
         return turnID;
     }

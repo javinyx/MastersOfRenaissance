@@ -3,14 +3,23 @@ package it.polimi.ingsw.model;
 import java.util.List;
 
 public class ProPlayer extends Player{
-    //private Warehouse warehouse;
-    //private LootChest lootChest;
+    private Warehouse warehouse;
+    private LootChest lootChest;
     private List<ProductionCard> prodCards;
     private int turnID;
 
     public ProPlayer(String nickname, int turnID, Game game){
         super(nickname, game);
         this.turnID = turnID;
+        warehouse = new Warehouse();
+        lootChest = new LootChest();
+        if(turnID == 3 || turnID == 4){
+            currPos++;
+            chooseExtraResource();
+            if(turnID == 4){
+                chooseExtraResource();
+            }
+        }
     }
 
     public int getTurnID(){
@@ -24,23 +33,62 @@ public class ProPlayer extends Player{
         //sum all victory points from prodCards, leaderCards, faithTrack, Resources...
         return victoryPoints;
     }
-
+    /**Obtains the resources chosen from market through a column or a row.
+     * <p>Add faith points to the player if a red marble ha been drawn.<p>
+     * @param dim 'c' for column, 'r' for row.
+     * @param index range 1-4 for column, 1-3 for row*/
     public void buyFromMarket(char dim, int index){
+        if(dim!='c' && dim!='r'){
+            //throw ex
+            return;
+        }
         Market market = game.getMarket();
         List<Resource> goodies = null;
         if(dim == 'c'){
+            if(index<1 || index>4){
+                //throw ex
+                return;
+            }
             goodies = market.chooseColumn(index);
         }else if(dim == 'r'){
+            if(index<1 || index>3){
+                //throw ex
+                return;
+            }
             goodies = market.chooseRow(index);
         }
-
-        storeInWarehouse(goodies);
+        //there's just one red marble in market so 1 faith points at max for each draw
+        if(goodies.contains(Resource.FAITH)){
+            addFaithPoints(1);
+            goodies.remove(Resource.FAITH);
+        }
     }
 
+    public void discardResources(List<Resource> resources){
+        for(Resource resource : resources){
+            observer.alertDiscardResource(this);
+        }
+    }
 
-    public void storeInWarehouse(List<Resource> resources){
-        //logic that follows players needs on how to display resources in warehouse
-        //call warehouse methods once the way has been decided
+    /**Let the player choose an extra resource to add during initialization phase.*/
+    private void chooseExtraResource(){
+        //wait for the player to choose a resource
+        //then add to warehouse
+    }
+
+    /**Place the resources in the specified warehouse tier.
+     * @param resources list of resoruces the player wants to store
+     * @param tier Warehouse inventory shelf's id on which the player want to place {@code resources}*/
+    public void storeInWarehouse(List<Resource> resources, int tier){
+
+        switch(tier){
+            //case 1 : warehouse.addSmall(resources);
+            //          break;
+            case 2 : warehouse.addMid(resources);
+                        break;
+            case 3 : warehouse.addLarge(resources);
+            default : return;
+        }
     }
 
     /**Add the specified quantity of Faith Points causing the player to move forward on the board.

@@ -58,5 +58,15 @@ public class MultiplayerGame implements Game, Observer {
     public void updateEnd(Player player){}
     public void updatePosition(Player player){}
     public void alertVaticanReport(Player player, int vaticanReport){}
+
+    /**Add 1 faith point to each active player (except the discarding one).
+     * @param player player discarding a resource */
+    public void alertDiscardResource(Player player){
+        for(ProPlayer p : activePlayers){
+            if(!p.equals(player)){
+                p.addFaithPoints(1);
+            }
+        }
+    }
 }
 

@@ -7,26 +7,25 @@ import java.util.List;
 public class MultiplayerGame implements Game, Observer {
     private List<ProPlayer> players;
     private List<ProPlayer> activePlayers;
-    //private Market market;
-    private int getTurnID;
-    private int currPos;
-    private String nickname;
-    private Observer observer;
+    private Market market;
     private int totalPlayers;
     private ProPlayer currPlayer;
     private ProPlayer winner;
 
     void MultiplayerGame(){
         players = new ArrayList<>();
+        market = new Market();
         totalPlayers = 0;
         currPlayer = null;
         winner = null;
         activePlayers = new ArrayList<>();
     }
 
+    public void start(){}
+
     public void createPlayer(String nickname){
         totalPlayers++;
-        ProPlayer p = new ProPlayer(nickname, totalPlayers);
+        ProPlayer p = new ProPlayer(nickname, totalPlayers, this);
         players.add(p);
         p.registerObserver(this);
         activePlayers.add(p);
@@ -38,6 +37,15 @@ public class MultiplayerGame implements Game, Observer {
         return users;
     }
 
+    public Market getMarket(){
+        this.updateEnd(currPlayer);
+        return market;
+    }
+
+    /** The Observer finalize the game by managing the last turn of every player after the one who called the method.
+     * Decide the winner based on {@code searchForWinner()} policy.
+     * @param player the observed one notifying the observer that the game might end since the faith track's end or
+     * max num of prodCards has been reached.*/
     public void updateEnd(ProPlayer player){
         if(player.getTurnID()<4){
             //let all the players on the caller's left side to play their last turn
@@ -49,5 +57,6 @@ public class MultiplayerGame implements Game, Observer {
 
     public void updateEnd(Player player){}
     public void updatePosition(Player player){}
+    public void alertVaticanReport(Player player, int vaticanReport){}
 }
 

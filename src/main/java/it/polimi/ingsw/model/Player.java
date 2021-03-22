@@ -1,18 +1,17 @@
 package it.polimi.ingsw.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Player implements Observable{
 
-    private String nickname;
-    private int currPos;
-    private List<ProductionCard> prodCards;
-    private Observer observer;
+    protected String nickname;
+    protected int currPos;
+    protected Observer observer;
+    protected Game game;
 
-    public Player(String nickname){
+    public Player(String nickname, Game game){
         this.nickname = nickname;
-        this.prodCards = new ArrayList<>();
+        currPos = 0;
+        this.game = game;
+        observer = null;
     }
 
 
@@ -20,11 +19,10 @@ public class Player implements Observable{
         return nickname;
     }
 
-    public int getVictoryPoints(){
-        int victoryPoints = 0;
-        //it will sum all victorPoints cumulated through cards etc...
-        return victoryPoints;
+    public int getCurrentPosition(){
+        return currPos;
     }
+
 
     public void registerObserver(Observer observer){
         this.observer = observer;

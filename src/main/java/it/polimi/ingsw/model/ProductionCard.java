@@ -2,7 +2,7 @@ package it.polimi.ingsw.model;
 
 import java.util.List;
 
-public class ProductionCard implements Buyable {
+public class ProductionCard implements Buyable, Card {
 
     private ColorEnum color;
     private Resource requiredResource;

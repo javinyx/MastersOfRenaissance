@@ -4,5 +4,6 @@ public enum Resource {
     COINS,
     STONE,
     SHIELD,
-    SERVANT
+    SERVANT,
+    BLANK
 }

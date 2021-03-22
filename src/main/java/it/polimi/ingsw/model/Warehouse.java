@@ -24,13 +24,24 @@ public class Warehouse {
      * Add the selected items to mid warehouse spaces
      */
     public void addMid(List<Resource> items){
+        //aggiungere i check per controllare che items siano uguali e 2 al massimo
         midInventory.addAll(items);
     }
     /**
      * Remove the selected items to large warehouse spaces
      */
     public void addLarge(List<Resource> items){
+        //aggiungere i check per controllare che items siano uguali e 3 al massimo
         largeInventory.addAll(items);
+    }
+
+    public List<Resource> getMidInvetory(){
+        if(midInventory.size()<1){
+            return null;
+        }
+        List<Resource> contents = new ArrayList<>();
+        contents.addAll(midInventory);
+        return contents;
     }
 
     /**

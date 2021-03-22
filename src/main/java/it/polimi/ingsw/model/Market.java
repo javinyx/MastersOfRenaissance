@@ -5,11 +5,14 @@ package it.polimi.ingsw.model;
 (4 bianche, 2 blu, 2 grigie, 2 gialle, 2 viola, 1 rossa)
  */
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Market{
 
-    private MarbleEnum[][] marketBoard;
-    private MarbleEnum extraMarble;
-    private MarbleEnum temp;
+    private Resource[][] marketBoard;
+    private Resource extraMarble;
+    private Resource temp;
     private int white;
     private int blue;
     private int gray;
@@ -26,15 +29,15 @@ public class Market{
         violet = 2;
         red = 1;
 
-        marketBoard = new MarbleEnum[3][4];
+        marketBoard = new Resource[3][4];
 
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 4; j++) {
 
-                temp = MarbleEnum.getRandomMarble();
+                temp = Resource.getRandomResource();
 
                 switch (temp) {
-                    case WHITE:
+                    case BLANK:
                         if (white != 0) {
                             marketBoard[i][j] = temp;
                             white--;
@@ -42,7 +45,7 @@ public class Market{
                         else
                             j--;
                         break;
-                    case BLUE:
+                    case SHIELD:
                         if (blue != 0){
                             marketBoard[i][j] = temp;
                             blue--;
@@ -50,7 +53,7 @@ public class Market{
                         else
                             j--;
                         break;
-                    case GRAY:
+                    case STONE:
                         if (gray != 0){
                             marketBoard[i][j] = temp;
                             gray--;
@@ -58,7 +61,7 @@ public class Market{
                         else
                             j--;
                         break;
-                    case YELLOW:
+                    case COINS:
                         if (yellow != 0){
                             marketBoard[i][j] = temp;
                             yellow--;
@@ -66,7 +69,7 @@ public class Market{
                         else
                             j--;
                         break;
-                    case VIOLET:
+                    case SERVANT:
                         if (violet != 0){
                             marketBoard[i][j] = temp;
                             violet--;
@@ -74,7 +77,7 @@ public class Market{
                         else
                             j--;
                         break;
-                    case RED:
+                    case FAITH:
                         if (red != 0){
                             marketBoard[i][j] = temp;
                             red--;
@@ -86,17 +89,17 @@ public class Market{
             }
 
         if (white != 0)
-            extraMarble = MarbleEnum.WHITE;
+            extraMarble = Resource.BLANK;
         else if (blue != 0)
-            extraMarble = MarbleEnum.BLUE;
+            extraMarble = Resource.SHIELD;
         else if (gray != 0)
-            extraMarble = MarbleEnum.GRAY;
+            extraMarble = Resource.STONE;
         else if (yellow != 0)
-            extraMarble = MarbleEnum.YELLOW;
+            extraMarble = Resource.COINS;
         else if (violet != 0)
-            extraMarble = MarbleEnum.VIOLET;
+            extraMarble = Resource.SERVANT;
         else if (red != 0)
-            extraMarble = MarbleEnum.RED;
+            extraMarble = Resource.FAITH;
         else
             System.out.println("Consuela says: no...no...no...");
     }
@@ -106,36 +109,13 @@ public class Market{
      * @return a list of Resource
      */
 
-    public Resource[] chooseRow(int row){
+    public List<Resource> chooseRow(int row){
 
-        Resource[] resFromRow = new Resource[4];
+        List<Resource> resFromRow = new ArrayList<>();
 
-        for (int j = 0; j < 4; j++) {
+        for (int j = 0; j < 4; j++)
+            resFromRow.add(marketBoard[row][j]);
 
-            switch (marketBoard[row][j]) {
-
-                case WHITE:
-                    resFromRow[j] = Resource.BLANK;
-                    break;
-                case BLUE:
-                    resFromRow[j] = Resource.SHIELD;
-                    break;
-                case GRAY:
-                    resFromRow[j] = Resource.STONE;
-                    break;
-                case VIOLET:
-                    resFromRow[j] = Resource.SERVANT;
-                    break;
-                case YELLOW:
-                    resFromRow[j] = Resource.COINS;
-                    break;
-                case RED:
-                    resFromRow[j] = null;
-                    //Player.moveOnBoard(1);
-                    break;
-
-            }
-        }
         replaceRow(row);
         return resFromRow;
 
@@ -146,44 +126,25 @@ public class Market{
      * @return a list of Resource
      */
 
-    public Resource[] chooseColumn(int col){
+    public List<Resource> chooseColumn(int col){
 
-        Resource[] resFromCol = new Resource[3];
+        List<Resource> resFromCol = new ArrayList<>();
 
-        for (int j = 0; j < 3; j++) {
+        for (int j = 0; j < 3; j++)
+            resFromCol.add(marketBoard[j][col]);
 
-            switch (marketBoard[j][col]) {
-
-                case WHITE:
-                    resFromCol[j] = Resource.BLANK;
-                    break;
-                case BLUE:
-                    resFromCol[j] = Resource.SHIELD;
-                    break;
-                case GRAY:
-                    resFromCol[j] = Resource.STONE;
-                    break;
-                case VIOLET:
-                    resFromCol[j] = Resource.SERVANT;
-                    break;
-                case YELLOW:
-                    resFromCol[j] = Resource.COINS;
-                    break;
-                case RED:
-                    resFromCol[j] = null;
-                    //Player.moveOnBoard(1);
-                    break;
-
-            }
-        }
         replaceCol(col);
         return resFromCol;
 
     }
 
+    /**
+     * Replace the marble in the MarketBoard row
+     */
+
     private void replaceRow(int row){
 
-        MarbleEnum last;
+        Resource last;
 
         last = marketBoard[row][3];
         System.arraycopy(marketBoard[row], 0, marketBoard[row], 1, 3);
@@ -191,9 +152,12 @@ public class Market{
         extraMarble = last;
     }
 
+    /**
+     * Replace the marble in the MarketBoard column
+     */
     private void replaceCol(int col){
 
-        MarbleEnum last;
+        Resource last;
 
         last = marketBoard[2][col];
         for (int i = 2; i > 0;  i--){
@@ -203,11 +167,16 @@ public class Market{
         extraMarble = last;
     }
 
-
-    public MarbleEnum getElem(int row, int col){
+    /**
+     * @return The element in the cell of the MarketBoard
+     */
+    public Resource getElem(int row, int col){
         return marketBoard[row][col];
     }
 
+    /**
+     * Print the MarketBoard
+     */
     public void printM() {
         for (int i = 0; i < 3; i++){
             for (int j = 0; j < 4; j++)

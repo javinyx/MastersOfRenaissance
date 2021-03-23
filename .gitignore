@@ -10,3 +10,6 @@ hs_err_pid*
 
 # Compiled classes folder
 target/
+
+# Json
+.json

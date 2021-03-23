@@ -36,6 +36,6 @@ public class BoostAbility implements LeaderCard{
         return null;
     }
 
-    public void applyEffect(){}
+    public void applyEffect(ProPlayer player){}
 
 }

@@ -71,7 +71,7 @@ public class ProPlayer extends Player{
         if(leader!=null){
             if(goodies.contains(Resource.BLANK)){
                 //the chosen leader should be a marbleAbility in this phase: control
-                leader.applyEffect();
+                leader.applyEffect(this);
             }
         }
 

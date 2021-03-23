@@ -41,6 +41,6 @@ public class StorageAbility implements LeaderCard{
         return cost;
     }
 
-    public void applyEffect(){}
+    public void applyEffect(ProPlayer player){}
 
 }

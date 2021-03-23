@@ -2,7 +2,6 @@ package it.polimi.ingsw.model;
 
 public interface LeaderCard extends Card{
 
-
     boolean isActive();
 
     void setStatus(boolean activate);
@@ -11,5 +10,5 @@ public interface LeaderCard extends Card{
 
     Buyable getCost();
 
-    void applyEffect();
+    void applyEffect(ProPlayer player);
 }

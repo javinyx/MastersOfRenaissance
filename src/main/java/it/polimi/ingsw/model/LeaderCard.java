@@ -1,18 +1,15 @@
 package it.polimi.ingsw.model;
 
-public class LeaderCard implements Card{
+public interface LeaderCard extends Card{
 
-    private int victoryPoints;
-    private Buyable cost;
 
-    public LeaderCard(int victoryPoints, Buyable cost) {
-        this.victoryPoints = victoryPoints;
-        this.cost = cost;
-    }
+    boolean isActive();
 
-    public int getVictoryPoints(){ return victoryPoints; }
+    void setStatus(boolean activate);
 
-    public Buyable getCost(){ return cost; }
+    int getVictoryPoints();
 
-    public void applyEffect(){}
+    Buyable getCost();
+
+    void applyEffect();
 }

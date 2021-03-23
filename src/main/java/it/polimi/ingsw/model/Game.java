@@ -5,4 +5,5 @@ public interface Game{
     void start();
     void createPlayer(String nickname);
     Market getMarket();
+    Player getWinner();
 }

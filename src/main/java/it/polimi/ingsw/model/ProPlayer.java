@@ -1,18 +1,22 @@
 package it.polimi.ingsw.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProPlayer extends Player{
-    private Warehouse warehouse;
-    private LootChest lootChest;
+    private final Warehouse warehouse;
+    private final LootChest lootChest;
     private List<ProductionCard> prodCards;
-    private int turnID;
+    private List<LeaderCard> leaderCards;
+    private final int turnID;
 
     public ProPlayer(String nickname, int turnID, Game game){
         super(nickname, game);
         this.turnID = turnID;
         warehouse = new Warehouse();
         lootChest = new LootChest();
+        prodCards = new ArrayList<>();
+        leaderCards = new ArrayList<>();
         if(turnID == 3 || turnID == 4){
             currPos++;
             chooseExtraResource();
@@ -34,10 +38,10 @@ public class ProPlayer extends Player{
         return victoryPoints;
     }
     /**Obtains the resources chosen from market through a column or a row.
-     * <p>Add faith points to the player if a red marble ha been drawn.<p>
+     * <p>Add faith points to the player if a red marble has been drawn.<p>
      * @param dim 'c' for column, 'r' for row.
      * @param index range 1-4 for column, 1-3 for row*/
-    public void buyFromMarket(char dim, int index){
+    public void buyFromMarket(char dim, int index, LeaderCard leader){
         if(dim!='c' && dim!='r'){
             //throw ex
             return;
@@ -62,6 +66,16 @@ public class ProPlayer extends Player{
             addFaithPoints(1);
             goodies.remove(Resource.FAITH);
         }
+        //FIX!!!!
+
+        if(leader!=null){
+            if(goodies.contains(Resource.BLANK)){
+                //the chosen leader should be a marbleAbility in this phase: control
+                leader.applyEffect();
+            }
+        }
+
+        storeInWarehouse(goodies);
     }
 
     public void discardResources(List<Resource> resources){
@@ -70,10 +84,19 @@ public class ProPlayer extends Player{
         }
     }
 
+    public void discardLeaderCard(LeaderCard leaderCard){
+        leaderCards.remove(leaderCard);
+        addFaithPoints(1);
+    }
+
     /**Let the player choose an extra resource to add during initialization phase.*/
     private void chooseExtraResource(){
         //wait for the player to choose a resource
         //then add to warehouse
+    }
+
+    public void storeInWarehouse(List<Resource> resources){
+
     }
 
     /**Place the resources in the specified warehouse tier.
@@ -92,26 +115,10 @@ public class ProPlayer extends Player{
     }
 
     /**Add the specified quantity of Faith Points causing the player to move forward on the board.
-     * <p>If the movement causes a Vatican Report or the end of the match, the Game will be notified.</p>*/
+     * <p>If the movement causes a Vatican Report or the end of the match, the Game will be notified.</p>
+     * @param quantity number of Faith Points the player gains*/
     public void addFaithPoints(int quantity){
-        int newPos = currPos + quantity;
-        int report = 0;
-        if(currPos < 8 && newPos >= 8){
-            report = 1;
-        }else if(currPos < 16 && newPos >= 16){
-            report = 2;
-        }else if(currPos < 24 && newPos >= 24){
-            report = 3;
-        }
-        currPos = (report==3) ? 24 : newPos;
-
-        observer.updatePosition(this);
-        if(report!=0){
-            observer.alertVaticanReport(this, report);
-        }
-        if(report == 3){
-            observer.updateEnd(this);
-        }
+        moveOnBoard(quantity);
     }
 
     /**Given a vaticanReport (must be in 1-3 range), the method tells if the player is in a safe zone.
@@ -124,4 +131,6 @@ public class ProPlayer extends Player{
             default : return false;
         }
     }
+
+
 }

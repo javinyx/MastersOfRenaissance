@@ -7,10 +7,11 @@ import java.util.List;
 public class MultiplayerGame implements Game, Observer {
     private List<ProPlayer> players;
     private List<ProPlayer> activePlayers;
-    private Market market;
     private int totalPlayers;
     private ProPlayer currPlayer;
     private ProPlayer winner;
+    private Market market;
+
 
     void MultiplayerGame(){
         players = new ArrayList<>();
@@ -22,6 +23,10 @@ public class MultiplayerGame implements Game, Observer {
     }
 
     public void start(){}
+
+    public Player getWinner(){
+        return winner;
+    }
 
     public void createPlayer(String nickname){
         totalPlayers++;

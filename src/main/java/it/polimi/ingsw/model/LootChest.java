@@ -1,25 +1,59 @@
 package it.polimi.ingsw.model;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
+/**This class keep all the resources that arrives from the production*/
 public class LootChest {
 
-    private List<Resource> inventory;
+    private Map<Resource, Integer> inventory;
+    protected int countResInLootchest;
 
     public LootChest() {
-        inventory = new ArrayList<>();
+        inventory = new HashMap<>();
+        inventory.put(Resource.SHIELD, null);
+        inventory.put(Resource.STONE, null);
+        inventory.put(Resource.COINS, null);
+        inventory.put(Resource.SERVANT, null);
+        countResInLootchest = 0;
     }
     /**
-     * Add the selected items to inventory
+     * @param item the item to add
+     * Add selected item to inventory
      */
-    public void addResources(List<Resource> items){
-        inventory.addAll(items);
+    public void addResources(Resource item){
+        switch (item){
+            case SHIELD -> inventory.compute(Resource.SHIELD, (tokenKey, oldValue) -> oldValue == null ? 1 : oldValue + 1);
+            case STONE -> inventory.compute(Resource.STONE, (tokenKey, oldValue) -> oldValue == null ? 1 : oldValue + 1);
+            case COINS -> inventory.compute(Resource.COINS, (tokenKey, oldValue) -> oldValue == null ? 1 : oldValue + 1);
+            case SERVANT -> inventory.compute(Resource.SERVANT, (tokenKey, oldValue) -> oldValue == null ? 1 : oldValue + 1);
+        }
+        countResInLootchest++;
     }
     /**
-     * Remove the selected items to inventory
+     * @param item the item to remove
+     * Remove selected items to inventory
      */
-    public void removeResources(List<Resource> items){
-        inventory.removeAll(items);
+    public void removeResources(Resource item){
+        switch (item){
+            case SHIELD -> inventory.compute(Resource.SHIELD, (tokenKey, oldValue) -> oldValue == null ? 1 : oldValue - 1);
+            case STONE -> inventory.compute(Resource.STONE, (tokenKey, oldValue) -> oldValue == null ? 1 : oldValue - 1);
+            case COINS -> inventory.compute(Resource.COINS, (tokenKey, oldValue) -> oldValue == null ? 1 : oldValue - 1);
+            case SERVANT -> inventory.compute(Resource.SERVANT, (tokenKey, oldValue) -> oldValue == null ? 1 : oldValue - 1);
+        }
+        countResInLootchest--;
+    }
+
+    public int getNumberResInInventory(Resource res) {
+        return inventory.get(res);
+    }
+
+    public Map<Resource, Integer> getInventory() {
+        return inventory;
+    }
+
+    public int getCountResInLootchest() {
+        return countResInLootchest;
     }
 }

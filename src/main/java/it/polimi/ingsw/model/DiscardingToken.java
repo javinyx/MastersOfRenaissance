@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model;
 
-public class DiscardingToken extends TokenDecorator{
+public class DiscardingToken implements ActionToken{
 
     private ColorEnum typeProdCard;
 

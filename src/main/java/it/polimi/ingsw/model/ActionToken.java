@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model;
 
-public class ActionToken implements Card{
+public interface ActionToken extends Card{
 
-    public void draw(){}
+    public void draw();
 
 }

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model;
 
-public class MoveShuffleToken extends TokenDecorator{
+public class MoveShuffleToken implements ActionToken{
 
     private void moveCrossAndShuffle(){}
 

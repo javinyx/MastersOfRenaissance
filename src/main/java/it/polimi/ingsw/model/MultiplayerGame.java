@@ -64,6 +64,30 @@ public class MultiplayerGame implements Game, Observer {
         * by counting their resources if needed. In the end, choose the final winner and end the match*/
     }
 
+    public void updateEndTurn(ProPlayer player){
+        int currID = player.getTurnID();
+        currID = (currID == totalPlayers) ? 1 : currID+1;
+        if(activePlayers.isEmpty()){
+            //kill game: nobody is in the lobby right now, we could send the thread to sleep (like for 2 mins)
+            //if after that nobody joined back, end the game
+            return;
+        }
+        for(ProPlayer p : activePlayers){
+            //next active player found: give him the currPlayer title
+            if(p.getTurnID() == currID){
+                currPlayer = p;
+                return;
+            }
+        }
+        //search for the one who should have been playing the next turn, then call the method (recursion)
+        for(ProPlayer p : players){
+            if(p.getTurnID() == currID){
+                updateEndTurn(p);
+            }
+        }
+
+    }
+
     public void updateEnd(Player player){}
     public void updatePosition(Player player){}
     public void alertVaticanReport(Player player, int vaticanReport){}

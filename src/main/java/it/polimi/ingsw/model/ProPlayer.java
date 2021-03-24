@@ -80,7 +80,6 @@ public class ProPlayer extends Player{
             addFaithPoints(1);
             resAcquired.remove(Resource.FAITH);
         }
-        //FIX!!!!
 
         if(leader!=null){
                 //the chosen leader should be a marbleAbility in this phase: control

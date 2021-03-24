@@ -39,6 +39,7 @@ public class SinglePlayerGame implements Game, Observer{
         end(winner);
     }
     public void updatePosition(Player player){}
+    public void updateEndTurn(ProPlayer player){} //do nothing?
     public void alertVaticanReport(Player player, int vaticanReport){}
     public void alertDiscardResource(Player player){
         lorenzo.moveOnBoard(1);

@@ -9,6 +9,8 @@ public class ProPlayer extends Player{
     private List<ProductionCard> prodCards;
     private List<LeaderCard> leaderCards;
     private final int turnID;
+    private ArrayList<PopePass> passes;
+    private List<Resource> resAcquired;
 
     public ProPlayer(String nickname, int turnID, Game game){
         super(nickname, game);
@@ -17,6 +19,11 @@ public class ProPlayer extends Player{
         lootChest = new LootChest();
         prodCards = new ArrayList<>();
         leaderCards = new ArrayList<>();
+        resAcquired = null;
+        passes = new ArrayList<>(3);
+        passes.add(0, new PopePass(1));
+        passes.add(1, new PopePass(2));
+        passes.add(2, new PopePass(3));
         if(turnID == 3 || turnID == 4){
             currPos++;
             chooseExtraResource();
@@ -30,6 +37,7 @@ public class ProPlayer extends Player{
         return turnID;
     }
     public void buyProductionCard(ProductionCard card){
+
     }
 
     public int getVictoryPoints(){
@@ -37,6 +45,12 @@ public class ProPlayer extends Player{
         //sum all victory points from prodCards, leaderCards, faithTrack, Resources...
         return victoryPoints;
     }
+
+    /**Get all the resources just bought from the market by the player. */
+    public List<Resource> getResAcquired(){
+        return resAcquired;
+    }
+
     /**Obtains the resources chosen from market through a column or a row.
      * <p>Add faith points to the player if a red marble has been drawn.<p>
      * @param dim 'c' for column, 'r' for row.
@@ -46,36 +60,34 @@ public class ProPlayer extends Player{
             //throw ex
             return;
         }
+        resAcquired = null;
         Market market = game.getMarket();
-        List<Resource> goodies = null;
         if(dim == 'c'){
             if(index<1 || index>4){
                 //throw ex
                 return;
             }
-            goodies = market.chooseColumn(index);
+            resAcquired = market.chooseColumn(index);
         }else if(dim == 'r'){
             if(index<1 || index>3){
                 //throw ex
                 return;
             }
-            goodies = market.chooseRow(index);
+            resAcquired = market.chooseRow(index);
         }
         //there's just one red marble in market so 1 faith points at max for each draw
-        if(goodies.contains(Resource.FAITH)){
+        if(resAcquired.contains(Resource.FAITH)){
             addFaithPoints(1);
-            goodies.remove(Resource.FAITH);
+            resAcquired.remove(Resource.FAITH);
         }
         //FIX!!!!
 
         if(leader!=null){
-            if(goodies.contains(Resource.BLANK)){
                 //the chosen leader should be a marbleAbility in this phase: control
                 leader.applyEffect(this);
-            }
         }
 
-        storeInWarehouse(goodies);
+        storeInWarehouse(resAcquired);
     }
 
     public void discardResources(List<Resource> resources){
@@ -131,6 +143,17 @@ public class ProPlayer extends Player{
             default : return false;
         }
     }
+
+    public void startBasicProduction(Resource input1, Resource input2, Resource output){
+        Resource smallShelf = warehouse.getSmallInventory();
+        List<Resource> midShelf = warehouse.getMidInventory();
+        List<Resource> largeShelf = warehouse.getLargeInventory();
+
+        //check where input1 and input2 are in warehouse, then retrieve them with remove()
+        //then add output resource to lootchest
+    }
+
+    public void startProduction(ProductionCard card){}
 
 
 }

@@ -2,20 +2,20 @@ package it.polimi.ingsw.model;
 
 public class PopePass {
 
-    private boolean activeState;
+    private boolean status;
     private int level;
     private int victoryPoints;
 
     public PopePass(int level) {
-        activeState = false;
+        status = false;
         this.level = level;
         victoryPoints = level + 1;
     }
     /**
      * @return if the card is active or not
      */
-    public boolean isActiveState() {
-        return activeState;
+    public boolean isActive() {
+        return status;
     }
     /**
      * @return the card level
@@ -27,12 +27,11 @@ public class PopePass {
     /**Active the card if it's deactivate */
 
     public void activate(){
-        activeState = true;
-        this.getVictoryPoints();
+        status = true;
     }
     /**@return victory points of the card if it is active */
     public int getVictoryPoints(){
-        if(activeState){
+        if(status){
             return victoryPoints;
         }
         return 0;

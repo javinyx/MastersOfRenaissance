@@ -33,7 +33,7 @@ public class LootChest {
     }
     /**
      * @param item the item to remove
-     * Remove selected items to inventory
+     * Remove selected items from inventory
      */
     public void removeResources(Resource item){
         switch (item){

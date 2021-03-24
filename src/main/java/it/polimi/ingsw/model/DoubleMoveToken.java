@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model;
 
-public class DoubleMovingToken implements ActionToken {
+public class DoubleMoveToken implements ActionToken {
 
     private void doubleMoveCross(){}
 

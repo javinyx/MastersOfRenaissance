@@ -1,10 +1,10 @@
 package it.polimi.ingsw.model;
 
-public class DiscardingToken implements ActionToken{
+public class DiscardToken implements ActionToken{
 
     private ColorEnum typeProdCard;
 
-    public DiscardingToken(ColorEnum typeProdCard){
+    public DiscardToken(ColorEnum typeProdCard){
         this.typeProdCard = typeProdCard;
     }
 

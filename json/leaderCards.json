@@ -1,0 +1,76 @@
+[
+  {
+    "DiscountAbility" : [
+      {
+        "cost" : [1, 0, 0, 1],
+        "discountType" : [0, 1, 0, 0]
+      },
+      {
+        "cost" : [0, 1, 1, 0],
+        "discountType" : [0, 0, 1, 0]
+      },
+      {
+        "cost" : [1, 0, 1, 0],
+        "discountType" : [1, 0, 0, 0]
+      },
+      {
+        "cost" : [0, 1, 0, 1],
+        "discountType" : [0, 0, 0, 1]
+      }
+    ],
+    "StorageAbility" : [
+      {
+        "cost" : [0, 0, 0, 5],
+        "storageType" : [2, 0, 0, 0]
+      },
+      {
+        "cost" : [5, 0, 0, 0],
+        "storageType" : [0, 2, 0, 0]
+      },
+      {
+        "cost" : [0, 5, 0, 0],
+        "storageType" : [0, 0, 2, 0]
+      },
+      {
+        "cost" : [0, 0, 5, 0],
+        "storageType" : [0, 0, 0, 2]
+      }
+    ],
+    "MarbleAbility" : [
+      {
+        "cost" : [0, 0, 1, 2],
+        "replacingResource" : [0, 1, 0, 0]
+      },
+      {
+        "cost" : [2, 1, 0, 0],
+        "replacingResource" : [0, 0, 1, 0]
+      },
+      {
+        "cost" : [0, 0, 2, 1],
+        "replacingResource" : [1, 0, 0, 0]
+      },
+      {
+        "cost" : [1, 2, 0, 0],
+        "replacingResource" : [0, 0, 0, 1]
+      }
+    ],
+    "BoostAbility" : [
+      {
+        "cost" : [0, 0, 0, 1],
+        "resourceNeeded" : [0, 0, 1, 0]
+      },
+      {
+        "cost" : [0, 0, 1, 0],
+        "resourceNeeded" : [0, 1, 0, 0]
+      },
+      {
+        "cost" : [0, 1, 0, 0],
+        "resourceNeeded" : [1, 0, 0, 0]
+      },
+      {
+        "cost" : [1, 0, 0, 0],
+        "resourceNeeded" : [0, 0, 0, 1]
+      }
+    ]
+  }
+]

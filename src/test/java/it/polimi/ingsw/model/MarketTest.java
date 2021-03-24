@@ -8,6 +8,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/*
+* I test controllano se gli elementi della lista che viene ritornata dai metodi chooseRow e chooseCol
+* sono uguali alla posizione successiva nella riga o colonna corrispondente
+ */
+
 class MarketTest {
 
     Market market;

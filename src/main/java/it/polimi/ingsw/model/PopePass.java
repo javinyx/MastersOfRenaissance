@@ -23,11 +23,14 @@ public class PopePass {
     public int getLevel() {
         return level;
     }
+
+    /**Active the card if it's deactivate */
+
     public void activate(){
         activeState = true;
         this.getVictoryPoints();
     }
-    /**@returns victory points of the card if it is active */
+    /**@return victory points of the card if it is active */
     public int getVictoryPoints(){
         if(activeState){
             return victoryPoints;

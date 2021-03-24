@@ -102,11 +102,11 @@ public class ProPlayer extends Player{
     /**Place the resources in the specified warehouse tier.
      * @param resources list of resoruces the player wants to store
      * @param tier Warehouse inventory shelf's id on which the player want to place {@code resources}*/
-    public void storeInWarehouse(List<Resource> resources, int tier){
+    public void storeInWarehouse(Resource resources, int tier){
 
         switch(tier){
-            //case 1 : warehouse.addSmall(resources);
-            //          break;
+            case 1 : warehouse.addSmall(resources);
+                     break;
             case 2 : warehouse.addMid(resources);
                         break;
             case 3 : warehouse.addLarge(resources);

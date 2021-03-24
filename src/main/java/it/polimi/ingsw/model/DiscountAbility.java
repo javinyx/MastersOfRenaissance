@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model;
 
-public class DiscountAbility implements LeaderCard{
+public class DiscountAbility implements LeaderCard {
     private final int victoryPoints;
     private final Buyable cost;
     private boolean status;

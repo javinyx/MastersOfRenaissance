@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model;
 
-public class BoostAbility implements LeaderCard{
+public class BoostAbility implements LeaderCard {
 
     private final int victoryPoints;
     private final Buyable cost;

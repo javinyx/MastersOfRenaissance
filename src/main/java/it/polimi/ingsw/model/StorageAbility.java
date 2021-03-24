@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model;
 
-public class StorageAbility implements LeaderCard{
+public class StorageAbility implements LeaderCard {
         private final int victoryPoints;
         private final Buyable cost;
         private boolean status;

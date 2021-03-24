@@ -36,11 +36,15 @@ public class MultiplayerGame implements Game, Observer {
         activePlayers.add(p);
     }
 
-    public List<Player> getPlayers(){
+    public List<ProPlayer> getPlayers() {
+        return players;
+    }
+
+    /*public List<Player> getPlayers(){
         List<Player> users = new ArrayList<>();
         users.addAll(players);
         return users;
-    }
+    }*/
 
     public Market getMarket(){
         this.updateEnd(currPlayer);

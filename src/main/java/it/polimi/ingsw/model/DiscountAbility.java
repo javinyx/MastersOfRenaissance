@@ -35,6 +35,14 @@ public class DiscountAbility implements LeaderCard {
         return cost;
     }
 
-    public void applyEffect(ProPlayer player){}
+    public void applyEffect(ProPlayer player){
+
+        /*if (player.getTurnType() == 'b'){
+            if(discountType == player.ge)
+        }*/
+
+
+
+    }
 
 }

@@ -36,7 +36,15 @@ public class ProductionCard implements Buyable, Card {
         return victoryPoints;
     }
 
+    public Resource getRequiredResource() { return requiredResource; }
+
+    public List<Resource> getRequiredResources() { return requiredResources; }
+
+    public List<Resource> getProduction() { return production; }
+
     public int getLevel() {
         return level;
     }
+
+
 }

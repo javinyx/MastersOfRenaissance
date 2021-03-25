@@ -44,7 +44,10 @@ public class LootChest {
         }
         countResInLootchest--;
     }
-
+    /**
+     * @param res is the Resource you want to know the number of
+     * @return the number of the element
+     */
     public int getNumberResInInventory(Resource res) {
         return inventory.get(res);
     }
@@ -53,6 +56,9 @@ public class LootChest {
         return inventory;
     }
 
+    /**
+     * @return the number of all the element in the inventory
+     */
     public int getCountResInLootchest() {
         return countResInLootchest;
     }

@@ -11,6 +11,7 @@ public class ProPlayer extends Player{
     private final int turnID;
     private ArrayList<PopePass> passes;
     private List<Resource> resAcquired;
+    private char turnType;
 
     public ProPlayer(String nickname, int turnID, Game game){
         super(nickname, game);
@@ -31,6 +32,11 @@ public class ProPlayer extends Player{
                 chooseExtraResource();
             }
         }
+    }
+
+    //m == buymarket, b == buyproduction, p == activateProduction
+    public char getTurnType() {
+        return turnType;
     }
 
     public int getTurnID(){

@@ -19,7 +19,7 @@ public class StorageAbility implements LeaderCard {
 
         public Resource getStorageType(){ return storageType; }
 
-        public boolean isFull(){return true;}
+        public boolean isFull(){ return true; }
 
     @Override
     public boolean isActive() {
@@ -41,6 +41,8 @@ public class StorageAbility implements LeaderCard {
         return cost;
     }
 
-    public void applyEffect(ProPlayer player){}
+    public void applyEffect(ProPlayer player){
+
+    }
 
 }

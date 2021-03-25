@@ -15,7 +15,9 @@ public class MarbleAbility implements LeaderCard {
         this.replacingResource = replacingResource;
     }
 
-    public Resource getReplacement(){ return replacingResource; }
+    public Resource getReplacement(){
+        return replacingResource;
+    }
 
     @Override
     public boolean isActive() {
@@ -38,12 +40,11 @@ public class MarbleAbility implements LeaderCard {
     }
 
     public void applyEffect(ProPlayer player) {
-        List<Resource> resAcquired = player.getResAcquired();
 
-        for (Resource r : resAcquired) {
+        for (Resource r : player.getResAcquired()) {
             if (r == Resource.BLANK) {
-                resAcquired.remove(r);
-                resAcquired.add(replacingResource);
+                player.getResAcquired().remove(r);
+                player.getResAcquired().add(replacingResource);
             }
         }
     }

@@ -13,7 +13,7 @@ public class MultiplayerGame implements Game, Observer {
     private Market market;
 
 
-    void MultiplayerGame(){
+    public MultiplayerGame(){
         players = new ArrayList<>();
         market = new Market();
         totalPlayers = 0;

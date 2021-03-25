@@ -25,8 +25,12 @@ public class Player implements Observable{
 
     /**Move the player position forward.
      * <p>If the movement causes a Vatican Report or the end of the match, the Game will be notified.</p>
-     * @param quantity number of cells the player gains*/
+     * @param quantity number of cells the player gains.*/
     public void moveOnBoard(int quantity){
+        if(quantity<=0 || currPos==24){
+            //throw ex
+            return;
+        }
         int newPos = currPos + quantity;
         int report = 0;
         if(currPos < 8 && newPos >= 8){
@@ -50,6 +54,10 @@ public class Player implements Observable{
 
     public void registerObserver(Observer observer){
         this.observer = observer;
+    }
+
+    public Observer getObserver(){
+        return observer;
     }
 
 

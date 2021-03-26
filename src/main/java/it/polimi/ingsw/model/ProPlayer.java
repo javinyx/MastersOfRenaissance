@@ -12,6 +12,7 @@ public class ProPlayer extends Player{
     private ArrayList<PopePass> passes;
     private List<Resource> resAcquired;
     private char turnType;
+    private StorageAbility extraStorage1, extraStorage2;
 
     public ProPlayer(String nickname, int turnID, Game game){
         super(nickname, game);
@@ -21,15 +22,17 @@ public class ProPlayer extends Player{
         prodCards = new ArrayList<>();
         leaderCards = new ArrayList<>();
         resAcquired = null;
+        extraStorage1 = null;
+        extraStorage2 = null;
         passes = new ArrayList<>(3);
         passes.add(0, new PopePass(1));
         passes.add(1, new PopePass(2));
         passes.add(2, new PopePass(3));
         if(turnID == 3 || turnID == 4){
             currPos++;
-            chooseExtraResource();
+            chooseResource();
             if(turnID == 4){
-                chooseExtraResource();
+                chooseResource();
             }
         }
     }
@@ -57,7 +60,15 @@ public class ProPlayer extends Player{
         return resAcquired;
     }
 
-    /**Obtains the resources chosen from market through a column or a row.
+    public Warehouse getWarehouse(){
+        return warehouse;
+    }
+
+    public LootChest getLootChest(){
+        return lootChest;
+    }
+
+    /**Obtains the resources chosen from market by column or row.
      * <p>Add faith points to the player if a red marble has been drawn.<p>
      * @param dim 'c' for column, 'r' for row.
      * @param index range 1-4 for column, 1-3 for row*/
@@ -87,27 +98,31 @@ public class ProPlayer extends Player{
             resAcquired.remove(Resource.FAITH);
         }
 
-        if(leader!=null){
-                //the chosen leader should be a marbleAbility in this phase: control
-                leader.applyEffect(this);
+        if(checkLeaderAvailability(leader)){
+            leader.applyEffect(this);
         }
 
         storeInWarehouse(resAcquired);
     }
 
+    /**Discard resources when there is no space left in the warehouse.
+     * <p>Alert Game that will add Faith Points to other players.</p>
+     * @param resources resources list to discard*/
     public void discardResources(List<Resource> resources){
         for(Resource resource : resources){
             observer.alertDiscardResource(this);
         }
     }
 
+    /**Discard a leaderCard and give a Faith Point to the player.
+     * @param leaderCard card that the player wants to remove. */
     public void discardLeaderCard(LeaderCard leaderCard){
         leaderCards.remove(leaderCard);
         addFaithPoints(1);
     }
 
     /**Let the player choose an extra resource to add during initialization phase.*/
-    private void chooseExtraResource(){
+    private void chooseResource(){
         //wait for the player to choose a resource
         //then add to warehouse
     }
@@ -160,5 +175,14 @@ public class ProPlayer extends Player{
 
     public void startProduction(ProductionCard card){}
 
-
+    private boolean checkLeaderAvailability(LeaderCard leader){
+        if(leader!=null){
+            for(LeaderCard c : leaderCards){
+                if(c.equals(leader) && c.isActive()){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

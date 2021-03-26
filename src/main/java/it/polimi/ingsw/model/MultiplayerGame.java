@@ -29,6 +29,7 @@ public class MultiplayerGame implements Game, Observer {
     }
 
     public void createPlayer(String nickname){
+        //add control on unique nicknames
         totalPlayers++;
         ProPlayer p = new ProPlayer(nickname, totalPlayers, this);
         players.add(p);

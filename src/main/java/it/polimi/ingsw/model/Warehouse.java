@@ -95,7 +95,7 @@ public class Warehouse {
     }
 
     /** Remove the last items from mid warehouse spaces
-     *  @return the resource you deleted*/
+     * @return the resource you deleted*/
 
     public Resource removeMid(){
 

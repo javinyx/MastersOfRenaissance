@@ -73,6 +73,7 @@ public class ProPlayer extends Player{
      * @param dim 'c' for column, 'r' for row.
      * @param index range 1-4 for column, 1-3 for row*/
     public void buyFromMarket(char dim, int index, LeaderCard leader){
+        turnType = 'm';
         if(dim!='c' && dim!='r'){
             //throw ex
             return;
@@ -114,6 +115,14 @@ public class ProPlayer extends Player{
         }
     }
 
+    public void activateLeaderCard(LeaderCard leader){
+        for(LeaderCard l : leaderCards){
+            if(l.equals(leader)){
+                l.setStatus(true);
+            }
+        }
+    }
+
     /**Discard a leaderCard and give a Faith Point to the player.
      * @param leaderCard card that the player wants to remove. */
     public void discardLeaderCard(LeaderCard leaderCard){
@@ -124,7 +133,8 @@ public class ProPlayer extends Player{
     /**Let the player choose an extra resource to add during initialization phase.*/
     public Resource chooseResource(){
         //wait for the player to choose a resource
-        return null; //then add to warehouse
+        //then add to warehouse
+        return null;
     }
 
     public void storeInWarehouse(List<Resource> resources){
@@ -165,12 +175,55 @@ public class ProPlayer extends Player{
     }
 
     public void startBasicProduction(Resource input1, Resource input2, Resource output){
+        //OBBBROBRIO
         Resource smallShelf = warehouse.getSmallInventory();
         List<Resource> midShelf = warehouse.getMidInventory();
         List<Resource> largeShelf = warehouse.getLargeInventory();
 
-        //check where input1 and input2 are in warehouse, then retrieve them with remove()
-        //then add output resource to lootchest
+        if(input1.equals(input2)){
+            if(midShelf.contains(input1) && midShelf.size()==2){
+                warehouse.removeMid();
+                warehouse.removeMid();
+            }else if(largeShelf.contains(input1) && largeShelf.size()>=2){
+                warehouse.removeLarge();
+                warehouse.removeLarge();
+            }else{
+                //cannot comply to request
+                return;
+            }
+            lootChest.addResources(output);
+            return;
+        }
+        if(smallShelf.equals(input1) && (midShelf.contains(input2) || largeShelf.contains(input2))){
+                warehouse.removeSmall();
+                if(midShelf.contains(input2)){
+                    warehouse.removeMid();
+                }else{
+                    warehouse.removeLarge();
+                }
+                lootChest.addResources(output);
+                return;
+            }
+        if(midShelf.contains(input1) && (smallShelf.equals(input2) || largeShelf.contains(input2))){
+                warehouse.removeMid();
+                if(smallShelf.equals(input1)){
+                    warehouse.removeSmall();
+                }else
+                    warehouse.removeLarge();
+                lootChest.addResources(output);
+                return;
+            }
+        if(largeShelf.contains(input1) && (smallShelf.equals(input2) || midShelf.contains(input2))){
+                warehouse.removeLarge();
+                if(smallShelf.equals(input2)){
+                    warehouse.removeSmall();
+                }else
+                    warehouse.removeMid();
+                lootChest.addResources(output);
+                lootChest.addResources(output);
+            }
+        //error: cannot comply request
+        return;
     }
 
     public void startProduction(ProductionCard card){}
@@ -185,4 +238,17 @@ public class ProPlayer extends Player{
         }
         return false;
     }
+
+    public void setExtraStorage(StorageAbility card){
+        if(extraStorage1 == null){
+            extraStorage1 = card;
+            return;
+        }else if (extraStorage2 == null){
+            extraStorage2 = card;
+            return;
+        }else
+            //error
+            return;
+    }
+
 }

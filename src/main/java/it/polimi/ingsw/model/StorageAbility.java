@@ -37,16 +37,13 @@ public class StorageAbility implements LeaderCard {
             return cost;
         }
 
-        public void applyEffect(ProPlayer player){
+        public void applyEffect(ProPlayer player) {
 
-           // if (player.getTurnType() == 'm')
-                //player.setExtraResource(this);
-
+            if (player.getTurnType() == 'm') {
+                player.setExtraStorage(this);
+            }
         }
 
-        public boolean isStatus() {
-            return status;
-        }
 
         public boolean isFullFlag1() {
             return fullFlag1;

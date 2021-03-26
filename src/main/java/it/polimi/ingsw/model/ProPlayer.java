@@ -122,9 +122,9 @@ public class ProPlayer extends Player{
     }
 
     /**Let the player choose an extra resource to add during initialization phase.*/
-    private void chooseResource(){
+    public Resource chooseResource(){
         //wait for the player to choose a resource
-        //then add to warehouse
+        return null; //then add to warehouse
     }
 
     public void storeInWarehouse(List<Resource> resources){

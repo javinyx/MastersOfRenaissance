@@ -70,8 +70,8 @@ class WarehouseTest {
 
         assertFalse(warehouse.check());
 
-        assertEquals(Resource.SHIELD, warehouse.removeMid(0));
-        assertEquals(Resource.STONE, warehouse.removeMid(0));
+        assertEquals(Resource.STONE, warehouse.removeMid());
+        assertEquals(Resource.SHIELD, warehouse.removeMid());
 
         assertTrue(warehouse.check());
 
@@ -86,9 +86,9 @@ class WarehouseTest {
 
         assertFalse(warehouse.check());
 
-        assertEquals(Resource.SHIELD, warehouse.removeLarge(2));
-        assertEquals(Resource.STONE, warehouse.removeLarge(1));
-        assertEquals(Resource.STONE, warehouse.removeLarge(0));
+        assertEquals(Resource.SHIELD, warehouse.removeLarge());
+        assertEquals(Resource.STONE, warehouse.removeLarge());
+        assertEquals(Resource.STONE, warehouse.removeLarge());
 
         assertTrue(warehouse.check());
 
@@ -104,10 +104,10 @@ class WarehouseTest {
         warehouse.addLarge(Resource.STONE);
         warehouse.addLarge(Resource.STONE);
 
-        warehouse.moveBetweenInventory(0,'m', 's');
-        warehouse.moveBetweenInventory(0,'l', 'm');
-        warehouse.moveBetweenInventory(0,'l', 'm');
-        warehouse.moveBetweenInventory(0,'s', 'l');
+        warehouse.moveBetweenInventory('m', 's');
+        warehouse.moveBetweenInventory('l', 'm');
+        warehouse.moveBetweenInventory('l', 'm');
+        warehouse.moveBetweenInventory('s', 'l');
 
         assertEquals(Resource.STONE, warehouse.getMidInventory().get(0));
         assertEquals(Resource.STONE, warehouse.getMidInventory().get(1));
@@ -148,21 +148,21 @@ class WarehouseTest {
         warehouse.addMid(Resource.COINS);
         warehouse.addLarge(Resource.STONE);
         warehouse.addLarge(Resource.STONE);
-        warehouse.moveBetweenInventory(0, 'm', 's');
+        warehouse.moveBetweenInventory('m', 's');
         warehouse.addMid(Resource.SHIELD);
         assertTrue(warehouse.check());
 
         warehouse.addMid(Resource.SERVANT);
         assertFalse(warehouse.check());
 
-        warehouse.removeMid(0);
-        warehouse.removeMid(0);
+        warehouse.removeMid();
+        warehouse.removeMid();
         warehouse.removeSmall();
         warehouse.addMid(Resource.SHIELD);
-        warehouse.moveBetweenInventory(0,'m', 's');
-        warehouse.moveBetweenInventory(0, 'l', 'm');
-        warehouse.moveBetweenInventory(0, 'l', 'm');
-        warehouse.moveBetweenInventory(0, 's', 'l');
+        warehouse.moveBetweenInventory('m', 's');
+        warehouse.moveBetweenInventory( 'l', 'm');
+        warehouse.moveBetweenInventory('l', 'm');
+        warehouse.moveBetweenInventory('s', 'l');
         warehouse.addSmall(Resource.SERVANT);
         warehouse.addLarge(Resource.SHIELD);
 

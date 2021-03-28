@@ -1,9 +1,11 @@
 package it.polimi.ingsw.model;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 class PlayerTest {
     Player player;
@@ -31,12 +33,10 @@ class PlayerTest {
     void moveOnBoard() {
         player.moveOnBoard(1);
         assertEquals(1, player.getCurrentPosition());
-        player.moveOnBoard(-1);
-        assertEquals(1, player.getCurrentPosition(), "Player moved backward");
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () -> player.moveOnBoard(-1));
         player.moveOnBoard(23);
         assertEquals(24, player.getCurrentPosition(), "Player didn't arrived at last position");
-        player.moveOnBoard(1);
-        assertEquals(24, player.getCurrentPosition(), "Player went over 24th position");
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () -> player.moveOnBoard(1));
     }
 
     @Test

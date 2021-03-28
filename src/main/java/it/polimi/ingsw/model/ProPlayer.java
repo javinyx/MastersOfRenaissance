@@ -127,21 +127,18 @@ public class ProPlayer extends Player{
     public void buyFromMarket(char dim, int index, LeaderCard leader){
         turnType = 'm';
         if(dim!='c' && dim!='r'){
-            //throw ex
-            return;
+            throw new IllegalArgumentException("Chosen dimension must be either 'c' (column) or 'r' (row), instead it's "+dim);
         }
         resAcquired = null;
         Market market = game.getMarket();
         if(dim == 'c'){
             if(index<1 || index>4){
-                //throw ex
-                return;
+                throw new IndexOutOfBoundsException("Index must be between 1 and 4, but it's " + index);
             }
             resAcquired = market.chooseColumn(index);
         }else if(dim == 'r'){
             if(index<1 || index>3){
-                //throw ex
-                return;
+                throw new IndexOutOfBoundsException("Index must be between 1 and 3, but it's " + index);
             }
             resAcquired = market.chooseRow(index);
         }
@@ -195,17 +192,17 @@ public class ProPlayer extends Player{
 
     }
 
-    /**Place the resources in the specified warehouse tier.
-     * @param resources list of resources the player wants to store
-     * @param tier Warehouse inventory shelf's id on which the player want to place {@code resources}*/
-    public void storeInWarehouse(Resource resources, int tier){
+    /**Place the resource in the specified warehouse tier.
+     * @param resource resource the player wants to store
+     * @param tier Warehouse inventory shelf's id on which the player want to place {@code resource}*/
+    public void storeInWarehouse(Resource resource, int tier){
 
         switch(tier){
-            case 1 : warehouse.addSmall(resources);
+            case 1 : warehouse.addSmall(resource);
                      break;
-            case 2 : warehouse.addMid(resources);
+            case 2 : warehouse.addMid(resource);
                         break;
-            case 3 : warehouse.addLarge(resources);
+            case 3 : warehouse.addLarge(resource);
             default : return;
         }
     }
@@ -234,9 +231,13 @@ public class ProPlayer extends Player{
      * @param output chosen resource for the exchange.*/
     public void startBasicProduction(@NotNull Resource input1, @NotNull Resource input2, @NotNull  Resource output){
         if(input1==null || input2==null || output==null){
-            //throw ex
-            return;
+            throw new NullPointerException("Some parameters are null when they shouldn't");
         }
+        if(input1.equals(Resource.BLANK) || input1.equals(Resource.FAITH) || input2.equals(Resource.BLANK)
+            ||input2.equals(Resource.FAITH) || output.equals(Resource.BLANK) || output.equals(Resource.FAITH)){
+            throw new IllegalArgumentException("Input/Output cannot be FAITH or BLANK");
+        }
+        turnType = 'p';
         Resource smallShelf = warehouse.getSmallInventory();
         List<Resource> midShelf = warehouse.getMidInventory();
         List<Resource> largeShelf = warehouse.getLargeInventory();
@@ -253,8 +254,7 @@ public class ProPlayer extends Player{
                 lootChest.addResources(output);
                 return;
             }else{
-                //cannot comply to request
-                return;
+                throw new RuntimeException("Not enough resources in warehouse");
             }
         }
         if(smallShelf.equals(input1) && midShelf.contains(input2) || smallShelf.equals(input2) && midShelf.contains(input1)){
@@ -275,8 +275,7 @@ public class ProPlayer extends Player{
             lootChest.addResources(output);
             return;
         }
-        //error: cannot comply request
-        return;
+        throw new RuntimeException("Not enough resources in warehouse");
     }
 
     public void startProduction(ProductionCard card){}
@@ -301,8 +300,7 @@ public class ProPlayer extends Player{
             extraStorage2 = card;
             return;
         }else
-            //error
-            return;
+        throw new NullPointerException("No StorageAbility card given");
     }
 
 }

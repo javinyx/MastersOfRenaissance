@@ -1,7 +1,11 @@
 package it.polimi.ingsw.model;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
+
 
 public class ProPlayer extends Player{
     private final Warehouse warehouse;
@@ -46,13 +50,61 @@ public class ProPlayer extends Player{
         return turnID;
     }
     public void buyProductionCard(ProductionCard card){
-
     }
 
+    /**Returns the sum of player's victory points taking in consideration:
+     * <li>productionCards (hidden or not); </li>
+     * <li>leaderCards if active;</li>
+     * <li>popePasses if active;</li>
+     * <li>current position on board;</li>
+     * <li>all resources stored in warehouse,lootchest and StorageAbility LeaderCards. </li>*/
     public int getVictoryPoints(){
         int victoryPoints = 0;
         //sum all victory points from prodCards, leaderCards, faithTrack, Resources...
+        for(ProductionCard pc : prodCards){
+            victoryPoints += pc.getVictoryPoints();
+        }
+        for(LeaderCard lc : leaderCards){
+            if(lc.isActive())
+                victoryPoints += lc.getVictoryPoints();
+        }
+        for(PopePass pp : passes){
+            if(pp.isActive())
+                victoryPoints += pp.getVictoryPoints();
+        }
+
+        victoryPoints += victoryPointsFromPos();
+
+        Function<StorageAbility, Integer> pointsFromExtraStorage = (StorageAbility x) -> {int points=0;
+            if(x!=null){
+                if(x.isFullFlag1())
+                    points++;
+                if(x.isFullFlag2())
+                    points++;
+            }
+            return points;
+        };
+
+        victoryPoints += (lootChest.getCountResInLootchest() + warehouse.getMidInventory().size()
+                        + warehouse.getLargeInventory().size() + (warehouse.getSmallInventory()!=null ? 1 : 0)
+                        + pointsFromExtraStorage.apply(extraStorage1) + pointsFromExtraStorage.apply(extraStorage2))/5;
+
         return victoryPoints;
+    }
+
+    private int victoryPointsFromPos(){
+        int victoryPoints = 0;
+        switch(currPos){
+            case 24: victoryPoints +=20;
+            case 23: case 22: case 21: victoryPoints +=16;
+            case 20: case 19: case 18: victoryPoints += 12;
+            case 17: case 16: case 15: victoryPoints += 9;
+            case 14: case 13: case 12: victoryPoints += 6;
+            case 11: case 10: case 9: victoryPoints += 4;
+            case 8: case 7: case 6: victoryPoints += 2;
+            case 5: case 4: case 3: victoryPoints += 1;
+            default : return victoryPoints;
+        }
     }
 
     /**Get all the resources just bought from the market by the player. */
@@ -115,7 +167,9 @@ public class ProPlayer extends Player{
         }
     }
 
-    public void activateLeaderCard(LeaderCard leader){
+    /**Activate the leader card, only if the player has that card. From now on it's available for usage.
+     * @param leader chosen leaderCard to activate */
+    public void activateLeaderCard(@NotNull LeaderCard leader){
         for(LeaderCard l : leaderCards){
             if(l.equals(leader)){
                 l.setStatus(true);
@@ -125,7 +179,7 @@ public class ProPlayer extends Player{
 
     /**Discard a leaderCard and give a Faith Point to the player.
      * @param leaderCard card that the player wants to remove. */
-    public void discardLeaderCard(LeaderCard leaderCard){
+    public void discardLeaderCard(@NotNull LeaderCard leaderCard){
         leaderCards.remove(leaderCard);
         addFaithPoints(1);
     }
@@ -142,7 +196,7 @@ public class ProPlayer extends Player{
     }
 
     /**Place the resources in the specified warehouse tier.
-     * @param resources list of resoruces the player wants to store
+     * @param resources list of resources the player wants to store
      * @param tier Warehouse inventory shelf's id on which the player want to place {@code resources}*/
     public void storeInWarehouse(Resource resources, int tier){
 
@@ -159,11 +213,9 @@ public class ProPlayer extends Player{
     /**Add the specified quantity of Faith Points causing the player to move forward on the board.
      * <p>If the movement causes a Vatican Report or the end of the match, the Game will be notified.</p>
      * @param quantity number of Faith Points the player gains*/
-    public void addFaithPoints(int quantity){
-        moveOnBoard(quantity);
-    }
+    public void addFaithPoints(int quantity){moveOnBoard(quantity);}
 
-    /**Given a vaticanReport (must be in 1-3 range), the method tells if the player is in a safe zone.
+    /**Given a {@code vaticanReport} (must be in 1-3 range), the method tells if the player is in a safe zone.
      * If it returns true, then the player should activate the pope pass relating that zone.*/
     public boolean isInRangeForReport(int vaticanReport){
         switch(vaticanReport) {
@@ -174,8 +226,17 @@ public class ProPlayer extends Player{
         }
     }
 
-    public void startBasicProduction(Resource input1, Resource input2, Resource output){
-        //OBBBROBRIO
+    /**Given 2 resource inputs, this production power stores the chosen resource in player's lootchest.
+     * <p>If the player has enough resources in the warehouse, this method will remove {@code input1} and
+     * {@code input2}.</p>
+     * @param input1 first resource input.
+     * @param input2 second resource input.
+     * @param output chosen resource for the exchange.*/
+    public void startBasicProduction(@NotNull Resource input1, @NotNull Resource input2, @NotNull  Resource output){
+        if(input1==null || input2==null || output==null){
+            //throw ex
+            return;
+        }
         Resource smallShelf = warehouse.getSmallInventory();
         List<Resource> midShelf = warehouse.getMidInventory();
         List<Resource> largeShelf = warehouse.getLargeInventory();
@@ -184,50 +245,43 @@ public class ProPlayer extends Player{
             if(midShelf.contains(input1) && midShelf.size()==2){
                 warehouse.removeMid();
                 warehouse.removeMid();
+                lootChest.addResources(output);
+                return;
             }else if(largeShelf.contains(input1) && largeShelf.size()>=2){
                 warehouse.removeLarge();
                 warehouse.removeLarge();
+                lootChest.addResources(output);
+                return;
             }else{
                 //cannot comply to request
                 return;
             }
+        }
+        if(smallShelf.equals(input1) && midShelf.contains(input2) || smallShelf.equals(input2) && midShelf.contains(input1)){
+            warehouse.removeSmall();
+            warehouse.removeMid();
             lootChest.addResources(output);
             return;
         }
-        if(smallShelf.equals(input1) && (midShelf.contains(input2) || largeShelf.contains(input2))){
-                warehouse.removeSmall();
-                if(midShelf.contains(input2)){
-                    warehouse.removeMid();
-                }else{
-                    warehouse.removeLarge();
-                }
-                lootChest.addResources(output);
-                return;
-            }
-        if(midShelf.contains(input1) && (smallShelf.equals(input2) || largeShelf.contains(input2))){
-                warehouse.removeMid();
-                if(smallShelf.equals(input1)){
-                    warehouse.removeSmall();
-                }else
-                    warehouse.removeLarge();
-                lootChest.addResources(output);
-                return;
-            }
-        if(largeShelf.contains(input1) && (smallShelf.equals(input2) || midShelf.contains(input2))){
-                warehouse.removeLarge();
-                if(smallShelf.equals(input2)){
-                    warehouse.removeSmall();
-                }else
-                    warehouse.removeMid();
-                lootChest.addResources(output);
-                lootChest.addResources(output);
-            }
+        if(smallShelf.equals(input1) && largeShelf.contains(input2) || smallShelf.equals(input2) && largeShelf.contains(input1)){
+            warehouse.removeSmall();
+            warehouse.removeLarge();
+            lootChest.addResources(output);
+            return;
+        }
+        if(midShelf.contains(input1) && largeShelf.contains(input2) || midShelf.contains(input2) && largeShelf.contains(input1)){
+            warehouse.removeMid();
+            warehouse.removeLarge();
+            lootChest.addResources(output);
+            return;
+        }
         //error: cannot comply request
         return;
     }
 
     public void startProduction(ProductionCard card){}
 
+    /**Check if {@code leader} is actually a card in player's Leader Deck and if it's active. */
     private boolean checkLeaderAvailability(LeaderCard leader){
         if(leader!=null){
             for(LeaderCard c : leaderCards){

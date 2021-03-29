@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model;
 
-public interface LeaderCard extends Card {
+public interface LeaderCard extends Card{
 
     boolean isActive();
 

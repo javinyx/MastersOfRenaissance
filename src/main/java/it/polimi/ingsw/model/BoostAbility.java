@@ -3,11 +3,11 @@ package it.polimi.ingsw.model;
 public class BoostAbility implements LeaderCard {
 
     private final int victoryPoints;
-    private final Buyable cost;
+    private final ProductionCard cost;
     private boolean status;
     private Resource resourceNeeded;
 
-    public BoostAbility(int victoryPoints, Buyable cost, Resource resourceNeeded) {
+    public BoostAbility(int victoryPoints, ProductionCard cost, Resource resourceNeeded) {
         this.victoryPoints = victoryPoints;
         this.cost = cost;
         status = false;
@@ -31,7 +31,7 @@ public class BoostAbility implements LeaderCard {
 
     @Override
     public Buyable getCost() {
-        return null;
+        return (Buyable) cost;
     }
 
     public void applyEffect(ProPlayer player){

@@ -1,14 +1,15 @@
 package it.polimi.ingsw.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MarbleAbility implements LeaderCard {
     private final int victoryPoints;
-    private final Buyable cost;
+    private final List<ProductionCard> cost;
     private boolean status;
     private Resource replacingResource;
 
-    public MarbleAbility(int victoryPoints, Buyable cost, Resource replacingResource) {
+    public MarbleAbility(int victoryPoints, List<ProductionCard> cost, Resource replacingResource) {
         this.victoryPoints = victoryPoints;
         this.cost = cost;
         status = false;
@@ -36,7 +37,7 @@ public class MarbleAbility implements LeaderCard {
 
     @Override
     public Buyable getCost() {
-        return cost;
+        return (Buyable)cost;
     }
 
     public void applyEffect(ProPlayer player) {

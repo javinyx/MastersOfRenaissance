@@ -1,6 +1,10 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.player;
 
-public class Player implements Observable{
+import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.Observable;
+import it.polimi.ingsw.model.Observer;
+
+public class Player implements Observable {
 
     protected String nickname;
     protected int currPos;

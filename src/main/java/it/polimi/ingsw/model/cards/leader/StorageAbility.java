@@ -1,4 +1,8 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.cards.leader;
+
+import it.polimi.ingsw.model.market.Buyable;
+import it.polimi.ingsw.model.player.ProPlayer;
+import it.polimi.ingsw.model.market.Resource;
 
 public class StorageAbility implements LeaderCard {
         private final int victoryPoints;

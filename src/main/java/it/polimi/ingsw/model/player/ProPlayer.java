@@ -1,4 +1,10 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.player;
+
+import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.market.Market;
+import it.polimi.ingsw.model.market.Resource;
+import it.polimi.ingsw.model.cards.leader.LeaderCard;
+import it.polimi.ingsw.model.cards.production.ProductionCard;
 
 import java.util.ArrayList;
 import java.util.List;

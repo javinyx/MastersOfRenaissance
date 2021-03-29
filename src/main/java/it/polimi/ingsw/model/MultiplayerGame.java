@@ -1,6 +1,10 @@
 package it.polimi.ingsw.model;
 
 
+import it.polimi.ingsw.model.market.Market;
+import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.player.ProPlayer;
+
 import java.util.ArrayList;
 import java.util.List;
 

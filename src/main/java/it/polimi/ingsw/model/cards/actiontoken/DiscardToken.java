@@ -1,6 +1,8 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.cards.actiontoken;
 
-public class DiscardToken implements ActionToken{
+import it.polimi.ingsw.model.cards.production.ColorEnum;
+
+public class DiscardToken implements ActionToken {
 
     private ColorEnum typeProdCard;
 

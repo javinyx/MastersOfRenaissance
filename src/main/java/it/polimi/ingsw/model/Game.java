@@ -1,5 +1,8 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.market.Market;
+import it.polimi.ingsw.model.player.Player;
+
 public interface Game{
 
     void start();

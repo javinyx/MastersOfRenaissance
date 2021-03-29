@@ -1,6 +1,7 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.player;
 
-import java.util.ArrayList;
+import it.polimi.ingsw.model.market.Resource;
+
 import java.util.HashMap;
 import java.util.Map;
 

@@ -1,5 +1,9 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.market.Market;
+import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.player.ProPlayer;
+
 public class SinglePlayerGame implements Game, Observer{
     private Market market;
     private ProPlayer player;

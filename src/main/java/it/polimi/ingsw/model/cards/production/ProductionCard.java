@@ -1,4 +1,8 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.cards.production;
+
+import it.polimi.ingsw.model.cards.Card;
+import it.polimi.ingsw.model.market.Buyable;
+import it.polimi.ingsw.model.market.Resource;
 
 import java.util.List;
 

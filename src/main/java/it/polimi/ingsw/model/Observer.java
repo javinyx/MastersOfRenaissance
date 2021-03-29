@@ -1,5 +1,8 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.player.ProPlayer;
+
 public interface Observer {
 
     void updateEnd(Player player);

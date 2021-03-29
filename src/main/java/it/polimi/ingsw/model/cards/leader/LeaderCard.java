@@ -4,7 +4,7 @@ import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.market.Buyable;
 import it.polimi.ingsw.model.player.ProPlayer;
 
-public interface LeaderCard extends Card {
+public interface LeaderCard extends Card{
 
     boolean isActive();
 

@@ -4,15 +4,17 @@ import it.polimi.ingsw.model.market.Buyable;
 import it.polimi.ingsw.model.player.ProPlayer;
 import it.polimi.ingsw.model.market.Resource;
 
+import java.util.List;
+
 public class StorageAbility implements LeaderCard {
         private final int victoryPoints;
-        private final Buyable cost;
+        private final List<Resource> cost;
         private boolean status;
         private Resource storageType;
         private boolean fullFlag1;
         private boolean fullFlag2;
 
-        public StorageAbility(int victoryPoints, Buyable cost, Resource storageType) {
+        public StorageAbility(int victoryPoints, List<Resource> cost, Resource storageType) {
             this.victoryPoints = victoryPoints;
             this.cost = cost;
             status = false;
@@ -38,7 +40,7 @@ public class StorageAbility implements LeaderCard {
 
         @Override
         public Buyable getCost() {
-            return cost;
+            return (Buyable) cost;
         }
 
         public void applyEffect(ProPlayer player) {

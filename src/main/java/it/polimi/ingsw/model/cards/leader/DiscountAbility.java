@@ -4,13 +4,15 @@ import it.polimi.ingsw.model.market.Buyable;
 import it.polimi.ingsw.model.player.ProPlayer;
 import it.polimi.ingsw.model.market.Resource;
 
+import java.util.List;
+
 public class DiscountAbility implements LeaderCard {
     private final int victoryPoints;
-    private final Buyable cost;
+    private final List<ProductionCard> cost;
     private boolean status;
-    private Resource discountType;
+    private final Resource discountType;
 
-    public DiscountAbility(int victoryPoints, Buyable cost, Resource discountType) {
+    public DiscountAbility(int victoryPoints, List<ProductionCard> cost, Resource discountType) {
         this.victoryPoints = victoryPoints;
         this.cost = cost;
         status = false;
@@ -36,7 +38,7 @@ public class DiscountAbility implements LeaderCard {
 
     @Override
     public Buyable getCost() {
-        return cost;
+        return (Buyable)cost;
     }
 
     public void applyEffect(ProPlayer player){

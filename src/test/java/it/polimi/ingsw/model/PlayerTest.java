@@ -1,10 +1,10 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.player.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import it.polimi.ingsw.model.player.Player;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
 
 class PlayerTest {
     Player player;
@@ -18,33 +18,31 @@ class PlayerTest {
 
     @Test
     void getNickname() {
-        assertEquals("Gatto", player.getNickname());
+        Assertions.assertEquals("Gatto", player.getNickname());
     }
 
     @Test
     void getCurrentPosition() {
-        assertEquals(0, player.getCurrentPosition());
+        Assertions.assertEquals(0, player.getCurrentPosition());
         player.moveOnBoard(2);
-        assertEquals(2, player.getCurrentPosition());
+        Assertions.assertEquals(2, player.getCurrentPosition());
     }
 
     @Test
     void moveOnBoard() {
         player.moveOnBoard(1);
-        assertEquals(1, player.getCurrentPosition());
-        player.moveOnBoard(-1);
-        assertEquals(1, player.getCurrentPosition(), "Player moved backward");
+        Assertions.assertEquals(1, player.getCurrentPosition());
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () -> player.moveOnBoard(-1));
         player.moveOnBoard(23);
-        assertEquals(24, player.getCurrentPosition(), "Player didn't arrived at last position");
-        player.moveOnBoard(1);
-        assertEquals(24, player.getCurrentPosition(), "Player went over 24th position");
+        Assertions.assertEquals(24, player.getCurrentPosition(), "Player didn't arrived at last position");
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () -> player.moveOnBoard(1));
     }
 
     @Test
     void registerObserver() {
         player.registerObserver((Observer)singleGame);
-        assertSame(singleGame, player.getObserver(), "Got singlePlayer game wrong");
+        Assertions.assertSame(singleGame, player.getObserver(), "Got singlePlayer game wrong");
         player.registerObserver((Observer)multiGame);
-        assertSame(multiGame, player.getObserver(), "Observer substitution: cannot go from single to multi");
+        Assertions.assertSame(multiGame, player.getObserver(), "Observer substitution: cannot go from single to multi");
     }
 }

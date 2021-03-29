@@ -1,13 +1,17 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.market.Market;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.ProPlayer;
 
+
 public class SinglePlayerGame implements Game, Observer{
     private Market market;
+
     private ProPlayer player;
     private Player lorenzo;
+    private Deck tokenDeck;
     private Player winner;
 
     public SinglePlayerGame() {
@@ -19,6 +23,12 @@ public class SinglePlayerGame implements Game, Observer{
 
     public void start(){}
     public void createPlayer(String nickname){
+        if(nickname==null){
+            throw new NullPointerException();
+        }
+        if(nickname.equals(lorenzo.getNickname())){
+            throw new IllegalArgumentException("Player cannot have "+lorenzo.getNickname()+ " as nickname");
+        }
         player = new ProPlayer(nickname, 1, this);
     }
     public Market getMarket(){

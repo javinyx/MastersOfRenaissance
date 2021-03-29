@@ -7,15 +7,13 @@ import it.polimi.ingsw.model.player.ProPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class MultiplayerGame implements Game, Observer {
+public class MultiplayerGame extends Game implements Observer {
     private List<ProPlayer> players;
     private List<ProPlayer> activePlayers;
     private int totalPlayers;
     private ProPlayer currPlayer;
-    private ProPlayer winner;
-    private Market market;
-
 
     public MultiplayerGame(){
         players = new ArrayList<>();
@@ -33,6 +31,13 @@ public class MultiplayerGame implements Game, Observer {
     }
 
     public void createPlayer(String nickname){
+        List<String> nicknames = players.stream()
+                .map(Player :: getNickname)
+                .collect(Collectors.toList());
+        if(!nicknames.isEmpty() && nicknames.contains(nickname)){
+            throw new IllegalArgumentException("Already exists a player with "+nickname + "as nickname");
+        }
+
         totalPlayers++;
         ProPlayer p = new ProPlayer(nickname, totalPlayers, this);
         players.add(p);
@@ -51,7 +56,6 @@ public class MultiplayerGame implements Game, Observer {
     }*/
 
     public Market getMarket(){
-        this.updateEnd(currPlayer);
         return market;
     }
 

@@ -82,7 +82,7 @@ public class Warehouse {
     }
 
 
-    /** Remove the selected items to small warehouse space
+    /** Remove the selected items from small warehouse space
      * @return the resource you deleted */
 
     public Resource removeSmall(){
@@ -96,30 +96,28 @@ public class Warehouse {
             return null;
     }
 
-    /** Remove the selected items to mid warehouse spaces
-     * @param index the position of the Resource to remove
-     *  @return the resource you deleted*/
+    /** Remove the last items from mid warehouse spaces
+     * @return the resource you deleted*/
 
-    public Resource removeMid(int index){
+    public Resource removeMid(){
 
         if(midInventory != null){
-            Resource res = midInventory.get(index);
-            midInventory.remove(index);
+            Resource res = midInventory.get(midInventory.size() - 1);
+            midInventory.remove(midInventory.size() - 1);
             return res;
         }
         else
             return null;
     }
 
-    /** Remove the selected items to large warehouse spaces
-     * @param index the position of the Resource to remove
+    /** Remove the last items from large warehouse spaces
      * @return the resource you deleted*/
 
-    public Resource removeLarge(int index){
+    public Resource removeLarge(){
 
         if (largeInventory != null) {
-            Resource res = largeInventory.get(index);
-            largeInventory.remove(index);
+            Resource res = largeInventory.get(largeInventory.size() - 1);
+            largeInventory.remove(largeInventory.size() - 1);
             return res;
         }
         else
@@ -131,7 +129,7 @@ public class Warehouse {
      * This method move a resource from an inventory to another
      *  */
 
-    public void moveBetweenInventory (int pos, char part, char arr){
+    public void moveBetweenInventory (char part, char arr){
 
         if (part == 's' && arr == 'm'){
             addMid(removeSmall());
@@ -140,16 +138,16 @@ public class Warehouse {
             addLarge(removeSmall());
         }
         else if (part == 'm' && arr == 's'){
-            addSmall(removeMid(pos));
+            addSmall(removeMid());
         }
         else if (part == 'm' && arr == 'l'){
-            addLarge(removeMid(pos));
+            addLarge(removeMid());
         }
         else if (part == 'l' && arr == 's'){
-            addSmall(removeLarge(pos));
+            addSmall(removeLarge());
         }
         else if (part == 'l' && arr == 'm'){
-            addMid(removeLarge(pos));
+            addMid(removeLarge());
         }
 
     }

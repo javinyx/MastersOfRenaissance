@@ -32,8 +32,7 @@ public class Player implements Observable {
      * @param quantity number of cells the player gains.*/
     public void moveOnBoard(int quantity){
         if(quantity<=0 || currPos==24){
-            //throw ex
-            return;
+            throw new IndexOutOfBoundsException("Cannot go backward neither go over 24th cell");
         }
         int newPos = currPos + quantity;
         int report = 0;

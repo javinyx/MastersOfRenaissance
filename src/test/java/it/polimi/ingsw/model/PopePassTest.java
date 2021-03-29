@@ -17,11 +17,11 @@ class PopePassTest {
 
     @Test
     void isActive() {
-        assertEquals(false, popePass1.isActive());
-        assertEquals(false, popePass2.isActive());
-        assertEquals(false, popePass3.isActive());
+        assertFalse(popePass1.isActive());
+        assertFalse(popePass2.isActive());
+        assertFalse(popePass3.isActive());
         popePass1.activate();
-        assertEquals(true, popePass1.isActive());
+        assertTrue(popePass1.isActive());
     }
 
     @Test
@@ -33,9 +33,9 @@ class PopePassTest {
 
     @Test
     void activate() {
-        assertEquals(false, popePass1.isActive());
+        assertFalse(popePass1.isActive());
         popePass1.activate();
-        assertEquals(true, popePass1.isActive());
+        assertTrue(popePass1.isActive());
     }
 
     @Test

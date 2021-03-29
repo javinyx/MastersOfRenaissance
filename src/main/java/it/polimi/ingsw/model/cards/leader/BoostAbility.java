@@ -26,9 +26,7 @@ public class BoostAbility implements LeaderCard {
     }
 
     @Override
-    public void setStatus(boolean activate) {
-
-    }
+    public void setStatus(boolean activate) { status = activate; }
 
     @Override
     public int getVictoryPoints() {
@@ -40,6 +38,21 @@ public class BoostAbility implements LeaderCard {
         return null;
     }
 
-    public void applyEffect(ProPlayer player){}
+    public void applyEffect(ProPlayer player){
 
+        if (player.getTurnType() == 'p'){
+
+            if(player.getWarehouse().getSmallInventory() != null && player.getWarehouse().getSmallInventory().equals(resourceNeeded))
+                player.getWarehouse().removeSmall();
+            else if (player.getWarehouse().getMidInventory() != null && player.getWarehouse().getMidInventory().get(0).equals(resourceNeeded))
+                player.getWarehouse().removeMid();
+            else if (player.getWarehouse().getLargeInventory() != null && player.getWarehouse().getLargeInventory().get(0).equals(resourceNeeded))
+                player.getWarehouse().removeLarge();
+            else
+                return;
+
+            player.addFaithPoints(1);
+            player.getLootChest().addResources(player.chooseResource());
+        }
+    }
 }

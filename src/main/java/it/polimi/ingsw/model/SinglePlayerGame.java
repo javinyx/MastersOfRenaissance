@@ -1,10 +1,11 @@
 package it.polimi.ingsw.model;
 
-public class SinglePlayerGame implements Game, Observer{
-    private Market market;
+import org.jetbrains.annotations.NotNull;
+
+public class SinglePlayerGame extends Game implements Observer{
     private ProPlayer player;
     private Player lorenzo;
-    private Player winner;
+    private Deck tokenDeck;
 
     public SinglePlayerGame() {
         market = new Market();
@@ -14,7 +15,13 @@ public class SinglePlayerGame implements Game, Observer{
     }
 
     public void start(){}
-    public void createPlayer(String nickname){
+    public void createPlayer(@NotNull String nickname){
+        if(nickname==null){
+            throw new NullPointerException();
+        }
+        if(nickname.equals(lorenzo.getNickname())){
+            throw new IllegalArgumentException("Player cannot have "+lorenzo.getNickname()+ " as nickname");
+        }
         player = new ProPlayer(nickname, 1, this);
     }
     public Market getMarket(){

@@ -2,7 +2,7 @@ package it.polimi.ingsw.model;
 
 import java.util.Random;
 
-public enum Resource {
+public enum Resource implements Buyable{
     BLANK,
     SHIELD,
     STONE,

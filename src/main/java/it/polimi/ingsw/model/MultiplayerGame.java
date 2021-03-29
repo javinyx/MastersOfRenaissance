@@ -5,14 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MultiplayerGame implements Game, Observer {
+public class MultiplayerGame extends Game implements Observer {
     private List<ProPlayer> players;
     private List<ProPlayer> activePlayers;
     private int totalPlayers;
     private ProPlayer currPlayer;
-    private ProPlayer winner;
-    private Market market;
-
 
     public MultiplayerGame(){
         players = new ArrayList<>();

@@ -10,7 +10,7 @@ import java.util.function.Function;
 public class ProPlayer extends Player{
     private final Warehouse warehouse;
     private final LootChest lootChest;
-    private List<ProductionCard> prodCards;
+    private List<ProductionCard> prodCards1, prodCards2, prodCards3;
     private List<LeaderCard> leaderCards;
     private final int turnID;
     private ArrayList<PopePass> passes;
@@ -23,7 +23,9 @@ public class ProPlayer extends Player{
         this.turnID = turnID;
         warehouse = new Warehouse();
         lootChest = new LootChest();
-        prodCards = new ArrayList<>();
+        prodCards1 = new ArrayList<>();
+        prodCards2 = new ArrayList<>();
+        prodCards3 = new ArrayList<>();
         leaderCards = new ArrayList<>();
         resAcquired = null;
         extraStorage1 = null;
@@ -49,7 +51,31 @@ public class ProPlayer extends Player{
     public int getTurnID(){
         return turnID;
     }
-    public void buyProductionCard(ProductionCard card){
+
+    /**Buy the specified ProductionCard and place it onto the specified {@code stack}.
+     * <p>This will remove the card from the game production deck</p>
+     * <p>FOR NOW, IT DOESN'T CHECK THE COST!</p>
+     * @param card  choosen card for the transaction
+     * @param stack indicates on which board's stack the player wants to place the card*/
+    public void buyProductionCard(ProductionCard card, int stack){
+        List<ProductionCard> availableProdCards = game.getProductionDecks();
+        if(!availableProdCards.contains(card) || stack<1 || stack>3){
+            throw new IllegalArgumentException();
+        }
+        //controller's method that will let the players specify from where they want to obtain the resources
+        //needed to pay the prodCard
+        //check
+
+        game.removeFromProdDeck(card);
+        switch(stack){
+            case 1 : prodCards1.add(card);
+                    return;
+            case 2: prodCards2.add(card);
+                    return;
+            case 3: prodCards3.add(card);
+                    return;
+            default : throw new IndexOutOfBoundsException("Stack parameter must be between 1 and 3");
+        }
     }
 
     /**Returns the sum of player's victory points taking in consideration:
@@ -61,6 +87,10 @@ public class ProPlayer extends Player{
     public int getVictoryPoints(){
         int victoryPoints = 0;
         //sum all victory points from prodCards, leaderCards, faithTrack, Resources...
+        List<ProductionCard> prodCards = new ArrayList<>();
+        prodCards.addAll(prodCards1);
+        prodCards.addAll(prodCards2);
+        prodCards.addAll(prodCards3);
         for(ProductionCard pc : prodCards){
             victoryPoints += pc.getVictoryPoints();
         }

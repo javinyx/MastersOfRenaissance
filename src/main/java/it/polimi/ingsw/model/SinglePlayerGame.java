@@ -6,7 +6,7 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.ProPlayer;
 
 
-public class SinglePlayerGame implements Game, Observer{
+public class SinglePlayerGame extends Game implements Observer{
     private Market market;
 
     private ProPlayer player;

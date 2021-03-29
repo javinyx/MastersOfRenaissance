@@ -1,12 +1,16 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.cards.Card;
+import it.polimi.ingsw.model.cards.Deck;
+import it.polimi.ingsw.model.cards.leader.LeaderCard;
+import it.polimi.ingsw.model.cards.production.ProductionCard;
 import it.polimi.ingsw.model.market.Market;
 import it.polimi.ingsw.model.player.Player;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public interface Game{
 
 public abstract class Game implements Observer{
     protected Market market;

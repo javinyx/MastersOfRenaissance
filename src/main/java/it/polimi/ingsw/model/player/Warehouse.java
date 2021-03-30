@@ -181,4 +181,13 @@ public class Warehouse {
         return checkf && checkm;
     }
 
+    public List<Resource> allInList(){
+        List<Resource> items = new ArrayList<>();
+        if (smallInventory != null) items.add(smallInventory);
+        if (midInventory != null) items.addAll(midInventory);
+        if (largeInventory != null) items.addAll(largeInventory);
+
+        return items;
+    }
+
 }

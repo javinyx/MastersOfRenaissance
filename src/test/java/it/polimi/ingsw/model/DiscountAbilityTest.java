@@ -18,6 +18,8 @@ class DiscountAbilityTest {
     DiscountAbility dis;
     ProPlayer player;
     Game game;
+    ProductionCard prodC1;
+    ProductionCard prodC2;
 
     @BeforeEach
     public void testSetup(){
@@ -31,9 +33,9 @@ class DiscountAbilityTest {
         List<Resource> prod = new ArrayList<>();
         prod.add(Resource.FAITH);
 
-        ProductionCard prodC1 = new ProductionCard(ColorEnum.GREEN, resNeed, prod, cost, 1, 1);
+        prodC1 = new ProductionCard(ColorEnum.GREEN, resNeed, prod, cost, 1, 1);
 
-        ProductionCard prodC2 = new ProductionCard(ColorEnum.YELLOW, resNeed, prod, cost, 1, 1);
+        prodC2 = new ProductionCard(ColorEnum.YELLOW, resNeed, prod, cost, 1, 1);
 
         List<ProductionCard> prodC = new ArrayList<>();
         prodC.add(prodC1);
@@ -45,14 +47,20 @@ class DiscountAbilityTest {
 
         player = new ProPlayer("Luca", 1, game);
 
-        /*player.buyProductionCard(prodC1);
-        player.buyProductionCard(prodC2);*/
+
 
         player.activateLeaderCard(dis);
     }
 
     @Test
     void applyEffect() {
+        //player.getResAcquired().add();
+        dis.applyEffect(player);
+        //player.buyProductionCard(prodC1, 1);
+
+        //player.buyProductionCard(prodC2, 2);
+
+
 
 
 

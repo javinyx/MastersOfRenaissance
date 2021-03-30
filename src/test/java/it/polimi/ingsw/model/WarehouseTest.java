@@ -5,6 +5,9 @@ import it.polimi.ingsw.model.player.Warehouse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class WarehouseTest {
@@ -170,5 +173,32 @@ class WarehouseTest {
 
         assertTrue(warehouse.check());
 
+    }
+
+    @Test
+    void allInList(){
+
+        List<Resource> items = new ArrayList<>();
+
+        warehouse.addSmall(Resource.SHIELD);
+        warehouse.addMid(Resource.STONE);
+        warehouse.addLarge(Resource.SERVANT);
+        warehouse.addLarge(Resource.SERVANT);
+
+        items = warehouse.allInList();
+
+        assertEquals(items.get(0), Resource.SHIELD);
+        assertEquals(items.get(1), Resource.STONE);
+        assertEquals(items.get(2), Resource.SERVANT);
+        assertEquals(items.get(3), Resource.SERVANT);
+
+        warehouse.removeSmall();
+
+        List<Resource> items2 = new ArrayList<>();
+        items2 = warehouse.allInList();
+
+        assertEquals(items2.get(0), Resource.STONE);
+        assertEquals(items2.get(1), Resource.SERVANT);
+        assertEquals(items2.get(2), Resource.SERVANT);
     }
 }

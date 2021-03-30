@@ -7,7 +7,6 @@ import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.StorageAbility;
 import it.polimi.ingsw.model.cards.production.ProductionCard;
 
-//import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,11 +63,62 @@ public class ProPlayer extends Player{
      * <p>FOR NOW, IT DOESN'T CHECK THE COST!</p>
      * @param card  choosen card for the transaction
      * @param stack indicates on which board's stack the player wants to place the card*/
-    public void buyProductionCard(ProductionCard card, int stack){
+    public void buyProductionCard(ProductionCard card, int stack, LeaderCard leader, List<Resource> removeFromWar, List<Resource> removeFromLoot){
+
         List<ProductionCard> availableProdCards = game.getProductionDecks();
+        int count = 0;
+        int pos;
+
         if(!availableProdCards.contains(card) || stack<1 || stack>3){
             throw new IllegalArgumentException();
         }
+
+        resAcquired = new ArrayList<>(card.getCost());
+
+        if(checkLeaderAvailability(leader))
+            leader.applyEffect(this);
+
+        for (int i = count; i < removeFromWar.size(); i++, count++) {
+
+            pos = resAcquired.indexOf(removeFromWar.get(i));
+
+            if(pos >= 0){
+
+                if (warehouse.getSmallInventory() != null && warehouse.getSmallInventory().equals(resAcquired.get(pos)))
+                    warehouse.removeSmall();
+                else if (warehouse.getMidInventory() != null && warehouse.getMidInventory().get(0).equals(resAcquired.get(pos)))
+                    warehouse.removeMid();
+                else if (warehouse.getLargeInventory() != null && warehouse.getLargeInventory().get(0).equals(resAcquired.get(pos)))
+                    warehouse.removeLarge();
+                throw new NoSuchFieldError("Required resource isn't in the warehouse");
+            }
+            else
+                throw new NoSuchFieldError("Resource isn't required");
+        }
+
+        for (int i = count; i < removeFromLoot.size(); i++, count++) {
+
+            pos = resAcquired.indexOf(removeFromLoot.get(i));
+
+            if (pos >= 0) {
+                if (lootChest.getInventory() != null){
+                    for (int j = 0; j < lootChest.getCountResInLootchest(); j++){
+
+                        if (lootChest.getInventory().get(j).equals(resAcquired.get(pos)))
+                            lootChest.removeResources(removeFromLoot.get(i));
+                        else
+                            throw new NoSuchFieldError("Required resource isn't in the lootchest");
+                    }
+                }
+            }
+            else
+                throw new NoSuchFieldError("Resource isn't required");
+        }
+
+
+        //BISOGNA CONTROLLARE CHE VADA BENE PERò SONO ARRIVATO AL PUNTO IN CUI RIMUOVE TUTTE LE RISORSE NECESSARIE ALL'ACQUISTO
+        //NON HO GESTITO IL CASO IN CUI IL GIOCATORE NON HA LE RISORSE NECESSARIE MA HO FAME, LOL
+
         //controller's method that will let the players specify from where they want to obtain the resources
         //needed to pay the prodCard
         //check
@@ -84,6 +134,16 @@ public class ProPlayer extends Player{
             default : throw new IndexOutOfBoundsException("Stack parameter must be between 1 and 3");
         }
     }
+
+    /*private void removeFromWarehouse(int num){
+        for (int i = 0; warehouse.allInList().get(i) != null; i++) {
+            if (resAcquired.equals(warehouse.allInList().get(i)))
+        }
+    }
+
+    private void removeFromLootChest(int num){
+
+    }*/
 
     /**Returns the sum of player's victory points taking in consideration:
      * <li>productionCards (hidden or not); </li>
@@ -203,7 +263,7 @@ public class ProPlayer extends Player{
 
     /**Activate the leader card, only if the player has that card. From now on it's available for usage.
      * @param leader chosen leaderCard to activate */
-    public void activateLeaderCard(/*@NotNull*/ LeaderCard leader){
+    public void activateLeaderCard( LeaderCard leader){
         for(LeaderCard l : leaderCards){
             if(l.equals(leader)){
                 l.setStatus(true);
@@ -213,7 +273,7 @@ public class ProPlayer extends Player{
 
     /**Discard a leaderCard and give a Faith Point to the player.
      * @param leaderCard card that the player wants to remove. */
-    public void discardLeaderCard(/*@NotNull*/ LeaderCard leaderCard){
+    public void discardLeaderCard( LeaderCard leaderCard){
         leaderCards.remove(leaderCard);
         addFaithPoints(1);
     }
@@ -266,7 +326,7 @@ public class ProPlayer extends Player{
      * @param input1 first resource input.
      * @param input2 second resource input.
      * @param output chosen resource for the exchange.*/
-    public void startBasicProduction(/*@NotNull*/ Resource input1, /*@NotNull*/ Resource input2, /*@NotNull*/  Resource output){
+    public void startBasicProduction( Resource input1, Resource input2, Resource output){
         if(input1==null || input2==null || output==null){
             throw new NullPointerException("Some parameters are null when they shouldn't");
         }

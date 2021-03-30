@@ -1,5 +1,10 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.player.ProPlayer;
+import it.polimi.ingsw.model.market.Resource;
+import it.polimi.ingsw.model.cards.leader.DiscountAbility;
+import it.polimi.ingsw.model.cards.production.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

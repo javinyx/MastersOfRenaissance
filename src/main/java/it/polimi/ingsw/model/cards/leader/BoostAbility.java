@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.cards.leader;
 import it.polimi.ingsw.model.market.Buyable;
 import it.polimi.ingsw.model.player.ProPlayer;
 import it.polimi.ingsw.model.market.Resource;
+import it.polimi.ingsw.model.cards.production.*;
 
 public class BoostAbility implements LeaderCard {
 

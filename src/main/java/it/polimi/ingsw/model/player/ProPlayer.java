@@ -4,9 +4,10 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.market.Market;
 import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
+import it.polimi.ingsw.model.cards.leader.StorageAbility;
 import it.polimi.ingsw.model.cards.production.ProductionCard;
 
-import org.jetbrains.annotations.NotNull;
+//import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -202,7 +203,7 @@ public class ProPlayer extends Player{
 
     /**Activate the leader card, only if the player has that card. From now on it's available for usage.
      * @param leader chosen leaderCard to activate */
-    public void activateLeaderCard(@NotNull LeaderCard leader){
+    public void activateLeaderCard(/*@NotNull*/ LeaderCard leader){
         for(LeaderCard l : leaderCards){
             if(l.equals(leader)){
                 l.setStatus(true);
@@ -212,7 +213,7 @@ public class ProPlayer extends Player{
 
     /**Discard a leaderCard and give a Faith Point to the player.
      * @param leaderCard card that the player wants to remove. */
-    public void discardLeaderCard(@NotNull LeaderCard leaderCard){
+    public void discardLeaderCard(/*@NotNull*/ LeaderCard leaderCard){
         leaderCards.remove(leaderCard);
         addFaithPoints(1);
     }
@@ -265,7 +266,7 @@ public class ProPlayer extends Player{
      * @param input1 first resource input.
      * @param input2 second resource input.
      * @param output chosen resource for the exchange.*/
-    public void startBasicProduction(@NotNull Resource input1, @NotNull Resource input2, @NotNull  Resource output){
+    public void startBasicProduction(/*@NotNull*/ Resource input1, /*@NotNull*/ Resource input2, /*@NotNull*/  Resource output){
         if(input1==null || input2==null || output==null){
             throw new NullPointerException("Some parameters are null when they shouldn't");
         }

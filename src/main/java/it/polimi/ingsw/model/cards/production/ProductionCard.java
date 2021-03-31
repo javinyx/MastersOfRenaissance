@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.market.Buyable;
 import it.polimi.ingsw.model.market.Resource;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductionCard implements Buyable, Card {
@@ -25,16 +26,16 @@ public class ProductionCard implements Buyable, Card {
     }
 
     public List<Resource> getCost() {
-        return cost;
+        return new ArrayList<Resource>(cost);
     }
 
     public int getVictoryPoints() {
         return victoryPoints;
     }
 
-    public List<Resource> getRequiredResources() { return requiredResources; }
+    public List<Resource> getRequiredResources() { return new ArrayList<>(requiredResources); }
 
-    public List<Resource> getProduction() { return production; }
+    public List<Resource> getProduction() { return new ArrayList<>(production); }
 
     public int getLevel() {
         return level;

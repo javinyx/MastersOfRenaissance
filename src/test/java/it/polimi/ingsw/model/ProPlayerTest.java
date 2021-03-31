@@ -1,10 +1,15 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.cards.production.ColorEnum;
+import it.polimi.ingsw.model.cards.production.ProductionCard;
 import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.player.ProPlayer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -48,6 +53,7 @@ class ProPlayerTest extends PlayerTest {
 
     @Test
     void buyProductionCard() {
+        ProductionCard card = istantiateACard();
     }
 
     @Disabled
@@ -112,5 +118,15 @@ class ProPlayerTest extends PlayerTest {
 
     @Test
     void setExtraStorage() {
+    }
+
+    private ProductionCard istantiateACard(){
+        List<Resource> required = new ArrayList<>();
+        required.add(Resource.STONE);
+        List<Resource> cost = new ArrayList<>();
+        cost.add(Resource.COINS);
+        List<Resource> prod = new ArrayList<>();
+        prod.add(Resource.SERVANT);
+        return new ProductionCard(ColorEnum.GREEN, required, prod, cost, 1, 1);
     }
 }

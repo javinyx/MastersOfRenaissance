@@ -1,7 +1,5 @@
 package it.polimi.ingsw.model.cards;
 
-import it.polimi.ingsw.model.cards.Card;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +17,7 @@ public class Deck {
     public void createDeck(){
         //lettura del file, creazione della carta mediante uno dei 3 costruttori: ProductionCard/LeaderCard/ActionToken
         //poi inserimento nella cardList
-        //N.B: prodCard decks have 3 cards each
+        //N.B: prodCard decks have 4 cards each
     }
 
     public void draw(){}

@@ -1,14 +1,15 @@
 package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.market.Market;
-import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.StorageAbility;
 import it.polimi.ingsw.model.cards.production.ProductionCard;
+import it.polimi.ingsw.model.market.Market;
+import it.polimi.ingsw.model.market.Resource;
 
-
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 import java.util.function.Function;
 
@@ -16,7 +17,7 @@ import java.util.function.Function;
 public class ProPlayer extends Player{
     private Warehouse warehouse;
     private LootChest lootChest;
-    private List<ProductionCard> prodCards1, prodCards2, prodCards3;
+    private Deque<ProductionCard> prodCards1, prodCards2, prodCards3;
     private List<LeaderCard> leaderCards;
     private final int turnID;
     private ArrayList<PopePass> passes;
@@ -29,9 +30,9 @@ public class ProPlayer extends Player{
         this.turnID = turnID;
         warehouse = new Warehouse();
         lootChest = new LootChest();
-        prodCards1 = new ArrayList<>();
-        prodCards2 = new ArrayList<>();
-        prodCards3 = new ArrayList<>();
+        prodCards1 = new ArrayDeque<>();
+        prodCards2 = new ArrayDeque<>();
+        prodCards3 = new ArrayDeque<>();
         leaderCards = new ArrayList<>();
         resAcquired = null;
         extraStorage1 = null;
@@ -60,34 +61,47 @@ public class ProPlayer extends Player{
 
     /**Buy the specified ProductionCard and place it onto the specified {@code stack}.
      * <p>This will remove the card from the game production deck</p>
-     * <p>FOR NOW, IT DOESN'T CHECK THE COST!</p>
+     * <p>Player can decide to play a LeaderCard that may affect the cost of the chosen ProductionCard.
+     * Its applicability will be checked by the method.</p>
      * @param card  choosen card for the transaction
-     * @param stack indicates on which board's stack the player wants to place the card*/
+     * @param stack indicates on which board's stack the player wants to place the card
+     * @param leader LeaderCard: just DiscountAbility might have an effect here
+     * @param removeFromWar list of resources the player has intention to use for paying by removing them from the warehouse
+     * @param removeFromLoot list of resources the player has intention to use for paying by removing them from the lootchest*/
     public void buyProductionCard(ProductionCard card, int stack, LeaderCard leader, List<Resource> removeFromWar, List<Resource> removeFromLoot){
 
         List<ProductionCard> availableProdCards = game.getProductionDecks();
-        Warehouse warBackup = new Warehouse();
-        LootChest lootBackup = new LootChest();
-        int count = 0;
+        Warehouse warBackup = new Warehouse(warehouse);
+        LootChest lootBackup = new LootChest(lootChest);
         int pos;
 
         if(!availableProdCards.contains(card) || stack<1 || stack>3){
             throw new IllegalArgumentException();
         }
+        Deque<ProductionCard> prodStack;
 
-        //controller's method that will let the players specify from where they want to obtain the resources
-        //needed to pay the prodCard
-        //check
+        switch(stack){
+            case 1: prodStack = prodCards1;
+                    break;
+            case 2: prodStack = prodCards2;
+                    break;
+            case 3: prodStack = prodCards3;
+                    break;
+            default : throw new IndexOutOfBoundsException("Stack parameter must be between 1 and 3");
+        }
 
-        warBackup = warehouse;
-        lootBackup = lootChest;
+        if(card.getLevel()!= prodStack.getFirst().getLevel()+1){
+            throw new RuntimeException("Cannot buy this card because of its level");
+        }
 
-        resAcquired = new ArrayList<>(card.getCost());
+        turnType = 'b';
+
+        resAcquired = card.getCost();
 
         if(checkLeaderAvailability(leader))
             leader.applyEffect(this);
 
-        for (int i = 0; i < removeFromWar.size(); i++, count++) {
+        for (int i = 0; i < removeFromWar.size(); i++) {
 
             pos = resAcquired.indexOf(removeFromWar.get(i));
 
@@ -100,72 +114,36 @@ public class ProPlayer extends Player{
                 else if (warehouse.getLargeInventory() != null && warehouse.getLargeInventory().get(0).equals(resAcquired.get(pos)))
                     warehouse.removeLarge();
                 else{
-                    count--;
+                    warehouse = warBackup;
                     throw new RuntimeException("Required resource isn't in the warehouse");
                 }
             }
-            else
-                throw new RuntimeException("Resource isn't required");
         }
 
-        for (int i = 0; i < removeFromLoot.size(); i++, count++) {
+        for (int i = 0; i < removeFromLoot.size(); i++) {
 
             pos = resAcquired.indexOf(removeFromLoot.get(i));
 
             if (pos >= 0) {
-                if (lootChest.getInventory() != null){
-                    for (int j = 0; j < lootChest.getCountResInLootchest(); j++){
+                if (lootChest.getInventory() != null) {
+                    for (int j = 0; j < lootChest.getCountResInLootchest(); j++) {
 
-                        if (lootChest.getInventory().get(j).equals(resAcquired.get(pos))){
+                        if (lootChest.getInventory().get(j).equals(resAcquired.get(pos))) {
                             resAcquired.get(pos);
                             lootChest.removeResources(removeFromLoot.get(i));
-                        }
-                        else {
-                            count--;
+                        } else {
+                            warehouse = warBackup;
+                            lootChest = lootBackup;
                             throw new RuntimeException("Required resource isn't in the lootchest");
                         }
                     }
                 }
             }
-            else
-                throw new RuntimeException("Resource isn't required");
         }
 
-        if (count != resAcquired.size()) {
-            warehouse = warBackup;
-            lootChest = lootBackup;
-
-            throw new IllegalStateException("haven't required resource");
-        }
-
-        else{
-
-            game.removeFromProdDeck(card);
-            switch(stack) {
-                case 1:
-                    prodCards1.add(card);
-                    return;
-                case 2:
-                    prodCards2.add(card);
-                    return;
-                case 3:
-                    prodCards3.add(card);
-                    return;
-                default:
-                    throw new IndexOutOfBoundsException("Stack parameter must be between 1 and 3");
-            }
-        }
+        game.removeFromProdDeck(card);
+        prodStack.addFirst(card);
     }
-
-    /*private void removeFromWarehouse(int num){
-        for (int i = 0; warehouse.allInList().get(i) != null; i++) {
-            if (resAcquired.equals(warehouse.allInList().get(i)))
-        }
-    }
-
-    private void removeFromLootChest(int num){
-
-    }*/
 
     /**Returns the sum of player's victory points taking in consideration:
      * <li>productionCards (hidden or not); </li>

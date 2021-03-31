@@ -19,6 +19,10 @@ public class LootChest {
         inventory.put(Resource.SERVANT, null);
         countResInLootchest = 0;
     }
+    public LootChest(LootChest dupe){
+        this.inventory = new HashMap<>(dupe.inventory);
+        this.countResInLootchest = dupe.countResInLootchest;
+    }
     /**
      * @param item the item to add
      * Add selected item to inventory

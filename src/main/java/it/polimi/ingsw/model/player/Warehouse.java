@@ -23,6 +23,12 @@ public class Warehouse {
         largeInventory = new ArrayList<>();
     }
 
+    public Warehouse(Warehouse dupe){
+        this.smallInventory = dupe.smallInventory;
+        this.midInventory = new ArrayList<>(dupe.midInventory);
+        this.largeInventory = new ArrayList<>(dupe.largeInventory);
+    }
+
     public Resource getSmallInventory() {
         return smallInventory;
     }

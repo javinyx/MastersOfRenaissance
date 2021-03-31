@@ -14,8 +14,8 @@ import java.util.function.Function;
 
 
 public class ProPlayer extends Player{
-    private final Warehouse warehouse;
-    private final LootChest lootChest;
+    private Warehouse warehouse;
+    private LootChest lootChest;
     private List<ProductionCard> prodCards1, prodCards2, prodCards3;
     private List<LeaderCard> leaderCards;
     private final int turnID;
@@ -66,6 +66,8 @@ public class ProPlayer extends Player{
     public void buyProductionCard(ProductionCard card, int stack, LeaderCard leader, List<Resource> removeFromWar, List<Resource> removeFromLoot){
 
         List<ProductionCard> availableProdCards = game.getProductionDecks();
+        Warehouse warBackup = new Warehouse();
+        LootChest lootBackup = new LootChest();
         int count = 0;
         int pos;
 
@@ -73,12 +75,19 @@ public class ProPlayer extends Player{
             throw new IllegalArgumentException();
         }
 
+        //controller's method that will let the players specify from where they want to obtain the resources
+        //needed to pay the prodCard
+        //check
+
+        warBackup = warehouse;
+        lootBackup = lootChest;
+
         resAcquired = new ArrayList<>(card.getCost());
 
         if(checkLeaderAvailability(leader))
             leader.applyEffect(this);
 
-        for (int i = count; i < removeFromWar.size(); i++, count++) {
+        for (int i = 0; i < removeFromWar.size(); i++, count++) {
 
             pos = resAcquired.indexOf(removeFromWar.get(i));
 
@@ -90,13 +99,16 @@ public class ProPlayer extends Player{
                     warehouse.removeMid();
                 else if (warehouse.getLargeInventory() != null && warehouse.getLargeInventory().get(0).equals(resAcquired.get(pos)))
                     warehouse.removeLarge();
-                throw new NoSuchFieldError("Required resource isn't in the warehouse");
+                else{
+                    count--;
+                    throw new RuntimeException("Required resource isn't in the warehouse");
+                }
             }
             else
-                throw new NoSuchFieldError("Resource isn't required");
+                throw new RuntimeException("Resource isn't required");
         }
 
-        for (int i = count; i < removeFromLoot.size(); i++, count++) {
+        for (int i = 0; i < removeFromLoot.size(); i++, count++) {
 
             pos = resAcquired.indexOf(removeFromLoot.get(i));
 
@@ -104,34 +116,44 @@ public class ProPlayer extends Player{
                 if (lootChest.getInventory() != null){
                     for (int j = 0; j < lootChest.getCountResInLootchest(); j++){
 
-                        if (lootChest.getInventory().get(j).equals(resAcquired.get(pos)))
+                        if (lootChest.getInventory().get(j).equals(resAcquired.get(pos))){
+                            resAcquired.get(pos);
                             lootChest.removeResources(removeFromLoot.get(i));
-                        else
-                            throw new NoSuchFieldError("Required resource isn't in the lootchest");
+                        }
+                        else {
+                            count--;
+                            throw new RuntimeException("Required resource isn't in the lootchest");
+                        }
                     }
                 }
             }
             else
-                throw new NoSuchFieldError("Resource isn't required");
+                throw new RuntimeException("Resource isn't required");
         }
 
+        if (count != resAcquired.size()) {
+            warehouse = warBackup;
+            lootChest = lootBackup;
 
-        //BISOGNA CONTROLLARE CHE VADA BENE PERò SONO ARRIVATO AL PUNTO IN CUI RIMUOVE TUTTE LE RISORSE NECESSARIE ALL'ACQUISTO
-        //NON HO GESTITO IL CASO IN CUI IL GIOCATORE NON HA LE RISORSE NECESSARIE MA HO FAME, LOL
+            throw new IllegalStateException("haven't required resource");
+        }
 
-        //controller's method that will let the players specify from where they want to obtain the resources
-        //needed to pay the prodCard
-        //check
+        else{
 
-        game.removeFromProdDeck(card);
-        switch(stack){
-            case 1 : prodCards1.add(card);
+            game.removeFromProdDeck(card);
+            switch(stack) {
+                case 1:
+                    prodCards1.add(card);
                     return;
-            case 2: prodCards2.add(card);
+                case 2:
+                    prodCards2.add(card);
                     return;
-            case 3: prodCards3.add(card);
+                case 3:
+                    prodCards3.add(card);
                     return;
-            default : throw new IndexOutOfBoundsException("Stack parameter must be between 1 and 3");
+                default:
+                    throw new IndexOutOfBoundsException("Stack parameter must be between 1 and 3");
+            }
         }
     }
 

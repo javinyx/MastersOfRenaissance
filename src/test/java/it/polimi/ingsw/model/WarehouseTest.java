@@ -65,6 +65,16 @@ class WarehouseTest {
         assertTrue(warehouse.check());
         assertNull(warehouse.getSmallInventory());
 
+        List<Resource> res = new ArrayList<>();
+
+        warehouse.addSmall(Resource.SHIELD);
+
+        res.add(warehouse.removeSmall());
+
+        assertNull(warehouse.getSmallInventory());
+        assertEquals(Resource.SHIELD, res.get(0));
+
+
     }
 
     @Test

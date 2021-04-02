@@ -41,6 +41,18 @@ public class Warehouse {
         return largeInventory;
     }
 
+    public int getInventoryID(Resource resource){
+        if(smallInventory.equals(resource)){
+            return 1;
+        }if(midInventory.contains(resource)){
+            return 2;
+        }
+        if(largeInventory.contains(resource)){
+            return 3;
+        }
+        return -1;
+    }
+
     /** @param item the resource of the object to store in small inventory of the warehouse*/
 
     public void addSmall(Resource item){

@@ -4,13 +4,14 @@ import it.polimi.ingsw.model.market.Buyable;
 import it.polimi.ingsw.model.player.ProPlayer;
 import it.polimi.ingsw.model.market.Resource;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StorageAbility implements LeaderCard {
         private final int victoryPoints;
         private final List<Resource> cost;
         private boolean status;
-        private Resource storageType;
+        private final Resource storageType;
         private boolean fullFlag1;
         private boolean fullFlag2;
 
@@ -21,6 +22,15 @@ public class StorageAbility implements LeaderCard {
             fullFlag1 = false;
             fullFlag2 = false;
             this.storageType = storageType;
+        }
+
+        public StorageAbility(StorageAbility dupe){
+            this.victoryPoints = dupe.victoryPoints;
+            this.cost = new ArrayList<>(dupe.cost);
+            this.status = dupe.status;
+            this.storageType = dupe.storageType;
+            this.fullFlag1 = dupe.fullFlag1;
+            this.fullFlag2 = dupe.fullFlag2;
         }
 
         @Override

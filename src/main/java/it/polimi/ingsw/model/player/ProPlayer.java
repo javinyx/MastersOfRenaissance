@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 public class ProPlayer extends Player{
@@ -69,7 +70,6 @@ public class ProPlayer extends Player{
      * @param removeFromWar list of resources the player has intention to use for paying by removing them from the warehouse
      * @param removeFromLoot list of resources the player has intention to use for paying by removing them from the lootchest*/
     public void buyProductionCard(ProductionCard card, int stack, LeaderCard leader, List<Resource> removeFromWar, List<Resource> removeFromLoot){
-
         List<ProductionCard> availableProdCards = game.getProductionDecks();
         Warehouse warBackup = new Warehouse(warehouse);
         LootChest lootBackup = new LootChest(lootChest);
@@ -273,9 +273,16 @@ public class ProPlayer extends Player{
 
     /**Discard a leaderCard and give a Faith Point to the player.
      * @param leaderCard card that the player wants to remove. */
-    public void discardLeaderCard( LeaderCard leaderCard){
-        leaderCards.remove(leaderCard);
-        addFaithPoints(1);
+    public void discardLeaderCard(LeaderCard leaderCard){
+        if(leaderCard!=null) {
+            if (leaderCard.isActive()) {
+                throw new RuntimeException("Cannot discard an active leader");
+            }
+            if (leaderCards.contains(leaderCard)) {
+                leaderCards.remove(leaderCard);
+                addFaithPoints(1);
+            }
+        }
     }
 
     /**Let the player choose an extra resource to add during initialization phase.*/
@@ -323,10 +330,11 @@ public class ProPlayer extends Player{
     /**Given 2 resource inputs, this production power stores the chosen resource in player's lootchest.
      * <p>If the player has enough resources in the warehouse, this method will remove {@code input1} and
      * {@code input2}.</p>
+     * <p>SOON TO BE FIXED: for now it checks just the Warehouse resources.</p>
      * @param input1 first resource input.
      * @param input2 second resource input.
      * @param output chosen resource for the exchange.*/
-    public void startBasicProduction( Resource input1, Resource input2, Resource output){
+    public void startBasicProduction( Resource input1, Resource input2, Resource output){ //DA RIFARE
         if(input1==null || input2==null || output==null){
             throw new NullPointerException("Some parameters are null when they shouldn't");
         }
@@ -375,7 +383,139 @@ public class ProPlayer extends Player{
         throw new RuntimeException("Not enough resources in warehouse");
     }
 
-    public void startProduction(ProductionCard card){}
+    /**For each ProductionCard in {@code cards}, it tries to consume all the resources planned by the player and requested
+     * by the specific ProductionCard's cost.
+     * <p>Players must specify from which type of storage they want to obtain the resources needed to pay by distributing
+     * them in 4 different list: {@code removeFromWar}, {@code removeFromLoot}, {@code removeFromStorage1} and
+     * {@code removeFromStorage2}.</p>.
+     * <p>Players express their wish of activation of the basic production power by {@code basicProd=true}</p>*/
+    public void startProduction(List<ProductionCard> cards, boolean basicProd, List<Resource> removeFromWar,
+                                List<Resource> removeFromLoot, List<LeaderCard> prodLeaders, List<Resource> removeFromStorage1,
+                                List<Resource> removeFromStorage2, Resource output){
+        Warehouse warBackup = new Warehouse(warehouse);
+        LootChest lootBackup = new LootChest(lootChest);
+        List<Resource> production = new ArrayList<>();
+        turnType = 'p';
+        for(ProductionCard p : cards){
+            if(!prodCards1.peekFirst().equals(p) && !prodCards2.peekFirst().equals(p) && !prodCards3.peekFirst().equals(p)){
+                //controller will ask the player to adjust the ProdCards selection and try again to call this method
+                warehouse = warBackup;
+                lootChest = lootBackup;
+                throw new RuntimeException(p.toString() + " cannot produce");
+            }
+            try {
+                production.addAll(produce(p, removeFromWar, removeFromLoot, removeFromStorage1, removeFromStorage2));
+            }catch(Exception e){
+                warehouse = warBackup;
+                lootChest = lootBackup;
+                throw new RuntimeException("Not enough resources");
+            }
+        }
+
+        //NON VA BENE: correggere le BoostAbility
+        for(LeaderCard lc : prodLeaders){
+            if(checkLeaderAvailability(lc)){
+                lc.applyEffect(this);
+            }
+        }
+        /*if(basicProd){
+            Resource input1=null, input2=null;
+            for(int i=0; i<2; i++){
+                if(!removeFromWar.isEmpty()){
+                    switch(warehouse.getInventoryID(removeFromWar.get(0))){
+                        case 1: warehouse.removeSmall();
+                            removeFromWar.remove(0);
+                            break;
+                        case 2 : warehouse.removeMid();
+                            removeFromWar.remove(0);
+                            break;
+                        case 3 : warehouse.removeLarge();
+                            removeFromWar.remove(0);
+                            break;
+                    }
+                }if(!removeFromLoot.isEmpty()){
+                    Resource o = removeFromLoot.get(0);
+                    if(lootChest.getInventory().get(o)!=null){
+                        lootChest.removeResources(o);
+                        removeFromLoot.remove(0);
+                    }
+                }
+            }
+            startBasicProduction(input1, input2, output);
+        }*/
+
+        lootChest.addResources(production);
+    }
+    /**Activate production for a single ProductionCard */
+    private List<Resource> produce(ProductionCard card, List<Resource> removeFromWar, List<Resource> removeFromLoot,
+                            List<Resource> removeFromStorage1, List<Resource> removeFromStorage2) throws Exception{
+        List<Resource> cost = card.getCost();
+        List<Resource> costDupe = card.getCost(); //since cannot modify cost while forEach is running and taking elements from it
+        StorageAbility extraStorage1Backup = new StorageAbility(extraStorage1);
+        StorageAbility extraStorage2Backup = new StorageAbility(extraStorage2);
+        for(Resource r : costDupe){
+            if(removeFromWar.contains(r)){
+               if(warehouse.getSmallInventory().equals(r)){
+                   removeFromWar.remove(r);
+                   warehouse.removeSmall();
+                   cost.remove(r);
+               }else if(warehouse.getMidInventory().contains(r)){
+                   removeFromWar.remove(r);
+                   warehouse.removeMid();
+                   cost.remove(r);
+               }else if(warehouse.getLargeInventory().contains(r)){
+                   removeFromWar.remove(r);
+                   warehouse.removeLarge();
+                   cost.remove(r);
+               }
+            }else if(removeFromLoot.contains(r)){
+                if(lootChest.getInventory().containsKey(r)) {
+                    removeFromLoot.remove(r);
+                    lootChest.removeResources(r);
+                    cost.remove(r);
+                }
+           }else if(removeFromStorage1!=null && extraStorage1!=null && extraStorage1.getStorageType().equals(r)){
+             if(extraStorage1.isFullFlag1()){
+                 removeFromStorage1.remove(r);
+                 extraStorage1.setFullFlag1(false);
+                 cost.remove(r);
+             }else if(extraStorage1.isFullFlag2()){
+                 removeFromStorage1.remove(r);
+                 extraStorage1.setFullFlag2(false);
+                 cost.remove(r);
+             }else {
+                 extraStorage1 = extraStorage1Backup;
+                 extraStorage2 = extraStorage2Backup;
+                 throw new Exception();
+             }
+           }else if(removeFromStorage2!=null && extraStorage2!=null && extraStorage2.getStorageType().equals(r)){
+               if(extraStorage1.isFullFlag1()){
+                   extraStorage2.setFullFlag1(false);
+                   cost.remove(r);
+               }else if(extraStorage2.isFullFlag2()){
+                   extraStorage2.setFullFlag2(false);
+                   cost.remove(r);
+               }else {
+                   extraStorage1 = extraStorage1Backup;
+                   extraStorage2 = extraStorage2Backup;
+                   throw new Exception();
+               }
+           }else {
+                extraStorage1 = extraStorage1Backup;
+                extraStorage2 = extraStorage2Backup;
+                throw new Exception();
+            }
+        }
+        List<Resource> production = card.getProduction();
+        for(Resource r : production){
+            if(r.equals(Resource.FAITH)){
+                addFaithPoints(1);
+            }
+        }
+        return production.stream()
+                .filter(x -> !x.equals(Resource.FAITH))
+                .collect(Collectors.toList());
+    }
 
     /**Check if {@code leader} is actually a card in player's Leader Deck and if it's active. */
     private boolean checkLeaderAvailability(LeaderCard leader){

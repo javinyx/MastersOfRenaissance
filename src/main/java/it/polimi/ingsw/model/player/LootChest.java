@@ -13,11 +13,11 @@ public class LootChest {
     protected int countResInLootchest;
 
     public LootChest() {
-        inventory = new HashMap<>();
-        inventory.put(Resource.SHIELD, null);
-        inventory.put(Resource.STONE, null);
-        inventory.put(Resource.COINS, null);
-        inventory.put(Resource.SERVANT, null);
+        inventory = new HashMap<>(4);
+        inventory.put(Resource.SHIELD, 0);
+        inventory.put(Resource.STONE, 0);
+        inventory.put(Resource.COINS, 0);
+        inventory.put(Resource.SERVANT, 0);
         countResInLootchest = 0;
     }
     public LootChest(LootChest dupe){
@@ -29,23 +29,17 @@ public class LootChest {
      * Add selected item to inventory
      */
     public void addResources(Resource item){
-        switch (item){
-            case SHIELD -> inventory.compute(Resource.SHIELD, (tokenKey, oldValue) -> oldValue == null ? 1 : oldValue + 1);
-            case STONE -> inventory.compute(Resource.STONE, (tokenKey, oldValue) -> oldValue == null ? 1 : oldValue + 1);
-            case COINS -> inventory.compute(Resource.COINS, (tokenKey, oldValue) -> oldValue == null ? 1 : oldValue + 1);
-            case SERVANT -> inventory.compute(Resource.SERVANT, (tokenKey, oldValue) -> oldValue == null ? 1 : oldValue + 1);
+        switch(item){
+            case SHIELD -> inventory.compute(Resource.SHIELD, (tokenKey, oldValue) -> oldValue += 1);
+            case STONE -> inventory.compute(Resource.STONE, (tokenKey, oldValue) -> oldValue += 1);
+            case COINS -> inventory.compute(Resource.COINS, (tokenKey, oldValue) -> oldValue += 1);
+            case SERVANT -> inventory.compute(Resource.SERVANT, (tokenKey, oldValue) -> oldValue += 1);
         }
         countResInLootchest++;
     }
     public void addResources(List<Resource> items){
         for(Resource item : items){
-            switch (item){
-                case SHIELD -> inventory.compute(Resource.SHIELD, (tokenKey, oldValue) -> oldValue == null ? 1 : oldValue + 1);
-                case STONE -> inventory.compute(Resource.STONE, (tokenKey, oldValue) -> oldValue == null ? 1 : oldValue + 1);
-                case COINS -> inventory.compute(Resource.COINS, (tokenKey, oldValue) -> oldValue == null ? 1 : oldValue + 1);
-                case SERVANT -> inventory.compute(Resource.SERVANT, (tokenKey, oldValue) -> oldValue == null ? 1 : oldValue + 1);
-            }
-            countResInLootchest++;
+            addResources(item);
         }
     }
     /**
@@ -56,29 +50,29 @@ public class LootChest {
      */
     public void removeResources(Resource item){
         switch (item){
-            case SHIELD : inventory.compute(Resource.SHIELD, (tokenKey, oldValue) -> oldValue==null ? null : oldValue - 1);
-                        if(!(inventory.get(Resource.SHIELD)==null)){
+            case SHIELD : inventory.compute(Resource.SHIELD, (tokenKey, oldValue) -> oldValue -= 1);
+                        if(inventory.get(Resource.SHIELD)>=0){
                             countResInLootchest--;
                         }
-                        inventory.replace(Resource.SHIELD,0,null);
+                        inventory.replace(Resource.SHIELD,-1,0);
                         return;
-            case STONE : inventory.compute(Resource.STONE, (tokenKey, oldValue) -> oldValue == null ? null : oldValue - 1);
-                        if(!(inventory.get(Resource.STONE)==null)){
+            case STONE : inventory.compute(Resource.STONE, (tokenKey, oldValue) -> oldValue -= 1);
+                        if(inventory.get(Resource.STONE)>=0){
                             countResInLootchest--;
                         }
-                        inventory.replace(Resource.STONE,0, null);
+                        inventory.replace(Resource.STONE,-1, 0);
                         return;
-            case COINS : inventory.compute(Resource.COINS, (tokenKey, oldValue) -> oldValue == null ? null : oldValue - 1);
-                        if(!(inventory.get(Resource.COINS)==null)){
+            case COINS : inventory.compute(Resource.COINS, (tokenKey, oldValue) -> oldValue -= 1);
+                        if(inventory.get(Resource.COINS)>=0){
                             countResInLootchest--;
                         }
-                        inventory.replace(Resource.COINS, 0, null);
+                        inventory.replace(Resource.COINS, -1, 0);
                         return;
-            case SERVANT : inventory.compute(Resource.SERVANT, (tokenKey, oldValue) -> oldValue == null ? null : oldValue - 1);
-                        if(!(inventory.get(Resource.SERVANT)==null)){
+            case SERVANT : inventory.compute(Resource.SERVANT, (tokenKey, oldValue) -> oldValue -= 1);
+                        if(inventory.get(Resource.SERVANT)>=0){
                             countResInLootchest--;
                         }
-                        inventory.replace(Resource.SERVANT, 0, null);
+                        inventory.replace(Resource.SERVANT, -1, 0);
                         return;
             default: return;
         }

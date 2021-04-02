@@ -3,7 +3,8 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.model.player.ProPlayer;
 import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.cards.leader.DiscountAbility;
-import it.polimi.ingsw.model.cards.production.*;
+import it.polimi.ingsw.model.cards.production.ProductionCard;
+import it.polimi.ingsw.model.cards.production.ColorEnum;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 class DiscountAbilityTest {
 

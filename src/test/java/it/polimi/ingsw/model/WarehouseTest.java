@@ -24,7 +24,7 @@ class WarehouseTest {
 
         warehouse.addSmall(Resource.SHIELD);
         assertEquals(Resource.SHIELD, warehouse.getSmallInventory());
-        warehouse.addSmall(Resource.COINS);
+        warehouse.addSmall(Resource.COIN);
         assertEquals(Resource.SHIELD, warehouse.getSmallInventory());
 
     }
@@ -145,7 +145,7 @@ class WarehouseTest {
         warehouse.addSmall(Resource.STONE);
         warehouse.addMid(Resource.SERVANT);
         warehouse.addLarge(Resource.SHIELD);
-        warehouse.addLarge(Resource.COINS);
+        warehouse.addLarge(Resource.COIN);
 
         assertFalse(warehouse.check());
 
@@ -160,7 +160,7 @@ class WarehouseTest {
 
         warehouse = new Warehouse();
 
-        warehouse.addMid(Resource.COINS);
+        warehouse.addMid(Resource.COIN);
         warehouse.addLarge(Resource.STONE);
         warehouse.addLarge(Resource.STONE);
         warehouse.moveBetweenInventory('m', 's');

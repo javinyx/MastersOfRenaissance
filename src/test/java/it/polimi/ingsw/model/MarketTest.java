@@ -37,8 +37,8 @@ class MarketTest {
                 assertEquals(market.getElem(0,i+1), Resource.STONE);
 
         for (int i = 0; i < 3; i++)
-            if (res.get(i) == Resource.COINS)
-                assertEquals(market.getElem(0,i+1), Resource.COINS);
+            if (res.get(i) == Resource.COIN)
+                assertEquals(market.getElem(0,i+1), Resource.COIN);
 
         for (int i = 0; i < 3; i++)
             if (res.get(i) == Resource.SERVANT)
@@ -68,8 +68,8 @@ class MarketTest {
                 assertEquals(market.getElem(i+1,0), Resource.STONE);
 
         for (int i = 0; i < 2; i++)
-            if (res.get(i) == Resource.COINS)
-                assertEquals(market.getElem(i+1,0), Resource.COINS);
+            if (res.get(i) == Resource.COIN)
+                assertEquals(market.getElem(i+1,0), Resource.COIN);
 
         for (int i = 0; i < 2; i++)
             if (res.get(i) == Resource.SERVANT)

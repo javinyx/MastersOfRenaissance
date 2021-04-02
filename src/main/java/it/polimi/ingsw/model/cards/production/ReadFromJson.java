@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import it.polimi.ingsw.MastersOfRenaissance;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.market.Buyable;
+import it.polimi.ingsw.model.market.Resource;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -13,13 +14,13 @@ import java.io.IOException;
 public class ReadFromJson implements Buyable, Card {
     private int id;
     private int victoryPoints;
-    private String color;
+    private ColorEnum color;
     private int level;
     private ArrayList<Integer> cost;
     private ArrayList<Integer> requiredResources;
     private ArrayList<Integer> production;
 
-    public ReadFromJson(int id, int victoryPoints, String color, int level, ArrayList<Integer> cost, ArrayList<Integer> requiredResources, ArrayList<Integer> production) {
+    public ReadFromJson(int id, int victoryPoints, ColorEnum color, int level, ArrayList<Integer> cost, ArrayList<Integer> requiredResources, ArrayList<Integer> production) {
         this.id = id;
         this.victoryPoints = victoryPoints;
         this.color = color;
@@ -36,10 +37,12 @@ public class ReadFromJson implements Buyable, Card {
         try (Reader reader = new InputStreamReader(MastersOfRenaissance.class.getResourceAsStream("/json/ProductionCards.json"))) {
 
             // Convert JSON File to Java Object
-            ReadFromJson[] prodCards = gson.fromJson(reader, ReadFromJson[].class);
+            ReadFromJson[] prodCards = new Gson().fromJson(reader, ReadFromJson[].class);
 
             // print prodCards
-            System.out.println(prodCards[0].cost);
+            for(int i = 0; i < prodCards.length; i++) {
+                System.out.println(prodCards[i].color);
+            }
 
         } catch (IOException e) {
             e.printStackTrace();

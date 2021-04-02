@@ -24,7 +24,7 @@ class DiscountAbilityTest {
     @BeforeEach
     public void testSetup(){
         List<Resource> resNeed= new ArrayList<>();
-        resNeed.add(Resource.COINS);
+        resNeed.add(Resource.COIN);
 
         List<Resource> cost= new ArrayList<>();
         cost.add(Resource.SHIELD);

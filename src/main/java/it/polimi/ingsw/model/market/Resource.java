@@ -3,12 +3,12 @@ package it.polimi.ingsw.model.market;
 import java.util.Random;
 
 public enum Resource implements Buyable{
-    BLANK,
-    SHIELD,
     STONE,
-    COINS,
     SERVANT,
-    FAITH;
+    SHIELD,
+    COIN,
+    FAITH,
+    BLANK;
 
     /**
      * Pick a random value of the Resource.

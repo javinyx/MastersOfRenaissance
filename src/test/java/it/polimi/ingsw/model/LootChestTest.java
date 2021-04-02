@@ -30,11 +30,11 @@ class LootChestTest {
         assertTrue(lootChest.getInventory().containsKey(Resource.STONE));
         assertEquals(4, lootChest.getNumberResInInventory(Resource.STONE));
 
-        lootChest.addResources(Resource.COINS);
-        lootChest.addResources(Resource.COINS);
-        lootChest.addResources(Resource.COINS);
-        lootChest.addResources(Resource.COINS);
-        assertTrue(lootChest.getInventory().containsKey(Resource.COINS));
+        lootChest.addResources(Resource.COIN);
+        lootChest.addResources(Resource.COIN);
+        lootChest.addResources(Resource.COIN);
+        lootChest.addResources(Resource.COIN);
+        assertTrue(lootChest.getInventory().containsKey(Resource.COIN));
         assertEquals(4, lootChest.getNumberResInInventory(Resource.STONE));
 
         lootChest.addResources(Resource.SERVANT);
@@ -52,10 +52,10 @@ class LootChestTest {
         lootChest.addResources(Resource.STONE);
         lootChest.addResources(Resource.STONE);
         lootChest.addResources(Resource.STONE);
-        lootChest.addResources(Resource.COINS);
-        lootChest.addResources(Resource.COINS);
-        lootChest.addResources(Resource.COINS);
-        lootChest.addResources(Resource.COINS);
+        lootChest.addResources(Resource.COIN);
+        lootChest.addResources(Resource.COIN);
+        lootChest.addResources(Resource.COIN);
+        lootChest.addResources(Resource.COIN);
         lootChest.addResources(Resource.SERVANT);
 
         lootChest.removeResources(Resource.SERVANT);
@@ -92,12 +92,12 @@ class LootChestTest {
         lootChest.addResources(Resource.SERVANT);
         assertEquals(3, lootChest.getNumberResInInventory(Resource.SERVANT));
 
-        lootChest.addResources(Resource.COINS);
-        lootChest.addResources(Resource.COINS);
-        lootChest.addResources(Resource.COINS);
-        lootChest.addResources(Resource.COINS);
-        lootChest.addResources(Resource.COINS);
-        assertEquals(5, lootChest.getNumberResInInventory(Resource.COINS));
+        lootChest.addResources(Resource.COIN);
+        lootChest.addResources(Resource.COIN);
+        lootChest.addResources(Resource.COIN);
+        lootChest.addResources(Resource.COIN);
+        lootChest.addResources(Resource.COIN);
+        assertEquals(5, lootChest.getNumberResInInventory(Resource.COIN));
 
 
 
@@ -111,10 +111,10 @@ class LootChestTest {
         lootChest.addResources(Resource.STONE);
         lootChest.addResources(Resource.STONE);
         lootChest.addResources(Resource.STONE);
-        lootChest.addResources(Resource.COINS);
-        lootChest.addResources(Resource.COINS);
-        lootChest.addResources(Resource.COINS);
-        lootChest.addResources(Resource.COINS);
+        lootChest.addResources(Resource.COIN);
+        lootChest.addResources(Resource.COIN);
+        lootChest.addResources(Resource.COIN);
+        lootChest.addResources(Resource.COIN);
         lootChest.addResources(Resource.SERVANT);
 
         assertEquals(10, lootChest.getCountResInLootchest());

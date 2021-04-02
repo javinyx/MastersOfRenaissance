@@ -61,7 +61,7 @@ public class Market{
                         else
                             j--;
                         break;
-                    case COINS:
+                    case COIN:
                         if (yellow != 0){
                             marketBoard[i][j] = temp;
                             yellow--;
@@ -95,7 +95,7 @@ public class Market{
         else if (gray != 0)
             extraMarble = Resource.STONE;
         else if (yellow != 0)
-            extraMarble = Resource.COINS;
+            extraMarble = Resource.COIN;
         else if (violet != 0)
             extraMarble = Resource.SERVANT;
         else if (red != 0)

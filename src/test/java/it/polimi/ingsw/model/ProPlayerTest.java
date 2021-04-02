@@ -35,9 +35,9 @@ class ProPlayerTest extends PlayerTest {
         assertEquals('m', p1.getTurnType());
         assertEquals('m', p2.getTurnType());
 
-        p2.storeInWarehouse(Resource.COINS, 1);
+        p2.storeInWarehouse(Resource.COIN, 1);
         p2.storeInWarehouse(Resource.SERVANT, 2);
-        p2.startBasicProduction(Resource.COINS, Resource.SERVANT, Resource.SHIELD);
+        p2.startBasicProduction(Resource.COIN, Resource.SERVANT, Resource.SHIELD);
         assertEquals('p', p2.getTurnType());
 
         //TEST "BUY PRODUCTION CARD"
@@ -124,7 +124,7 @@ class ProPlayerTest extends PlayerTest {
         List<Resource> required = new ArrayList<>();
         required.add(Resource.STONE);
         List<Resource> cost = new ArrayList<>();
-        cost.add(Resource.COINS);
+        cost.add(Resource.COIN);
         List<Resource> prod = new ArrayList<>();
         prod.add(Resource.SERVANT);
         return new ProductionCard(ColorEnum.GREEN, required, prod, cost, 1, 1);

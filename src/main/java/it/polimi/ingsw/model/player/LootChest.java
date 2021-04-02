@@ -16,7 +16,7 @@ public class LootChest {
         inventory = new HashMap<>(4);
         inventory.put(Resource.SHIELD, 0);
         inventory.put(Resource.STONE, 0);
-        inventory.put(Resource.COINS, 0);
+        inventory.put(Resource.COIN, 0);
         inventory.put(Resource.SERVANT, 0);
         countResInLootchest = 0;
     }
@@ -32,7 +32,7 @@ public class LootChest {
         switch(item){
             case SHIELD -> inventory.compute(Resource.SHIELD, (tokenKey, oldValue) -> oldValue += 1);
             case STONE -> inventory.compute(Resource.STONE, (tokenKey, oldValue) -> oldValue += 1);
-            case COINS -> inventory.compute(Resource.COINS, (tokenKey, oldValue) -> oldValue += 1);
+            case COIN -> inventory.compute(Resource.COIN, (tokenKey, oldValue) -> oldValue += 1);
             case SERVANT -> inventory.compute(Resource.SERVANT, (tokenKey, oldValue) -> oldValue += 1);
         }
         countResInLootchest++;
@@ -45,7 +45,7 @@ public class LootChest {
     /**
      * @param item the item to remove
      * Remove selected item from inventory.
-     * <p>Mind that only SHIELD, STONE, COINS and SERVANT will be considered
+     * <p>Mind that only SHIELD, STONE, COIN and SERVANT will be considered
      * removable item since there cannot be FAITH or BLANK resources in Lootchest.</p>
      */
     public void removeResources(Resource item){
@@ -62,11 +62,11 @@ public class LootChest {
                         }
                         inventory.replace(Resource.STONE,-1, 0);
                         return;
-            case COINS : inventory.compute(Resource.COINS, (tokenKey, oldValue) -> oldValue -= 1);
-                        if(inventory.get(Resource.COINS)>=0){
+            case COIN : inventory.compute(Resource.COIN, (tokenKey, oldValue) -> oldValue -= 1);
+                        if(inventory.get(Resource.COIN)>=0){
                             countResInLootchest--;
                         }
-                        inventory.replace(Resource.COINS, -1, 0);
+                        inventory.replace(Resource.COIN, -1, 0);
                         return;
             case SERVANT : inventory.compute(Resource.SERVANT, (tokenKey, oldValue) -> oldValue -= 1);
                         if(inventory.get(Resource.SERVANT)>=0){

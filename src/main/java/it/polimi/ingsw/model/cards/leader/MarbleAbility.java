@@ -2,8 +2,9 @@ package it.polimi.ingsw.model.cards.leader;
 
 import it.polimi.ingsw.model.cards.production.ProductionCard;
 import it.polimi.ingsw.model.market.Buyable;
-import it.polimi.ingsw.model.player.ProPlayer;
 import it.polimi.ingsw.model.market.Resource;
+import it.polimi.ingsw.model.player.ProPlayer;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,8 +41,8 @@ public class MarbleAbility implements LeaderCard {
     }
 
     @Override
-    public Buyable getCost() {
-        return (Buyable)cost;
+    public List<Buyable> getCost() {
+        return new ArrayList<>(cost);
     }
 
     public void applyEffect(ProPlayer player) {

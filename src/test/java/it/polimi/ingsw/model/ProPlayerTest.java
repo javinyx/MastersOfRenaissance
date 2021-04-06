@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.cards.production.ColorEnum;
-import it.polimi.ingsw.model.cards.production.ProductionCard;
+import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.player.ProPlayer;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,7 +53,7 @@ class ProPlayerTest extends PlayerTest {
 
     @Test
     void buyProductionCard() {
-        ProductionCard card = istantiateACard();
+        ConcreteProductionCard card = istantiateACard();
     }
 
     @Disabled
@@ -120,13 +120,13 @@ class ProPlayerTest extends PlayerTest {
     void setExtraStorage() {
     }
 
-    private ProductionCard istantiateACard(){
+    private ConcreteProductionCard istantiateACard(){
         List<Resource> required = new ArrayList<>();
         required.add(Resource.STONE);
         List<Resource> cost = new ArrayList<>();
         cost.add(Resource.COIN);
         List<Resource> prod = new ArrayList<>();
         prod.add(Resource.SERVANT);
-        return new ProductionCard(ColorEnum.GREEN, required, prod, cost, 1, 1);
+        return new ConcreteProductionCard(ColorEnum.GREEN, required, prod, cost, 1, 1);
     }
 }

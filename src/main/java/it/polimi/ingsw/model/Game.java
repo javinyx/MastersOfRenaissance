@@ -3,7 +3,7 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
-import it.polimi.ingsw.model.cards.production.ProductionCard;
+import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Market;
 import it.polimi.ingsw.model.player.Player;
 
@@ -24,23 +24,23 @@ public abstract class Game implements Observer{
         return market;
     }
     /**Returns the list of every ProductionCard still in Production Deck */
-    public List<ProductionCard> getProductionDecks(){
+    public List<ConcreteProductionCard> getProductionDecks(){
         List<Card> availableCards = new ArrayList<>();
         for(Deck d : productionDecks){
             availableCards.addAll(d.getCards());
         }
         return availableCards.stream()
-                .map(x -> (ProductionCard)x)
+                .map(x -> (ConcreteProductionCard)x)
                 .collect(Collectors.toList());
     }
     /**Returns the list of ProductionCards that can be bought from each Production Deck*/
-    public List<ProductionCard> getBuyableProductionCards(){
+    public List<ConcreteProductionCard> getBuyableProductionCards(){
         List<Card> availableCards = new ArrayList<>();
         for(Deck d : productionDecks){
             availableCards.add(d.getCard(0));
         }
         return availableCards.stream()
-                .map(x -> (ProductionCard)x)
+                .map(x -> (ConcreteProductionCard)x)
                 .collect(Collectors.toList());
     }
 
@@ -54,7 +54,7 @@ public abstract class Game implements Observer{
     //public abstract List<LeaderCard> distributeLeaders();
     /**Remove the specified ProductionCard from Production Deck.
      * @param card the one to be removed */
-    public void removeFromProdDeck(ProductionCard card){
+    public void removeFromProdDeck(ConcreteProductionCard card){
 
     }
     public Player getWinner(){return winner;}

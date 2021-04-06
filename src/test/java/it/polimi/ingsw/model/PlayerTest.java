@@ -1,17 +1,10 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.cards.production.ColorEnum;
-import it.polimi.ingsw.model.cards.production.ProductionCard;
-import it.polimi.ingsw.model.market.Resource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import it.polimi.ingsw.model.player.Player;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-
-import java.util.ArrayList;
-import java.util.List;
 
 class PlayerTest {
     Player player;

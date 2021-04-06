@@ -24,9 +24,8 @@ public class LootChest {
         this.inventory = new HashMap<>(dupe.inventory);
         this.countResInLootchest = dupe.countResInLootchest;
     }
-    /**
+    /** Add selected item to inventory.
      * @param item the item to add
-     * Add selected item to inventory
      */
     public void addResources(Resource item){
         switch(item){
@@ -37,16 +36,18 @@ public class LootChest {
         }
         countResInLootchest++;
     }
+    /**Add selected items of Resources to inventory.
+     * @param items list of Resources to add */
     public void addResources(List<Resource> items){
         for(Resource item : items){
             addResources(item);
         }
     }
     /**
-     * @param item the item to remove
      * Remove selected item from inventory.
      * <p>Mind that only SHIELD, STONE, COIN and SERVANT will be considered
      * removable item since there cannot be FAITH or BLANK resources in Lootchest.</p>
+     * @param item the item to remove
      */
     public void removeResources(Resource item){
         switch (item){

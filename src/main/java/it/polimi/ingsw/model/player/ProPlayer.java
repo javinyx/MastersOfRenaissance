@@ -3,14 +3,11 @@ package it.polimi.ingsw.model.player;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.StorageAbility;
-import it.polimi.ingsw.model.cards.production.ProductionCard;
+import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Market;
 import it.polimi.ingsw.model.market.Resource;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -18,7 +15,7 @@ import java.util.stream.Collectors;
 public class ProPlayer extends Player{
     private Warehouse warehouse;
     private LootChest lootChest;
-    private Deque<ProductionCard> prodCards1, prodCards2, prodCards3;
+    private Deque<ConcreteProductionCard> prodCards1, prodCards2, prodCards3;
     private List<LeaderCard> leaderCards;
     private final int turnID;
     private ArrayList<PopePass> passes;
@@ -69,8 +66,8 @@ public class ProPlayer extends Player{
      * @param leader LeaderCard: just DiscountAbility might have an effect here
      * @param removeFromWar list of resources the player has intention to use for paying by removing them from the warehouse
      * @param removeFromLoot list of resources the player has intention to use for paying by removing them from the lootchest*/
-    public void buyProductionCard(ProductionCard card, int stack, LeaderCard leader, List<Resource> removeFromWar, List<Resource> removeFromLoot){
-        List<ProductionCard> availableProdCards = game.getProductionDecks();
+    public void buyProductionCard(ConcreteProductionCard card, int stack, LeaderCard leader, List<Resource> removeFromWar, List<Resource> removeFromLoot){
+        List<ConcreteProductionCard> availableProdCards = game.getProductionDecks();
         Warehouse warBackup = new Warehouse(warehouse);
         LootChest lootBackup = new LootChest(lootChest);
         int pos;
@@ -78,7 +75,7 @@ public class ProPlayer extends Player{
         if(!availableProdCards.contains(card) || stack<1 || stack>3){
             throw new IllegalArgumentException();
         }
-        Deque<ProductionCard> prodStack;
+        Deque<ConcreteProductionCard> prodStack;
 
         switch(stack){
             case 1: prodStack = prodCards1;
@@ -154,11 +151,11 @@ public class ProPlayer extends Player{
     public int getVictoryPoints(){
         int victoryPoints = 0;
         //sum all victory points from prodCards, leaderCards, faithTrack, Resources...
-        List<ProductionCard> prodCards = new ArrayList<>();
+        List<ConcreteProductionCard> prodCards = new ArrayList<>();
         prodCards.addAll(prodCards1);
         prodCards.addAll(prodCards2);
         prodCards.addAll(prodCards3);
-        for(ProductionCard pc : prodCards){
+        for(ConcreteProductionCard pc : prodCards){
             victoryPoints += pc.getVictoryPoints();
         }
         for(LeaderCard lc : leaderCards){
@@ -389,14 +386,14 @@ public class ProPlayer extends Player{
      * them in 4 different list: {@code removeFromWar}, {@code removeFromLoot}, {@code removeFromStorage1} and
      * {@code removeFromStorage2}.</p>.
      * <p>Players express their wish of activation of the basic production power by {@code basicProd=true}</p>*/
-    public void startProduction(List<ProductionCard> cards, boolean basicProd, List<Resource> removeFromWar,
+    public void startProduction(List<ConcreteProductionCard> cards, boolean basicProd, List<Resource> removeFromWar,
                                 List<Resource> removeFromLoot, List<LeaderCard> prodLeaders, List<Resource> removeFromStorage1,
                                 List<Resource> removeFromStorage2, Resource output){
         Warehouse warBackup = new Warehouse(warehouse);
         LootChest lootBackup = new LootChest(lootChest);
         List<Resource> production = new ArrayList<>();
         turnType = 'p';
-        for(ProductionCard p : cards){
+        for(ConcreteProductionCard p : cards){
             if(!prodCards1.peekFirst().equals(p) && !prodCards2.peekFirst().equals(p) && !prodCards3.peekFirst().equals(p)){
                 //controller will ask the player to adjust the ProdCards selection and try again to call this method
                 warehouse = warBackup;
@@ -446,9 +443,21 @@ public class ProPlayer extends Player{
 
         lootChest.addResources(production);
     }
-    /**Activate production for a single ProductionCard */
-    private List<Resource> produce(ProductionCard card, List<Resource> removeFromWar, List<Resource> removeFromLoot,
-                            List<Resource> removeFromStorage1, List<Resource> removeFromStorage2) throws Exception{
+    /**Activate production for a single ProductionCard.
+     * <p>All list of Resource are optional, so can be null if the player doesn't want to draw resources from
+     * the respective storage type. Though, mind that if all of them are null at the same time, exceptions will be thrown
+     * because every ProductionCard requires resources to activate its power.</p>
+     * <p>This method doesn't check if {@code ProductionCard} it's playable or if the player has the right to play it. However,
+     * it checks if {@code removeFromStorage1} and/or {@code removeFromStorage2} are the right type of extraStorage
+     * accordingly to the type of LeaderCard the player has active.</p>
+     * <p>It resets both player's {@code extraStorage} status if an exception is thrown, but not Warehouse and LootChest status.</p>
+     * @param card Production Card
+     * @param removeFromWar List of Resources players want to pick from their own Warehouse to pay the production
+     * @param removeFromLoot List of Resources players want to pick from their own LootChest to pay production
+     * @param removeFromStorage1 List of Resources players want to pick from the extra storage given by a Leader Card
+     * @param removeFromStorage2 List of Resources players want to pick from the extra storage given by a Leader Card*/
+    private List<Resource> produce(ConcreteProductionCard card, List<Resource> removeFromWar, List<Resource> removeFromLoot,
+                                   List<Resource> removeFromStorage1, List<Resource> removeFromStorage2) throws Exception{
         List<Resource> cost = card.getCost();
         List<Resource> costDupe = card.getCost(); //since cannot modify cost while forEach is running and taking elements from it
         StorageAbility extraStorage1Backup = new StorageAbility(extraStorage1);

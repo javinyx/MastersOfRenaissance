@@ -1,20 +1,29 @@
 package it.polimi.ingsw.model.cards.leader;
 
+import it.polimi.ingsw.model.cards.production.ProductionCard;
 import it.polimi.ingsw.model.market.Buyable;
-import it.polimi.ingsw.model.player.ProPlayer;
 import it.polimi.ingsw.model.market.Resource;
-import it.polimi.ingsw.model.cards.production.*;
+import it.polimi.ingsw.model.player.ProPlayer;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**This LeaderCard works similarly to a ProductionCard: it has a production power that players can decide to activate
+ * if they have the card and the latter is active.
+ * <p>In order to activate the card, players must have all the production cards specified in {@code cost}, even if they're
+ * hidden.
+ * Once it's active (use {@code isActive()} method to discover its status)</p>*/
 public class BoostAbility implements LeaderCard {
 
     private final int victoryPoints;
-    private final ProductionCard cost;
+    private final List<ProductionCard> cost;
     private boolean status;
     private Resource resourceNeeded;
 
-    public BoostAbility(int victoryPoints, ProductionCard cost, Resource resourceNeeded) {
+    public BoostAbility(int victoryPoints, List<ProductionCard> cost, Resource resourceNeeded) {
         this.victoryPoints = victoryPoints;
-        this.cost = cost;
+        this.cost = new ArrayList<>();
+        this.cost.addAll(cost);
         status = false;
         this.resourceNeeded = resourceNeeded;
     }
@@ -31,12 +40,12 @@ public class BoostAbility implements LeaderCard {
 
     @Override
     public int getVictoryPoints() {
-        return 0;
+        return victoryPoints;
     }
 
     @Override
-    public Buyable getCost() {
-        return (Buyable) cost;
+    public List<Buyable> getCost() {
+        return new ArrayList<>(cost);
     }
 
     public void applyEffect(ProPlayer player){

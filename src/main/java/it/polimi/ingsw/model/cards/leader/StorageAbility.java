@@ -49,8 +49,8 @@ public class StorageAbility implements LeaderCard {
         }
 
         @Override
-        public Buyable getCost() {
-            return (Buyable) cost;
+        public List<Buyable> getCost() {
+            return new ArrayList<>(cost);
         }
 
         public void applyEffect(ProPlayer player) {

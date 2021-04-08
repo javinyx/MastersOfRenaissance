@@ -50,12 +50,12 @@ class ProPlayerTest extends PlayerTest {
         assertEquals(2, p3.getTurnID());
         assertEquals(1, p1.getTurnID());
     }
-
+/*
     @Test
-    void buyProductionCard() {
+    //void buyProductionCard() {
         ConcreteProductionCard card = istantiateACard();
     }
-
+*/
     @Disabled
     void getVictoryPoints() {
         p1.addFaithPoints(24);
@@ -120,7 +120,7 @@ class ProPlayerTest extends PlayerTest {
     void setExtraStorage() {
     }
 
-    private ConcreteProductionCard istantiateACard(){
+    /* private ConcreteProductionCard istantiateACard(){
         List<Resource> required = new ArrayList<>();
         required.add(Resource.STONE);
         List<Resource> cost = new ArrayList<>();
@@ -128,5 +128,5 @@ class ProPlayerTest extends PlayerTest {
         List<Resource> prod = new ArrayList<>();
         prod.add(Resource.SERVANT);
         return new ConcreteProductionCard(ColorEnum.GREEN, required, prod, cost, 1, 1);
-    }
+    }*/
 }

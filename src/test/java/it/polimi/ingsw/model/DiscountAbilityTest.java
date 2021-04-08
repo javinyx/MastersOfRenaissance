@@ -34,11 +34,11 @@ class DiscountAbilityTest {
 
         List<Resource> prod = new ArrayList<>();
         prod.add(Resource.FAITH);
-
+        /*
         prodC1 = new ConcreteProductionCard(ColorEnum.GREEN, resNeed, prod, cost, 1, 1);
 
         prodC2 = new ConcreteProductionCard(ColorEnum.YELLOW, resNeed, prod, cost, 1, 1);
-
+*/
         List<ConcreteProductionCard> prodC = new ArrayList<>();
         prodC.add(prodC1);
         prodC.add(prodC2);

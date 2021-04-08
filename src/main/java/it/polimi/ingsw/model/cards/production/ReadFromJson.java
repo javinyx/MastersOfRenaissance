@@ -16,11 +16,11 @@ public class ReadFromJson implements Buyable, Card {
     private int victoryPoints;
     private ColorEnum color;
     private int level;
-    private ArrayList<Integer> cost;
-    private ArrayList<Integer> requiredResources;
-    private ArrayList<Integer> production;
+    private ArrayList<Resource> cost;
+    private ArrayList<Resource> requiredResources;
+    private ArrayList<Resource> production;
 
-    public ReadFromJson(int id, int victoryPoints, ColorEnum color, int level, ArrayList<Integer> cost, ArrayList<Integer> requiredResources, ArrayList<Integer> production) {
+    public ReadFromJson(int id, int victoryPoints, ColorEnum color, int level, ArrayList<Resource> cost, ArrayList<Resource> requiredResources, ArrayList<Resource> production) {
         this.id = id;
         this.victoryPoints = victoryPoints;
         this.color = color;
@@ -37,12 +37,12 @@ public class ReadFromJson implements Buyable, Card {
         try (Reader reader = new InputStreamReader(MastersOfRenaissance.class.getResourceAsStream("/json/ProductionCards.json"))) {
 
             // Convert JSON File to Java Object
-            ReadFromJson[] prodCards = new Gson().fromJson(reader, ReadFromJson[].class);
+            ReadFromJson[] prodCards = gson.fromJson(reader, ReadFromJson[].class);
 
             // print prodCards
-            for(int i = 0; i < prodCards.length; i++) {
-                System.out.println(prodCards[i].color);
-            }
+            //for(int i = 0; i < prodCards.length; i++) {
+                System.out.println(prodCards[1].cost.toArray()[0]);
+            //}
 
         } catch (IOException e) {
             e.printStackTrace();

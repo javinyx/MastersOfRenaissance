@@ -1,75 +1,153 @@
 [
   {
-    "DiscountAbility" : [
+    "id" : 1,
+    "ability": "DiscountAbility",
+    "cards": [
       {
-        "cost" : [1, 0, 0, 1],
-        "discountType" : [0, 1, 0, 0]
+        "cost": [
+          "YELLOW",
+          "GREEN"
+        ],
+        "discountType": "SERVANT"
       },
       {
-        "cost" : [0, 1, 1, 0],
-        "discountType" : [0, 0, 1, 0]
+        "cost": [
+          "BLUE",
+          "PURPLE"
+        ],
+        "discountType": "SHIELD"
       },
       {
-        "cost" : [1, 0, 1, 0],
-        "discountType" : [1, 0, 0, 0]
+        "cost": [
+          "GREEN",
+          "BLUE"
+        ],
+        "discountType": "STONE"
       },
       {
-        "cost" : [0, 1, 0, 1],
-        "discountType" : [0, 0, 0, 1]
+        "cost": [
+          "YELLOW",
+          "PURPLE"
+        ],
+        "discountType": "COIN"
       }
-    ],
-    "StorageAbility" : [
+    ]
+  },
+  {
+    "id": 2,
+    "ability": "StorageAbility",
+    "cards": [
       {
-        "cost" : [0, 0, 0, 5],
-        "storageType" : [2, 0, 0, 0]
+        "cost": [
+          "COIN",
+          "COIN",
+          "COIN",
+          "COIN",
+          "COIN"
+        ],
+        "storageType": [
+          "STONE",
+          "STONE"
+        ]
       },
       {
-        "cost" : [5, 0, 0, 0],
-        "storageType" : [0, 2, 0, 0]
+        "cost": [
+          "STONE",
+          "STONE",
+          "STONE",
+          "STONE",
+          "STONE"
+        ],
+        "storageType": [
+          "SERVANT",
+          "SERVANT"
+        ]
       },
       {
-        "cost" : [0, 5, 0, 0],
-        "storageType" : [0, 0, 2, 0]
+        "cost": [
+          "SERVANT",
+          "SERVANT",
+          "SERVANT",
+          "SERVANT",
+          "SERVANT"
+        ],
+        "storageType": [
+          "SHIELD",
+          "SHIELD"
+        ]
       },
       {
-        "cost" : [0, 0, 5, 0],
-        "storageType" : [0, 0, 0, 2]
+        "cost": [
+          "SHIELD",
+          "SHIELD",
+          "SHIELD",
+          "SHIELD",
+          "SHIELD"
+        ],
+        "storageType": [
+          "COIN",
+          "COIN"
+        ]
       }
-    ],
-    "MarbleAbility" : [
+    ]
+  },
+  {
+    "id": 3,
+    "ability": "MarbleAbility",
+    "cards": [
       {
-        "cost" : [0, 0, 1, 2],
-        "replacingResource" : [0, 1, 0, 0]
+        "cost": [
+          "YELLOW",
+          "YELLOW",
+          "BLUE"
+        ],
+        "replacingResource": "SERVANT"
       },
       {
-        "cost" : [2, 1, 0, 0],
-        "replacingResource" : [0, 0, 1, 0]
+        "cost": [
+          "GREEN",
+          "GREEN",
+          "PURPLE"
+        ],
+        "replacingResource": "SHIELD"
       },
       {
-        "cost" : [0, 0, 2, 1],
-        "replacingResource" : [1, 0, 0, 0]
+        "cost": [
+          "BLUE",
+          "BLUE",
+          "YELLOW"
+        ],
+        "replacingResource": "ROCK"
       },
       {
-        "cost" : [1, 2, 0, 0],
-        "replacingResource" : [0, 0, 0, 1]
+        "cost": [
+          "PURPLE",
+          "PURPLE",
+          "GREEN"
+        ],
+        "replacingResource": "COIN"
       }
-    ],
-    "BoostAbility" : [
+    ]
+  },
+  {
+    "id" : 4,
+    "ability": "BoostAbility",
+    "cards" : [
       {
-        "cost" : [0, 0, 0, 1],
-        "resourceNeeded" : [0, 0, 1, 0]
+        "cost" : ["YELLOW"],
+        "resourceNeeded" : "SHIELD"
       },
       {
-        "cost" : [0, 0, 1, 0],
-        "resourceNeeded" : [0, 1, 0, 0]
+        "cost" : ["BLUE"],
+        "resourceNeeded" : "SERVANT"
       },
       {
-        "cost" : [0, 1, 0, 0],
-        "resourceNeeded" : [1, 0, 0, 0]
+        "cost" : ["PURPLE"],
+        "resourceNeeded" : "STONE"
       },
       {
-        "cost" : [1, 0, 0, 0],
-        "resourceNeeded" : [0, 0, 0, 1]
+        "cost" : ["GREEN"],
+        "resourceNeeded" : "COIN"
       }
     ]
   }

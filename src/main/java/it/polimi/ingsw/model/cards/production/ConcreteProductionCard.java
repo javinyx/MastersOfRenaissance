@@ -39,11 +39,6 @@ public class ConcreteProductionCard extends ProductionCard implements Buyable, C
             // Convert JSON File to Java Object
             ConcreteProductionCard[] prodCards = gson.fromJson(reader, ConcreteProductionCard[].class);
 
-            // print prodCards
-            //for(int i = 0; i < prodCards.length; i++) {
-            System.out.println(prodCards[1].cost.toArray()[0]);
-            //}
-
         } catch (IOException e) {
             e.printStackTrace();
         }

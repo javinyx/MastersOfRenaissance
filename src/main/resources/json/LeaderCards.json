@@ -1,9 +1,9 @@
 [
   {
-    "id" : 1,
     "ability": "DiscountAbility",
     "cards": [
       {
+        "id" : 1,
         "cost": [
           "YELLOW",
           "GREEN"
@@ -11,6 +11,7 @@
         "discountType": "SERVANT"
       },
       {
+        "id" : 2,
         "cost": [
           "BLUE",
           "PURPLE"
@@ -18,6 +19,7 @@
         "discountType": "SHIELD"
       },
       {
+        "id" : 3,
         "cost": [
           "GREEN",
           "BLUE"
@@ -25,6 +27,7 @@
         "discountType": "STONE"
       },
       {
+        "id" : 4,
         "cost": [
           "YELLOW",
           "PURPLE"
@@ -34,10 +37,10 @@
     ]
   },
   {
-    "id": 2,
     "ability": "StorageAbility",
     "cards": [
       {
+        "id" : 5,
         "cost": [
           "COIN",
           "COIN",
@@ -51,6 +54,7 @@
         ]
       },
       {
+        "id" : 6,
         "cost": [
           "STONE",
           "STONE",
@@ -64,6 +68,7 @@
         ]
       },
       {
+        "id" : 7,
         "cost": [
           "SERVANT",
           "SERVANT",
@@ -77,6 +82,7 @@
         ]
       },
       {
+        "id" : 8,
         "cost": [
           "SHIELD",
           "SHIELD",
@@ -92,10 +98,10 @@
     ]
   },
   {
-    "id": 3,
     "ability": "MarbleAbility",
     "cards": [
       {
+        "id" : 9,
         "cost": [
           "YELLOW",
           "YELLOW",
@@ -104,6 +110,7 @@
         "replacingResource": "SERVANT"
       },
       {
+        "id" : 10,
         "cost": [
           "GREEN",
           "GREEN",
@@ -112,6 +119,7 @@
         "replacingResource": "SHIELD"
       },
       {
+        "id" : 11,
         "cost": [
           "BLUE",
           "BLUE",
@@ -120,6 +128,7 @@
         "replacingResource": "ROCK"
       },
       {
+        "id" : 12,
         "cost": [
           "PURPLE",
           "PURPLE",
@@ -130,22 +139,25 @@
     ]
   },
   {
-    "id" : 4,
     "ability": "BoostAbility",
     "cards" : [
       {
+        "id" : 13,
         "cost" : ["YELLOW"],
         "resourceNeeded" : "SHIELD"
       },
       {
+        "id" : 14,
         "cost" : ["BLUE"],
         "resourceNeeded" : "SERVANT"
       },
       {
+        "id" : 15,
         "cost" : ["PURPLE"],
         "resourceNeeded" : "STONE"
       },
       {
+        "id" : 16,
         "cost" : ["GREEN"],
         "resourceNeeded" : "COIN"
       }

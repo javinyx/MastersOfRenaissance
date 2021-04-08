@@ -1,29 +1,55 @@
 [
   {
-    "DiscardToken" : [
+    "type": "DiscardToken",
+    "tokens": [
       {
-        "typeProdCard" : [2, 0, 0, 0]
+        "id" : 1,
+        "typeProdCard": [
+          "GREEN",
+          "GREEN"
+        ]
       },
       {
-        "typeProdCard" : [0, 2, 0, 0]
+        "id" : 2,
+        "typeProdCard": [
+          "PURPLE",
+          "PURPLE"
+        ]
       },
       {
-        "typeProdCard" : [0, 0, 2, 0]
+        "id" : 3,
+        "typeProdCard": [
+          "BLUE",
+          "BLUE"
+        ]
       },
       {
-        "typeProdCard" : [0, 0, 0, 2]
+        "id" : 4,
+        "typeProdCard": [
+          "YELLOW",
+          "YELLOW"
+        ]
       }
-    ],
-    "DoubleMoveToken" : [
+    ]
+  },
+  {
+    "type": "DoubleMoveToken",
+    "tokens": [
       {
-        "moves" : 2
+        "id" : 5,
+        "moves": 2
       },
       {
-        "moves" : 2
+        "id" : 6,
+        "moves": 2
       }
-    ],
-    "MoveShuffleToken" : [
+    ]
+  },
+  {
+    "type": "MoveShuffleToken",
+    "tokens" : [
       {
+        "id" : 7,
         "moves" : 1
       }
     ]

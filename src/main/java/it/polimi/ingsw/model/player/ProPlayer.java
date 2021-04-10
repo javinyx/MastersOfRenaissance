@@ -22,6 +22,15 @@ public class ProPlayer extends Player{
     private List<Resource> resAcquired;
     private char turnType;
     private StorageAbility extraStorage1, extraStorage2;
+    private Function<StorageAbility, Integer> pointsFromExtraStorage = (StorageAbility x) -> {int points=0;
+        if(x!=null){
+            if(x.isFullFlag1())
+                points++;
+            if(x.isFullFlag2())
+                points++;
+        }
+        return points;
+    };
 
     public ProPlayer(String nickname, int turnID, Game game){
         super(nickname, game);
@@ -55,6 +64,10 @@ public class ProPlayer extends Player{
 
     public int getTurnID(){
         return turnID;
+    }
+
+    public ArrayList<PopePass> getPopePasses(){
+        return passes;
     }
 
     /**Buy the specified ProductionCard and place it onto the specified {@code stack}.
@@ -169,21 +182,15 @@ public class ProPlayer extends Player{
 
         victoryPoints += victoryPointsFromPos();
 
-        Function<StorageAbility, Integer> pointsFromExtraStorage = (StorageAbility x) -> {int points=0;
-            if(x!=null){
-                if(x.isFullFlag1())
-                    points++;
-                if(x.isFullFlag2())
-                    points++;
-            }
-            return points;
-        };
-
-        victoryPoints += (lootChest.getCountResInLootchest() + warehouse.getMidInventory().size()
-                        + warehouse.getLargeInventory().size() + (warehouse.getSmallInventory()!=null ? 1 : 0)
-                        + pointsFromExtraStorage.apply(extraStorage1) + pointsFromExtraStorage.apply(extraStorage2))/5;
+        victoryPoints += countAllResources()/5;
 
         return victoryPoints;
+    }
+
+    public int countAllResources(){
+        return (lootChest.getCountResInLootchest() + warehouse.getMidInventory().size()
+                + warehouse.getLargeInventory().size() + (warehouse.getSmallInventory()!=null ? 1 : 0)
+                + pointsFromExtraStorage.apply(extraStorage1) + pointsFromExtraStorage.apply(extraStorage2));
     }
 
     private int victoryPointsFromPos(){

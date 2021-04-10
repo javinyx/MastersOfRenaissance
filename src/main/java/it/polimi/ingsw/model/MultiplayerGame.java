@@ -3,6 +3,7 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.market.Market;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.player.PopePass;
 import it.polimi.ingsw.model.player.ProPlayer;
 
 import java.util.ArrayList;
@@ -72,6 +73,8 @@ public class MultiplayerGame extends Game implements Observer {
         * by counting their resources if needed. In the end, choose the final winner and end the match*/
     }
 
+    /**Once the current player has finished their turn, the game will give the turn to the next one between those
+     * active at the moment. */
     public void updateEndTurn(ProPlayer player){
         int currID = player.getTurnID();
         currID = (currID == totalPlayers) ? 1 : currID+1;
@@ -93,12 +96,71 @@ public class MultiplayerGame extends Game implements Observer {
                 updateEndTurn(p);
             }
         }
-
     }
 
-    public void updateEnd(Player player){}
-    public void updatePosition(Player player){}
-    public void alertVaticanReport(Player player, int vaticanReport){}
+    /**When {@player} reaches the end of the faith track or buys their 7th production card, call this method to finalize the game.
+     * It will let all the players on the {@player}'s left side play their last turn. After that, the winner will be chosen
+     * based on how many Victory Points they've cumulated during the whole game. Sometimes a draw occurs: if this
+     * is the case, then the winner will be the one with more resources between the max-points-players.
+     * @param player First player to reach the end of the track or to buy their 7th production card*/
+    public void updateEnd(Player player){
+        int currID = ((ProPlayer)player).getTurnID();
+        if(currID!=totalPlayers){
+            currID++;
+            //method to let all the left players play their last turn
+        }
+        int maxPoints = 0;
+        List<ProPlayer> possibleWinners = new ArrayList<>();
+        int points;
+        for(ProPlayer p : activePlayers){
+            points = p.getVictoryPoints();
+            if(points > maxPoints){
+                possibleWinners = null; //we delete those that might be considered winners
+                maxPoints = points;
+                possibleWinners.add(p);
+            }else if(points == maxPoints){
+                possibleWinners.add(p);
+            }
+        }
+        if(possibleWinners.size()==1){
+            winner = possibleWinners.get(0);
+            return;
+        }
+        //draw: the winner is the one with more resources between the candidates
+        int maxRes = 0;
+        for(ProPlayer p : possibleWinners){
+            int res = p.countAllResources();
+            if(res>maxRes){
+                maxRes = res;
+                winner = p;
+            }
+        }
+    }
+    public void updatePosition(Player player){
+        //call controller to show the change on the view
+    }
+
+    /**Everytime a player triggers a Vatican Report by moving on the personal faith track, this method will inform the game
+     * that will act accordingly. It will activate the {@code player}'s PopePass.
+     * <p>Furthermore, by calling this method all the other players' positions will be checked, even inactive players.
+     * Accordingly to position ranges set by rules, their relative PopePass either will be activated or discarded.</p>
+     * <p>For reference:
+     * <li>Must be in at least position 5 for 1st report;</li>
+     * <li>Must be in at least position 12 for 2nd report;</li>
+     * <li>Must be in at least position 19 for 2rd report.</li></p>
+     * @param player player who triggered Vatican Report
+     * @param vaticanReport number in range 1-3 that specifies which vatican report is triggered*/
+    public void alertVaticanReport(Player player, int vaticanReport){
+        //check every player position (even inactive ones in case they rejoin)
+        for(ProPlayer p : players){
+            ArrayList<PopePass> passes = p.getPopePasses();
+            if(p.isInVaticanReportRange(vaticanReport)){
+                passes.get(vaticanReport-1).activate();
+            }else{
+                passes.get(vaticanReport-1).disable();
+            }
+        }
+    }
 
     /**Add 1 faith point to each active player (except the discarding one).
      * @param player player discarding a resource */

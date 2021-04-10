@@ -54,6 +54,15 @@ public class Player implements Observable {
         }
     }
 
+    public boolean isInVaticanReportRange(int report){
+        switch(report){
+            case 1 : return currPos>=5;
+            case 2 : return currPos>=12;
+            case 3 : return currPos>=1;
+            default : throw new IllegalArgumentException("Report must be between 1 and 3");
+        }
+    }
+
 
     public void registerObserver(Observer observer){
         this.observer = observer;

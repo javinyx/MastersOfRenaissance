@@ -25,10 +25,10 @@ public class PopePass {
     }
 
     /**Active the card if it's deactivate */
-
     public void activate(){
         status = true;
     }
+    public void disable(){status = false;}
     /**@return victory points of the card if it is active */
     public int getVictoryPoints(){
         if(status){

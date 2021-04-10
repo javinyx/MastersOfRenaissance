@@ -267,7 +267,7 @@ public class ProPlayer extends Player{
 
     /**Activate the leader card, only if the player has that card. From now on it's available for usage.
      * @param leader chosen leaderCard to activate */
-    public void activateLeaderCard( LeaderCard leader){
+    public void activateLeaderCard(LeaderCard leader){
         for(LeaderCard l : leaderCards){
             if(l.equals(leader)){
                 l.setStatus(true);

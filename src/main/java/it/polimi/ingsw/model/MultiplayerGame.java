@@ -50,27 +50,8 @@ public class MultiplayerGame extends Game implements Observer {
         return players;
     }
 
-    /*public List<Player> getPlayers(){
-        List<Player> users = new ArrayList<>();
-        users.addAll(players);
-        return users;
-    }*/
-
     public Market getMarket(){
         return market;
-    }
-
-    /** The Observer finalize the game by managing the last turn of every player after the one who called the method.
-     * Decide the winner based on {@code searchForWinner()} policy.
-     * @param player the observed one notifying the observer that the game might end since the faith track's end or
-     * max num of prodCards has been reached.*/
-    public void updateEnd(ProPlayer player){
-        if(player.getTurnID()<4){
-            //let all the players on the caller's left side to play their last turn
-        }
-
-        /*create a list with all the possibile winners by victoryPoints and then choose which one
-        * by counting their resources if needed. In the end, choose the final winner and end the match*/
     }
 
     /**Once the current player has finished their turn, the game will give the turn to the next one between those

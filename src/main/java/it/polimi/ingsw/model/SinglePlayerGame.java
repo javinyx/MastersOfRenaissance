@@ -1,12 +1,10 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.cards.Deck;
+import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
 import it.polimi.ingsw.model.market.Market;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.player.PopePass;
 import it.polimi.ingsw.model.player.ProPlayer;
-
-import java.util.ArrayList;
 
 
 public class SinglePlayerGame extends Game implements Observer{
@@ -22,9 +20,33 @@ public class SinglePlayerGame extends Game implements Observer{
         player = null;
         lorenzo = new Player("Lorenzo", this);
         winner = null;
+
+        /*tokenDeck.createProdDeck();
+        leaderDeck.createDeck(leaderDeck.getClass());
+        tokenDeck.createDeck(tokenDeck.getClass());*/
     }
 
-    public void start(){}
+    public SinglePlayerGame(String tokenFileName, String prodFileName, String leadFileName) {
+        market = new Market();
+        player = null;
+        lorenzo = new Player("Lorenzo", this);
+        winner = null;
+
+
+
+        /*tokenDeck.createDeck(tokenDeck.getClass(), tokenFileName);
+        leaderDeck.createDeck(leaderDeck.getClass(), leadFileName);
+        tokenDeck.createDeck(tokenDeck.getClass(), prodFileName);*/
+    }
+
+
+
+    public void start(){
+
+
+    }
+
+
     public void createPlayer(String nickname){
         if(nickname==null){
             throw new NullPointerException();
@@ -42,11 +64,8 @@ public class SinglePlayerGame extends Game implements Observer{
         return winner;
     }
 
-    /**Set the winner between Lorenzo and the player.
-     * <p>If Lorenzo got to the end of the board first or the player has bought all production cards of one type,
-     * then Lorenzo is the winner. Otherwise, if the player has reached the end first or has bought their 7th
-     * production card, then player is the winner.</p>
-     * @param player put the correct player accordingly to the occasions described above*/
+    /**Check who is the winner between Lorenzo and the player.
+     * <p>If Lorenzo got to the end of the board first or </p> */
     public void updateEnd(Player player){
         //lorenzo got to the end of the board before the player
         if(player.equals(lorenzo)){
@@ -58,27 +77,9 @@ public class SinglePlayerGame extends Game implements Observer{
         winner = this.player;
         end(winner);
     }
-    public void updatePosition(Player player){
-        //call controller to show the movement to the view
-    }
+    public void updatePosition(Player player){}
     public void updateEndTurn(ProPlayer player){} //do nothing?
-
-    /**If either the player or Lorenzo triggers a Vatican Report by moving on their faith track, call this method
-     * that will:
-     * <li>Check if the player is in range for the report triggered by Lorenzo and eventually activate their PopePass</li>
-     * <li>Just activate the player's PopePass if they're the one who triggered the Report.</li>
-     * @param player the one who triggered the Vatican Report
-     * @param vaticanReport indicates which report has been triggered (must be between 1 and 3)*/
-    public void alertVaticanReport(Player player, int vaticanReport){
-        ArrayList<PopePass> passes = this.player.getPopePasses();
-        if(this.player.isInVaticanReportRange(vaticanReport)){
-            passes.get(vaticanReport-1).activate();
-        }else{
-            passes.get(vaticanReport-1).disable();
-        }
-    }
-
-    /**If the player discard a resource, it gives 1 faith point to Lorenzo that will go forward on the faith track. */
+    public void alertVaticanReport(Player player, int vaticanReport){}
     public void alertDiscardResource(Player player){
         lorenzo.moveOnBoard(1);
     }

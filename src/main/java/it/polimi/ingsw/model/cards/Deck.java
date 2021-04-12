@@ -20,8 +20,14 @@ public class Deck {
                             leadPath = "/json/LeaderCards.json",
                             tokenPath = "/json/ActionTokens.json";
 
-    public Deck(File properties){
+    public Deck(){
         this.cardList = new ArrayDeque<Card>();
+    }
+
+    public Deck(Class classe,String filePath){
+
+        //switch + istanzia deck + deck mischiato; arrangiati
+
     }
 
     // If given only the deck class name to initiate, then it will find the json path and call the main deck constructor
@@ -45,17 +51,9 @@ public class Deck {
 
     public List<Deck> createProdDeck(String filePath) {
 
+        //crea lista totale
+
         return deckList;
-    }
-
-    public Deck createLeadDeck(String filePath) {
-
-        return this;
-    }
-
-    private Deck createTokenDeck(String filePath) {
-
-        return this;
     }
 
     public void draw(){}

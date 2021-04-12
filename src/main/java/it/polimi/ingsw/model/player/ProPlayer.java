@@ -1,13 +1,17 @@
 package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.StorageAbility;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Market;
 import it.polimi.ingsw.model.market.Resource;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -393,22 +397,21 @@ public class ProPlayer extends Player{
      * them in 4 different list: {@code removeFromWar}, {@code removeFromLoot}, {@code removeFromStorage1} and
      * {@code removeFromStorage2}.</p>.
      * <p>Players express their wish of activation of the basic production power by {@code basicProd=true}</p>*/
-    public void startProduction(List<ConcreteProductionCard> cards, boolean basicProd, List<Resource> removeFromWar,
-                                List<Resource> removeFromLoot, List<LeaderCard> prodLeaders, List<Resource> removeFromStorage1,
-                                List<Resource> removeFromStorage2, Resource output){
+    public void startProduction(List<ConcreteProductionCard> cards, boolean basicProd, ResourcesWallet resAsCash,
+                                List<LeaderCard> prodLeaders, Resource output){
         Warehouse warBackup = new Warehouse(warehouse);
         LootChest lootBackup = new LootChest(lootChest);
         List<Resource> production = new ArrayList<>();
         turnType = 'p';
         for(ConcreteProductionCard p : cards){
-            if(!prodCards1.peekFirst().equals(p) && !prodCards2.peekFirst().equals(p) && !prodCards3.peekFirst().equals(p)){
+            if(prodCards1.peekFirst().equals(p) || prodCards2.peekFirst().equals(p) || prodCards3.peekFirst().equals(p)){
                 //controller will ask the player to adjust the ProdCards selection and try again to call this method
                 warehouse = warBackup;
                 lootChest = lootBackup;
                 throw new RuntimeException(p.toString() + " cannot produce");
             }
             try {
-                production.addAll(produce(p, removeFromWar, removeFromLoot, removeFromStorage1, removeFromStorage2));
+                production.addAll(produce(p, resAsCash));
             }catch(Exception e){
                 warehouse = warBackup;
                 lootChest = lootBackup;
@@ -459,17 +462,17 @@ public class ProPlayer extends Player{
      * accordingly to the type of LeaderCard the player has active.</p>
      * <p>It resets both player's {@code extraStorage} status if an exception is thrown, but not Warehouse and LootChest status.</p>
      * @param card Production Card
-     * @param removeFromWar List of Resources players want to pick from their own Warehouse to pay the production
-     * @param removeFromLoot List of Resources players want to pick from their own LootChest to pay production
-     * @param removeFromStorage1 List of Resources players want to pick from the extra storage given by a Leader Card
-     * @param removeFromStorage2 List of Resources players want to pick from the extra storage given by a Leader Card*/
-    private List<Resource> produce(ConcreteProductionCard card, List<Resource> removeFromWar, List<Resource> removeFromLoot,
-                                   List<Resource> removeFromStorage1, List<Resource> removeFromStorage2) throws Exception{
+     * @param resAsCash wallet of resources redistributed as the player wishes across the possible storage option*/
+    private List<Resource> produce(ConcreteProductionCard card, ResourcesWallet resAsCash) throws Exception{
         List<Resource> cost = card.getCost();
         List<Resource> costDupe = card.getCost(); //since cannot modify cost while forEach is running and taking elements from it
         StorageAbility extraStorage1Backup = new StorageAbility(extraStorage1);
         StorageAbility extraStorage2Backup = new StorageAbility(extraStorage2);
         for(Resource r : costDupe){
+            List<Resource> removeFromWar = resAsCash.getWarehouseTray();
+            List<Resource> removeFromLoot = resAsCash.getLootchestTray();
+            List<Resource> removeFromStorage1 = resAsCash.getExtraStorage1();
+            List<Resource> removeFromStorage2 = resAsCash.getExtraStorage2();
             if(removeFromWar.contains(r)){
                if(warehouse.getSmallInventory().equals(r)){
                    removeFromWar.remove(r);

@@ -6,12 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ResourcesWallet {
-    private List<Resource> warehouseTray, lootchestTray, extraStorage;
+    private List<Resource> warehouseTray, lootchestTray, extraStorage1, extraStorage2;
 
     public ResourcesWallet(){
         warehouseTray = new ArrayList<>();
         lootchestTray = new ArrayList<>();
-        extraStorage = new ArrayList<>();
+        extraStorage1 = new ArrayList<>();
+        extraStorage2 = new ArrayList<>();
     }
 
     public void setWarehouseTray(List<Resource> resources){
@@ -22,8 +23,30 @@ public class ResourcesWallet {
         lootchestTray.addAll(resources);
     }
 
-    public void setExtraStorage(List<Resource> resources){
-        extraStorage.addAll(resources);
+    public void setExtraStorage1(List<Resource> resources){
+        if(resources.size()>2){
+            throw new IllegalArgumentException("Too many arguments");
+        }
+        if((int)resources.stream().distinct().count()>1){
+            throw new IllegalArgumentException("Different types of resources");
+        }
+        if(!extraStorage1.isEmpty() && !extraStorage1.get(0).equals(resources.get(0))){
+            throw new IllegalArgumentException("Different type of resources: "+ extraStorage1.get(0)+" already present");
+        }
+        extraStorage1.addAll(resources);
+    }
+
+    public void setExtraStorage2(List<Resource> resources){
+        if(resources.size()>2){
+            throw new IllegalArgumentException("Too many arguments");
+        }
+        if((int)resources.stream().distinct().count()>1){
+            throw new IllegalArgumentException("Different types of resources");
+        }
+        if(!extraStorage2.isEmpty() && !extraStorage2.get(0).equals(resources.get(0))){
+            throw new IllegalArgumentException("Different type of resources: "+ extraStorage2.get(0)+" already present");
+        }
+        extraStorage2.addAll(resources);
     }
 
     public List<Resource> getWarehouseTray(){
@@ -34,28 +57,31 @@ public class ResourcesWallet {
         return lootchestTray;
     }
 
-    public List<Resource> getExtraStorage(){
-        return extraStorage;
+    public List<Resource> getExtraStorage1(){
+        return extraStorage1;
     }
 
-    public boolean fromWarehouse(Resource resource){
+    public List<Resource> getExtraStorage2(){return extraStorage2;}
+
+    public boolean isInWarehouseTray(Resource resource){
         return warehouseTray.contains(resource);
     }
 
-    public boolean fromLootChest(Resource resource){
+    public boolean isInLootChestTray(Resource resource){
         return lootchestTray.contains(resource);
     }
 
-    public boolean fromExtraStorage(Resource resource){
-        return extraStorage.contains(resource);
+    public boolean isInExtraStorage1Tray(Resource resource){
+        return extraStorage1.contains(resource);
+    }
+
+    public boolean isInExtraStorage2Tray(Resource resource){
+        return extraStorage2.contains(resource);
     }
 
     /**Tells if the ExtraStorage field holds 2 different types of resources, meaning that the player wants
      * to use 2 different Storage Ability LeaderCard*/
     public boolean isExtraStorageDouble(){
-        if((int)(extraStorage.stream().distinct().count())==2){
-            return true;
-        }
-        return false;
+        return (extraStorage1!=null && extraStorage2!=null);
     }
 }

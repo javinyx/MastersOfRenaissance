@@ -10,93 +10,66 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Deck {
 
-    private File properties;
-    private List<Card> cardList;
+    private Deque<Card> cardList;
+    private List<Deck> deckList;
+    private static String   prodPath = "/json/ProductionCards.json",
+                            leadPath = "/json/LeaderCards.json",
+                            tokenPath = "/json/ActionTokens.json";
 
     public Deck(File properties){
-        this.properties = properties;
-        this.cardList = new ArrayList<>(); //deck
+        this.cardList = new ArrayDeque<Card>();
     }
 
-    public Deck createDeck(Class inputClass){
-        //lettura del file, creazione della carta mediante uno dei 3 costruttori: ProductionCard/LeaderCard/ActionToken
-        //poi inserimento nella cardList
-        //N.B: prodCard decks have 4 cards each
-        return null;
+    // If given only the deck class name to initiate, then it will find the json path and call the main deck constructor
+    private void readJson(){
+        readJson();
     }
 
-    public Deck createDeck(Class inputClass, String fileName){
-        //lettura del file, creazione della carta mediante uno dei 3 costruttori: ProductionCard/LeaderCard/ActionToken
-        //poi inserimento nella cardList
-        //N.B: prodCard decks have 4 cards each
-        return null;
-    }
-
-    private void instanceProdCards(String path) {
-
+    // Main deck constructor
+    private void readJson(String filePath){
         Gson gson = new Gson();
 
-        try (Reader reader = new InputStreamReader(MastersOfRenaissance.class.getResourceAsStream("/json/ProductionCards.json"))) {
+        try (Reader reader = new InputStreamReader(MastersOfRenaissance.class.getResourceAsStream(filePath))) {
 
             // Convert JSON File to Java Object
-            cardList = Arrays.asList(gson.fromJson(reader, ConcreteProductionCard[].class));
+            List<Card> list = Arrays.asList(gson.fromJson(reader, Card.class));
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void instanceLeadCards(String[] args) {
+    public List<Deck> createProdDeck(String filePath) {
 
-        Gson gson = new Gson();
-
-        try (Reader reader = new InputStreamReader(MastersOfRenaissance.class.getResourceAsStream("/json/LeaderCards.json"))) {
-
-            // Convert JSON File to Java Object
-            LeaderCard[] leadCards = gson.fromJson(reader, LeaderCard[].class);
-
-            // Pass each set of leader cards to the corresponding ability class
-            // TO-DO: Assign the json objects to corresponding abilities
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        return deckList;
     }
 
-    private void instanceActionTokens(String[] args) {
+    public Deck createLeadDeck(String filePath) {
 
-        Gson gson = new Gson();
+        return this;
+    }
 
-        try (Reader reader = new InputStreamReader(MastersOfRenaissance.class.getResourceAsStream("/json/ActionTokens.json"))) {
+    private Deck createTokenDeck(String filePath) {
 
-            // Convert JSON File to Java Object
-            ActionToken[] actionTokens = gson.fromJson(reader, ActionToken[].class);
-
-            // Pass each set of action tokens to the corresponding ability class
-            // TO-DO: Assign the json objects to corresponding abilities
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        return this;
     }
 
     public void draw(){}
 
-    public List<Card> getCards(){
+    public Deque<Card> getCards(){
         return cardList;
     }
 
-    public Card getCard(int index){
-        return cardList.get(index);
+    public Card peekFirst() {
+        return cardList.peekFirst();
     }
 
-    public void removeCard(int index){
-        cardList.remove(index);
+    public Card getFirst(){
+        return cardList.getFirst();
     }
+
 }

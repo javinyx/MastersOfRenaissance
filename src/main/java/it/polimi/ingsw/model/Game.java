@@ -37,7 +37,7 @@ public abstract class Game implements Observer{
     public List<ConcreteProductionCard> getBuyableProductionCards(){
         List<Card> availableCards = new ArrayList<>();
         for(Deck d : productionDecks){
-            //availableCards.add(d.getCard(0));
+            //availableCards.add(d.getFirst());
         }
         return availableCards.stream()
                 .map(x -> (ConcreteProductionCard)x)

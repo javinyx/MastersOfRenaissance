@@ -43,7 +43,7 @@ public class LootChest {
             addResources(item);
         }
     }
-    /**
+    /*
      * Remove selected item from inventory.
      * <p>Mind that only SHIELD, STONE, COIN and SERVANT will be considered
      * removable item since there cannot be FAITH or BLANK resources in Lootchest.</p>
@@ -75,7 +75,7 @@ public class LootChest {
                         }
                         inventory.replace(Resource.SERVANT, -1, 0);
                         return;
-            default: return;
+            default: throw new RuntimeException();
         }
     }
     /**

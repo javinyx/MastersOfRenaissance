@@ -79,9 +79,8 @@ public class ResourcesWallet {
         return extraStorage2.contains(resource);
     }
 
-    /**Tells if the ExtraStorage field holds 2 different types of resources, meaning that the player wants
-     * to use 2 different Storage Ability LeaderCard*/
-    public boolean isExtraStorageDouble(){
-        return (extraStorage1!=null && extraStorage2!=null);
-    }
+    public boolean anyFromWarehouseTray(){return warehouseTray!=null;}
+    public boolean anyFromLootchestTray(){return lootchestTray!=null;}
+    public boolean anyFromStorageCard1(){return extraStorage1!=null;}
+    public boolean anyFromStorageCard2(){return extraStorage2!=null;}
 }

@@ -28,10 +28,7 @@ public class ProPlayer extends Player{
     private StorageAbility extraStorage1, extraStorage2;
     private Function<StorageAbility, Integer> pointsFromExtraStorage = (StorageAbility x) -> {int points=0;
         if(x!=null){
-            if(x.isFullFlag1())
-                points++;
-            if(x.isFullFlag2())
-                points++;
+            points += x.size();
         }
         return points;
     };
@@ -257,7 +254,7 @@ public class ProPlayer extends Player{
             leader.applyEffect(this);
         }
 
-        storeInWarehouse(resAcquired);
+        //call controller and let the player choose on which warehouse tier it should place each resource
     }
 
     /**Discard resources when there is no space left in the warehouse.
@@ -269,6 +266,16 @@ public class ProPlayer extends Player{
         }
     }
 
+    public void chooseLeaders(List<LeaderCard> leaders){
+        if(leaders.size()!=2){
+            throw new IllegalArgumentException("Must be 2 leaders");
+        }
+        leaderCards.addAll(leaders);
+    }
+
+    public void giveLeaders(List<LeaderCard> leaders){
+        //call controller
+    }
     /**Activate the leader card, only if the player has that card. From now on it's available for usage.
      * @param leader chosen leaderCard to activate */
     public void activateLeaderCard(LeaderCard leader){
@@ -294,21 +301,15 @@ public class ProPlayer extends Player{
     }
 
     /**Let the player choose an extra resource to add during initialization phase.*/
-    public Resource chooseResource(){
+    public void chooseResource(){
         //wait for the player to choose a resource
         //then add to warehouse
-        return null;
-    }
-
-    public void storeInWarehouse(List<Resource> resources){
-
     }
 
     /**Place the resource in the specified warehouse tier.
      * @param resource resource the player wants to store
      * @param tier Warehouse inventory shelf's id on which the player want to place {@code resource}*/
     public void storeInWarehouse(Resource resource, int tier){
-
         switch(tier){
             case 1 : warehouse.addSmall(resource);
                      break;
@@ -339,18 +340,86 @@ public class ProPlayer extends Player{
      * <p>If the player has enough resources in the warehouse, this method will remove {@code input1} and
      * {@code input2}.</p>
      * <p>SOON TO BE FIXED: for now it checks just the Warehouse resources.</p>
-     * @param input1 first resource input.
-     * @param input2 second resource input.
+     * @param resAsCash resources that the player wants to use as currency for the basic power
      * @param output chosen resource for the exchange.*/
-    public void startBasicProduction( Resource input1, Resource input2, Resource output){ //DA RIFARE
-        if(input1==null || input2==null || output==null){
+    private void startBasicProduction(ResourcesWallet resAsCash, Resource output) { //DA RIFARE
+        if(output==null){
+            throw new NullPointerException("Output cannot be null");
+        }
+        if(output.equals(Resource.FAITH) || output.equals(Resource.BLANK)){
+            throw new IllegalArgumentException("Output cannot be FAITH or BLANK");
+        }
+        List<Resource> fromLoot = resAsCash.getLootchestTray();
+        List<Resource> fromWar = resAsCash.getWarehouseTray();
+        List<Resource> fromExtra1 = resAsCash.getExtraStorage1();
+        List<Resource> fromExtra2 = resAsCash.getExtraStorage2();
+
+        Resource input1;
+        Resource input2;
+        if(fromLoot.size()==2) {
+            input1 = fromLoot.get(0);
+            input2 = fromLoot.get(1);
+            basicProductionFromLootchest(input1, input2);
+        }else if(fromWar.size()==2) {
+            input1 = fromWar.get(0);
+            input2 = fromWar.get(1);
+            basicProductionFromWarehouse(input1, input2);
+        }else if(fromExtra1.size()==2) {
+            input1 = fromExtra1.get(0);
+            input2 = fromExtra2.get(1);
+            basicProductionFromExtra(input1, input2, 1);
+        } else if(fromExtra2.size()==2){
+            input1 = fromExtra2.get(0);
+            input2 = fromExtra2.get(0);
+            basicProductionFromExtra(input1, input2, 2);
+        }else if(resAsCash.anyFromLootchestTray() && resAsCash.anyFromWarehouseTray()){
+            input1 = fromLoot.get(0);
+            input2 = fromWar.get(0);
+            partialBasicProdFromLoot(input1);
+            partialBasicProdFromWarehouse(input2);
+        }else if(resAsCash.anyFromLootchestTray() && resAsCash.anyFromStorageCard1()){
+            input1 = fromLoot.get(0);
+            input2 = fromExtra1.get(0);
+            partialBasicProdFromLoot(input1);
+            partialBasicProdFromExtra(input2, 1);
+        }else if(resAsCash.anyFromLootchestTray() && resAsCash.anyFromStorageCard2()){
+            input1 = fromLoot.get(0);
+            input2 = fromExtra2.get(0);
+            partialBasicProdFromLoot(input1);
+            partialBasicProdFromExtra(input2, 2);
+        }else if(resAsCash.anyFromWarehouseTray() && resAsCash.anyFromStorageCard1()){
+            input1 = fromWar.get(0);
+            input2 = fromExtra1.get(0);
+            partialBasicProdFromWarehouse(input1);
+            partialBasicProdFromExtra(input2, 1);
+        }else if(resAsCash.anyFromWarehouseTray() && resAsCash.anyFromStorageCard2()){
+            input1 = fromWar.get(0);
+            input2 = fromExtra2.get(0);
+            partialBasicProdFromWarehouse(input1);
+            partialBasicProdFromExtra(input2, 2);
+        }else if(resAsCash.anyFromStorageCard1() && resAsCash.anyFromStorageCard2()){
+            input1 = fromExtra1.get(0);
+            input2 = fromExtra2.get(0);
+            partialBasicProdFromExtra(input1, 1);
+            partialBasicProdFromExtra(input2, 2);
+        }else{
             throw new NullPointerException("Some parameters are null when they shouldn't");
         }
-        if(input1.equals(Resource.BLANK) || input1.equals(Resource.FAITH) || input2.equals(Resource.BLANK)
-            ||input2.equals(Resource.FAITH) || output.equals(Resource.BLANK) || output.equals(Resource.FAITH)){
-            throw new IllegalArgumentException("Input/Output cannot be FAITH or BLANK");
+    }
+
+    private void basicProductionFromLootchest(Resource input1, Resource input2){
+        if(input1.equals(Resource.FAITH) || input1.equals(Resource.BLANK) || input2.equals(Resource.FAITH)
+                || input2.equals(Resource.BLANK)){
+            throw new IllegalArgumentException();
         }
-        turnType = 'p';
+        lootChest.removeResources(input1);
+        lootChest.removeResources(input2);
+    }
+    private void basicProductionFromWarehouse(Resource input1, Resource input2){
+        if(input1.equals(Resource.FAITH) || input1.equals(Resource.BLANK) || input2.equals(Resource.FAITH)
+                || input2.equals(Resource.BLANK)){
+            throw new IllegalArgumentException();
+        }
         Resource smallShelf = warehouse.getSmallInventory();
         List<Resource> midShelf = warehouse.getMidInventory();
         List<Resource> largeShelf = warehouse.getLargeInventory();
@@ -359,12 +428,10 @@ public class ProPlayer extends Player{
             if(midShelf.contains(input1) && midShelf.size()==2){
                 warehouse.removeMid();
                 warehouse.removeMid();
-                lootChest.addResources(output);
                 return;
             }else if(largeShelf.contains(input1) && largeShelf.size()>=2){
                 warehouse.removeLarge();
                 warehouse.removeLarge();
-                lootChest.addResources(output);
                 return;
             }else{
                 throw new RuntimeException("Not enough resources in warehouse");
@@ -373,22 +440,90 @@ public class ProPlayer extends Player{
         if(smallShelf.equals(input1) && midShelf.contains(input2) || smallShelf.equals(input2) && midShelf.contains(input1)){
             warehouse.removeSmall();
             warehouse.removeMid();
-            lootChest.addResources(output);
             return;
         }
         if(smallShelf.equals(input1) && largeShelf.contains(input2) || smallShelf.equals(input2) && largeShelf.contains(input1)){
             warehouse.removeSmall();
             warehouse.removeLarge();
-            lootChest.addResources(output);
             return;
         }
         if(midShelf.contains(input1) && largeShelf.contains(input2) || midShelf.contains(input2) && largeShelf.contains(input1)){
             warehouse.removeMid();
             warehouse.removeLarge();
-            lootChest.addResources(output);
             return;
         }
         throw new RuntimeException("Not enough resources in warehouse");
+    }
+    private void basicProductionFromExtra(Resource input1, Resource input2, int extraStorage){
+        if(input1.equals(Resource.FAITH) || input1.equals(Resource.BLANK) || input2.equals(Resource.FAITH)
+                || input2.equals(Resource.BLANK)){
+            throw new IllegalArgumentException();
+        }
+        StorageAbility storageBackup;
+        if(extraStorage==1){
+            storageBackup = new StorageAbility(extraStorage1);
+            if(!(extraStorage1.remove(input1) && extraStorage1.remove(input2))){
+                extraStorage1 = storageBackup;
+                throw new RuntimeException();
+            }
+        }else if(extraStorage==2){
+            storageBackup = new StorageAbility(extraStorage2);
+            if(!(extraStorage2.remove(input1) && extraStorage1.remove(input2))){
+                extraStorage2 = storageBackup;
+                throw new RuntimeException();
+            }
+        }else{
+            throw new IllegalArgumentException();
+        }
+    }
+    private void partialBasicProdFromLoot(Resource input){
+        if(input.equals(Resource.FAITH) || input.equals(Resource.BLANK)){
+            throw new IllegalArgumentException();
+        }
+        lootChest.removeResources(input);
+    }
+    private void partialBasicProdFromWarehouse(Resource input){
+        if(input.equals(Resource.FAITH) || input.equals(Resource.BLANK)){
+            throw new IllegalArgumentException();
+        }
+        Resource smallShelf = warehouse.getSmallInventory();
+        List<Resource> midShelf = warehouse.getMidInventory();
+        List<Resource> largeShelf = warehouse.getLargeInventory();
+
+        if(smallShelf.equals(input)){
+            warehouse.removeSmall();
+            return;
+        }
+        if(midShelf.contains(input)){
+            warehouse.removeMid();
+            return;
+        }
+        if(largeShelf.contains(input)){
+            warehouse.removeLarge();
+            return;
+        }
+        throw new RuntimeException();
+    }
+    private void partialBasicProdFromExtra(Resource input, int extraStorage){
+        if(input.equals(Resource.FAITH) || input.equals(Resource.BLANK)){
+            throw new IllegalArgumentException();
+        }
+        StorageAbility storageBackup;
+        switch(extraStorage){
+            case 1 : storageBackup = new StorageAbility(extraStorage1);
+                    if(!extraStorage1.remove(input)){
+                        extraStorage1 = storageBackup;
+                        throw new RuntimeException();
+                    }
+                    return;
+            case 2 : storageBackup = new StorageAbility(extraStorage2);
+                    if(!extraStorage2.remove(input)){
+                        extraStorage2 = storageBackup;
+                        throw new RuntimeException();
+                    }
+                    return;
+            default : throw new IllegalArgumentException();
+        }
     }
 
     /**For each ProductionCard in {@code cards}, it tries to consume all the resources planned by the player and requested
@@ -396,11 +531,20 @@ public class ProPlayer extends Player{
      * <p>Players must specify from which type of storage they want to obtain the resources needed to pay by distributing
      * them in 4 different list: {@code removeFromWar}, {@code removeFromLoot}, {@code removeFromStorage1} and
      * {@code removeFromStorage2}.</p>.
-     * <p>Players express their wish of activation of the basic production power by {@code basicProd=true}</p>*/
-    public void startProduction(List<ConcreteProductionCard> cards, boolean basicProd, ResourcesWallet resAsCash,
-                                List<LeaderCard> prodLeaders, Resource output){
+     * <p>Players express their wish of activation of the basic production power by {@code basicProd=true}</p>
+     * @param cards list of ProductionCard the player wants to activate and produce
+     * @param resAsCash object that contains all the resources the player wants to use as currency for the production,
+     * well divided into their storage type
+     * @param prodLeaders leaders whose effect the player would like to benefit. Mind that can only be BoostAbility or
+     * Storage Ability
+     * @param basicProd true if the player wishes to activate the basic production power
+     * @param output the Resource the player wants as an outcome from the basic production power*/
+    public void startProduction(List<ConcreteProductionCard> cards, ResourcesWallet resAsCash,
+                                List<LeaderCard> prodLeaders, boolean basicProd, Resource output){
+        //BACKUPS
         Warehouse warBackup = new Warehouse(warehouse);
         LootChest lootBackup = new LootChest(lootChest);
+
         List<Resource> production = new ArrayList<>();
         turnType = 'p';
         for(ConcreteProductionCard p : cards){
@@ -421,10 +565,13 @@ public class ProPlayer extends Player{
 
         //NON VA BENE: correggere le BoostAbility
         for(LeaderCard lc : prodLeaders){
+            //resAcquired ....
             if(checkLeaderAvailability(lc)){
                 lc.applyEffect(this);
             }
         }
+        List<Resource> removeFromWar = resAsCash.getWarehouseTray();
+        List<Resource> removeFromLoot = resAsCash.getLootchestTray();
         /*if(basicProd){
             Resource input1=null, input2=null;
             for(int i=0; i<2; i++){
@@ -464,15 +611,18 @@ public class ProPlayer extends Player{
      * @param card Production Card
      * @param resAsCash wallet of resources redistributed as the player wishes across the possible storage option*/
     private List<Resource> produce(ConcreteProductionCard card, ResourcesWallet resAsCash) throws Exception{
+        //BACKUPS
         List<Resource> cost = card.getCost();
         List<Resource> costDupe = card.getCost(); //since cannot modify cost while forEach is running and taking elements from it
         StorageAbility extraStorage1Backup = new StorageAbility(extraStorage1);
         StorageAbility extraStorage2Backup = new StorageAbility(extraStorage2);
+
+        List<Resource> removeFromWar = resAsCash.getWarehouseTray();
+        List<Resource> removeFromLoot = resAsCash.getLootchestTray();
+        List<Resource> removeFromStorage1 = resAsCash.getExtraStorage1();
+        List<Resource> removeFromStorage2 = resAsCash.getExtraStorage2();
+
         for(Resource r : costDupe){
-            List<Resource> removeFromWar = resAsCash.getWarehouseTray();
-            List<Resource> removeFromLoot = resAsCash.getLootchestTray();
-            List<Resource> removeFromStorage1 = resAsCash.getExtraStorage1();
-            List<Resource> removeFromStorage2 = resAsCash.getExtraStorage2();
             if(removeFromWar.contains(r)){
                if(warehouse.getSmallInventory().equals(r)){
                    removeFromWar.remove(r);
@@ -494,13 +644,9 @@ public class ProPlayer extends Player{
                     cost.remove(r);
                 }
            }else if(removeFromStorage1!=null && extraStorage1!=null && extraStorage1.getStorageType().equals(r)){
-             if(extraStorage1.isFullFlag1()){
+             if(extraStorage1.size()>0){
                  removeFromStorage1.remove(r);
-                 extraStorage1.setFullFlag1(false);
-                 cost.remove(r);
-             }else if(extraStorage1.isFullFlag2()){
-                 removeFromStorage1.remove(r);
-                 extraStorage1.setFullFlag2(false);
+                 extraStorage1.remove(r);
                  cost.remove(r);
              }else {
                  extraStorage1 = extraStorage1Backup;
@@ -508,11 +654,9 @@ public class ProPlayer extends Player{
                  throw new Exception();
              }
            }else if(removeFromStorage2!=null && extraStorage2!=null && extraStorage2.getStorageType().equals(r)){
-               if(extraStorage1.isFullFlag1()){
-                   extraStorage2.setFullFlag1(false);
-                   cost.remove(r);
-               }else if(extraStorage2.isFullFlag2()){
-                   extraStorage2.setFullFlag2(false);
+               if(extraStorage2.size()>0){
+                   removeFromStorage2.remove(r);
+                   extraStorage2.remove(r);
                    cost.remove(r);
                }else {
                    extraStorage1 = extraStorage1Backup;

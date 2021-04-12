@@ -1,15 +1,10 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.cards.production.ColorEnum;
-import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.player.ProPlayer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -37,7 +32,7 @@ class ProPlayerTest extends PlayerTest {
 
         p2.storeInWarehouse(Resource.COIN, 1);
         p2.storeInWarehouse(Resource.SERVANT, 2);
-        p2.startBasicProduction(Resource.COIN, Resource.SERVANT, Resource.SHIELD);
+        //p2.startBasicProduction(Resource.COIN, Resource.SERVANT, Resource.SHIELD);
         assertEquals('p', p2.getTurnType());
 
         //TEST "BUY PRODUCTION CARD"

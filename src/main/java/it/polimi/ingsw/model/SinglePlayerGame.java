@@ -1,10 +1,12 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.cards.Deck;
-import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
 import it.polimi.ingsw.model.market.Market;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.player.PopePass;
 import it.polimi.ingsw.model.player.ProPlayer;
+
+import java.util.ArrayList;
 
 
 public class SinglePlayerGame extends Game implements Observer{
@@ -77,9 +79,23 @@ public class SinglePlayerGame extends Game implements Observer{
         winner = this.player;
         end(winner);
     }
-    public void updatePosition(Player player){}
+    public void updatePosition(Player player){
+        //controller
+    }
     public void updateEndTurn(ProPlayer player){} //do nothing?
-    public void alertVaticanReport(Player player, int vaticanReport){}
+    /**Alert the observer that {@code player} has triggered the {@code vaticanReport}.
+     * @param vaticanReport must be between 1 and 3. */
+    public void alertVaticanReport(Player player, int vaticanReport){
+        if(player.equals(lorenzo)){
+            ArrayList<PopePass> passes = this.player.getPopePasses();
+            if(this.player.isInVaticanReportRange(vaticanReport)){
+                passes.get(vaticanReport-1).activate();
+            }else{
+                passes.get(vaticanReport-1).disable();
+            }
+        }
+    }
+    /**By discarding 1 resource, Lorenzo will be gifted 1 faith point. */
     public void alertDiscardResource(Player player){
         lorenzo.moveOnBoard(1);
     }

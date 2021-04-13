@@ -45,4 +45,16 @@ class PlayerTest {
         assertSame(multiGame, player.getObserver(), "Observer substitution: cannot go from single to multi");
     }
 
+    @Test
+    void isInVaticanReportRange(){
+        player.moveOnBoard(4);
+        assertFalse(player.isInVaticanReportRange(1));
+        player.moveOnBoard(1);
+        assertTrue(player.isInVaticanReportRange(1));
+        assertFalse(player.isInVaticanReportRange(2));
+        assertFalse(player.isInVaticanReportRange(3));
+        player.moveOnBoard(4);
+        assertTrue(player.isInVaticanReportRange(1));
+    }
+
 }

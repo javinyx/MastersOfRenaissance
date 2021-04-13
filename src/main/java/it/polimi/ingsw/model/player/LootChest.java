@@ -43,38 +43,43 @@ public class LootChest {
             addResources(item);
         }
     }
-    /*
+    /**
      * Remove selected item from inventory.
      * <p>Mind that only SHIELD, STONE, COIN and SERVANT will be considered
      * removable item since there cannot be FAITH or BLANK resources in Lootchest.</p>
      * @param item the item to remove
+     * @return true if the deletion has been successfull, false otherwise
      */
-    public void removeResources(Resource item){
+    public boolean removeResources(Resource item){
         switch (item){
             case SHIELD : inventory.compute(Resource.SHIELD, (tokenKey, oldValue) -> oldValue -= 1);
                         if(inventory.get(Resource.SHIELD)>=0){
                             countResInLootchest--;
+                            return true;
                         }
                         inventory.replace(Resource.SHIELD,-1,0);
-                        return;
+                        return false;
             case STONE : inventory.compute(Resource.STONE, (tokenKey, oldValue) -> oldValue -= 1);
                         if(inventory.get(Resource.STONE)>=0){
                             countResInLootchest--;
+                            return true;
                         }
                         inventory.replace(Resource.STONE,-1, 0);
-                        return;
+                        return false;
             case COIN : inventory.compute(Resource.COIN, (tokenKey, oldValue) -> oldValue -= 1);
                         if(inventory.get(Resource.COIN)>=0){
                             countResInLootchest--;
+                            return true;
                         }
                         inventory.replace(Resource.COIN, -1, 0);
-                        return;
+                        return false;
             case SERVANT : inventory.compute(Resource.SERVANT, (tokenKey, oldValue) -> oldValue -= 1);
                         if(inventory.get(Resource.SERVANT)>=0){
                             countResInLootchest--;
+                            return true;
                         }
                         inventory.replace(Resource.SERVANT, -1, 0);
-                        return;
+                        return false;
             default: throw new RuntimeException();
         }
     }

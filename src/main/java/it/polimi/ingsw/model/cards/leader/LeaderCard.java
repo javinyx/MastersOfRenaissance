@@ -16,5 +16,5 @@ public interface LeaderCard extends Card{
 
     List<Buyable> getCost();
 
-    void applyEffect(ProPlayer player);
+    boolean applyEffect(ProPlayer player);
 }

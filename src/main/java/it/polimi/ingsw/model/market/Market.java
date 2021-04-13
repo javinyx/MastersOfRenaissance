@@ -1,8 +1,8 @@
 package it.polimi.ingsw.model.market;
 
 /*
-13 Biglie Mercato
-(4 bianche, 2 blu, 2 grigie, 2 gialle, 2 viola, 1 rossa)
+13 Market Marbles
+(4 white, 2 blue, 2 grey, 2 yellow, 2 purple, 1 red)
  */
 
 import java.util.ArrayList;

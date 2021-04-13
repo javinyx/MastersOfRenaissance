@@ -52,11 +52,13 @@ public class StorageAbility implements LeaderCard {
             return new ArrayList<>(cost);
         }
 
-        public void applyEffect(ProPlayer player) {
+        public boolean applyEffect(ProPlayer player) {
 
             if (player.getTurnType() == 'm') {
                 player.setExtraStorage(this);
+                return true;
             }
+            return false;
         }
 
         public Resource getStorageType(){ return storageType; }
@@ -77,7 +79,8 @@ public class StorageAbility implements LeaderCard {
         }
 
         public boolean add(Resource resource){
-            if(!storageType.equals(resource)){
+            if(!storageType.equals(resource) && !status){
+                //cannot add if the card is inactive or if the resource type is not correct
                 return false;
             }
             switch(size()){

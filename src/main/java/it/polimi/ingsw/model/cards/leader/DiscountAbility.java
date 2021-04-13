@@ -43,15 +43,18 @@ public class DiscountAbility implements LeaderCard {
         return new ArrayList<>(cost);
     }
 
-    public void applyEffect(ProPlayer player){
+    public boolean applyEffect(ProPlayer player){
 
-        if (player.getTurnType() == 'b')
+        if (player.getTurnType() == 'b') {
 
-            for (int i = 0; i < player.getResAcquired().size(); i++)
-                if (player.getResAcquired().get(i).equals(discountType)){
+            for (int i = 0; i < player.getResAcquired().size(); i++) {
+                if (player.getResAcquired().get(i).equals(discountType)) {
                     player.getResAcquired().remove(i);
-                    return;
+                    return true;
                 }
+            }
+        }
+        return false;
     }
 
 }

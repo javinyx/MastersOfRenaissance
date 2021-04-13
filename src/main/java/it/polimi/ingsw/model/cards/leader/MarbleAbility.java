@@ -45,14 +45,16 @@ public class MarbleAbility implements LeaderCard {
         return new ArrayList<>(cost);
     }
 
-    public void applyEffect(ProPlayer player) {
+    public boolean applyEffect(ProPlayer player) {
 
         for (Resource r : player.getResAcquired()) {
             if (r == Resource.BLANK) {
                 player.getResAcquired().remove(r);
                 player.getResAcquired().add(replacingResource);
+                return true;
             }
         }
+        return false;
     }
 
 }

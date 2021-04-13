@@ -15,7 +15,7 @@ public class Player implements Observable {
         this.nickname = nickname;
         currPos = 0;
         this.game = game;
-        observer = null;
+        observer = game;
     }
 
 

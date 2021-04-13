@@ -32,7 +32,6 @@ class ProPlayerTest extends PlayerTest {
 
         p2.storeInWarehouse(Resource.COIN, 1);
         p2.storeInWarehouse(Resource.SERVANT, 2);
-        //p2.startBasicProduction(Resource.COIN, Resource.SERVANT, Resource.SHIELD);
         assertEquals('p', p2.getTurnType());
 
         //TEST "BUY PRODUCTION CARD"

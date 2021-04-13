@@ -1,9 +1,11 @@
 package it.polimi.ingsw.model.cards.leader;
 
+import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.cards.production.ProductionCard;
 import it.polimi.ingsw.model.market.Buyable;
 import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.player.ProPlayer;
+import it.polimi.ingsw.model.player.Warehouse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,21 +50,66 @@ public class BoostAbility implements LeaderCard {
         return new ArrayList<>(cost);
     }
 
-    public void applyEffect(ProPlayer player){
-
+    public boolean applyEffect(ProPlayer player){
         if (player.getTurnType() == 'p'){
+            ResourcesWallet wallet = player.getResAsCash();
 
-            if(player.getWarehouse().getSmallInventory() != null && player.getWarehouse().getSmallInventory().equals(resourceNeeded))
-                player.getWarehouse().removeSmall();
-            else if (player.getWarehouse().getMidInventory() != null && player.getWarehouse().getMidInventory().get(0).equals(resourceNeeded))
-                player.getWarehouse().removeMid();
-            else if (player.getWarehouse().getLargeInventory() != null && player.getWarehouse().getLargeInventory().get(0).equals(resourceNeeded))
-                player.getWarehouse().removeLarge();
-            else
-                return;
+            if(wallet.isInLootChestTray(resourceNeeded) && player.getLootChest().getNumberResInInventory(resourceNeeded)>0){
+                List<Resource> removeFromLoot = wallet.getLootchestTray();
+                removeFromLoot.remove(resourceNeeded);
+                player.getLootChest().removeResources(resourceNeeded);
+
+            }else if(wallet.isInWarehouseTray(resourceNeeded)){
+                List<Resource> removeFromWar = wallet.getWarehouseTray();
+                Warehouse warehouse = player.getWarehouse();
+                if(warehouse.getSmallInventory().equals(resourceNeeded)){
+                    warehouse.removeSmall();
+                    removeFromWar.remove(resourceNeeded);
+                }else if(warehouse.getMidInventory().contains(resourceNeeded)){
+                    warehouse.removeMid();
+                    removeFromWar.remove(resourceNeeded);
+                }else if(warehouse.getLargeInventory().contains(resourceNeeded)){
+                    warehouse.removeLarge();
+                    removeFromWar.remove(resourceNeeded);
+                }else{
+                    //player said that there were resourced to be removed from warehouse but there isn't that res in Warehouse
+                    return false;
+                }
+
+            }else if(wallet.isInExtraStorage1Tray(resourceNeeded)){
+                StorageAbility extra1 = player.getExtraStorage1();
+                StorageAbility extra2 = player.getExtraStorage2();
+                if(extra1.isActive() && extra1.getStorageType().equals(resourceNeeded) && extra1.size()>0){
+                    extra1.remove(resourceNeeded);
+                    wallet.getExtraStorage1().remove(resourceNeeded);
+                /*}else if(extra2.isActive() && extra2.getStorageType().equals(resourceNeeded) && extra2.size()>0){
+                    //player might have swapped the extraStorage cards and teh extraStorage in Wallet
+                    extra2.remove(resourceNeeded);
+                    wallet.getExtraStorage1().remove(resourceNeeded);*/
+                }else{
+                    return false;
+                }
+            }else if(wallet.isInExtraStorage2Tray(resourceNeeded)){
+                StorageAbility extra2 = player.getExtraStorage2();
+                StorageAbility extra1 = player.getExtraStorage1();
+                if(extra2.isActive() && extra2.getStorageType().equals(resourceNeeded) && extra2.size()>0){
+                    extra2.remove(resourceNeeded);
+                    wallet.getExtraStorage2().remove(resourceNeeded);
+                /*}else if(extra1.isActive() && extra1.getStorageType().equals(resourceNeeded) && extra1.size()>0){
+                    //player might have swapped the extraStorage cards and teh extraStorage in Wallet
+                    extra1.remove(resourceNeeded);
+                    wallet.getExtraStorage2().remove(resourceNeeded);*/
+                }else{
+                    return false;
+                }
+            }else{
+                //player hasn't allocated any right resource to activate this production
+                return false;
+            }
 
             player.addFaithPoints(1);
-            player.getLootChest().addResources(player.chooseResource());
+            return true;
         }
+        return false;
     }
 }

@@ -1,6 +1,10 @@
 package it.polimi.ingsw.model;
 
 
+import it.polimi.ingsw.model.cards.Card;
+import it.polimi.ingsw.model.cards.Deck;
+import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
+import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.market.Market;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.PopePass;
@@ -16,6 +20,18 @@ public class MultiplayerGame extends Game implements Observer {
     private int totalPlayers;
     private ProPlayer currPlayer;
 
+    public MultiplayerGame(String prodFileName, String leadFileName){
+        players = new ArrayList<>();
+        market = new Market();
+        totalPlayers = 0;
+        currPlayer = null;
+        winner = null;
+        activePlayers = new ArrayList<>();
+
+        leaderDeck = new Deck(LeaderCard.class, leadFileName);
+        //productionDecks;
+    }
+
     public MultiplayerGame(){
         players = new ArrayList<>();
         market = new Market();
@@ -23,9 +39,33 @@ public class MultiplayerGame extends Game implements Observer {
         currPlayer = null;
         winner = null;
         activePlayers = new ArrayList<>();
+
+        leaderDeck = new Deck(LeaderCard.class, null);
+        //productionDecks;
     }
 
-    public void start(){}
+    /*
+    1 creare il player
+    2 distribuire le carte leader
+    4 inizializzare prodcard
+    5 mercato, gia fatto
+     */
+
+    public void start(String nick, int numPlayers){
+
+        List<Card> tempList;
+
+        //distribuisci leader
+        for (int i = 0; i < numPlayers; i++) {
+            tempList = new ArrayList<>();
+            for (int j = 0; j < 4; j++) {
+                tempList.add(leaderDeck.getFirst());
+            }
+            //players.get(i).gaveLeaderOption(tempList);
+        }
+
+
+    }
 
     public Player getWinner(){
         return winner;
@@ -36,12 +76,28 @@ public class MultiplayerGame extends Game implements Observer {
                 .map(Player :: getNickname)
                 .collect(Collectors.toList());
         if(!nicknames.isEmpty() && nicknames.contains(nickname)){
-            throw new IllegalArgumentException("Already exists a player with "+nickname + "as nickname");
+            throw new IllegalArgumentException("Already exists a player with "+ nickname + "as nickname");
         }
 
         totalPlayers++;
         ProPlayer p = new ProPlayer(nickname, totalPlayers, this);
         players.add(p);
+
+        switch(p.getTurnID()){
+            case 2:
+                p.chooseResource();
+                break;
+            case 3:
+                p.moveOnBoard(1);
+                p.chooseResource();
+                break;
+            case 4:
+                p.moveOnBoard(1);
+                p.chooseResource();
+                p.chooseResource();
+                break;
+        }
+
         p.registerObserver(this);
         activePlayers.add(p);
     }

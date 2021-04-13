@@ -18,7 +18,7 @@ public abstract class Game implements Observer{
     protected List<Deck> productionDecks;
     protected Deck leaderDeck;
 
-    public abstract void start();
+    public abstract void start(String nick, int numPlayers);
     public abstract void createPlayer(String nickname);
     public Market getMarket(){
         return market;
@@ -37,7 +37,7 @@ public abstract class Game implements Observer{
     public List<ConcreteProductionCard> getBuyableProductionCards(){
         List<Card> availableCards = new ArrayList<>();
         for(Deck d : productionDecks){
-            //availableCards.add(d.getFirst());
+            availableCards.add(d.getFirst());
         }
         return availableCards.stream()
                 .map(x -> (ConcreteProductionCard)x)

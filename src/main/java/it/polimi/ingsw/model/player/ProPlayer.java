@@ -2,6 +2,9 @@ package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.ResourcesWallet;
+import it.polimi.ingsw.model.SinglePlayerGame;
+import it.polimi.ingsw.model.cards.Card;
+import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
 import it.polimi.ingsw.model.cards.leader.BoostAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.StorageAbility;
@@ -9,6 +12,7 @@ import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Market;
 import it.polimi.ingsw.model.market.Resource;
 
+import javax.swing.*;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -726,6 +730,12 @@ public class ProPlayer extends Player{
             return;
         }else
         throw new NullPointerException("No StorageAbility card given");
+    }
+
+    public void drawActionToken (SinglePlayerGame game){
+
+        game.getTokenDeck().draw();  // ma su quale carta lo fa?
+
     }
 
 }

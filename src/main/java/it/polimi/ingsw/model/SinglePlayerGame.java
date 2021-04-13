@@ -1,12 +1,16 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.Deck;
+import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
+import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.market.Market;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.PopePass;
 import it.polimi.ingsw.model.player.ProPlayer;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class SinglePlayerGame extends Game implements Observer{
@@ -17,15 +21,22 @@ public class SinglePlayerGame extends Game implements Observer{
     private Deck tokenDeck;
     private Player winner;
 
+    /*
+    protected Market market;
+    protected Player winner;
+    protected List<Deck> productionDecks;
+    protected Deck leaderDeck;
+     */
+
     public SinglePlayerGame() {
         market = new Market();
         player = null;
         lorenzo = new Player("Lorenzo", this);
         winner = null;
 
-        /*tokenDeck.createProdDeck();
-        leaderDeck.createDeck(leaderDeck.getClass());
-        tokenDeck.createDeck(tokenDeck.getClass());*/
+        tokenDeck = new Deck(ActionToken.class, null);
+        leaderDeck = new Deck(LeaderCard.class, null);
+        //productionDecks.
     }
 
     public SinglePlayerGame(String tokenFileName, String prodFileName, String leadFileName) {
@@ -34,23 +45,41 @@ public class SinglePlayerGame extends Game implements Observer{
         lorenzo = new Player("Lorenzo", this);
         winner = null;
 
-
-
-        /*tokenDeck.createDeck(tokenDeck.getClass(), tokenFileName);
-        leaderDeck.createDeck(leaderDeck.getClass(), leadFileName);
-        tokenDeck.createDeck(tokenDeck.getClass(), prodFileName);*/
+        tokenDeck = new Deck(ActionToken.class, tokenFileName);
+        leaderDeck = new Deck(LeaderCard.class, leadFileName);
+        //productionDecks;
     }
 
+    public void newTokenDeck() {
+        tokenDeck = new Deck(ActionToken.class, null);
+    }
 
+    public List<Deck> getProdDeck() {
+        return productionDecks;
+    }
+/*
+    1 creare il player
+    2 distribuire le carte leader
+    3 inizializzare action token
+    4 inizializzare prodcard
+    5 mercato, gia fatto
+     */
 
-    public void start(){
+    public void start(String nick, int numPlayers){
 
+        List<Card> tempList = new ArrayList<>();
+
+        //distribuisci leader
+        for (int i = 0; i < 4; i++) {
+            tempList.add(leaderDeck.getFirst());
+        }
+        //player.gaveLeaderOption(tempList);
 
     }
 
 
     public void createPlayer(String nickname){
-        if(nickname==null){
+        if(nickname == null){
             throw new NullPointerException();
         }
         if(nickname.equals(lorenzo.getNickname())){
@@ -95,6 +124,11 @@ public class SinglePlayerGame extends Game implements Observer{
             }
         }
     }
+
+    public Deck getTokenDeck() {
+        return tokenDeck;
+    }
+
     /**By discarding 1 resource, Lorenzo will be gifted 1 faith point. */
     public void alertDiscardResource(Player player){
         lorenzo.moveOnBoard(1);

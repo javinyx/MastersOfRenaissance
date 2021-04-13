@@ -12,22 +12,15 @@ public class Market{
 
     private Resource[][] marketBoard;
     private Resource extraMarble;
-    private Resource temp;
-    private int white;
-    private int blue;
-    private int gray;
-    private int yellow;
-    private int violet;
-    private int red;
-
 
     public Market() {
-        white = 4;
-        blue = 2;
-        gray = 2;
-        yellow = 2;
-        violet = 2;
-        red = 1;
+        int white = 4;
+        int blue = 2;
+        int gray = 2;
+        int yellow = 2;
+        int violet = 2;
+        int red = 1;
+        Resource temp;
 
         marketBoard = new Resource[3][4];
 

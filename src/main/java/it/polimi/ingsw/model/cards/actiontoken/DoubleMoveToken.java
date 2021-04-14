@@ -11,8 +11,6 @@ public class DoubleMoveToken implements ActionToken {
 
     public void draw(ProPlayer player, SinglePlayerGame game){
 
-        game.getTokenDeck().getFirst();
-
         player.moveOnBoard(2);
     }
 

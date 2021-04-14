@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.cards.leader.BoostAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.StorageAbility;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
+import it.polimi.ingsw.model.cards.production.ProductionCard;
 import it.polimi.ingsw.model.market.Market;
 import it.polimi.ingsw.model.market.Resource;
 
@@ -732,9 +733,9 @@ public class ProPlayer extends Player{
         throw new NullPointerException("No StorageAbility card given");
     }
 
-    public void drawActionToken (SinglePlayerGame game){
+    public void drawActionToken (){
 
-        // game.getTokenDeck().draw();  // ma su quale carta lo fa?
+        ((ActionToken)((SinglePlayerGame)game).getTokenDeck().getFirst()).draw(this, (SinglePlayerGame)game);
 
     }
 

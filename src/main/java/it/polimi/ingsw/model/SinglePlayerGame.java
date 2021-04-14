@@ -11,6 +11,7 @@ import it.polimi.ingsw.model.player.ProPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class SinglePlayerGame extends Game implements Observer{
@@ -48,14 +49,6 @@ public class SinglePlayerGame extends Game implements Observer{
         tokenDeck = new Deck("ActionToken");
         leaderDeck = new Deck("LeaderCard");
         //productionDecks;
-    }
-
-    public void newTokenDeck() {
-        tokenDeck = new Deck("ActionToken");
-    }
-
-    public List<Deck> getProdDeck() {
-        return productionDecks;
     }
 /*
     1 creare il player
@@ -124,11 +117,19 @@ public class SinglePlayerGame extends Game implements Observer{
             }
         }
     }
-
+//---------------------------------------------------------------------------------------------------------
     public Deck getTokenDeck() {
         return tokenDeck;
     }
 
+    public void newTokenDeck() {
+        tokenDeck = new Deck("ActionToken");
+    }
+
+    public List<Deck> getProdDeck() {
+        return productionDecks;
+    }
+//------------------------------------------------------------------------------------------------------------
     /**By discarding 1 resource, Lorenzo will be gifted 1 faith point. */
     public void alertDiscardResource(Player player){
         lorenzo.moveOnBoard(1);

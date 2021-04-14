@@ -104,6 +104,16 @@ public class Deck {
         Collections.shuffle(cardList);
     }
 
+    private static Deck createMiniDeck(ArrayList<Card> currentCardList){
+        ArrayList<Card> clonedCardList = new ArrayList<>(currentCardList);
+        Collections.shuffle(clonedCardList);
+
+        Deck miniDeck = new Deck();
+        miniDeck.cardDeque = new ArrayDeque<>(clonedCardList);
+
+        return miniDeck;
+    }
+
 
     // ******************************** PUBLIC METHODS ********************************
 
@@ -119,7 +129,7 @@ public class Deck {
         return cardDeque.getFirst();
     }
 
-    public List<Deck> createProdDeckList() throws IOException{
+    public static List<Deck> createProdDeckList() throws IOException{
         List<Card> allProdCards;
         List<Deck> prodDecks = new ArrayList<>();
         Gson gson = new Gson();
@@ -137,13 +147,4 @@ public class Deck {
         return prodDecks;
     }
 
-    private Deck createMiniDeck(ArrayList<Card> currentCardList){
-        ArrayList<Card> clonedCardList = new ArrayList<>(currentCardList);
-        Collections.shuffle(clonedCardList);
-
-        Deck miniDeck = new Deck();
-        miniDeck.cardDeque = new ArrayDeque<>(clonedCardList);
-
-        return miniDeck;
-    }
 }

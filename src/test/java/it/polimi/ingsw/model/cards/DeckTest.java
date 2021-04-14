@@ -10,7 +10,7 @@ class DeckTest {
     @BeforeEach
     public void testSetup(){
 
-        Deck d = new Deck("ActionToken");
+        Deck d = new Deck("LeaderCard");
 
     }
 

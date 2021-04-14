@@ -4,6 +4,7 @@
     "cards": [
       {
         "id" : 1,
+        "victoryPoints": 2,
         "cost": [
           "YELLOW",
           "GREEN"
@@ -12,6 +13,7 @@
       },
       {
         "id" : 2,
+        "victoryPoints": 2,
         "cost": [
           "BLUE",
           "PURPLE"
@@ -20,6 +22,7 @@
       },
       {
         "id" : 3,
+        "victoryPoints": 2,
         "cost": [
           "GREEN",
           "BLUE"
@@ -28,6 +31,7 @@
       },
       {
         "id" : 4,
+        "victoryPoints": 2,
         "cost": [
           "YELLOW",
           "PURPLE"
@@ -41,6 +45,7 @@
     "cards": [
       {
         "id" : 5,
+        "victoryPoints": 3,
         "cost": [
           "COIN",
           "COIN",
@@ -55,6 +60,7 @@
       },
       {
         "id" : 6,
+        "victoryPoints": 3,
         "cost": [
           "STONE",
           "STONE",
@@ -69,6 +75,7 @@
       },
       {
         "id" : 7,
+        "victoryPoints": 3,
         "cost": [
           "SERVANT",
           "SERVANT",
@@ -83,6 +90,7 @@
       },
       {
         "id" : 8,
+        "victoryPoints": 3,
         "cost": [
           "SHIELD",
           "SHIELD",
@@ -102,6 +110,7 @@
     "cards": [
       {
         "id" : 9,
+        "victoryPoints": 5,
         "cost": [
           "YELLOW",
           "YELLOW",
@@ -111,6 +120,7 @@
       },
       {
         "id" : 10,
+        "victoryPoints": 5,
         "cost": [
           "GREEN",
           "GREEN",
@@ -120,6 +130,7 @@
       },
       {
         "id" : 11,
+        "victoryPoints": 5,
         "cost": [
           "BLUE",
           "BLUE",
@@ -129,6 +140,7 @@
       },
       {
         "id" : 12,
+        "victoryPoints": 5,
         "cost": [
           "PURPLE",
           "PURPLE",
@@ -143,21 +155,25 @@
     "cards" : [
       {
         "id" : 13,
+        "victoryPoints": 4,
         "cost" : ["YELLOW"],
         "resourceNeeded" : "SHIELD"
       },
       {
         "id" : 14,
+        "victoryPoints": 4,
         "cost" : ["BLUE"],
         "resourceNeeded" : "SERVANT"
       },
       {
         "id" : 15,
+        "victoryPoints": 4,
         "cost" : ["PURPLE"],
         "resourceNeeded" : "STONE"
       },
       {
         "id" : 16,
+        "victoryPoints": 4,
         "cost" : ["GREEN"],
         "resourceNeeded" : "COIN"
       }

@@ -8,13 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StorageAbility implements LeaderCard {
+        private int id;
         private final int victoryPoints;
         private final List<Resource> cost;
         private boolean status;
         private final Resource storageType;
         private Resource[] resources;
 
-        public StorageAbility(int victoryPoints, List<Resource> cost, Resource storageType) {
+        public StorageAbility(int id, int victoryPoints, List<Resource> cost, Resource storageType) {
+            this.id = id;
             this.victoryPoints = victoryPoints;
             this.cost = cost;
             status = false;

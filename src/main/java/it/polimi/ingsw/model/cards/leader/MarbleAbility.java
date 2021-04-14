@@ -9,12 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MarbleAbility implements LeaderCard {
+    private int id;
     private final int victoryPoints;
     private final List<ProductionCard> cost;
     private boolean status;
     private Resource replacingResource;
 
-    public MarbleAbility(int victoryPoints, List<ProductionCard> cost, Resource replacingResource) {
+    public MarbleAbility(int id, int victoryPoints, List<ProductionCard> cost, Resource replacingResource) {
+        this.id = id;
         this.victoryPoints = victoryPoints;
         this.cost = cost;
         status = false;

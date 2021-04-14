@@ -734,7 +734,7 @@ public class ProPlayer extends Player{
 
     public void drawActionToken (SinglePlayerGame game){
 
-        game.getTokenDeck().draw();  // ma su quale carta lo fa?
+        // game.getTokenDeck().draw();  // ma su quale carta lo fa?
 
     }
 

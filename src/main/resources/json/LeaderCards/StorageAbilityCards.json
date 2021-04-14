@@ -1,0 +1,62 @@
+[
+  {
+    "id" : 5,
+    "victoryPoints": 3,
+    "cost": [
+      "COIN",
+      "COIN",
+      "COIN",
+      "COIN",
+      "COIN"
+    ],
+    "storageType": [
+      "STONE",
+      "STONE"
+    ]
+  },
+  {
+    "id" : 6,
+    "victoryPoints": 3,
+    "cost": [
+      "STONE",
+      "STONE",
+      "STONE",
+      "STONE",
+      "STONE"
+    ],
+    "storageType": [
+      "SERVANT",
+      "SERVANT"
+    ]
+  },
+  {
+    "id" : 7,
+    "victoryPoints": 3,
+    "cost": [
+      "SERVANT",
+      "SERVANT",
+      "SERVANT",
+      "SERVANT",
+      "SERVANT"
+    ],
+    "storageType": [
+      "SHIELD",
+      "SHIELD"
+    ]
+  },
+  {
+    "id" : 8,
+    "victoryPoints": 3,
+    "cost": [
+      "SHIELD",
+      "SHIELD",
+      "SHIELD",
+      "SHIELD",
+      "SHIELD"
+    ],
+    "storageType": [
+      "COIN",
+      "COIN"
+    ]
+  }
+]

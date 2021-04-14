@@ -9,12 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DiscountAbility implements LeaderCard {
+    private int id;
     private final int victoryPoints;
     private final List<ProductionCard> cost;
     private boolean status;
     private final Resource discountType;
 
-    public DiscountAbility(int victoryPoints, List<ProductionCard> cost, Resource discountType) {
+    public DiscountAbility(int id, int victoryPoints, List<ProductionCard> cost, Resource discountType) {
+        this.id = id;
         this.victoryPoints = victoryPoints;
         this.cost = cost;
         status = false;

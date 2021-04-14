@@ -46,7 +46,7 @@ class DiscountAbilityTest {
                 .map(x->(ProductionCard)x)
                 .collect(Collectors.toList());
 
-        dis = new DiscountAbility(12, costProd, Resource.SERVANT);
+        dis = new DiscountAbility(11,12, costProd, Resource.SERVANT);
 
         game = new MultiplayerGame();
 

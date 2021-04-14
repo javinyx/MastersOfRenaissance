@@ -28,7 +28,7 @@ public class MultiplayerGame extends Game implements Observer {
         winner = null;
         activePlayers = new ArrayList<>();
 
-        leaderDeck = new Deck(LeaderCard.class, leadFileName);
+        leaderDeck = new Deck("LeadCard");
         //productionDecks;
     }
 
@@ -40,7 +40,7 @@ public class MultiplayerGame extends Game implements Observer {
         winner = null;
         activePlayers = new ArrayList<>();
 
-        leaderDeck = new Deck(LeaderCard.class, null);
+        leaderDeck = new Deck("LeadCard");
         //productionDecks;
     }
 

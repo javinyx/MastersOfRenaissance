@@ -16,13 +16,14 @@ import java.util.List;
  * hidden.
  * Once it's active (use {@code isActive()} method to discover its status)</p>*/
 public class BoostAbility implements LeaderCard {
-
+    private int id;
     private final int victoryPoints;
     private final List<ProductionCard> cost;
     private boolean status;
     private Resource resourceNeeded;
 
-    public BoostAbility(int victoryPoints, List<ProductionCard> cost, Resource resourceNeeded) {
+    public BoostAbility(int id, int victoryPoints, List<ProductionCard> cost, Resource resourceNeeded) {
+        this.id = id;
         this.victoryPoints = victoryPoints;
         this.cost = new ArrayList<>();
         this.cost.addAll(cost);

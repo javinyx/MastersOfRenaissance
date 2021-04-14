@@ -1,0 +1,38 @@
+[
+  {
+    "id" : 1,
+    "victoryPoints": 2,
+    "cost": [
+      "YELLOW",
+      "GREEN"
+    ],
+    "discountType": "SERVANT"
+  },
+  {
+    "id" : 2,
+    "victoryPoints": 2,
+    "cost": [
+      "BLUE",
+      "PURPLE"
+    ],
+    "discountType": "SHIELD"
+  },
+  {
+    "id" : 3,
+    "victoryPoints": 2,
+    "cost": [
+      "GREEN",
+      "BLUE"
+    ],
+    "discountType": "STONE"
+  },
+  {
+    "id" : 4,
+    "victoryPoints": 2,
+    "cost": [
+      "YELLOW",
+      "PURPLE"
+    ],
+    "discountType": "COIN"
+  }
+]

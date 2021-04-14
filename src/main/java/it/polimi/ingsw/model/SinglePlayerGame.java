@@ -34,8 +34,8 @@ public class SinglePlayerGame extends Game implements Observer{
         lorenzo = new Player("Lorenzo", this);
         winner = null;
 
-        tokenDeck = new Deck(ActionToken.class, null);
-        leaderDeck = new Deck(LeaderCard.class, null);
+        tokenDeck = new Deck("ActionToken");
+        leaderDeck = new Deck("LeaderCard");
         //productionDecks.
     }
 
@@ -45,13 +45,13 @@ public class SinglePlayerGame extends Game implements Observer{
         lorenzo = new Player("Lorenzo", this);
         winner = null;
 
-        tokenDeck = new Deck(ActionToken.class, tokenFileName);
-        leaderDeck = new Deck(LeaderCard.class, leadFileName);
+        tokenDeck = new Deck("ActionToken");
+        leaderDeck = new Deck("LeaderCard");
         //productionDecks;
     }
 
     public void newTokenDeck() {
-        tokenDeck = new Deck(ActionToken.class, null);
+        tokenDeck = new Deck("ActionToken");
     }
 
     public List<Deck> getProdDeck() {

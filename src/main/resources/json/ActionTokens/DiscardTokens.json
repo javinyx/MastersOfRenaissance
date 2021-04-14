@@ -1,0 +1,30 @@
+[
+  {
+    "id" : 1,
+    "typeProdCard": [
+      "GREEN",
+      "GREEN"
+    ]
+  },
+  {
+    "id" : 2,
+    "typeProdCard": [
+      "PURPLE",
+      "PURPLE"
+    ]
+  },
+  {
+    "id" : 3,
+    "typeProdCard": [
+      "BLUE",
+      "BLUE"
+    ]
+  },
+  {
+    "id": 4,
+    "typeProdCard": [
+      "YELLOW",
+      "YELLOW"
+    ]
+  }
+]

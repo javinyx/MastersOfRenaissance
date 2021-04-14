@@ -9,33 +9,6 @@
     "production":["FAITH"]
   },
   {
-    "id" : 2,
-    "victoryPoints" : 1,
-    "color" : "PURPLE",
-    "level" : 1,
-    "cost": ["SERVANT", "SERVANT"],
-    "requiredResources": ["STONE"],
-    "production":["FAITH"]
-  },
-  {
-    "id" : 3,
-    "victoryPoints" : 1,
-    "color" : "BLUE",
-    "level" : 1,
-    "cost": ["COIN", "COIN"],
-    "requiredResources": ["SHIELD"],
-    "production":["FAITH"]
-  },
-  {
-    "id" : 4,
-    "victoryPoints" : 1,
-    "color" : "YELLOW",
-    "level" : 1,
-    "cost": ["STONE", "STONE"],
-    "requiredResources": ["SERVANT"],
-    "production":["FAITH"]
-  },
-  {
     "id" : 5,
     "victoryPoints" : 2,
     "color" : "GREEN",
@@ -43,33 +16,6 @@
     "cost": ["SHIELD", "SERVANT", "STONE"],
     "requiredResources": ["STONE"],
     "production":["SERVANT"]
-  },
-  {
-    "id" : 6,
-    "victoryPoints" : 2,
-    "color" : "PURPLE",
-    "level" : 1,
-    "cost": ["SHIELD", "SERVANT", "COIN"],
-    "requiredResources": ["COIN"],
-    "production":["SHIELD"]
-  },
-  {
-    "id" : 7,
-    "victoryPoints" : 2,
-    "color" : "BLUE",
-    "level" : 1,
-    "cost": ["COIN", "SERVANT", "STONE"],
-    "requiredResources": ["SERVANT"],
-    "production":["STONE"]
-  },
-  {
-    "id" : 8,
-    "victoryPoints" : 2,
-    "color" : "YELLOW",
-    "level" : 1,
-    "cost": ["SHIELD", "STONE", "COIN"],
-    "requiredResources": ["SHIELD"],
-    "production":["COIN"]
   },
   {
     "id" : 9,
@@ -81,33 +27,6 @@
     "production":["COIN", "SHIELD", "STONE"]
   },
   {
-    "id" : 10,
-    "victoryPoints" : 3,
-    "color" : "PURPLE",
-    "level" : 1,
-    "cost": ["SERVANT", "SERVANT", "SERVANT"],
-    "requiredResources": ["COIN", "COIN"],
-    "production":["SERVANT", "SHIELD", "STONE"]
-  },
-  {
-    "id" : 11,
-    "victoryPoints" : 3,
-    "color" : "BLUE",
-    "level" : 1,
-    "cost": ["COIN", "COIN", "COIN"],
-    "requiredResources": ["STONE", "STONE"],
-    "production":["COIN", "SERVANT", "SHIELD"]
-  },
-  {
-    "id" : 12,
-    "victoryPoints" : 3,
-    "color" : "YELLOW",
-    "level" : 1,
-    "cost": ["STONE", "STONE", "STONE"],
-    "requiredResources": ["SHIELD", "SHIELD"],
-    "production":["COIN", "SERVANT", "STONE"]
-  },
-  {
     "id" : 13,
     "victoryPoints" : 4,
     "color" : "GREEN",
@@ -115,6 +34,33 @@
     "cost": ["SHIELD", "SHIELD", "COIN", "COIN"],
     "requiredResources": ["STONE", "SERVANT"],
     "production":["COIN", "COIN", "FAITH"]
+  },
+  {
+    "id" : 2,
+    "victoryPoints" : 1,
+    "color" : "PURPLE",
+    "level" : 1,
+    "cost": ["SERVANT", "SERVANT"],
+    "requiredResources": ["STONE"],
+    "production":["FAITH"]
+  },
+  {
+    "id" : 6,
+    "victoryPoints" : 2,
+    "color" : "PURPLE",
+    "level" : 1,
+    "cost": ["SHIELD", "SERVANT", "COIN"],
+    "requiredResources": ["COIN"],
+    "production":["SHIELD"]
+  },
+  {
+    "id" : 10,
+    "victoryPoints" : 3,
+    "color" : "PURPLE",
+    "level" : 1,
+    "cost": ["SERVANT", "SERVANT", "SERVANT"],
+    "requiredResources": ["COIN", "COIN"],
+    "production":["SERVANT", "SHIELD", "STONE"]
   },
   {
     "id" : 14,
@@ -126,6 +72,33 @@
     "production":["STONE", "STONE", "FAITH"]
   },
   {
+    "id" : 3,
+    "victoryPoints" : 1,
+    "color" : "BLUE",
+    "level" : 1,
+    "cost": ["COIN", "COIN"],
+    "requiredResources": ["SHIELD"],
+    "production":["FAITH"]
+  },
+  {
+    "id" : 7,
+    "victoryPoints" : 2,
+    "color" : "BLUE",
+    "level" : 1,
+    "cost": ["COIN", "SERVANT", "STONE"],
+    "requiredResources": ["SERVANT"],
+    "production":["STONE"]
+  },
+  {
+    "id" : 11,
+    "victoryPoints" : 3,
+    "color" : "BLUE",
+    "level" : 1,
+    "cost": ["COIN", "COIN", "COIN"],
+    "requiredResources": ["STONE", "STONE"],
+    "production":["COIN", "SERVANT", "SHIELD"]
+  },
+  {
     "id" : 15,
     "victoryPoints" : 4,
     "color" : "BLUE",
@@ -133,6 +106,33 @@
     "cost": ["COIN", "COIN", "SERVANT", "SERVANT"],
     "requiredResources": ["SHIELD", "STONE"],
     "production":["SERVANT", "SERVANT", "FAITH"]
+  },
+  {
+    "id" : 4,
+    "victoryPoints" : 1,
+    "color" : "YELLOW",
+    "level" : 1,
+    "cost": ["STONE", "STONE"],
+    "requiredResources": ["SERVANT"],
+    "production":["FAITH"]
+  },
+  {
+    "id" : 8,
+    "victoryPoints" : 2,
+    "color" : "YELLOW",
+    "level" : 1,
+    "cost": ["SHIELD", "STONE", "COIN"],
+    "requiredResources": ["SHIELD"],
+    "production":["COIN"]
+  },
+  {
+    "id" : 12,
+    "victoryPoints" : 3,
+    "color" : "YELLOW",
+    "level" : 1,
+    "cost": ["STONE", "STONE", "STONE"],
+    "requiredResources": ["SHIELD", "SHIELD"],
+    "production":["COIN", "SERVANT", "STONE"]
   },
   {
     "id" : 16,
@@ -153,33 +153,6 @@
     "production":["FAITH", "FAITH"]
   },
   {
-    "id" : 18,
-    "victoryPoints" : 5,
-    "color" : "PURPLE",
-    "level" : 2,
-    "cost": ["SERVANT", "SERVANT", "SERVANT", "SERVANT"],
-    "requiredResources": ["COIN"],
-    "production":["FAITH", "FAITH"]
-  },
-  {
-    "id" : 19,
-    "victoryPoints" : 5,
-    "color" : "BLUE",
-    "level" : 2,
-    "cost": ["COIN", "COIN", "COIN", "COIN"],
-    "requiredResources": ["SERVANT"],
-    "production":["FAITH", "FAITH"]
-  },
-  {
-    "id" : 20,
-    "victoryPoints" : 5,
-    "color" : "YELLOW",
-    "level" : 2,
-    "cost": ["STONE", "STONE", "STONE", "STONE"],
-    "requiredResources": ["SHIELD"],
-    "production":["FAITH", "FAITH"]
-  },
-  {
     "id" : 21,
     "victoryPoints" : 6,
     "color" : "GREEN",
@@ -187,33 +160,6 @@
     "cost": ["SHIELD", "SHIELD", "SHIELD", "SERVANT", "SERVANT"],
     "requiredResources": ["SHIELD", "SERVANT"],
     "production":["STONE", "STONE", "STONE"]
-  },
-  {
-    "id" : 22,
-    "victoryPoints" : 6,
-    "color" : "PURPLE",
-    "level" : 2,
-    "cost": ["SERVANT", "SERVANT", "SERVANT", "COIN", "COIN"],
-    "requiredResources": ["COIN", "SERVANT"],
-    "production":["SHIELD", "SHIELD", "SHIELD"]
-  },
-  {
-    "id" : 23,
-    "victoryPoints" : 6,
-    "color" : "BLUE",
-    "level" : 2,
-    "cost": ["COIN", "COIN", "COIN", "STONE", "STONE"],
-    "requiredResources": ["COIN", "STONE"],
-    "production":["SERVANT", "SERVANT", "SERVANT"]
-  },
-  {
-    "id" : 24,
-    "victoryPoints" : 6,
-    "color" : "YELLOW",
-    "level" : 2,
-    "cost": ["STONE", "STONE", "STONE", "SHIELD", "SHIELD"],
-    "requiredResources": ["STONE", "SHIELD"],
-    "production":["COIN", "COIN", "COIN"]
   },
   {
     "id" : 25,
@@ -225,33 +171,6 @@
     "production":["STONE", "STONE", "FAITH", "FAITH"]
   },
   {
-    "id" : 26,
-    "victoryPoints" : 7,
-    "color" : "PURPLE",
-    "level" : 2,
-    "cost": ["SERVANT", "SERVANT", "SERVANT", "SERVANT", "SERVANT"],
-    "requiredResources": ["STONE", "STONE"],
-    "production":["COIN", "COIN", "FAITH", "FAITH"]
-  },
-  {
-    "id" : 27,
-    "victoryPoints" : 7,
-    "color" : "BLUE",
-    "level" : 2,
-    "cost": ["COIN", "COIN", "COIN", "COIN", "COIN"],
-    "requiredResources": ["SERVANT", "SERVANT"],
-    "production":["SHIELD", "SHIELD", "FAITH", "FAITH"]
-  },
-  {
-    "id" : 28,
-    "victoryPoints" : 7,
-    "color" : "YELLOW",
-    "level" : 2,
-    "cost": ["STONE", "STONE", "STONE", "STONE", "STONE"],
-    "requiredResources": ["SHIELD", "SHIELD"],
-    "production":["SERVANT", "SERVANT", "FAITH", "FAITH"]
-  },
-  {
     "id" : 29,
     "victoryPoints" : 8,
     "color" : "GREEN",
@@ -259,6 +178,33 @@
     "cost": ["SHIELD", "SHIELD", "SHIELD", "COIN", "COIN", "COIN"],
     "requiredResources": ["COIN"],
     "production":["SHIELD", "SHIELD", "FAITH"]
+  },
+  {
+    "id" : 18,
+    "victoryPoints" : 5,
+    "color" : "PURPLE",
+    "level" : 2,
+    "cost": ["SERVANT", "SERVANT", "SERVANT", "SERVANT"],
+    "requiredResources": ["COIN"],
+    "production":["FAITH", "FAITH"]
+  },
+  {
+    "id" : 22,
+    "victoryPoints" : 6,
+    "color" : "PURPLE",
+    "level" : 2,
+    "cost": ["SERVANT", "SERVANT", "SERVANT", "COIN", "COIN"],
+    "requiredResources": ["COIN", "SERVANT"],
+    "production":["SHIELD", "SHIELD", "SHIELD"]
+  },
+  {
+    "id" : 26,
+    "victoryPoints" : 7,
+    "color" : "PURPLE",
+    "level" : 2,
+    "cost": ["SERVANT", "SERVANT", "SERVANT", "SERVANT", "SERVANT"],
+    "requiredResources": ["STONE", "STONE"],
+    "production":["COIN", "COIN", "FAITH", "FAITH"]
   },
   {
     "id" : 30,
@@ -270,6 +216,33 @@
     "production":["SERVANT", "SERVANT", "FAITH"]
   },
   {
+    "id" : 19,
+    "victoryPoints" : 5,
+    "color" : "BLUE",
+    "level" : 2,
+    "cost": ["COIN", "COIN", "COIN", "COIN"],
+    "requiredResources": ["SERVANT"],
+    "production":["FAITH", "FAITH"]
+  },
+  {
+    "id" : 23,
+    "victoryPoints" : 6,
+    "color" : "BLUE",
+    "level" : 2,
+    "cost": ["COIN", "COIN", "COIN", "STONE", "STONE"],
+    "requiredResources": ["COIN", "STONE"],
+    "production":["SERVANT", "SERVANT", "SERVANT"]
+  },
+  {
+    "id" : 27,
+    "victoryPoints" : 7,
+    "color" : "BLUE",
+    "level" : 2,
+    "cost": ["COIN", "COIN", "COIN", "COIN", "COIN"],
+    "requiredResources": ["SERVANT", "SERVANT"],
+    "production":["SHIELD", "SHIELD", "FAITH", "FAITH"]
+  },
+  {
     "id" : 31,
     "victoryPoints" : 8,
     "color" : "BLUE",
@@ -277,6 +250,33 @@
     "cost": ["COIN", "COIN", "COIN", "STONE", "STONE", "STONE"],
     "requiredResources": ["SERVANT"],
     "production":["STONE", "STONE", "FAITH"]
+  },
+  {
+    "id" : 20,
+    "victoryPoints" : 5,
+    "color" : "YELLOW",
+    "level" : 2,
+    "cost": ["STONE", "STONE", "STONE", "STONE"],
+    "requiredResources": ["SHIELD"],
+    "production":["FAITH", "FAITH"]
+  },
+  {
+    "id" : 24,
+    "victoryPoints" : 6,
+    "color" : "YELLOW",
+    "level" : 2,
+    "cost": ["STONE", "STONE", "STONE", "SHIELD", "SHIELD"],
+    "requiredResources": ["STONE", "SHIELD"],
+    "production":["COIN", "COIN", "COIN"]
+  },
+  {
+    "id" : 28,
+    "victoryPoints" : 7,
+    "color" : "YELLOW",
+    "level" : 2,
+    "cost": ["STONE", "STONE", "STONE", "STONE", "STONE"],
+    "requiredResources": ["SHIELD", "SHIELD"],
+    "production":["SERVANT", "SERVANT", "FAITH", "FAITH"]
   },
   {
     "id" : 32,
@@ -297,33 +297,6 @@
     "production":["STONE", "STONE", "STONE", "FAITH", "FAITH"]
   },
   {
-    "id" : 34,
-    "victoryPoints" : 9,
-    "color" : "PURPLE",
-    "level" : 3,
-    "cost": ["SERVANT", "SERVANT", "SERVANT", "SERVANT", "SERVANT", "SERVANT"],
-    "requiredResources": ["STONE", "STONE"],
-    "production":["COIN", "COIN", "COIN", "FAITH", "FAITH"]
-  },
-  {
-    "id" : 35,
-    "victoryPoints" : 9,
-    "color" : "BLUE",
-    "level" : 3,
-    "cost": ["COIN", "COIN", "COIN", "COIN", "COIN", "COIN"],
-    "requiredResources": ["SERVANT", "SERVANT"],
-    "production":["SHIELD", "SHIELD", "SHIELD", "FAITH", "FAITH"]
-  },
-  {
-    "id" : 36,
-    "victoryPoints" : 9,
-    "color" : "YELLOW",
-    "level" : 3,
-    "cost": ["STONE", "STONE", "STONE", "STONE", "STONE", "STONE"],
-    "requiredResources": ["SHIELD", "SHIELD"],
-    "production":["SERVANT", "SERVANT", "SERVANT", "FAITH", "FAITH"]
-  },
-  {
     "id" : 37,
     "victoryPoints" : 10,
     "color" : "GREEN",
@@ -331,33 +304,6 @@
     "cost": ["SHIELD", "SHIELD", "SHIELD", "SHIELD", "SHIELD", "SERVANT", "SERVANT"],
     "requiredResources": ["COIN", "SERVANT"],
     "production":["SHIELD", "SHIELD", "STONE", "STONE", "FAITH"]
-  },
-  {
-    "id" : 38,
-    "victoryPoints" : 10,
-    "color" : "PURPLE",
-    "level" : 3,
-    "cost": ["SERVANT", "SERVANT", "SERVANT", "SERVANT", "SERVANT", "COIN", "COIN"],
-    "requiredResources": ["STONE", "SHIELD"],
-    "production":["COIN", "COIN", "SERVANT", "SERVANT", "FAITH"]
-  },
-  {
-    "id" : 39,
-    "victoryPoints" : 10,
-    "color" : "BLUE",
-    "level" : 3,
-    "cost": ["COIN", "COIN", "COIN", "COIN", "COIN", "STONE", "STONE"],
-    "requiredResources": ["COIN", "SHIELD"],
-    "production":["SERVANT", "SERVANT", "STONE", "STONE", "FAITH"]
-  },
-  {
-    "id" : 40,
-    "victoryPoints" : 10,
-    "color" : "YELLOW",
-    "level" : 3,
-    "cost": ["STONE", "STONE", "STONE", "STONE", "STONE", "SERVANT", "SERVANT"],
-    "requiredResources": ["STONE", "SERVANT"],
-    "production":["COIN", "COIN", "SHIELD", "SHIELD", "FAITH"]
   },
   {
     "id" : 41,
@@ -369,33 +315,6 @@
     "production":["COIN", "FAITH", "FAITH", "FAITH"]
   },
   {
-    "id" : 42,
-    "victoryPoints" : 11,
-    "color" : "PURPLE",
-    "level" : 3,
-    "cost": ["SERVANT", "SERVANT", "SERVANT", "SERVANT", "SERVANT", "SERVANT", "SERVANT"],
-    "requiredResources": ["COIN"],
-    "production":["STONE", "FAITH", "FAITH", "FAITH"]
-  },
-  {
-    "id" : 43,
-    "victoryPoints" : 11,
-    "color" : "BLUE",
-    "level" : 3,
-    "cost": ["COIN", "COIN", "COIN", "COIN", "COIN", "COIN", "COIN"],
-    "requiredResources": ["STONE"],
-    "production":["SHIELD", "FAITH", "FAITH", "FAITH"]
-  },
-  {
-    "id" : 44,
-    "victoryPoints" : 11,
-    "color" : "YELLOW",
-    "level" : 3,
-    "cost": ["STONE", "STONE", "STONE", "STONE", "STONE", "STONE", "STONE"],
-    "requiredResources": ["SHIELD"],
-    "production":["SERVANT", "FAITH", "FAITH", "FAITH"]
-  },
-  {
     "id" : 45,
     "victoryPoints" : 12,
     "color" : "GREEN",
@@ -403,6 +322,33 @@
     "cost": ["SHIELD", "SHIELD", "SHIELD", "SHIELD", "COIN", "COIN", "COIN", "COIN"],
     "requiredResources": ["STONE"],
     "production":["COIN", "COIN", "COIN", "SHIELD"]
+  },
+  {
+    "id" : 34,
+    "victoryPoints" : 9,
+    "color" : "PURPLE",
+    "level" : 3,
+    "cost": ["SERVANT", "SERVANT", "SERVANT", "SERVANT", "SERVANT", "SERVANT"],
+    "requiredResources": ["STONE", "STONE"],
+    "production":["COIN", "COIN", "COIN", "FAITH", "FAITH"]
+  },
+  {
+    "id" : 38,
+    "victoryPoints" : 10,
+    "color" : "PURPLE",
+    "level" : 3,
+    "cost": ["SERVANT", "SERVANT", "SERVANT", "SERVANT", "SERVANT", "COIN", "COIN"],
+    "requiredResources": ["STONE", "SHIELD"],
+    "production":["COIN", "COIN", "SERVANT", "SERVANT", "FAITH"]
+  },
+  {
+    "id" : 42,
+    "victoryPoints" : 11,
+    "color" : "PURPLE",
+    "level" : 3,
+    "cost": ["SERVANT", "SERVANT", "SERVANT", "SERVANT", "SERVANT", "SERVANT", "SERVANT"],
+    "requiredResources": ["COIN"],
+    "production":["STONE", "FAITH", "FAITH", "FAITH"]
   },
   {
     "id" : 46,
@@ -414,6 +360,33 @@
     "production":["STONE", "STONE", "STONE", "SERVANT"]
   },
   {
+    "id" : 35,
+    "victoryPoints" : 9,
+    "color" : "BLUE",
+    "level" : 3,
+    "cost": ["COIN", "COIN", "COIN", "COIN", "COIN", "COIN"],
+    "requiredResources": ["SERVANT", "SERVANT"],
+    "production":["SHIELD", "SHIELD", "SHIELD", "FAITH", "FAITH"]
+  },
+  {
+    "id" : 39,
+    "victoryPoints" : 10,
+    "color" : "BLUE",
+    "level" : 3,
+    "cost": ["COIN", "COIN", "COIN", "COIN", "COIN", "STONE", "STONE"],
+    "requiredResources": ["COIN", "SHIELD"],
+    "production":["SERVANT", "SERVANT", "STONE", "STONE", "FAITH"]
+  },
+  {
+    "id" : 43,
+    "victoryPoints" : 11,
+    "color" : "BLUE",
+    "level" : 3,
+    "cost": ["COIN", "COIN", "COIN", "COIN", "COIN", "COIN", "COIN"],
+    "requiredResources": ["STONE"],
+    "production":["SHIELD", "FAITH", "FAITH", "FAITH"]
+  },
+  {
     "id" : 47,
     "victoryPoints" : 12,
     "color" : "BLUE",
@@ -421,6 +394,33 @@
     "cost": ["COIN", "COIN", "COIN", "COIN", "STONE", "STONE", "STONE", "STONE"],
     "requiredResources": ["SERVANT"],
     "production":["COIN", "SHIELD", "SHIELD", "SHIELD"]
+  },
+  {
+    "id" : 36,
+    "victoryPoints" : 9,
+    "color" : "YELLOW",
+    "level" : 3,
+    "cost": ["STONE", "STONE", "STONE", "STONE", "STONE", "STONE"],
+    "requiredResources": ["SHIELD", "SHIELD"],
+    "production":["SERVANT", "SERVANT", "SERVANT", "FAITH", "FAITH"]
+  },
+  {
+    "id" : 40,
+    "victoryPoints" : 10,
+    "color" : "YELLOW",
+    "level" : 3,
+    "cost": ["STONE", "STONE", "STONE", "STONE", "STONE", "SERVANT", "SERVANT"],
+    "requiredResources": ["STONE", "SERVANT"],
+    "production":["COIN", "COIN", "SHIELD", "SHIELD", "FAITH"]
+  },
+  {
+    "id" : 44,
+    "victoryPoints" : 11,
+    "color" : "YELLOW",
+    "level" : 3,
+    "cost": ["STONE", "STONE", "STONE", "STONE", "STONE", "STONE", "STONE"],
+    "requiredResources": ["SHIELD"],
+    "production":["SERVANT", "FAITH", "FAITH", "FAITH"]
   },
   {
     "id" : 48,

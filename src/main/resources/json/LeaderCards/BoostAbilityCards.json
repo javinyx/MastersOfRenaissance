@@ -1,0 +1,26 @@
+[
+  {
+    "id" : 13,
+    "victoryPoints": 4,
+    "cost" : ["YELLOW"],
+    "resourceNeeded" : "SHIELD"
+  },
+  {
+    "id" : 14,
+    "victoryPoints": 4,
+    "cost" : ["BLUE"],
+    "resourceNeeded" : "SERVANT"
+  },
+  {
+    "id" : 15,
+    "victoryPoints": 4,
+    "cost" : ["PURPLE"],
+    "resourceNeeded" : "STONE"
+  },
+  {
+    "id" : 16,
+    "victoryPoints": 4,
+    "cost" : ["GREEN"],
+    "resourceNeeded" : "COIN"
+  }
+]

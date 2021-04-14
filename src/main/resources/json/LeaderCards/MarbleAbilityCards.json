@@ -1,0 +1,42 @@
+[
+  {
+    "id" : 9,
+    "victoryPoints": 5,
+    "cost": [
+      "YELLOW",
+      "YELLOW",
+      "BLUE"
+    ],
+    "replacingResource": "SERVANT"
+  },
+  {
+    "id" : 10,
+    "victoryPoints": 5,
+    "cost": [
+      "GREEN",
+      "GREEN",
+      "PURPLE"
+    ],
+    "replacingResource": "SHIELD"
+  },
+  {
+    "id" : 11,
+    "victoryPoints": 5,
+    "cost": [
+      "BLUE",
+      "BLUE",
+      "YELLOW"
+    ],
+    "replacingResource": "ROCK"
+  },
+  {
+    "id" : 12,
+    "victoryPoints": 5,
+    "cost": [
+      "PURPLE",
+      "PURPLE",
+      "GREEN"
+    ],
+    "replacingResource": "COIN"
+  }
+]

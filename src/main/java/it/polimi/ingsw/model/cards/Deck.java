@@ -127,10 +127,6 @@ public class Deck {
 
     // ******************************** PUBLIC METHODS ********************************
 
-    public void draw (Card choice){
-        // da definire
-    }
-
     public ArrayDeque<Card> getCards(){
         return cardDeque;
     }

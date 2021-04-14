@@ -37,6 +37,14 @@ class PopePassTest {
         popePass1.activate();
         assertTrue(popePass1.isActive());
     }
+    @Test
+    void disable(){
+        popePass1.disable();
+        assertFalse(popePass1.isActive());
+        popePass1.activate();
+        popePass1.disable();
+        assertFalse(popePass1.isActive());
+    }
 
     @Test
     void getVictoryPoints() {

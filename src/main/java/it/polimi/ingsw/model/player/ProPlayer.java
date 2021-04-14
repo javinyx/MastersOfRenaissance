@@ -3,17 +3,14 @@ package it.polimi.ingsw.model.player;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.SinglePlayerGame;
-import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
 import it.polimi.ingsw.model.cards.leader.BoostAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.StorageAbility;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
-import it.polimi.ingsw.model.cards.production.ProductionCard;
 import it.polimi.ingsw.model.market.Market;
 import it.polimi.ingsw.model.market.Resource;
 
-import javax.swing.*;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -244,7 +241,7 @@ public class ProPlayer extends Player{
     }
 
     /**Obtains the resources chosen from market by column or row.
-     * <p>Add faith points to the player if a red marble has been drawn.<p>
+     * <p>Add faith points to the player if a red marble has been drawn.</p>
      * @param dim 'c' for column, 'r' for row.
      * @param index range 1-4 for column, 1-3 for row*/
     public void buyFromMarket(char dim, int index, LeaderCard leader){

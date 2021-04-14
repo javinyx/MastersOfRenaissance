@@ -15,7 +15,7 @@ import java.io.IOException;
 public class Deck {
     private ArrayList<Card> cardList;
     private ArrayDeque<Card> cardDeque;
-    private ArrayList<Deck> productionDecks;
+    private ArrayList<Deck> productionDecks; //non dovrebbe servire
     private static final String prodPath = "/json/ProductionCards.json",
                                 leadDiscountPath = "/json/LeaderCards/DiscountAbilityCards.json",
                                 leadStoragePath = "/json/LeaderCards/StorageAbilityCards.json",
@@ -34,9 +34,7 @@ public class Deck {
             case "ActionToken" -> {
                 createTokenDeck();
             }
-            case "ProductionCards" -> {
-                createProdDeck();
-            }
+            default -> {cardDeque = new ArrayDeque<>(); cardList = null; return;}
         }
 
         // Convert ArrayList to ArrayDeque
@@ -45,9 +43,8 @@ public class Deck {
     }
 
     public Deck(){
-        // Convert ArrayList to ArrayDeque
-        cardDeque = new ArrayDeque<>(cardList);
-        cardList = null;
+        cardDeque = new ArrayDeque<>();
+        cardList = new ArrayList<>();
     }
 
     // Generate a LeaderCard Deck
@@ -105,25 +102,6 @@ public class Deck {
         Collections.shuffle(cardList);
     }
 
-    // Generate a ProductionCard Deck
-    private void createProdDeck(){
-        Gson gson = new Gson();
-
-        // Read all the production cards and add them to the cardList
-        try (Reader reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(prodPath)))) {
-            cardList = gson.fromJson(reader, new TypeToken<ArrayList<ConcreteProductionCard>>(){}.getType());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        /* Shuffle cards of the same color and level only and
-           Divide the production card deck into smaller decks of the same color and level */
-        for(int i = 0; i <= cardList.size()-4; i = i + 4) {
-            ArrayList<Card> subProdList = new ArrayList<Card>(cardList.subList(i, i+4));
-            Collections.shuffle(subProdList);
-            productionDecks.add(createProdDeckList(subProdList));
-        }
-    }
 
     // ******************************** PUBLIC METHODS ********************************
 
@@ -139,9 +117,28 @@ public class Deck {
         return cardDeque.getFirst();
     }
 
-    public Deck createProdDeckList(ArrayList<Card> cardList){
-        Deck smallProdDeck = new Deck();
-        smallProdDeck.cardList = cardList;
-        return smallProdDeck;
+    public List<Deck> createProdDeckList() throws IOException{
+        List<Card> allProdCards;
+        List<Deck> deckies = new ArrayList<>();
+        Gson gson = new Gson();
+
+        // Read all the production cards and add them to the cardList
+        Reader reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(prodPath)));
+        allProdCards = gson.fromJson(reader, new TypeToken<ArrayList<ConcreteProductionCard>>(){}.getType());
+
+        for(int i = 0; i <= allProdCards.size()-4; i = i + 4) {
+            ArrayList<Card> subList = new ArrayList<>(allProdCards.subList(i, i+4));
+            Deck d = shuffle(subList);
+            deckies.add(d);
+        }
+        return deckies;
+    }
+
+    private Deck shuffle(ArrayList<Card> subList){
+        ArrayList<Card> clone = new ArrayList<>(subList);
+        Collections.shuffle(clone);
+        Deck miniDeck = new Deck();
+        miniDeck.cardDeque = new ArrayDeque<>(subList);
+        return miniDeck;
     }
 }

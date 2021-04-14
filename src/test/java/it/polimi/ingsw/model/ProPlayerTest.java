@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class ProPlayerTest extends PlayerTest {
     ProPlayer p1, p2, p3;
@@ -22,7 +24,7 @@ class ProPlayerTest extends PlayerTest {
         p3.registerObserver((Observer)g2);
     }
 
-    @Test
+    @Disabled
     void getTurnType() {
         p3.buyFromMarket('c',1, null);
         p1.buyFromMarket('c', 1, null);
@@ -38,7 +40,7 @@ class ProPlayerTest extends PlayerTest {
 
     }
 
-    @Test
+    @Disabled
     void getTurnID() {
         assertEquals(1, p2.getTurnID());
         assertEquals(2, p3.getTurnID());
@@ -46,7 +48,7 @@ class ProPlayerTest extends PlayerTest {
     }
 /*
     @Test
-    //void buyProductionCard() {
+    void buyProductionCard() {
         ConcreteProductionCard card = istantiateACard();
     }
 */
@@ -54,15 +56,27 @@ class ProPlayerTest extends PlayerTest {
     void getVictoryPoints() {
         p1.addFaithPoints(24);
         assertEquals(20, p1.getVictoryPoints());
-
     }
 
-    @Test
+    @Disabled
     void getResAcquired() {
+
     }
 
-    @Test
+    @Disabled
     void getWarehouse() {
+        assertNull(p1.getWarehouse().getSmallInventory());
+        assertNull(p1.getWarehouse().getMidInventory());
+        assertNull(p2.getWarehouse().getLargeInventory());
+        warehouseSetup(p1);
+        assertNotNull(p1.getWarehouse().getMidInventory());
+    }
+
+    void warehouseSetup(ProPlayer p){
+        p.storeInWarehouse(Resource.SERVANT, 1);
+        p.storeInWarehouse(Resource.COIN, 2);
+        p.storeInWarehouse(Resource.COIN, 2);
+        p.storeInWarehouse(Resource.SHIELD, 3);
     }
 
     @Test

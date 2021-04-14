@@ -3,8 +3,6 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.Deck;
-import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
-import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.market.Market;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.PopePass;
@@ -63,7 +61,7 @@ public class MultiplayerGame extends Game implements Observer {
             }
             //players.get(i).gaveLeaderOption(tempList);
         }
-
+        currPlayer = activePlayers.get(0);
 
     }
 

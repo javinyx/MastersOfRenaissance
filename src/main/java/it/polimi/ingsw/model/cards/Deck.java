@@ -15,7 +15,6 @@ import java.io.IOException;
 public class Deck {
     private ArrayList<Card> cardList;
     private ArrayDeque<Card> cardDeque;
-    private ArrayList<Deck> productionDecks; //non dovrebbe servire
     private static final String prodPath = "/json/ProductionCards.json",
                                 leadDiscountPath = "/json/LeaderCards/DiscountAbilityCards.json",
                                 leadStoragePath = "/json/LeaderCards/StorageAbilityCards.json",
@@ -34,9 +33,12 @@ public class Deck {
             case "ActionToken" -> {
                 createTokenDeck();
             }
-            default -> {cardDeque = new ArrayDeque<>(); cardList = null; return;}
+            default -> {
+                cardDeque = new ArrayDeque<>();
+                cardList = null;
+                return;
+            }
         }
-
         // Convert ArrayList to ArrayDeque
         cardDeque = new ArrayDeque<>(cardList);
         cardList = null;
@@ -53,7 +55,7 @@ public class Deck {
 
         // Read all the leader ability cards and add them to the cardList
         try (Reader reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(leadDiscountPath)))) {
-            cardList.addAll(gson.fromJson(reader, new TypeToken<ArrayList<DiscountAbility>>(){}.getType()));
+            cardList = gson.fromJson(reader, new TypeToken<ArrayList<DiscountAbility>>(){}.getType());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -83,7 +85,7 @@ public class Deck {
 
         // Read all the action tokens and add them to the cardList
         try (Reader reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(tokenDiscardPath)))) {
-            cardList.addAll(gson.fromJson(reader, new TypeToken<ArrayList<DiscardToken>>(){}.getType()));
+            cardList = gson.fromJson(reader, new TypeToken<ArrayList<DiscardToken>>(){}.getType());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -119,7 +121,7 @@ public class Deck {
 
     public List<Deck> createProdDeckList() throws IOException{
         List<Card> allProdCards;
-        List<Deck> deckies = new ArrayList<>();
+        List<Deck> prodDecks = new ArrayList<>();
         Gson gson = new Gson();
 
         // Read all the production cards and add them to the cardList
@@ -127,18 +129,21 @@ public class Deck {
         allProdCards = gson.fromJson(reader, new TypeToken<ArrayList<ConcreteProductionCard>>(){}.getType());
 
         for(int i = 0; i <= allProdCards.size()-4; i = i + 4) {
-            ArrayList<Card> subList = new ArrayList<>(allProdCards.subList(i, i+4));
-            Deck d = shuffle(subList);
-            deckies.add(d);
+            ArrayList<Card> currentCardList = new ArrayList<>(allProdCards.subList(i, i+4));
+            Deck newDeck = createMiniDeck(currentCardList);
+            prodDecks.add(newDeck);
         }
-        return deckies;
+
+        return prodDecks;
     }
 
-    private Deck shuffle(ArrayList<Card> subList){
-        ArrayList<Card> clone = new ArrayList<>(subList);
-        Collections.shuffle(clone);
+    private Deck createMiniDeck(ArrayList<Card> currentCardList){
+        ArrayList<Card> clonedCardList = new ArrayList<>(currentCardList);
+        Collections.shuffle(clonedCardList);
+
         Deck miniDeck = new Deck();
-        miniDeck.cardDeque = new ArrayDeque<>(subList);
+        miniDeck.cardDeque = new ArrayDeque<>(clonedCardList);
+
         return miniDeck;
     }
 }

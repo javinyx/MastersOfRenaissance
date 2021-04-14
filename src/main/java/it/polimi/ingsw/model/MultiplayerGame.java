@@ -18,18 +18,6 @@ public class MultiplayerGame extends Game implements Observer {
     private int totalPlayers;
     private ProPlayer currPlayer;
 
-    public MultiplayerGame(String prodFileName, String leadFileName){
-        players = new ArrayList<>();
-        market = new Market();
-        totalPlayers = 0;
-        currPlayer = null;
-        winner = null;
-        activePlayers = new ArrayList<>();
-
-        leaderDeck = new Deck("LeadCard");
-        //productionDecks;
-    }
-
     public MultiplayerGame(){
         players = new ArrayList<>();
         market = new Market();
@@ -39,7 +27,7 @@ public class MultiplayerGame extends Game implements Observer {
         activePlayers = new ArrayList<>();
 
         leaderDeck = new Deck("LeadCard");
-        //productionDecks;
+        productionDecks = Deck.createProdDeckList();
     }
 
     /*

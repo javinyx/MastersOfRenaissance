@@ -2,36 +2,60 @@
   {
     "id" : 1,
     "victoryPoints": 2,
-    "cost": [
-      "YELLOW",
-      "GREEN"
+    "cost" : [
+      {
+        "color": "YELLOW",
+        "level": 1
+      },
+      {
+        "color": "GREEN",
+        "level": 1
+      }
     ],
     "discountType": "SERVANT"
   },
   {
     "id" : 2,
     "victoryPoints": 2,
-    "cost": [
-      "BLUE",
-      "PURPLE"
+    "cost" : [
+      {
+        "color": "BLUE",
+        "level": 1
+      },
+      {
+        "color": "PURPLE",
+        "level": 1
+      }
     ],
     "discountType": "SHIELD"
   },
   {
     "id" : 3,
     "victoryPoints": 2,
-    "cost": [
-      "GREEN",
-      "BLUE"
+    "cost" : [
+      {
+        "color": "GREEN",
+        "level": 1
+      },
+      {
+        "color": "BLUE",
+        "level": 1
+      }
     ],
     "discountType": "STONE"
   },
   {
     "id" : 4,
     "victoryPoints": 2,
-    "cost": [
-      "YELLOW",
-      "PURPLE"
+    "cost" : [
+      {
+        "color": "YELLOW",
+        "level": 1
+      },
+      {
+        "color": "PURPLE",
+        "level": 1
+      }
     ],
     "discountType": "COIN"
   }

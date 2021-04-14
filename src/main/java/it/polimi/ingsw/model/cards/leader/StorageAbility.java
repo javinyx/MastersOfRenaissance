@@ -18,7 +18,7 @@ public class StorageAbility implements LeaderCard {
         public StorageAbility(int id, int victoryPoints, List<Resource> cost, Resource storageType) {
             this.id = id;
             this.victoryPoints = victoryPoints;
-            this.cost = cost;
+            this.cost = new ArrayList<>(cost);
             status = false;
             this.storageType = storageType;
             this.resources = new Resource[2];

@@ -2,25 +2,45 @@
   {
     "id" : 13,
     "victoryPoints": 4,
-    "cost" : ["YELLOW"],
+    "cost" : [
+      {
+        "color": "YELLOW",
+        "level": 2
+      }
+    ],
     "resourceNeeded" : "SHIELD"
   },
   {
     "id" : 14,
     "victoryPoints": 4,
-    "cost" : ["BLUE"],
+    "cost" : [
+      {
+        "color": "BLUE",
+        "level": 2
+      }
+    ],
     "resourceNeeded" : "SERVANT"
   },
   {
     "id" : 15,
     "victoryPoints": 4,
-    "cost" : ["PURPLE"],
+    "cost" : [
+      {
+        "color": "PURPLE",
+        "level": 2
+      }
+    ],
     "resourceNeeded" : "STONE"
   },
   {
     "id" : 16,
     "victoryPoints": 4,
-    "cost" : ["GREEN"],
+    "cost" : [
+      {
+        "color": "GREEN",
+        "level": 2
+      }
+    ],
     "resourceNeeded" : "COIN"
   }
 ]

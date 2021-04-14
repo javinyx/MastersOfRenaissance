@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.cards.leader;
 
+import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.cards.production.ProductionCard;
 import it.polimi.ingsw.model.market.Buyable;
 import it.polimi.ingsw.model.market.Resource;
@@ -11,14 +12,14 @@ import java.util.List;
 public class DiscountAbility implements LeaderCard {
     private int id;
     private final int victoryPoints;
-    private final List<ProductionCard> cost;
+    private final List<ConcreteProductionCard> cost;
     private boolean status;
     private final Resource discountType;
 
-    public DiscountAbility(int id, int victoryPoints, List<ProductionCard> cost, Resource discountType) {
+    public DiscountAbility(int id, int victoryPoints, List<ConcreteProductionCard> cost, Resource discountType) {
         this.id = id;
         this.victoryPoints = victoryPoints;
-        this.cost = cost;
+        this.cost = new ArrayList<>(cost);
         status = false;
         this.discountType = discountType;
     }

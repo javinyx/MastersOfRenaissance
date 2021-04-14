@@ -37,19 +37,9 @@ public class SinglePlayerGame extends Game implements Observer{
 
         tokenDeck = new Deck("ActionToken");
         leaderDeck = new Deck("LeaderCard");
-        //productionDecks.
+        productionDecks = Deck.createProdDeckList();
     }
 
-    public SinglePlayerGame(String tokenFileName, String prodFileName, String leadFileName) {
-        market = new Market();
-        player = null;
-        lorenzo = new Player("Lorenzo", this);
-        winner = null;
-
-        tokenDeck = new Deck("ActionToken");
-        leaderDeck = new Deck("LeaderCard");
-        //productionDecks;
-    }
 /*
     1 creare il player
     2 distribuire le carte leader

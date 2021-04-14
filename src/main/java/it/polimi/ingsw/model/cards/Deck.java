@@ -114,7 +114,6 @@ public class Deck {
         return miniDeck;
     }
 
-
     // ******************************** PUBLIC METHODS ********************************
 
     public ArrayDeque<Card> getCards(){
@@ -129,19 +128,23 @@ public class Deck {
         return cardDeque.getFirst();
     }
 
-    public static List<Deck> createProdDeckList() throws IOException{
+    public static List<Deck> createProdDeckList(){
         List<Card> allProdCards;
         List<Deck> prodDecks = new ArrayList<>();
         Gson gson = new Gson();
 
         // Read all the production cards and add them to the cardList
-        Reader reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(prodPath)));
-        allProdCards = gson.fromJson(reader, new TypeToken<ArrayList<ConcreteProductionCard>>(){}.getType());
+        try(Reader reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(prodPath)))) {
+            allProdCards = gson.fromJson(reader, new TypeToken<ArrayList<ConcreteProductionCard>>() {
+            }.getType());
 
-        for(int i = 0; i <= allProdCards.size()-4; i = i + 4) {
-            ArrayList<Card> currentCardList = new ArrayList<>(allProdCards.subList(i, i+4));
-            Deck newDeck = createMiniDeck(currentCardList);
-            prodDecks.add(newDeck);
+            for (int i = 0; i <= allProdCards.size() - 4; i = i + 4) {
+                ArrayList<Card> currentCardList = new ArrayList<>(allProdCards.subList(i, i + 4));
+                Deck newDeck = createMiniDeck(currentCardList);
+                prodDecks.add(newDeck);
+            }
+        } catch(IOException e) {
+            e.printStackTrace();
         }
 
         return prodDecks;

@@ -1,12 +1,9 @@
 package it.polimi.ingsw.model.cards.actiontoken;
 
 import it.polimi.ingsw.model.SinglePlayerGame;
-import it.polimi.ingsw.model.cards.Card;
-import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.cards.production.ColorEnum;
 import it.polimi.ingsw.model.cards.production.ProductionCard;
 import it.polimi.ingsw.model.player.ProPlayer;
-import java.util.List;
 
 public class DiscardToken implements ActionToken {
 
@@ -32,5 +29,10 @@ public class DiscardToken implements ActionToken {
                 return;
             }
         }
+    }
+
+    @Override
+    public String toString(){
+        return "DiscardToken(Type ProductionCard: " + typeProdCard + ")";
     }
 }

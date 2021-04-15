@@ -5,8 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class DeckTest {
 
     @BeforeEach
@@ -14,6 +12,8 @@ class DeckTest {
         List<Deck> productionDecks = Deck.createProdDeckList();
         Deck d = new Deck("LeaderCard");
         Deck a = new Deck("ActionToken");
+        System.out.println(productionDecks.get(0).getFirst().toString());
+        //System.out.println(d.getFirst().toString());
     }
 
     @Test

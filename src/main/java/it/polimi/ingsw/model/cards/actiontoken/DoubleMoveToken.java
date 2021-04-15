@@ -14,4 +14,9 @@ public class DoubleMoveToken implements ActionToken {
         player.moveOnBoard(2);
     }
 
+    @Override
+    public String toString(){
+        return "DoubleMove Token";
+    }
+
 }

@@ -104,4 +104,10 @@ public class StorageAbility implements LeaderCard {
             return 0;
         }
 
+        @Override
+        public String toString(){
+            return "StorageAbility(Victory Points: " + victoryPoints + "\nActivation Cost: " +
+                    cost==null ? "null" : cost + "\nStorage Type: " + storageType + "\nContents: " + resources + ")";
+        }
+
 }

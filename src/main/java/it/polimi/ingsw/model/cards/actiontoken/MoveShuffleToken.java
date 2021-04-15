@@ -12,4 +12,8 @@ public class MoveShuffleToken implements ActionToken {
         game.newTokenDeck();
     }
 
+    public String toString(){
+        return "Move&Shuffle Token";
+    }
+
 }

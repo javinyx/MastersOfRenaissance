@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.player.ProPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MarbleAbility implements LeaderCard {
     private int id;
@@ -59,5 +60,10 @@ public class MarbleAbility implements LeaderCard {
         }
         return false;
     }
-
+    @Override
+    public String toString(){
+        List<ProductionCard> generalCost = cost.stream().map(x -> (ProductionCard)x).collect(Collectors.toList());
+        return "MarbleAbility(Victory Points: " + victoryPoints + "\nActivation Cost: " + generalCost==null ? "null" : generalCost +
+                "\nReplacing Resource: " + replacingResource + ")";
+    }
 }

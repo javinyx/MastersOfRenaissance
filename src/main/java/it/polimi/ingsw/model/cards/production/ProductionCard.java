@@ -10,4 +10,9 @@ public abstract class ProductionCard implements Buyable, Card {
     public ColorEnum getColor(){return color;}
 
     public int getLevel(){return level;}
+
+    @Override
+    public String toString(){
+        return "Color: " + color + ", level: " + level;
+    }
 }

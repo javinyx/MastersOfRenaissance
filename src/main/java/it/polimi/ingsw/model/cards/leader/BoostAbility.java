@@ -10,6 +10,7 @@ import it.polimi.ingsw.model.player.Warehouse;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**This LeaderCard works similarly to a ProductionCard: it has a production power that players can decide to activate
  * if they have the card and the latter is active.
@@ -112,5 +113,12 @@ public class BoostAbility implements LeaderCard {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public String toString(){
+        List<ProductionCard> generalCost = cost.stream().map(x -> (ProductionCard)x).collect(Collectors.toList());
+        return "BoostAbility(Victory Points: " + victoryPoints + "\nActivation Cost: " + generalCost==null ? "null" : generalCost
+                + "\nResource Needed: " + resourceNeeded + ")";
     }
 }

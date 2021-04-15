@@ -7,6 +7,13 @@ import it.polimi.ingsw.model.player.ProPlayer;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This LeaderCard gives you an extra special 2-slot depot. This special depot can only store the indicated Resources.
+ * You can also store the same type of Resource in a basic Warehouse depot.
+ * <p>In order to activate the card, players must have all the production cards specified in {@code cost}, even if they're
+ * hidden.
+ * Use the {@code isActive()} method to discover its status.</p>
+ */
 public class StorageAbility implements LeaderCard {
         private int id;
         private final int victoryPoints;
@@ -15,7 +22,15 @@ public class StorageAbility implements LeaderCard {
         private final Resource storageType;
         private Resource[] resources;
 
-        public StorageAbility(int id, int victoryPoints, List<Resource> cost, Resource storageType) {
+    /**
+     * Instantiate a new Storage Ability Leader Card.
+     *
+     * @param id             the id of the card
+     * @param victoryPoints  the victory points
+     * @param cost           the cost in Resources
+     * @param storageType   the storage type
+     */
+    public StorageAbility(int id, int victoryPoints, List<Resource> cost, Resource storageType) {
             this.id = id;
             this.victoryPoints = victoryPoints;
             this.cost = new ArrayList<>(cost);
@@ -24,7 +39,12 @@ public class StorageAbility implements LeaderCard {
             this.resources = new Resource[2];
         }
 
-        public StorageAbility(StorageAbility dupe){
+    /**
+     * Dupe a StorageAbility Card.
+     *
+     * @param dupe the StorageAbility Card to dupe
+     */
+    public StorageAbility(StorageAbility dupe){
             this.victoryPoints = dupe.victoryPoints;
             this.cost = new ArrayList<>(dupe.cost);
             this.status = dupe.status;
@@ -63,12 +83,21 @@ public class StorageAbility implements LeaderCard {
             return false;
         }
 
-        public Resource getStorageType(){ return storageType; }
+    /**
+     * Get storage type resource.
+     *
+     * @return the resource
+     */
+    public Resource getStorageType(){ return storageType; }
 
-        /**Remove the specified resource from the extra storage, if it's possible. This happens if there are actually
-         * resources stored in the card and if {@code resource}'s type matches the storage type offered by the card.
-         * @return true if it has remove the resource successfully, otherwise false. */
-        public boolean remove(Resource resource){
+    /**
+     * Remove the specified resource from the extra storage, if it's possible. This happens if there are actually
+     * resources stored in the card and if {@code resource}'s type matches the storage type offered by the card.
+     *
+     * @param resource the resource
+     * @return true if it has remove the resource successfully, otherwise false.
+     */
+    public boolean remove(Resource resource){
             if(resources[1]!=null && resources[1].equals(resource)){
                 resources[1] = null;
                 return true;
@@ -80,7 +109,14 @@ public class StorageAbility implements LeaderCard {
             return false;
         }
 
-        public boolean add(Resource resource){
+    /**
+     * Add the specified resource to the storage. The Resource cannot be added if the card is inactive
+     * or if the resource type is not correct.
+     *
+     * @param resource the resource to be added
+     * @return true if resource can be added, false otherwise
+     */
+    public boolean add(Resource resource){
             if(!storageType.equals(resource) && !status){
                 //cannot add if the card is inactive or if the resource type is not correct
                 return false;
@@ -94,9 +130,12 @@ public class StorageAbility implements LeaderCard {
             }
         }
 
-        /**@return how many slots are actually full. In other words, how many elements are stored in the card when
-         * the method is called. */
-        public int size(){
+    /**
+     * Size of the StorageAbility Card.
+     *
+     * @return how many slots are actually full. In other words, how many elements are stored in the card when the method is called.
+     */
+    public int size(){
             if(resources[0]!=null && resources[1]!=null)
                 return 2;
             if(resources[0]!=null)

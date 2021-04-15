@@ -10,13 +10,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * This LeaderCard makes it so, when you take Resources from the Market, each white Marble in the chosen column/row
+ * gives you the indicated Resource.
+ * <p>If you play two Leaders with this ability, when you take Resources from the Market, you must choose which Resource to take
+ * (from those given by your Leaders) for each of the white Marbles (i.e. you can’t take both Resources from a single white Marble).</p>
+ * <p>In order to activate the card, players must have all the production cards specified in {@code cost}, even if they're
+ * hidden.
+ * Use the {@code isActive()} method to discover its status.</p>
+ */
 public class MarbleAbility implements LeaderCard {
-    private int id;
+    private final int id;
     private final int victoryPoints;
     private final List<ConcreteProductionCard> cost;
     private boolean status;
     private Resource replacingResource;
 
+    /**
+     * Instantiate a new Marble Ability Leader Card.
+     *
+     * @param id             the id of the card
+     * @param victoryPoints  the victory points
+     * @param cost           the cost in ConcreteProductionCards
+     * @param replacingResource the Resource gained every time a White Marble is selected in the Market
+     */
     public MarbleAbility(int id, int victoryPoints, List<ConcreteProductionCard> cost, Resource replacingResource) {
         this.id = id;
         this.victoryPoints = victoryPoints;
@@ -25,6 +42,11 @@ public class MarbleAbility implements LeaderCard {
         this.replacingResource = replacingResource;
     }
 
+    /**
+     * Get the Resource gained from White Marbles in the Market.
+     *
+     * @return the resource gained
+     */
     public Resource getReplacement(){
         return replacingResource;
     }

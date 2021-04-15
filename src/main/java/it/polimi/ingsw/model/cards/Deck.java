@@ -12,6 +12,10 @@ import java.io.Reader;
 import java.util.*;
 import java.io.IOException;
 
+/**
+ * The Deck contains a list of Cards ({@code cardList}) that is only used for internal operations and a Deque of Cards ({@code cardDeque})
+ * which is used for calls from the outside.
+ */
 public class Deck {
     private ArrayList<Card> cardList;
     private ArrayDeque<Card> cardDeque;
@@ -24,7 +28,11 @@ public class Deck {
                                 tokenDoubleMovePath = "/json/ActionTokens/DoubleMoveTokens.json",
                                 tokenMoveShufflePath = "/json/ActionTokens/MoveShuffleTokens.json";
 
-    // Default constructor with only the type of deck as a parameter, uses default paths
+    /**
+     * Instantiate a new Deck of the given type, it uses the default paths for the .json files found in /resources/json.
+     *
+     * @param deckType "LeaderCard" for a Leader Deck, "ActionToken" for a Token Deck
+     */
     public Deck(String deckType){
         switch (deckType) {
             case "LeaderCard" -> {
@@ -44,6 +52,9 @@ public class Deck {
         cardList = null;
     }
 
+    /**
+     * Instantiate a new Deck with no parameters, used for ConcreteProductionCards.
+     */
     public Deck(){
         cardDeque = new ArrayDeque<>();
         cardList = new ArrayList<>();
@@ -116,18 +127,38 @@ public class Deck {
 
     // ******************************** PUBLIC METHODS ********************************
 
+    /**
+     * Get the list of cards inside a deck.
+     *
+     * @return the list of cards inside a single deck
+     */
     public ArrayDeque<Card> getCards(){
         return cardDeque;
     }
 
+    /**
+     * Peek the first card of the chosen deck.
+     *
+     * @return the first card of the deck
+     */
     public Card peekFirst() {
         return cardDeque.peekFirst();
     }
 
+    /**
+     * Get the first card of the chosen deck.
+     *
+     * @return the first card of the deck
+     */
     public Card getFirst(){
         return cardDeque.pollFirst();
     }
 
+    /**
+     * Create the list that contains all the ProductionCard Decks, 12 in total.
+     *
+     * @return the list that contains all the small decks
+     */
     public static List<Deck> createProdDeckList(){
         List<Card> allProdCards;
         List<Deck> prodDecks = new ArrayList<>();

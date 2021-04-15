@@ -10,13 +10,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * This LeaderCard makes it so, when you buy a ProductionCard, you can pay its cost with a discount of
+ * the indicated Resource - {@code discountType} (if the card you are buying has that Resource as a cost).
+ * <p>In order to activate the card, players must have all the production cards specified in {@code cost}, even if they're
+ * hidden.
+ * Use the {@code isActive()} method to discover its status.</p>
+ */
 public class DiscountAbility implements LeaderCard {
-    private int id;
+    private final int id;
     private final int victoryPoints;
     private final List<ConcreteProductionCard> cost;
     private boolean status;
     private final Resource discountType;
 
+    /**
+     * Instantiate a new Discount Ability Leader Card.
+     *
+     * @param id             the id of the card
+     * @param victoryPoints  the victory points
+     * @param cost           the cost in ConcreteProductionCards
+     * @param discountType  the Resource saved upon every purchase
+     */
     public DiscountAbility(int id, int victoryPoints, List<ConcreteProductionCard> cost, Resource discountType) {
         this.id = id;
         this.victoryPoints = victoryPoints;
@@ -25,6 +40,11 @@ public class DiscountAbility implements LeaderCard {
         this.discountType = discountType;
     }
 
+    /**
+     * Get the Resource that is discounted upon every purchase at the market.
+     *
+     * @return the resource
+     */
     public Resource getDiscountType(){ return discountType; }
 
     @Override

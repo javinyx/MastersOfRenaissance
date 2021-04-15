@@ -12,18 +12,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**This LeaderCard works similarly to a ProductionCard: it has a production power that players can decide to activate
+/**
+ * This LeaderCard works similarly to a ProductionCard: it has a production power that players can decide to activate
  * if they have the card and the latter is active.
  * <p>In order to activate the card, players must have all the production cards specified in {@code cost}, even if they're
  * hidden.
- * Once it's active (use {@code isActive()} method to discover its status)</p>*/
+ * Use the {@code isActive()} method to discover its status.</p>
+ */
 public class BoostAbility implements LeaderCard {
-    private int id;
+    private final int id;
     private final int victoryPoints;
     private final List<ConcreteProductionCard> cost;
     private boolean status;
     private Resource resourceNeeded;
 
+    /**
+     * Instantiate a new Boost Ability Leader Card.
+     *
+     * @param id             the id of the card
+     * @param victoryPoints  the victory points
+     * @param cost           the cost in ConcreteProductionCards
+     * @param resourceNeeded the Resource needed
+     */
     public BoostAbility(int id, int victoryPoints, List<ConcreteProductionCard> cost, Resource resourceNeeded) {
         this.id = id;
         this.victoryPoints = victoryPoints;
@@ -32,6 +42,11 @@ public class BoostAbility implements LeaderCard {
         this.resourceNeeded = resourceNeeded;
     }
 
+    /**
+     * Get the Resource needed to use the card.
+     *
+     * @return the resource
+     */
     public Resource getResource(){ return resourceNeeded; }
 
     @Override

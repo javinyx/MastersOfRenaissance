@@ -5,14 +5,32 @@ import it.polimi.ingsw.model.cards.production.ColorEnum;
 import it.polimi.ingsw.model.cards.production.ProductionCard;
 import it.polimi.ingsw.model.player.ProPlayer;
 
+/**
+ * The ActionToken with the Discard ability.
+ */
 public class DiscardToken implements ActionToken {
 
     private ColorEnum typeProdCard;
 
+    /**
+     * Instantiate a new Discard token.
+     *
+     * @param typeProdCard the type prod card
+     */
     public DiscardToken(ColorEnum typeProdCard){
         this.typeProdCard = typeProdCard;
     }
 
+    /**
+     * Draw a DiscardToken, discard 2 Production Cards of the
+     * indicated type from the bottom of the
+     * grid, from the lowest level to the highest
+     * (if there are no more Level I cards, you must
+     * discard the Level II cards, and so on).
+     *
+     * @param player the player who draws the card
+     * @param game the SinglePlayerGame being played
+     */
     public void draw(ProPlayer player, SinglePlayerGame game){
 
         ProductionCard prod;

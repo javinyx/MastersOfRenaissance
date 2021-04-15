@@ -135,8 +135,7 @@ public class Deck {
 
         // Read all the production cards and add them to the cardList
         try(Reader reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(prodPath)))) {
-            allProdCards = gson.fromJson(reader, new TypeToken<ArrayList<ConcreteProductionCard>>() {
-            }.getType());
+            allProdCards = gson.fromJson(reader, new TypeToken<ArrayList<ConcreteProductionCard>>(){}.getType());
 
             for (int i = 0; i <= allProdCards.size() - 4; i = i + 4) {
                 ArrayList<Card> currentCardList = new ArrayList<>(allProdCards.subList(i, i + 4));

@@ -125,7 +125,7 @@ public class Deck {
     }
 
     public Card getFirst(){
-        return cardDeque.getFirst();
+        return cardDeque.pollFirst();
     }
 
     public static List<Deck> createProdDeckList(){

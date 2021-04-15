@@ -35,10 +35,10 @@ public class ConcreteProductionCard extends ProductionCard implements Buyable, C
 
     public ArrayList<Resource> getProduction() { return new ArrayList<>(production); }
 
-    @Override
-    public String toString(){
+
+    public String toStringProd(){
         return "Color: " + color + ", level: " + level + ", victoryPoints: " + victoryPoints +
-                "\nCost: " + cost.toString() + "\nRequired Resources: " + requiredResources.toString() +
-                "\nProduction: " + production.toString();
+                ("\nCost: " + cost==null ? "null" : cost.toString()) + ("\nRequired Resources: " + requiredResources==null ? "null" : requiredResources.toString()) +
+                ("\nProduction: " + production==null ? "null" : production.toString());
     }
 }

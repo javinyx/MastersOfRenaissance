@@ -13,7 +13,7 @@ class DeckTest {
         List<Deck> productionDecks = Deck.createProdDeckList();
         Deck d = new Deck("LeaderCard");
         for (int i = 0; i < 16; i++) {
-            System.out.println(d.getFirst());
+            System.out.println(d.getFirst().toString());
         }
 
         /*for (int i = 0; i < 12; i++) {

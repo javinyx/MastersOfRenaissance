@@ -37,7 +37,13 @@ public class MultiplayerGame extends Game implements Observer {
     5 mercato, gia fatto
      */
 
-    public void start(String nick, int numPlayers){
+    /**
+     * Start the game and give the leader cards to players
+     *
+     * @param numPlayers the number of players that will play the game
+     */
+
+    public void start(int numPlayers){
 
         List<Card> tempList;
 
@@ -56,6 +62,12 @@ public class MultiplayerGame extends Game implements Observer {
     public Player getWinner(){
         return winner;
     }
+
+    /**
+     * Create the player with also the initial extra resources
+     *
+     * @param nickname the nickname of the player
+     */
 
     public void createPlayer(String nickname){
         List<String> nicknames = players.stream()

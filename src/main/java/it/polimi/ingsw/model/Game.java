@@ -18,7 +18,7 @@ public abstract class Game implements Observer{
     protected List<Deck> productionDecks;
     protected Deck leaderDeck;
 
-    public abstract void start(String nick, int numPlayers);
+    public abstract void start(int numPlayers);
     public abstract void createPlayer(String nickname);
     public Market getMarket(){
         return market;

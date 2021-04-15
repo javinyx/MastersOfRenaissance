@@ -41,6 +41,12 @@ public class Warehouse {
         return largeInventory;
     }
 
+
+    /**
+     * @param resource the resource to search the ID
+     * @return the ID of the the shelf that contains the Resource
+     */
+
     public int getInventoryID(Resource resource){
         if(smallInventory.equals(resource)){
             return 1;
@@ -198,6 +204,10 @@ public class Warehouse {
 
         return checkf && checkm;
     }
+
+    /**
+     * @return a list with all the items in the warehouse
+     */
 
     public List<Resource> allInList(){
         List<Resource> items = new ArrayList<>();

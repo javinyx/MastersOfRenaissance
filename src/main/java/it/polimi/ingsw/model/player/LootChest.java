@@ -91,6 +91,9 @@ public class LootChest {
         return inventory.get(res);
     }
 
+    /**
+     * @return every item in the inventory
+     */
     public Map<Resource, Integer> getInventory() {
         return inventory;
     }

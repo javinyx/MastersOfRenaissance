@@ -54,6 +54,11 @@ public class Player implements Observable {
         }
     }
 
+    /**
+     * @param report First, second o third vatican report space
+     *
+     * @return true if the player is in a cell that active the vatican report
+     */
     public boolean isInVaticanReportRange(int report){
         switch(report){
             case 1 : return currPos>=5;

@@ -24,7 +24,7 @@ class ProPlayerTest extends PlayerTest {
         p3.registerObserver((Observer)g2);
     }
 
-    @Disabled
+    @Test
     void getTurnType() {
         p3.buyFromMarket('c',1, null);
         p1.buyFromMarket('c', 1, null);
@@ -40,7 +40,7 @@ class ProPlayerTest extends PlayerTest {
 
     }
 
-    @Disabled
+    @Test
     void getTurnID() {
         assertEquals(1, p2.getTurnID());
         assertEquals(2, p3.getTurnID());
@@ -52,18 +52,18 @@ class ProPlayerTest extends PlayerTest {
         ConcreteProductionCard card = istantiateACard();
     }
 */
-    @Disabled
+    @Test
     void getVictoryPoints() {
         p1.addFaithPoints(24);
         assertEquals(20, p1.getVictoryPoints());
     }
 
-    @Disabled
+    @Test
     void getResAcquired() {
 
     }
 
-    @Disabled
+    @Test
     void getWarehouse() {
         assertNull(p1.getWarehouse().getSmallInventory());
         assertNull(p1.getWarehouse().getMidInventory());

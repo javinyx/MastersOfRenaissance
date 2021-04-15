@@ -21,14 +21,14 @@ class PlayerTest {
     void getNickname() { assertEquals("Gatto", player.getNickname());
     }
 
-    @Disabled
+    @Test
     void getCurrentPosition() {
         assertEquals(0, player.getCurrentPosition());
         player.moveOnBoard(2);
         assertEquals(2, player.getCurrentPosition());
     }
 
-    @Disabled
+    @Test
     void moveOnBoard() {
         player.moveOnBoard(1);
         assertEquals(1, player.getCurrentPosition());
@@ -38,7 +38,7 @@ class PlayerTest {
         assertThrows(IndexOutOfBoundsException.class, () -> player.moveOnBoard(1));
     }
 
-    @Disabled
+    @Test
     void registerObserver() {
         player.registerObserver((Observer)singleGame);
         assertSame(singleGame, player.getObserver(), "Got singlePlayer game wrong");
@@ -46,7 +46,7 @@ class PlayerTest {
         assertSame(multiGame, player.getObserver(), "Observer substitution: cannot go from single to multi");
     }
 
-    @Disabled
+    @Test
     void isInVaticanReportRange(){
         player.moveOnBoard(4);
         assertFalse(player.isInVaticanReportRange(1));

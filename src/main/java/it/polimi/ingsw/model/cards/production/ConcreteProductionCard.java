@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.market.Buyable;
 import it.polimi.ingsw.model.market.Resource;
 
 import java.util.ArrayList;
+import java.util.function.BiFunction;
 
 public class ConcreteProductionCard extends ProductionCard implements Buyable, Card {
     private int id;
@@ -36,9 +37,18 @@ public class ConcreteProductionCard extends ProductionCard implements Buyable, C
     public ArrayList<Resource> getProduction() { return new ArrayList<>(production); }
 
 
-    public String toStringProd(){
+    /*public String toStringProd(){
         return "Color: " + color + ", level: " + level + ", victoryPoints: " + victoryPoints +
                 ("\nCost: " + cost==null ? "null" : cost.toString()) + ("\nRequired Resources: " + requiredResources==null ? "null" : requiredResources.toString()) +
                 ("\nProduction: " + production==null ? "null" : production.toString());
+    }*/
+    @Override
+    public String toString(){
+        BiFunction<ArrayList<Resource>,String,  String> isNull = (x, name) -> {if(x==null)
+                                                                return "";
+                                                            return "\n"+name+" : " + x.toString();};
+        return "Color: " + color + ", level: " + level + ", victoryPoints: " + victoryPoints +
+                (isNull.apply(cost, "Cost")) + (isNull.apply(requiredResources, "RequiredResource")) +
+                (isNull.apply(production, "Production"));
     }
 }

@@ -9,22 +9,23 @@ class DeckTest {
 
     @BeforeEach
     public void testSetup(){
-        List<Deck> productionDecks = Deck.createProdDeckList();
-        Deck d = new Deck("LeaderCard");
-        /*for (int i = 0; i < 16; i++) {
-            System.out.println(d.getFirst().toString());
-        }*/
 
+        Deck d = new Deck("LeaderCard");
+        for (int i = 0; i < 16; i++) {
+            System.out.println(d.getFirst().toString()+"\n");
+        }
+
+        List<Deck> productionDecks = Deck.createProdDeckList();
         for (int i = 0; i < 12; i++) {
             for (int j = 0; j < 4; j++) {
                 System.out.println(productionDecks.get(i).getFirst().toString()+"\n");
             }
         }
 
-        /*Deck a = new Deck("ActionToken");
+        Deck a = new Deck("ActionToken");
         for (int i = 0; i < 7; i++) {
             System.out.println(a.getFirst().toString());
-        }*/
+        }
 
     }
 
@@ -32,7 +33,7 @@ class DeckTest {
     void getCards() {
     }
 
-    /*@Test
+    @Test
     void createProdDeckList() {
-    }*/
+    }
 }

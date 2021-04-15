@@ -18,6 +18,7 @@ public class DoubleMoveToken implements ActionToken {
      * @param player the player who draws the card
      * @param game the SinglePlayerGame being played
      */
+    @Override
     public void draw(ProPlayer player, SinglePlayerGame game){
 
         player.moveOnBoard(2);

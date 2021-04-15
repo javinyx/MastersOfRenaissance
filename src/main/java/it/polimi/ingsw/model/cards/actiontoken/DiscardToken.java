@@ -31,6 +31,7 @@ public class DiscardToken implements ActionToken {
      * @param player the player who draws the card
      * @param game the SinglePlayerGame being played
      */
+    @Override
     public void draw(ProPlayer player, SinglePlayerGame game){
 
         ProductionCard prod;

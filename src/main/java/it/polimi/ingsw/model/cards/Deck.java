@@ -180,4 +180,8 @@ public class Deck {
         return prodDecks;
     }
 
+    public int size(){
+        return cardDeque.size();
+    }
+
 }

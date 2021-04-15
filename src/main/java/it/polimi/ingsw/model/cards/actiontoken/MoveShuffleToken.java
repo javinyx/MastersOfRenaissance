@@ -15,6 +15,7 @@ public class MoveShuffleToken implements ActionToken {
      * @param player the player who draws the card
      * @param game the SinglePlayerGame being played
      */
+    @Override
     public void draw(ProPlayer player, SinglePlayerGame game){
 
         player.moveOnBoard(1);
@@ -22,6 +23,7 @@ public class MoveShuffleToken implements ActionToken {
         game.newTokenDeck();
     }
 
+    @Override
     public String toString(){
         return "Move&Shuffle Token";
     }

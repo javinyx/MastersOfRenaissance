@@ -51,6 +51,10 @@ public abstract class Game implements Observer{
                 .collect(Collectors.toList());
     }
 
+    public Deck getLeaderDeckNew(){
+        return leaderDeck;
+    }
+
     //public abstract List<LeaderCard> distributeLeaders();
     /**Remove the specified ProductionCard from Production Deck.
      * @param card the one to be removed */

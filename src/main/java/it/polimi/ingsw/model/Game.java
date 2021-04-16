@@ -33,11 +33,18 @@ public abstract class Game implements Observer{
                 .map(x -> (ConcreteProductionCard)x)
                 .collect(Collectors.toList());
     }
+
+    public Deck getProductionDeck(int numDeck){
+        if(numDeck<0 || numDeck>12){
+            return null;
+        }
+        return productionDecks.get(numDeck);
+    }
     /**Returns the list of ProductionCards that can be bought from each Production Deck*/
     public List<ConcreteProductionCard> getBuyableProductionCards(){
         List<Card> availableCards = new ArrayList<>();
         for(Deck d : productionDecks){
-            availableCards.add(d.getFirst());
+            availableCards.add(d.peekFirst());
         }
         return availableCards.stream()
                 .map(x -> (ConcreteProductionCard)x)

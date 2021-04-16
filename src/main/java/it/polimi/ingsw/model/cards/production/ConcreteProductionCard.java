@@ -45,6 +45,8 @@ public class ConcreteProductionCard extends ProductionCard implements Buyable, C
         this.production = production;
     }
 
+    public int getId(){return id;}
+
     /**
      * Get the cost of the card in Resources.
      *

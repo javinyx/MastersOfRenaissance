@@ -69,6 +69,10 @@ public class ProPlayer extends Player{
         return passes;
     }
 
+    public Deque<ConcreteProductionCard> getProdCards1(){return prodCards1;}
+    public Deque<ConcreteProductionCard> getProdCards2(){return prodCards2;}
+    public Deque<ConcreteProductionCard> getProdCards3(){return prodCards3;}
+
     /**Buy the specified ProductionCard and place it onto the specified {@code stack}.
      * <p>This will remove the card from the game production deck</p>
      * <p>Player can decide to play a LeaderCard that may affect the cost of the chosen ProductionCard.
@@ -84,7 +88,7 @@ public class ProPlayer extends Player{
         StorageAbility extra1Backup = new StorageAbility(extraStorage1);
         StorageAbility extra2Backup = new StorageAbility(extraStorage2);
 
-        if(!availableProdCards.contains(card) || stack<1 || stack>3){
+        if(!availableProdCards.contains(card)){
             throw new IllegalArgumentException();
         }
         Deque<ConcreteProductionCard> prodStack;
@@ -327,15 +331,17 @@ public class ProPlayer extends Player{
 
     /**Place the resource in the specified warehouse tier.
      * @param resource resource the player wants to store
-     * @param tier Warehouse inventory shelf's id on which the player want to place {@code resource}*/
-    public void storeInWarehouse(Resource resource, int tier){
+     * @param tier Warehouse inventory shelf's id on which the player want to place {@code resource}
+     * @return true if the storing ended successfully*/
+    public boolean storeInWarehouse(Resource resource, int tier){
         switch(tier){
             case 1 : warehouse.addSmall(resource);
-                     break;
+                     return true;
             case 2 : warehouse.addMid(resource);
-                        break;
+                        return true;
             case 3 : warehouse.addLarge(resource);
-            default : return;
+                        return true;
+            default : return false;
         }
     }
 
@@ -554,7 +560,7 @@ public class ProPlayer extends Player{
      * by the specific ProductionCard's cost or BoostAbility's cost.
      * <p>Players must specify from which type of storage they want to obtain the resources needed to pay by distributing
      * them in the {@code resAsCash} object.</p>
-     * <p>If the player wants to activate the BasicProduction power, he/sha has to choose the {@code outputBasic} as well.</p>
+     * <p>If the player wants to activate the BasicProduction power, he/she has to choose the {@code outputBasic} as well.</p>
      * <p>If something goes wrong while producing (i.e. not enough resources, misplacement), the method will revert any changes done
      * to Warehouse, LootChest and StorageAbility cards, without giving to the player the resources that it could
      * have produced before the error's encounter.</p>
@@ -719,6 +725,8 @@ public class ProPlayer extends Player{
     }
 
     public void setExtraStorage(StorageAbility card){
+        if(card.equals(extraStorage1) || card.equals(extraStorage2))
+            return;
         if(extraStorage1 == null){
             extraStorage1 = card;
             return;
@@ -726,7 +734,7 @@ public class ProPlayer extends Player{
             extraStorage2 = card;
             return;
         }else
-        throw new NullPointerException("No StorageAbility card given");
+        throw new RuntimeException("Too many cards");
     }
 
     public void drawActionToken (){

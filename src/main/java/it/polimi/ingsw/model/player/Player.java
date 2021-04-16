@@ -18,7 +18,9 @@ public class Player implements Observable {
         observer = game;
     }
 
-
+    public Game getGame(){
+        return game;
+    }
     public String getNickname(){
         return nickname;
     }

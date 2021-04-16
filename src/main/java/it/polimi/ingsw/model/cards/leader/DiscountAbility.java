@@ -87,4 +87,8 @@ public class DiscountAbility implements LeaderCard {
                 + "\nDiscount Type: " + discountType + ")";
     }
 
+    public String getNameNew(){
+        return "DiscountAbility";
+    }
+
 }

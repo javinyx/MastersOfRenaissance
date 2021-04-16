@@ -136,4 +136,8 @@ public class BoostAbility implements LeaderCard {
         return "BoostAbility(Victory Points: " + victoryPoints + ("\nActivation Cost: " + generalCost==null ? "null" : generalCost)
                 + "\nResource Needed: " + resourceNeeded + ")";
     }
+
+    public String getNameNew(){
+        return "BoostAbility";
+    }
 }

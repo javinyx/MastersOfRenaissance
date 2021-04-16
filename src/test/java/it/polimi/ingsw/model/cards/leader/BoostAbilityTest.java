@@ -1,6 +1,9 @@
 package it.polimi.ingsw.model.cards.leader;
 
 import it.polimi.ingsw.model.MultiplayerGame;
+import it.polimi.ingsw.model.SinglePlayerGame;
+import it.polimi.ingsw.model.cards.Deck;
+import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
 import it.polimi.ingsw.model.player.ProPlayer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,8 +45,8 @@ class BoostAbilityTest {
 
     @Test
     void applyEffect() {
-        while (!game.getLeaderDeckNew().peekFirst().getClass().getName().equals("BoostAbility"))
-            game.getLeaderDeckNew().peekFirst();
+        while (!((LeaderCard)(game).getLeaderDeckNew().getFirst()).getNameNew().equals("BoostAbility"))
+            game.getLeaderDeckNew().getFirst();
 
 
 

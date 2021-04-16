@@ -149,4 +149,9 @@ public class StorageAbility implements LeaderCard {
                     cost==null ? "null" : cost + "\nStorage Type: " + storageType + "\nContents: " + resources + ")";
         }
 
+
+    public String getNameNew(){
+        return "StorageAbility";
+    }
+
 }

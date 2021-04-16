@@ -46,4 +46,8 @@ public interface LeaderCard extends Card{
      * @return true if effect needs to be activated, false otherwise
      */
     boolean applyEffect(ProPlayer player);
+
+
+    public String getNameNew();
+
 }

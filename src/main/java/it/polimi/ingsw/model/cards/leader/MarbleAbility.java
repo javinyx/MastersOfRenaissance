@@ -88,4 +88,10 @@ public class MarbleAbility implements LeaderCard {
         return "MarbleAbility(Victory Points: " + victoryPoints +("\nActivation Cost: " + generalCost==null ? "null" : generalCost) +
                 "\nReplacing Resource: " + replacingResource + ")";
     }
+
+
+    public String getNameNew(){
+        return "MarbleAbility";
+    }
+
 }

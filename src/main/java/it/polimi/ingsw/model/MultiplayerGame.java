@@ -26,7 +26,7 @@ public class MultiplayerGame extends Game implements Observer {
         winner = null;
         activePlayers = new ArrayList<>();
 
-        leaderDeck = new Deck("LeadCard");
+        leaderDeck = new Deck("LeaderCard");
         productionDecks = Deck.createProdDeckList();
     }
 

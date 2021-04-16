@@ -63,7 +63,7 @@ public class Player implements Observable {
         switch(report){
             case 1 : return currPos>=5;
             case 2 : return currPos>=12;
-            case 3 : return currPos>=1;
+            case 3 : return currPos>=19;
             default : throw new IllegalArgumentException("Report must be between 1 and 3");
         }
     }

@@ -6,9 +6,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class ProPlayerTest extends PlayerTest {
     ProPlayer p1, p2, p3;
@@ -34,7 +34,7 @@ class ProPlayerTest extends PlayerTest {
 
         p2.storeInWarehouse(Resource.COIN, 1);
         p2.storeInWarehouse(Resource.SERVANT, 2);
-        assertEquals('p', p2.getTurnType());
+        assertEquals('m', p2.getTurnType());
 
         //TEST "BUY PRODUCTION CARD"
 
@@ -65,11 +65,13 @@ class ProPlayerTest extends PlayerTest {
 
     @Test
     void getWarehouse() {
+        ArrayList<Resource> a = new ArrayList();
+
         assertNull(p1.getWarehouse().getSmallInventory());
-        assertNull(p1.getWarehouse().getMidInventory());
-        assertNull(p2.getWarehouse().getLargeInventory());
+        assertEquals(a, p1.getWarehouse().getMidInventory());
+        assertEquals(a, p2.getWarehouse().getLargeInventory());
         warehouseSetup(p1);
-        assertNotNull(p1.getWarehouse().getMidInventory());
+        assertNotEquals(a, p1.getWarehouse().getMidInventory());
     }
 
     void warehouseSetup(ProPlayer p){

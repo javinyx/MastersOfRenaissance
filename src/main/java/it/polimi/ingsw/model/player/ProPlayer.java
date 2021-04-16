@@ -202,17 +202,16 @@ public class ProPlayer extends Player{
     }
 
     private int victoryPointsFromPos(){
-        int victoryPoints = 0;
         switch(currPos){
-            case 24: victoryPoints +=20;
-            case 23: case 22: case 21: victoryPoints +=16;
-            case 20: case 19: case 18: victoryPoints += 12;
-            case 17: case 16: case 15: victoryPoints += 9;
-            case 14: case 13: case 12: victoryPoints += 6;
-            case 11: case 10: case 9: victoryPoints += 4;
-            case 8: case 7: case 6: victoryPoints += 2;
-            case 5: case 4: case 3: victoryPoints += 1;
-            default : return victoryPoints;
+            case 24: return 20;
+            case 23: case 22: case 21: return 16;
+            case 20: case 19: case 18: return 12;
+            case 17: case 16: case 15: return 9;
+            case 14: case 13: case 12: return 6;
+            case 11: case 10: case 9: return 4;
+            case 8: case 7: case 6: return 2;
+            case 5: case 4: case 3: return 1;
+            default: return 0;
         }
     }
 

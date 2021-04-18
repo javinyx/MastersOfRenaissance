@@ -188,7 +188,7 @@ public class MultiplayerGame extends Game implements Observer {
     public void alertVaticanReport(Player player, int vaticanReport){
         //check every player position (even inactive ones in case they rejoin)
         for(ProPlayer p : players){
-            ArrayList<PopePass> passes = p.getPopePasses();
+            List<PopePass> passes = p.getPopePasses();
             if(p.isInVaticanReportRange(vaticanReport)){
                 passes.get(vaticanReport-1).activate();
             }else{

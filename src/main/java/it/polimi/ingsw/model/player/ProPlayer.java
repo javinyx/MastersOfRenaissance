@@ -11,10 +11,7 @@ import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Market;
 import it.polimi.ingsw.model.market.Resource;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -29,10 +26,14 @@ public class ProPlayer extends Player{
     private List<Resource> resAcquired;
     private ResourcesWallet resAsCash;
     private char turnType;
-    private StorageAbility extraStorage1, extraStorage2;
-    private Function<StorageAbility, Integer> pointsFromExtraStorage = (StorageAbility x) -> {int points=0;
-        if(x!=null){
-            points += x.size();
+    //private StorageAbility extraStorage1, extraStorage2;
+    private Optional<List<StorageAbility>> extraStorage;
+    private static int maxNumExtraStorage = 2;
+    private Function<Optional<List<StorageAbility>>, Integer> pointsFromExtraStorage = (Optional<List<StorageAbility>> x) ->
+    {int points=0;
+        if(x.isPresent()){
+            for(StorageAbility s : x.get())
+                points += s.size();
         }
         return points;
     };
@@ -48,12 +49,16 @@ public class ProPlayer extends Player{
         leaderCards = new ArrayList<>();
         resAcquired = null;
         resAsCash = null;
-        extraStorage1 = null;
-        extraStorage2 = null;
+        //extraStorage1 = null;
+        //extraStorage2 = null;
         passes = new ArrayList<>(3);
         passes.add(0, new PopePass(1));
         passes.add(1, new PopePass(2));
         passes.add(2, new PopePass(3));
+    }
+
+    public static int getMaxNumExtraStorage(){
+        return maxNumExtraStorage;
     }
 
     //m == buymarket, b == buyproduction, p == activateProduction
@@ -65,7 +70,7 @@ public class ProPlayer extends Player{
         return turnID;
     }
 
-    public ArrayList<PopePass> getPopePasses(){
+    public List<PopePass> getPopePasses(){
         return passes;
     }
 
@@ -80,13 +85,22 @@ public class ProPlayer extends Player{
      * @param card  choosen card for the transaction
      * @param stack indicates on which board's stack the player wants to place the card
      * @param leader LeaderCard: just DiscountAbility might have an effect here
-     * @param resAsCash resources distributed among different types of storage as the player wish to spend them*/
-    public void buyProductionCard(ConcreteProductionCard card, int stack, LeaderCard leader, ResourcesWallet resAsCash){
+     * @param resourcesWallet resources distributed among different types of storage as the player wish to spend them*/
+    public void buyProductionCard(ConcreteProductionCard card, int stack, LeaderCard leader, ResourcesWallet resourcesWallet)
+                                throws BadStorageException{
         List<ConcreteProductionCard> availableProdCards = game.getBuyableProductionCards();
         Warehouse warBackup = new Warehouse(warehouse);
         LootChest lootBackup = new LootChest(lootChest);
-        StorageAbility extra1Backup = new StorageAbility(extraStorage1);
-        StorageAbility extra2Backup = new StorageAbility(extraStorage2);
+        List<StorageAbility> extraStorageBackup = null;
+        if(extraStorage.isEmpty() && resAsCash.anyFromExtraStorage()){
+            throw new BadStorageException();
+        }
+        if(extraStorage.isPresent() && resAsCash.anyFromExtraStorage()){
+            extraStorageBackup = new ArrayList<>();
+            for(int i=0; i<extraStorage.get().size(); i++){
+                extraStorageBackup.add(i, new StorageAbility(extraStorage.get().get(i)));
+            }
+        }
 
         if(!availableProdCards.contains(card)){
             throw new IllegalArgumentException();
@@ -103,15 +117,18 @@ public class ProPlayer extends Player{
             default : throw new IndexOutOfBoundsException("Stack parameter must be between 1 and 3");
         }
 
-        if(card.getLevel()!= prodStack.peekFirst().getLevel()+1 || (prodStack.peekFirst()==null && card.getLevel()!=1)){
+        if((prodStack.peekFirst()==null && card.getLevel()!=1) || card.getLevel()!= prodStack.peekFirst().getLevel()+1){
             throw new RuntimeException("Cannot buy this card because of its level");
         }
+
         turnType = 'b';
         resAcquired = card.getCost(); //we use resAcquired to see its cost, it can be modified by a DiscountAbilityCard
-        List<Resource> removeFromLoot = resAsCash.getLootchestTray();
-        List<Resource> removeFromWar = resAsCash.getWarehouseTray();
-        List<Resource> removeFromExtra1 = resAsCash.getExtraStorage1();
-        List<Resource> removeFromExtra2 = resAsCash.getExtraStorage2();
+        List<Resource> removeFromLoot = resourcesWallet.getLootchestTray();
+        List<Resource> removeFromWar = resourcesWallet.getWarehouseTray();
+        List<List<Resource>> fromExtra = new ArrayList<>();
+        for(int i=0; i<resourcesWallet.extraStorageSize(); i++){
+            fromExtra.add(i, resourcesWallet.getExtraStorage(i));
+        }
 
         if(checkLeaderAvailability(leader))
             leader.applyEffect(this);
@@ -139,25 +156,20 @@ public class ProPlayer extends Player{
                     lootChest.addResources(r);
             }
         }
-        if(extraStorage1.isActive()){
-            for(Resource r : removeFromExtra1){
-                if(extraStorage1.remove(r))
-                    resAcquired.remove(r);
-            }
-        }
-        if(extraStorage2.isActive()) {
-            for (Resource r : removeFromExtra2) {
-                if(extraStorage2.remove(r))
-                    resAcquired.remove(r);
+
+        if(extraStorage.isPresent()){
+            for(int i=0; i<extraStorage.get().size(); i++){
+                for(Resource r : fromExtra.get(i)){
+                    if(extraStorage.get().get(i).remove(r)){
+                        resAcquired.remove(r);
+                    }
+                }
             }
         }
 
         if(resAcquired!=null){
             //player hasn't given all the necessary resources in order to buy that production card
-            warehouse = warBackup;
-            lootChest = lootBackup;
-            extraStorage1 = extra1Backup;
-            extraStorage2 = extra2Backup;
+            repairBackup(warBackup, lootBackup, extraStorageBackup);
             throw new RuntimeException();
         }
 
@@ -202,7 +214,7 @@ public class ProPlayer extends Player{
     public int countAllResources(){
         return (lootChest.getCountResInLootchest() + warehouse.getMidInventory().size()
                 + warehouse.getLargeInventory().size() + (warehouse.getSmallInventory()!=null ? 1 : 0)
-                + pointsFromExtraStorage.apply(extraStorage1) + pointsFromExtraStorage.apply(extraStorage2));
+                + pointsFromExtraStorage.apply(extraStorage));
     }
 
     private int victoryPointsFromPos(){
@@ -236,11 +248,14 @@ public class ProPlayer extends Player{
         return lootChest;
     }
 
-    public StorageAbility getExtraStorage1(){
+    /*public StorageAbility getExtraStorage1(){
         return extraStorage1;
     }
     public StorageAbility getExtraStorage2(){
         return extraStorage2;
+    }*/
+    public List<StorageAbility> getExtraStorage(){
+        return extraStorage.orElse(null);
     }
 
     /**Obtains the resources chosen from market by column or row.
@@ -361,14 +376,14 @@ public class ProPlayer extends Player{
         }
     }
 
-    /**Given 2 resource inputs, this production power stores the chosen resource in player's lootchest.
+   /* /**Given 2 resource inputs, this production power stores the chosen resource in player's lootchest.
      * <p>If the player has enough resources in the warehouse, this method will remove {@code input1} and
      * {@code input2}.</p>
      * @param resAsCash resources that the player wants to use as currency for the basic power
      * @param output chosen resource for the exchange.
      * @throws Exception when something goes wrong with storages, this exception is thrown. The caller should revert
      * the changes done to the storages (Lootchest and Warehouse are enough) by this method.*/
-    private void startBasicProduction(ResourcesWallet resAsCash, Resource output) throws Exception{ //DA RIFARE
+    /*private void startBasicProduction(ResourcesWallet resAsCash, Resource output) throws Exception{ //DA RIFARE
         if(output==null){
             throw new NullPointerException("Output cannot be null");
         }
@@ -431,22 +446,20 @@ public class ProPlayer extends Player{
         }else{
             throw new NullPointerException("Some parameters are null when they shouldn't");
         }
-    }
+    }*/
 
-    private void basicProductionFromLootchest(Resource input1, Resource input2) throws Exception{
-        if(input1.equals(Resource.FAITH) || input1.equals(Resource.BLANK) || input2.equals(Resource.FAITH)
-                || input2.equals(Resource.BLANK)){
-            throw new IllegalArgumentException();
+    private void basicProductionFromLootchest(Resource input1, Resource input2) throws BadStorageException{
+        if(!input1.isValidForTrading() || !input2.isValidForTrading()){
+            throw new BadStorageException();
         }
         if(!(lootChest.removeResources(input1) && lootChest.removeResources(input2))){
-            throw new Exception();
+            throw new BadStorageException();
         }
 
     }
-    private void basicProductionFromWarehouse(Resource input1, Resource input2){
-        if(input1.equals(Resource.FAITH) || input1.equals(Resource.BLANK) || input2.equals(Resource.FAITH)
-                || input2.equals(Resource.BLANK)){
-            throw new IllegalArgumentException();
+    private void basicProductionFromWarehouse(Resource input1, Resource input2) throws BadStorageException{
+        if(!input1.isValidForTrading() || !input2.isValidForTrading()){
+            throw new BadStorageException();
         }
         Resource smallShelf = warehouse.getSmallInventory();
         List<Resource> midShelf = warehouse.getMidInventory();
@@ -462,7 +475,7 @@ public class ProPlayer extends Player{
                 warehouse.removeLarge();
                 return;
             }else{
-                throw new RuntimeException("Not enough resources in warehouse");
+                throw new BadStorageException();
             }
         }
         if(smallShelf.equals(input1) && midShelf.contains(input2) || smallShelf.equals(input2) && midShelf.contains(input1)){
@@ -480,41 +493,35 @@ public class ProPlayer extends Player{
             warehouse.removeLarge();
             return;
         }
-        throw new RuntimeException("Not enough resources in warehouse");
+        throw new BadStorageException();
     }
-    private void basicProductionFromExtra(Resource input1, Resource input2, int extraStorage){
-        if(input1.equals(Resource.FAITH) || input1.equals(Resource.BLANK) || input2.equals(Resource.FAITH)
-                || input2.equals(Resource.BLANK)){
-            throw new IllegalArgumentException();
+    private void basicProductionFromExtra(Resource input1, Resource input2, int index) throws BadStorageException{
+        if(!input1.isValidForTrading() || !input2.isValidForTrading()){
+            throw new BadStorageException();
         }
-        StorageAbility storageBackup;
-        if(extraStorage==1){
-            storageBackup = new StorageAbility(extraStorage1);
-            if(!(extraStorage1.remove(input1) && extraStorage1.remove(input2))){
-                extraStorage1 = storageBackup;
-                throw new RuntimeException();
+        if(index==1){
+            if(!(extraStorage.get().get(0).remove(input1) && extraStorage.get().get(0).remove(input2))){
+                throw new BadStorageException();
             }
-        }else if(extraStorage==2){
-            storageBackup = new StorageAbility(extraStorage2);
-            if(!(extraStorage2.remove(input1) && extraStorage1.remove(input2))){
-                extraStorage2 = storageBackup;
-                throw new RuntimeException();
+        }else if(index==2){
+            if(!(extraStorage.get().get(1).remove(input1) && extraStorage.get().get(1).remove(input2))){
+                throw new BadStorageException();
             }
         }else{
-            throw new IllegalArgumentException();
+            throw new BadStorageException();
         }
     }
-    private void partialBasicProdFromLoot(Resource input) throws Exception{
-        if(input.equals(Resource.FAITH) || input.equals(Resource.BLANK)){
-            throw new IllegalArgumentException();
+    private void partialBasicProdFromLoot(Resource input) throws BadStorageException{
+        if(!input.isValidForTrading()){
+            throw new BadStorageException();
         }
         if(!lootChest.removeResources(input)){
-            throw new Exception();
+            throw new BadStorageException();
         }
     }
-    private void partialBasicProdFromWarehouse(Resource input) throws Exception{
-        if(input.equals(Resource.FAITH) || input.equals(Resource.BLANK)){
-            throw new IllegalArgumentException();
+    private void partialBasicProdFromWarehouse(Resource input) throws BadStorageException{
+        if(!input.isValidForTrading()){
+            throw new BadStorageException();
         }
         Resource smallShelf = warehouse.getSmallInventory();
         List<Resource> midShelf = warehouse.getMidInventory();
@@ -532,50 +539,27 @@ public class ProPlayer extends Player{
             warehouse.removeLarge();
             return;
         }
-        throw new Exception();
+        throw new BadStorageException();
     }
-    private void partialBasicProdFromExtra(Resource input, int extraStorage) throws Exception{
-        if(input.equals(Resource.FAITH) || input.equals(Resource.BLANK)){
-            throw new IllegalArgumentException();
+    private void partialBasicProdFromExtra(Resource input, int index) throws BadStorageException{
+        if(!input.isValidForTrading()){
+            throw new BadStorageException();
         }
-        StorageAbility storageBackup;
-        switch(extraStorage){
-            case 1 : storageBackup = new StorageAbility(extraStorage1);
-                    if(!extraStorage1.remove(input)){
-                        extraStorage1 = storageBackup;
-                        throw new Exception();
+        switch(index){
+            case 1 : if(!extraStorage.get().get(0).remove(input)){
+                        throw new BadStorageException();
                     }
                     return;
-            case 2 : storageBackup = new StorageAbility(extraStorage2);
-                    if(!extraStorage2.remove(input)){
-                        extraStorage2 = storageBackup;
-                        throw new Exception();
+            case 2 : if(!extraStorage.get().get(1).remove(input)){
+                        throw new BadStorageException();
                     }
                     return;
-            default : throw new IllegalArgumentException();
+            default : throw new BadStorageException();
         }
     }
 
-    /**For each ProductionCard in {@code cards}, it tries to consume all the resources planned by the player and requested
-     * by the specific ProductionCard's cost or BoostAbility's cost.
-     * <p>Players must specify from which type of storage they want to obtain the resources needed to pay by distributing
-     * them in the {@code resAsCash} object.</p>
-     * <p>If the player wants to activate the BasicProduction power, he/she has to choose the {@code outputBasic} as well.</p>
-     * <p>If something goes wrong while producing (i.e. not enough resources, misplacement), the method will revert any changes done
-     * to Warehouse, LootChest and StorageAbility cards, without giving to the player the resources that it could
-     * have produced before the error's encounter.</p>
-     * <p>Players express their wish of activation of the basic production power by {@code basicProd=true}</p>
-     * @param cards list of ProductionCard the player wants to activate and produce
-     * @param resAsCash object that contains all the resources the player wants to use as currency for the production,
-     * well divided into their storage type
-     * @param prodLeaders leaders whose effect the player would like to benefit. Mind that can only be BoostAbility and at max
-     *                    2 of them.
-     * @param basicProd true if the player wishes to activate the basic production power
-     * @param outputBasic the Resource the player wants as an outcome from the basic production power
-     * @param outputBoost list of desired outputs from the LeaderCard production with the Boost power. Mind
-     * that the player can possibly have at max 2 of these leaders, so he/she can use them to produce just 2 times
-     * at max per turn. This means just 2 outputBoost max. Must be in the same order as the corresponding prodLeader.*/
-    public void startProduction(List<ConcreteProductionCard> cards, ResourcesWallet resAsCash,
+
+    /*public void startProduction(List<ConcreteProductionCard> cards, ResourcesWallet resAsCash,
                                 List<BoostAbility> prodLeaders, boolean basicProd, Resource outputBasic, List<Resource> outputBoost){
         //BACKUPS
         Warehouse warBackup = new Warehouse(warehouse);
@@ -631,6 +615,176 @@ public class ProPlayer extends Player{
             production.add(outputBasic);
         }
         lootChest.addResources(production);
+    }*/
+
+    /**For each ProductionCard in {@code cards}, it tries to consume all the resources planned by the player and requested
+     * by the specific ProductionCard's cost or BoostAbility's cost.
+     * <p>Players must specify from which type of storage they want to obtain the resources needed to pay by distributing
+     * them in the {@code resAsCash} object.</p>
+     * <p>If the player wants to activate the BasicProduction power, he/she has to choose the {@code outputBasic} as well.</p>
+     * <p>If something goes wrong while producing (i.e. not enough resources, misplacement), the method will revert any changes done
+     * to Warehouse, LootChest and StorageAbility cards, without giving to the player the resources that it could
+     * have produced before the error's encounter.</p>
+     * <p>Players express their wish of activation of the basic production power by {@code basicProd=true}</p>
+     * @param cards list of ProductionCard the player wants to activate and produce
+     * @param resAsCash object that contains all the resources the player wants to use as currency for the production,
+     * well divided into their storage type
+     * @param prodLeaders leaders whose effect the player would like to benefit. Mind that can only be BoostAbility and at max
+     *                    2 of them.
+     * @param basicProd true if the player wishes to activate the basic production power
+     * @param outputBasic the Resource the player wants as an outcome from the basic production power
+     * @param outputBoost list of desired outputs from the LeaderCard production with the Boost power. Mind
+     * that the player can possibly have at max 2 of these leaders, so he/she can use them to produce just 2 times
+     * at max per turn. This means just 2 outputBoost max. Must be in the same order as the corresponding prodLeader.*/
+    public void startProductionNew(List<ConcreteProductionCard> cards, ResourcesWallet resAsCash, List<BoostAbility> prodLeaders,
+                                   List<Resource> outputBoost, boolean basicProd, Optional<Resource> outputBasic) throws BadStorageException{
+        Warehouse warBackup = new Warehouse(warehouse);
+        LootChest lootBackup = new LootChest(lootChest);
+        List<StorageAbility> extraStorageBackup = null;
+        if(extraStorage.isEmpty() && resAsCash.anyFromExtraStorage()){
+            throw new BadStorageException();
+        }
+        if(extraStorage.isPresent() && resAsCash.anyFromExtraStorage()){
+            extraStorageBackup = new ArrayList<>();
+            for(int i=0; i<extraStorage.get().size(); i++){
+                extraStorageBackup.add(i, new StorageAbility(extraStorage.get().get(i)));
+            }
+        }
+
+        List<Resource> tempProduction = new ArrayList<>();
+        turnType = 'p';
+
+        //Production for Production Cards
+        for(ConcreteProductionCard p : cards){
+            //check if they can produce
+            if(prodCards1.peekFirst().equals(p) || prodCards2.peekFirst().equals(p) || prodCards3.peekFirst().equals(p)){
+                //controller will ask the player to adjust the ProdCards selection and try again to call this method
+                repairBackup(warBackup, lootBackup, extraStorageBackup);
+                throw new RuntimeException(p.toString() + " cannot produce");
+            }
+            try {
+                tempProduction.addAll(produce(p, resAsCash));
+            }catch(Exception e){
+                repairBackup(warBackup, lootBackup, extraStorageBackup);
+                throw new RuntimeException("Not enough resources");
+            }
+        }
+
+        //Leader: BoostAbility production
+        if(!prodLeaders.isEmpty()){
+            if(prodLeaders.size()==outputBoost.size() && prodLeaders.size()<=2) {
+                int i = 0;
+                for (LeaderCard lc : prodLeaders) {
+                    resAcquired.clear();
+                    if (checkLeaderAvailability(lc) && outputBoost.get(i).isValidForTrading()) {
+                        //resAcquired.add(outputBoost.get(i));
+                        this.resAsCash = resAsCash;
+                        if(!lc.applyEffect(this)){
+                            //something went wrong in applying the effect
+                            repairBackup(warBackup, lootBackup, extraStorageBackup);
+                            throw new BadStorageException();
+                        }
+                        tempProduction.add(outputBoost.get(i));
+                        i++;
+                    }else{
+                        //something went wrong in the availability of the leader
+                        repairBackup(warBackup, lootBackup, extraStorageBackup);
+                        throw new BadStorageException();
+                    }
+                }
+            }else{
+                //output requested is inconsistent with the possibilities given
+                repairBackup(warBackup, lootBackup, extraStorageBackup);
+                throw new BadStorageException();
+            }
+        }
+
+        //Basic Production
+        if(basicProd && outputBasic.isPresent() && outputBasic.get().isValidForTrading()){
+            try {
+                startBasicProductionNew(resAsCash);
+            }catch(BadStorageException e){
+                repairBackup(warBackup, lootBackup, extraStorageBackup);
+                throw new BadStorageException();
+            }
+            tempProduction.add(outputBasic.get());
+        }
+
+        //Adding all outputs produced
+        lootChest.addResources(tempProduction);
+    }
+
+    /**It resets Warehouse, Lootchest and Storage Cards substituting them with all the backups passed
+     * through parameters.*/
+    private void repairBackup(Warehouse warBackup, LootChest lootBackup, List<StorageAbility> extraStorageBackup){
+        warehouse = warBackup;
+        lootChest = lootBackup;
+        if(extraStorageBackup!=null){
+            extraStorage = Optional.of(extraStorageBackup);
+        }else{
+            extraStorage = Optional.empty();
+        }
+    }
+
+    private void startBasicProductionNew(ResourcesWallet resourcesWallet) throws BadStorageException{
+        List<Resource> fromLoot = resourcesWallet.getLootchestTray();
+        List<Resource> fromWar = resourcesWallet.getWarehouseTray();
+        List<List<Resource>> fromExtra = new ArrayList<>();
+        for(int i=0; i<resourcesWallet.extraStorageSize(); i++){
+            fromExtra.add(i, resourcesWallet.getExtraStorage(i));
+        }
+
+        Resource input1;
+        Resource input2;
+        if(fromLoot.size()==2) {
+            input1 = fromLoot.get(0);
+            input2 = fromLoot.get(1);
+            basicProductionFromLootchest(input1, input2);
+        }else if(fromWar.size()==2) {
+            input1 = fromWar.get(0);
+            input2 = fromWar.get(1);
+            basicProductionFromWarehouse(input1, input2);
+        }else if(fromExtra.size()>0 && fromExtra.get(0).size()==2) {
+            input1 = fromExtra.get(0).get(0);
+            input2 = fromExtra.get(0).get(1);
+            basicProductionFromExtra(input1, input2, 1);
+        } else if(fromExtra.size()>1 && fromExtra.get(1).size()==2){
+            input1 = fromExtra.get(1).get(0);
+            input2 = fromExtra.get(1).get(1);
+            basicProductionFromExtra(input1, input2, 2);
+        }else if(resAsCash.anyFromLootchestTray() && resAsCash.anyFromWarehouseTray()){
+            input1 = fromLoot.get(0);
+            input2 = fromWar.get(0);
+            partialBasicProdFromLoot(input1);
+            partialBasicProdFromWarehouse(input2);
+        }else if(resAsCash.anyFromLootchestTray() && resAsCash.anyFromExtraStorage(0)){
+            input1 = fromLoot.get(0);
+            input2 = fromExtra.get(0).get(0);
+            partialBasicProdFromLoot(input1);
+            partialBasicProdFromExtra(input2, 1);
+        }else if(resAsCash.anyFromLootchestTray() && resAsCash.anyFromExtraStorage(1)){
+            input1 = fromLoot.get(0);
+            input2 = fromExtra.get(1).get(0);
+            partialBasicProdFromLoot(input1);
+            partialBasicProdFromExtra(input2, 2);
+        }else if(resAsCash.anyFromWarehouseTray() && resAsCash.anyFromExtraStorage(0)){
+            input1 = fromWar.get(0);
+            input2 = fromExtra.get(0).get(0);
+            partialBasicProdFromWarehouse(input1);
+            partialBasicProdFromExtra(input2, 1);
+        }else if(resAsCash.anyFromWarehouseTray() && resAsCash.anyFromExtraStorage(1)){
+            input1 = fromWar.get(0);
+            input2 = fromExtra.get(1).get(0);
+            partialBasicProdFromWarehouse(input1);
+            partialBasicProdFromExtra(input2, 2);
+        }else if(resAsCash.anyFromExtraStorage(0) && resAsCash.anyFromExtraStorage(1)){
+            input1 = fromExtra.get(0).get(0);
+            input2 = fromExtra.get(1).get(0);
+            partialBasicProdFromExtra(input1, 1);
+            partialBasicProdFromExtra(input2, 2);
+        }else{
+            throw new BadStorageException();
+        }
     }
     /**Activate production for a single ProductionCard.
      * <p>All list of Resource are optional, so can be null if the player doesn't want to draw resources from
@@ -641,18 +795,18 @@ public class ProPlayer extends Player{
      * accordingly to the type of LeaderCard the player has active.</p>
      * <p>It resets both player's {@code extraStorage} status if an exception is thrown, but not Warehouse and LootChest status.</p>
      * @param card Production Card
-     * @param resAsCash wallet of resources redistributed as the player wishes across the possible storage option*/
-    private List<Resource> produce(ConcreteProductionCard card, ResourcesWallet resAsCash) throws Exception{
+     * @param resourcesWallet wallet of resources redistributed as the player wishes across the possible storage option*/
+    private List<Resource> produce(ConcreteProductionCard card, ResourcesWallet resourcesWallet) throws BadStorageException{
         //BACKUPS
         List<Resource> cost = card.getCost();
         List<Resource> costDupe = card.getCost(); //since cannot modify cost while forEach is running and taking elements from it
-        StorageAbility extraStorage1Backup = new StorageAbility(extraStorage1);
-        StorageAbility extraStorage2Backup = new StorageAbility(extraStorage2);
 
-        List<Resource> removeFromWar = resAsCash.getWarehouseTray();
-        List<Resource> removeFromLoot = resAsCash.getLootchestTray();
-        List<Resource> removeFromStorage1 = resAsCash.getExtraStorage1();
-        List<Resource> removeFromStorage2 = resAsCash.getExtraStorage2();
+        List<Resource> removeFromWar = resourcesWallet.getWarehouseTray();
+        List<Resource> removeFromLoot = resourcesWallet.getLootchestTray();
+        List<List<Resource>> fromExtra = new ArrayList<>();
+        for(int i=0; i<resourcesWallet.extraStorageSize(); i++){
+            fromExtra.add(i, resourcesWallet.getExtraStorage(i));
+        }
 
         for(Resource r : costDupe){
             if(removeFromWar.contains(r)){
@@ -675,32 +829,28 @@ public class ProPlayer extends Player{
                     lootChest.removeResources(r);
                     cost.remove(r);
                 }
-           }else if(removeFromStorage1!=null && extraStorage1!=null && extraStorage1.getStorageType().equals(r)){
-             if(extraStorage1.size()>0){
-                 removeFromStorage1.remove(r);
-                 extraStorage1.remove(r);
+           }else if(fromExtra.size()>0 && extraStorage.isPresent() && extraStorage.get().get(0).getStorageType().equals(r)){
+             if(extraStorage.get().get(0).size()>0){
+                 fromExtra.get(0).remove(r);
+                 extraStorage.get().get(0).remove(r);
                  cost.remove(r);
              }else {
-                 extraStorage1 = extraStorage1Backup;
-                 extraStorage2 = extraStorage2Backup;
-                 throw new Exception();
+                 throw new BadStorageException();
              }
-           }else if(removeFromStorage2!=null && extraStorage2!=null && extraStorage2.getStorageType().equals(r)){
-               if(extraStorage2.size()>0){
-                   removeFromStorage2.remove(r);
-                   extraStorage2.remove(r);
+           }else if(fromExtra.size()>1 && extraStorage.isPresent() && extraStorage.get().size()>1
+                    && extraStorage.get().get(1).getStorageType().equals(r)){
+               if(extraStorage.get().get(1).size()>0){
+                   fromExtra.get(1).remove(r);
+                   extraStorage.get().get(1).remove(r);
                    cost.remove(r);
                }else {
-                   extraStorage1 = extraStorage1Backup;
-                   extraStorage2 = extraStorage2Backup;
-                   throw new Exception();
+                   throw new BadStorageException();
                }
            }else {
-                extraStorage1 = extraStorage1Backup;
-                extraStorage2 = extraStorage2Backup;
-                throw new Exception();
+                throw new BadStorageException();
             }
         }
+
         List<Resource> production = card.getProduction();
         for(Resource r : production){
             if(r.equals(Resource.FAITH)){
@@ -725,24 +875,32 @@ public class ProPlayer extends Player{
     }
 
     public void setExtraStorage(StorageAbility card){
-        if(card.equals(extraStorage1) || card.equals(extraStorage2))
-            return;
-        if(extraStorage1 == null){
-            extraStorage1 = card;
-            return;
-        }else if (extraStorage2 == null){
-            extraStorage2 = card;
-            return;
-        }else
-        throw new RuntimeException("Too many cards");
+        if(card==null){
+            throw new NullPointerException();
+        }
+        List<StorageAbility> s;
+        if(extraStorage.isPresent()){
+            s = extraStorage.get();
+            if(s.contains(card)){
+                //card already present
+                return;
+            }
+            if(s.size()<= maxNumExtraStorage){
+                //adding another card
+                extraStorage.map(x -> x.add(card));
+                return;
+            }
+            throw new RuntimeException("Too many cards");
+        }else{
+            //first card
+            s = new ArrayList<>();
+            s.add(card);
+            extraStorage = Optional.of(s);
+        }
     }
 
     public void drawActionToken (){
-
         ((ActionToken)((SinglePlayerGame)game).getTokenDeck().getFirst()).draw(this, (SinglePlayerGame)game);
-
     }
-
-
 
 }

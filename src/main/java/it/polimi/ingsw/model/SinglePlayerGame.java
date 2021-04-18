@@ -2,8 +2,6 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.Deck;
-import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
-import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.market.Market;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.PopePass;
@@ -11,7 +9,6 @@ import it.polimi.ingsw.model.player.ProPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class SinglePlayerGame extends Game implements Observer{
@@ -108,7 +105,7 @@ public class SinglePlayerGame extends Game implements Observer{
      * @param vaticanReport must be between 1 and 3. */
     public void alertVaticanReport(Player player, int vaticanReport){
         if(player.equals(lorenzo)){
-            ArrayList<PopePass> passes = this.player.getPopePasses();
+            List<PopePass> passes = this.player.getPopePasses();
             if(this.player.isInVaticanReportRange(vaticanReport)){
                 passes.get(vaticanReport-1).activate();
             }else{

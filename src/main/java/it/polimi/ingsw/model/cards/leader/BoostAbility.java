@@ -93,12 +93,15 @@ public class BoostAbility implements LeaderCard {
                     return false;
                 }
 
-            }else if(wallet.isInExtraStorage1Tray(resourceNeeded)){
-                StorageAbility extra1 = player.getExtraStorage1();
-                StorageAbility extra2 = player.getExtraStorage2();
-                if(extra1.isActive() && extra1.getStorageType().equals(resourceNeeded) && extra1.size()>0){
-                    extra1.remove(resourceNeeded);
-                    wallet.getExtraStorage1().remove(resourceNeeded);
+            }else if(wallet.isInExtraStorage(resourceNeeded, 0)){
+                StorageAbility extra = null;
+                if(player.getExtraStorage().size()>0) {
+                    extra = player.getExtraStorage().get(0);
+                }else
+                    return false;
+                if(extra.isActive() && extra.getStorageType().equals(resourceNeeded) && extra.size()>0){
+                    extra.remove(resourceNeeded);
+                    wallet.getExtraStorage(0).remove(resourceNeeded);
                 /*}else if(extra2.isActive() && extra2.getStorageType().equals(resourceNeeded) && extra2.size()>0){
                     //player might have swapped the extraStorage cards and teh extraStorage in Wallet
                     extra2.remove(resourceNeeded);
@@ -106,12 +109,15 @@ public class BoostAbility implements LeaderCard {
                 }else{
                     return false;
                 }
-            }else if(wallet.isInExtraStorage2Tray(resourceNeeded)){
-                StorageAbility extra2 = player.getExtraStorage2();
-                StorageAbility extra1 = player.getExtraStorage1();
-                if(extra2.isActive() && extra2.getStorageType().equals(resourceNeeded) && extra2.size()>0){
-                    extra2.remove(resourceNeeded);
-                    wallet.getExtraStorage2().remove(resourceNeeded);
+            }else if(wallet.isInExtraStorage(resourceNeeded, 1)){
+                StorageAbility extra = null;
+                if(player.getExtraStorage().size()>1) {
+                    extra = player.getExtraStorage().get(1);
+                }else
+                    return false;
+                if(extra.isActive() && extra.getStorageType().equals(resourceNeeded) && extra.size()>0){
+                    extra.remove(resourceNeeded);
+                    wallet.getExtraStorage(1).remove(resourceNeeded);
                 /*}else if(extra1.isActive() && extra1.getStorageType().equals(resourceNeeded) && extra1.size()>0){
                     //player might have swapped the extraStorage cards and teh extraStorage in Wallet
                     extra1.remove(resourceNeeded);

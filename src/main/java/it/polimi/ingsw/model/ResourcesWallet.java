@@ -9,22 +9,21 @@ import java.util.List;
 import java.util.Optional;
 
 public class ResourcesWallet {
-    private Optional<List<Resource>> warehouseTray, lootchestTray, extraStorage1, extraStorage2;
+    private Optional<List<Resource>> warehouseTray, lootchestTray;
     private Optional<List<List<Resource>>> extraStorage;
 
     public ResourcesWallet(){
-        /*warehouseTray = new ArrayList<>();
-        lootchestTray = new ArrayList<>();
-        extraStorage1 = new ArrayList<>();
-        extraStorage2 = new ArrayList<>();*/
+        warehouseTray = Optional.empty();
+        lootchestTray = Optional.empty();
+        extraStorage = Optional.empty();
     }
 
     public boolean setWarehouseTray(List<Resource> resources){
-        if(!areValidResources(resources)){
+        if(resources==null || resources.isEmpty() || !areValidResources(resources)){
             return false;
         }
         if(warehouseTray.isEmpty()){
-            warehouseTray = Optional.of(resources);
+            warehouseTray = Optional.of(new ArrayList<>(resources));
         }else {
             warehouseTray.map(x -> x.addAll(resources));
         }
@@ -32,11 +31,11 @@ public class ResourcesWallet {
     }
 
     public boolean setLootchestTray(List<Resource> resources){
-        if (!areValidResources(resources)) {
+        if (resources==null || resources.isEmpty() || !areValidResources(resources)) {
             return false;
         }
         if(lootchestTray.isEmpty()){
-            lootchestTray = Optional.of(resources);
+            lootchestTray = Optional.of(new ArrayList<>(resources));
         }else {
             lootchestTray.map(x -> x.addAll(resources));
         }
@@ -44,7 +43,7 @@ public class ResourcesWallet {
     }
 
     private boolean areValidResources(List<Resource> res){
-        if(res==null || res.contains(Resource.FAITH) || res.contains(Resource.BLANK)){
+        if(res.contains(Resource.FAITH) || res.contains(Resource.BLANK)){
             return false;
         }
         return true;
@@ -63,29 +62,35 @@ public class ResourcesWallet {
      * StorageAbilityCard cannot hold more than 1 distinct type and not more than 2 resources. For this reason, the exception
      * will also be thrown if it's a sequential call on an already existing deposit tries to add more resources whose
      * type is different from the ones already in the deposit.*/
-    public boolean setExtraStorage(List<Resource> resources, int index) throws BadStorageException {
-        if(!areValidResources(resources) || index>=ProPlayer.getMaxNumExtraStorage() || index<0){
+    public boolean setExtraStorage(List<Resource> resources, int index) /*throws BadStorageException*/ {
+        if(resources==null || resources.isEmpty() ||!areValidResources(resources) || index>=ProPlayer.getMaxNumExtraStorage() || index<0){
             return false;
         }
         if(resources.stream().distinct().count()>1 || resources.size()>2){
-            throw new BadStorageException();
+            //throw new BadStorageException();
+            return false;
         }
         List<List<Resource>> l;
         if(this.extraStorage.isEmpty()){
+            if(index!=0){
+                return false;
+            }
             //first resources for first card
             l = new ArrayList<>();
-            l.add(resources);
+            l.add(new ArrayList<>(resources));
             this.extraStorage = Optional.of(l);
-        }else if(index<= this.extraStorage.get().size()){
+        }else if(index< this.extraStorage.get().size()){
             //add resources for an already existing card
             if(!extraStorage.get().get(index).get(0).equals(resources.get(0))){
-                throw new BadStorageException();
+                //throw new BadStorageException();
+                return false;
             }
             this.extraStorage.map(x -> x.get(index).addAll(resources));
         }else if(index == this.extraStorage.get().size()){
             //add resources for new card
             l = new ArrayList<>(this.extraStorage.get());
             l.add(resources);
+            extraStorage = Optional.of(l);
         }else{
             return false;
         }
@@ -119,7 +124,7 @@ public class ResourcesWallet {
 
 
     public boolean isInWarehouseTray(Resource resource){
-        if(!resource.isValidForTrading()){
+        if(resource==null || !resource.isValidForTrading()){
             return false;
         }
         if(warehouseTray.isPresent()){
@@ -129,7 +134,7 @@ public class ResourcesWallet {
     }
 
     public boolean isInLootChestTray(Resource resource){
-        if(!resource.isValidForTrading()){
+        if(resource==null || !resource.isValidForTrading()){
             return false;
         }
         if(lootchestTray.isPresent()){
@@ -141,11 +146,11 @@ public class ResourcesWallet {
     /**@param index from 0 to {@code extraStorageSize()-1}
      * @return true if the {@code resource} is in the deposit specified */
     public boolean isInExtraStorage(Resource resource, int index){
-        if(!resource.isValidForTrading() || index<0){
+        if(resource==null || !resource.isValidForTrading() || index<0){
             return false;
         }
         if(extraStorage.isPresent() && index<extraStorage.get().size()){
-            return extraStorage.get().get(index-1).contains(resource);
+            return extraStorage.get().get(index).contains(resource);
         }
         return false;
     }
@@ -162,4 +167,11 @@ public class ResourcesWallet {
     }
     /*public boolean anyFromStorageCard1(){return extraStorage1!=null;}
     public boolean anyFromStorageCard2(){return extraStorage2!=null;}*/
+
+    public boolean isEmpty(){
+        if(warehouseTray.isEmpty() && lootchestTray.isEmpty() && extraStorage.isEmpty()){
+            return true;
+        }
+        return false;
+    }
 }

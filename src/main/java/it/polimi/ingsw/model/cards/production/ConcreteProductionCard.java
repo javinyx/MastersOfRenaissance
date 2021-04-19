@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.market.Buyable;
 import it.polimi.ingsw.model.market.Resource;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiFunction;
 
 /**
@@ -20,9 +21,9 @@ import java.util.function.BiFunction;
 public class ConcreteProductionCard extends ProductionCard implements Buyable, Card {
     private final int id;
     private int victoryPoints;
-    private ArrayList<Resource> cost;
-    private ArrayList<Resource> requiredResources;
-    private ArrayList<Resource> production;
+    private List<Resource> cost;
+    private List<Resource> requiredResources;
+    private List<Resource> production;
 
     /**
      * Instantiate a new Concrete Production Card.
@@ -35,14 +36,17 @@ public class ConcreteProductionCard extends ProductionCard implements Buyable, C
      * @param requiredResources the required Resources to start Production
      * @param production        the output of Resources when Production is finished
      */
-    public ConcreteProductionCard(int id, int victoryPoints, ColorEnum color, int level, ArrayList<Resource> cost, ArrayList<Resource> requiredResources, ArrayList<Resource> production) {
+    public ConcreteProductionCard(int id, int victoryPoints, ColorEnum color, int level, List<Resource> cost, List<Resource> requiredResources, List<Resource> production) {
         this.id = id;
         this.victoryPoints = victoryPoints;
         this.color = color;
         this.level = level;
-        this.cost = cost;
-        this.requiredResources = requiredResources;
-        this.production = production;
+        this.cost = new ArrayList<>();
+        this.cost.addAll(cost);
+        this.requiredResources = new ArrayList<>();
+        this.requiredResources.addAll(requiredResources);
+        this.production = new ArrayList<>();
+        this.production.addAll(production);
     }
 
     public int getId(){return id;}
@@ -52,7 +56,7 @@ public class ConcreteProductionCard extends ProductionCard implements Buyable, C
      *
      * @return the cost in Resources
      */
-    public ArrayList<Resource> getCost() {
+    public List<Resource> getCost() {
         return new ArrayList<Resource>(cost);
     }
 
@@ -70,14 +74,14 @@ public class ConcreteProductionCard extends ProductionCard implements Buyable, C
      *
      * @return the required resources
      */
-    public ArrayList<Resource> getRequiredResources() { return new ArrayList<>(requiredResources); }
+    public List<Resource> getRequiredResources() { return new ArrayList<>(requiredResources); }
 
     /**
      * Get the Resources produced once the Production phase is finished.
      *
      * @return the production output
      */
-    public ArrayList<Resource> getProduction() { return new ArrayList<>(production); }
+    public List<Resource> getProduction() { return new ArrayList<>(production); }
 
 
     /* public String toStringProd(){
@@ -87,7 +91,7 @@ public class ConcreteProductionCard extends ProductionCard implements Buyable, C
     }*/
     @Override
     public String toString(){
-        BiFunction<ArrayList<Resource>,String,  String> isNull = (x, name) -> {if(x==null)
+        BiFunction<List<Resource>,String,  String> isNull = (x, name) -> {if(x==null)
                                                                 return "";
                                                             return "\n"+name+" : " + x.toString();};
         return "Color: " + color + ", level: " + level + ", victoryPoints: " + victoryPoints +

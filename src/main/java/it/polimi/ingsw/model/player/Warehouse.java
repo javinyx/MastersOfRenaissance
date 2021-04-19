@@ -61,48 +61,47 @@ public class Warehouse {
 
     /** @param item the resource of the object to store in small inventory of the warehouse*/
 
-    public void addSmall(Resource item){
-        if (smallInventory == null)
+    public boolean addSmall(Resource item){
+        if (smallInventory == null && !largeInventory.contains(item) && !midInventory.contains(item)) {
             smallInventory = item;
-        else
-            //throw ex
-            return;
-
+            return true;
+        }
+        return false;
     }
 
     /** @param item the resource of the object to store in middle inventory of the warehouse*/
 
-    public void addMid(Resource item){
+    public boolean addMid(Resource item){
 
-        if(midInventory.size() == 0)
+        if(midInventory.size() == 0) {
+            if(largeInventory.contains(item) || (smallInventory!=null && smallInventory.equals(item)))
+                return false;
             midInventory.add(item);
-
-        else {
-
-            if (midInventory.size() == 1)
-                midInventory.add(item);
-
-            else
-                //throw ex
-                return;
+            return true;
         }
+
+        if (midInventory.size() == 1 && item.equals(midInventory.get(0))) {
+            midInventory.add(item);
+            return true;
+        }
+        return false;
     }
 
     /** @param item the resource of the object to store in large inventory of the warehouse*/
 
-    public void addLarge(Resource item){
-        if(largeInventory.size() == 0)
+    public boolean addLarge(Resource item){
+        if(largeInventory.size() == 0) {
+            if(midInventory.contains(item) || (smallInventory!=null && smallInventory.equals(item))){
+                return false;
+            }
             largeInventory.add(item);
-
-        else {
-
-            if (largeInventory.size() < 3)
-                largeInventory.add(item);
-
-            else
-                //throw ex
-                return;
+            return true;
         }
+        if (largeInventory.size() < 3 && item.equals(largeInventory.get(0))) {
+            largeInventory.add(item);
+            return true;
+        }
+        return false;
     }
 
 
@@ -125,7 +124,7 @@ public class Warehouse {
 
     public Resource removeMid(){
 
-        if(midInventory != null){
+        if(!midInventory.isEmpty()){
             Resource res = midInventory.get(midInventory.size() - 1);
             midInventory.remove(midInventory.size() - 1);
             return res;
@@ -139,7 +138,7 @@ public class Warehouse {
 
     public Resource removeLarge(){
 
-        if (largeInventory != null) {
+        if (!largeInventory.isEmpty()) {
             Resource res = largeInventory.get(largeInventory.size() - 1);
             largeInventory.remove(largeInventory.size() - 1);
             return res;

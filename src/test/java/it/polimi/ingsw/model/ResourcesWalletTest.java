@@ -89,12 +89,12 @@ class ResourcesWalletTest extends PlayerTest {
 
     @Test
     void getWarehouseTray() {
-        assertNull(wallet.getWarehouseTray());
+        assertEquals(0, wallet.getWarehouseTray().size());
         wallet.setWarehouseTray(res);
-        assertNull(wallet.getWarehouseTray());
+        assertEquals(0, wallet.getWarehouseTray().size());
         res.add(Resource.FAITH);
         wallet.setWarehouseTray(res);
-        assertNull(wallet.getWarehouseTray());
+        assertEquals(0, wallet.getWarehouseTray().size());
         res.clear();
         res.add(Resource.STONE);
         wallet.setWarehouseTray(res);
@@ -104,12 +104,12 @@ class ResourcesWalletTest extends PlayerTest {
 
     @Test
     void getLootchestTray() {
-        assertNull(wallet.getLootchestTray());
+        assertEquals(0, wallet.getLootchestTray().size());
         wallet.setLootchestTray(res);
-        assertNull(wallet.getLootchestTray());
+        assertEquals(0, wallet.getLootchestTray().size());
         res.add(Resource.FAITH);
         wallet.setLootchestTray(res);
-        assertNull(wallet.getLootchestTray());
+        assertEquals(0, wallet.getLootchestTray().size());
         res.clear();
         res.add(Resource.STONE);
         wallet.setLootchestTray(res);

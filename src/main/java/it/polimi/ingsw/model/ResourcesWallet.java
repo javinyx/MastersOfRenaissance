@@ -99,11 +99,11 @@ public class ResourcesWallet {
 
 
     public List<Resource> getWarehouseTray(){
-        return warehouseTray.orElse(null);
+        return warehouseTray.orElse(new ArrayList<>());
     }
 
     public List<Resource> getLootchestTray(){
-        return lootchestTray.orElse(null);
+        return lootchestTray.orElse(new ArrayList<>());
     }
 
     /**@param index must be from 0 to {@code extraStorageSize()-1}
@@ -112,7 +112,7 @@ public class ResourcesWallet {
         if(extraStorage.isPresent() && index>=0 && index<extraStorageSize()){
             return extraStorage.get().get(index);
         }
-        return null;
+        return new ArrayList<>();
     }
 
     public int extraStorageSize(){

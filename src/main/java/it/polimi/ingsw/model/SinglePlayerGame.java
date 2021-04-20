@@ -134,4 +134,5 @@ public class SinglePlayerGame extends Game implements Observer{
     }
 
     public void end(Player winner){}
+
 }

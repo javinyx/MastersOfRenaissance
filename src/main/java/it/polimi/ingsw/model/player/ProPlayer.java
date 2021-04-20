@@ -26,7 +26,6 @@ public class ProPlayer extends Player{
     protected List<Resource> resAcquired;
     protected ResourcesWallet resAsCash;
     protected char turnType;
-    //private StorageAbility extraStorage1, extraStorage2;
     protected Optional<List<StorageAbility>> extraStorage;
     protected static int maxNumExtraStorage = 2;
     protected Function<Optional<List<StorageAbility>>, Integer> pointsFromExtraStorage = (Optional<List<StorageAbility>> x) ->
@@ -47,7 +46,7 @@ public class ProPlayer extends Player{
         prodCards2 = new ArrayDeque<>();
         prodCards3 = new ArrayDeque<>();
         leaderCards = new ArrayList<>();
-        resAcquired = null;
+        resAcquired = new ArrayList<>();
         resAsCash = null;
         extraStorage = Optional.empty();
         passes = new ArrayList<>(3);
@@ -81,7 +80,7 @@ public class ProPlayer extends Player{
      * <p>This will remove the card from the game production deck</p>
      * <p>Player can decide to play a LeaderCard that may affect the cost of the chosen ProductionCard.
      * Its applicability will be checked by the method.</p>
-     * @param card  choosen card for the transaction
+     * @param card  chosen card for the transaction
      * @param stack indicates on which board's stack the player wants to place the card
      * @param leader LeaderCard: just DiscountAbility might have an effect here
      * @param resourcesWallet resources distributed among different types of storage as the player wish to spend them*/
@@ -94,10 +93,10 @@ public class ProPlayer extends Player{
         if(resourcesWallet==null || resourcesWallet.isEmpty()){
             throw new BadStorageException();
         }
-        if(extraStorage.isEmpty() && resAsCash.anyFromExtraStorage()){
+        if(extraStorage.isEmpty() && resourcesWallet.anyFromExtraStorage()){
             throw new BadStorageException();
         }
-        if(extraStorage.isPresent() && resAsCash.anyFromExtraStorage()){
+        if(extraStorage.isPresent() && resourcesWallet.anyFromExtraStorage()){
             extraStorageBackup = new ArrayList<>();
             for(int i=0; i<extraStorage.get().size(); i++){
                 extraStorageBackup.add(i, new StorageAbility(extraStorage.get().get(i)));
@@ -119,12 +118,13 @@ public class ProPlayer extends Player{
             default : throw new IndexOutOfBoundsException("Stack parameter must be between 1 and 3");
         }
 
-        if((prodStack.peekFirst()==null && card.getLevel()!=1) || card.getLevel()!= prodStack.peekFirst().getLevel()+1){
+        if((prodStack.isEmpty() && card.getLevel()!=1) || (!prodStack.isEmpty() && card.getLevel()!= prodStack.peekFirst().getLevel()+1)){
             throw new RuntimeException("Cannot buy this card because of its level");
         }
 
         turnType = 'b';
-        resAcquired = card.getCost(); //we use resAcquired to see its cost, it can be modified by a DiscountAbilityCard
+        resAcquired.clear();
+        resAcquired.addAll(card.getCost()); //we use resAcquired to see its cost, it can be modified by a DiscountAbilityCard
         List<Resource> removeFromLoot = resourcesWallet.getLootchestTray();
         List<Resource> removeFromWar = resourcesWallet.getWarehouseTray();
         List<List<Resource>> fromExtra = new ArrayList<>();
@@ -169,10 +169,10 @@ public class ProPlayer extends Player{
             }
         }
 
-        if(resAcquired!=null){
+        if(!resAcquired.isEmpty()){
             //player hasn't given all the necessary resources in order to buy that production card
             repairBackup(warBackup, lootBackup, extraStorageBackup);
-            throw new RuntimeException();
+            throw new BadStorageException();
         }
 
         //if we are here, then the cost has been payed completely
@@ -250,12 +250,6 @@ public class ProPlayer extends Player{
         return new LootChest(lootChest);
     }
 
-    /*public StorageAbility getExtraStorage1(){
-        return extraStorage1;
-    }
-    public StorageAbility getExtraStorage2(){
-        return extraStorage2;
-    }*/
     public List<StorageAbility> getExtraStorage(){
         return extraStorage.orElse(null);
     }
@@ -269,7 +263,7 @@ public class ProPlayer extends Player{
         if(dim!='c' && dim!='r'){
             throw new IllegalArgumentException("Chosen dimension must be either 'c' (column) or 'r' (row), instead it's "+dim);
         }
-        resAcquired = null;
+        resAcquired.clear();
         Market market = game.getMarket();
         if(dim == 'c'){
             if(index<1 || index>4){
@@ -316,10 +310,13 @@ public class ProPlayer extends Player{
     /**Let the player communicating his/her choice of leader: 2 out of the 4 given by the game.
      * @param leaders chosen leaders*/
     public void chooseLeaders(List<LeaderCard> leaders){
-        if(leaders.size()!=2){
+        if(leaders==null || leaders.size()!=2){
             throw new IllegalArgumentException("Must be 2 leaders");
         }
         leaderCards.addAll(leaders);
+        for(LeaderCard l : leaderCards){
+            l.setStatus(false);
+        }
     }
     /**Call the controller passing to the player the 4 options he/she has for the leader.*/
     public void giveLeadersOptions(List<LeaderCard> leaders){
@@ -333,6 +330,10 @@ public class ProPlayer extends Player{
                 l.setStatus(true);
             }
         }
+    }
+
+    public List<LeaderCard> getLeaderCards(){
+        return leaderCards;
     }
 
     /**Discard a leaderCard and give a Faith Point to the player.

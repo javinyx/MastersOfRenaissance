@@ -24,6 +24,32 @@ public class PlayerStub extends ProPlayer {
         warehouse.addLarge(Resource.SHIELD);
     }
 
+    /**Initialize warehouse just for Purple Production Card lvl 1 */
+    public boolean initWarehouse(List<Resource> res){
+        int distinct = (int)res.stream().distinct().count();
+        if(distinct>3 || (distinct==3 && res.size()>6))
+            return false;
+        if(distinct==1){
+            for(Resource r : res){
+                warehouse.addLarge(r);
+            }
+            return true;
+        }
+        if(distinct==2){
+            for(int i=0; i<2; i++){
+                warehouse.addMid(res.get(0));
+            }
+            for(int i=0; i<2; i++){
+                warehouse.addLarge(res.get(2));
+            }
+            return true;
+        }
+        warehouse.addSmall(res.get(0));
+        warehouse.addMid(res.get(1));
+        warehouse.addLarge(res.get(2));
+        return true;
+    }
+
     public void setLootChest(List<Resource> res){
         lootChest.addResources(res);
     }
@@ -45,6 +71,14 @@ public class PlayerStub extends ProPlayer {
         for(int i=0; i<leaderCards.size(); i++){
             if(leaderCards.get(i).equals(card)){
                 leaderCards.get(i).setStatus(true);
+            }
+        }
+    }
+
+    public void disableLeader(LeaderCard card){
+        for(int i=0; i<leaderCards.size(); i++){
+            if(leaderCards.get(i).equals(card)){
+                leaderCards.get(i).setStatus(false);
             }
         }
     }

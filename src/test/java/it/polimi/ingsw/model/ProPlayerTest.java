@@ -1,8 +1,8 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.cards.Deck;
+import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.StorageAbility;
-import it.polimi.ingsw.model.cards.production.ColorEnum;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.player.BadStorageException;
@@ -60,28 +60,74 @@ class ProPlayerTest extends PlayerTest {
         assertEquals(1, p1.getTurnID());
     }
 
-    @Disabled
-    void buyProductionCard() {
-        ConcreteProductionCard productionCard = generateFirstProdCard();
+    @Test
+    void buyProductionCardWithExceptions() {
+        ConcreteProductionCard productionCard = g.getBuyableProductionCards().get(0);
         ResourcesWallet wallet = new ResourcesWallet();
 
-        //assertThrows(IndexOutOfBoundsException.class, () -> p.buyProductionCard(productionCard, 4, null, wallet));
-        assertThrows(RuntimeException.class, ()-> p.buyProductionCard(productionCard, 1, null, wallet));
-
-        p.fullWarehouseInit();
+        assertThrows(BadStorageException.class, () -> p.buyProductionCard(productionCard, 3, null, wallet));
         wallet.setWarehouseTray(productionCard.getCost());
+        assertEquals(g.getBuyableProductionCards().get(0), productionCard);
+        assertThrows(IndexOutOfBoundsException.class, () -> p.buyProductionCard(productionCard, 4, null, wallet));
+        assertThrows(BadStorageException.class, () -> p.buyProductionCard(productionCard, 2, null, wallet));
+    }
+
+    @Test
+    void buyProductionCardWithLootchest(){
+        ConcreteProductionCard productionCard = g.getBuyableProductionCards().get(1);
+        p.setLootChest(productionCard.getCost());
+        ResourcesWallet wallet = new ResourcesWallet();
+        wallet.setLootchestTray(productionCard.getCost());
         try {
             p.buyProductionCard(productionCard, 1, null, wallet);
         }catch(BadStorageException e){
             e.printStackTrace();
         }
         assertEquals(productionCard, p.getProdCards1().peekFirst());
-        assertEquals(1, p.getWarehouse().getLargeInventory().size());
-        assertEquals(Resource.SHIELD, p.getWarehouse().getLargeInventory().get(0));
+        assertEquals(0, p.getLootChest().getInventory().get(Resource.COIN));
+        assertEquals(0, p.getLootChest().getInventory().get(Resource.SERVANT));
+        assertEquals(0, p.getLootChest().getInventory().get(Resource.SHIELD));
+        assertEquals(0, p.getLootChest().getInventory().get(Resource.STONE));
         assertEquals('b', p.getTurnType());
+
+        ConcreteProductionCard productionCard1 = g.getBuyableProductionCards().get(0);
+        List<Resource> res = new ArrayList<>();
+        res.addAll(productionCard1.getCost());
+        res.add(Resource.STONE); //one res in surplus
+        p.setLootChest(res);
+        ResourcesWallet wallet1 = new ResourcesWallet();
+        wallet1.setLootchestTray(productionCard1.getCost());
+        try {
+            p.buyProductionCard(productionCard1, 2, null, wallet1);
+        } catch (BadStorageException e) {
+            e.printStackTrace();
+        }
+        assertEquals(productionCard1, p.getProdCards2().peekFirst());
+        assertEquals(0, p.getLootChest().getInventory().get(Resource.COIN));
+        assertEquals(0, p.getLootChest().getInventory().get(Resource.SERVANT));
+        assertEquals(0, p.getLootChest().getInventory().get(Resource.SHIELD));
+        assertEquals(1, p.getLootChest().getInventory().get(Resource.STONE));
     }
 
-    private ConcreteProductionCard generateFirstProdCard(){
+    @Test
+    void buyProductionCardWithWarehouse(){
+        ConcreteProductionCard productionCard = g.getBuyableProductionCards().get(1);
+        ResourcesWallet wallet = new ResourcesWallet();
+        p.initWarehouse(productionCard.getCost());
+        wallet.setWarehouseTray(productionCard.getCost());
+
+        try {
+            p.buyProductionCard(productionCard, 3, null, wallet);
+        } catch (BadStorageException e) {
+            e.printStackTrace();
+        }
+        assertEquals(productionCard, p.getProdCards3().peekFirst());
+        assertNull(p.getWarehouse().getSmallInventory());
+        assertTrue(p.getWarehouse().getMidInventory().isEmpty());
+        assertTrue(p.getWarehouse().getLargeInventory().isEmpty());
+    }
+
+    /*private ConcreteProductionCard generateFirstProdCard(){
         List<Resource> cost = new ArrayList<>();
         List<Resource> requiredRes = new ArrayList<>();
         List<Resource> prod = new ArrayList<>();
@@ -108,7 +154,7 @@ class ProPlayerTest extends PlayerTest {
                 return true;
             default: return false;
         }
-    }
+    }*/
 
     @Test
     void getVictoryPoints() {
@@ -161,6 +207,7 @@ class ProPlayerTest extends PlayerTest {
 
     @Test
     void buyFromMarket() {
+
     }
 
     @Test
@@ -168,11 +215,42 @@ class ProPlayerTest extends PlayerTest {
     }
 
     @Test
+    void chooseLeaders(){
+        assertThrows(IllegalArgumentException.class, () -> p.chooseLeaders(null));
+        List<LeaderCard> leaderCards = new ArrayList<>();
+        assertThrows(IllegalArgumentException.class, () -> p.chooseLeaders(leaderCards));
+        leaderCards.add((LeaderCard) g.getLeaderDeckNew().getFirst());
+        leaderCards.add((LeaderCard) g.getLeaderDeckNew().getFirst());
+        assertEquals(2,(int)leaderCards.stream().distinct().count());
+        p.chooseLeaders(leaderCards);
+        assertEquals(2, p.getLeaderCards().size());
+        assertEquals(leaderCards.get(0), p.getLeaderCards().get(0));
+        assertEquals(leaderCards.get(1), p.getLeaderCards().get(1));
+        assertFalse(p.getLeaderCards().get(0).isActive());
+    }
+
+    @Test
     void activateLeaderCard() {
+
     }
 
     @Test
     void discardLeaderCard() {
+        LeaderCard leaderCard = (LeaderCard) g.leaderDeck.getFirst();
+        List<LeaderCard> playerList = p.getLeaderCards();
+        p.discardLeaderCard(leaderCard);
+        assertEquals(playerList, p.getLeaderCards());
+        playerList = new ArrayList<>();
+        playerList.add(leaderCard);
+        playerList.add((LeaderCard) g.leaderDeck.getFirst());
+        p.chooseLeaders(playerList);
+        p.activateLeader(leaderCard);
+        assertThrows(RuntimeException.class, () -> p.discardLeaderCard(leaderCard));
+        p.disableLeader(leaderCard);
+        p.discardLeaderCard(leaderCard);
+        playerList.remove(leaderCard);
+        assertEquals(playerList.size(), p.getLeaderCards().size());
+        assertEquals(playerList, p.getLeaderCards());
     }
 
     @Test
@@ -198,10 +276,6 @@ class ProPlayerTest extends PlayerTest {
         assertEquals(0, p1.getWarehouse().getLargeInventory().size());
 
         assertFalse(p1.storeInWarehouse(Resource.SERVANT,4));
-    }
-
-    @Test
-    void addFaithPoints() {
     }
 
     @Test

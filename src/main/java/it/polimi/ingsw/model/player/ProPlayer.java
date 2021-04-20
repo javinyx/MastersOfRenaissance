@@ -264,7 +264,7 @@ public class ProPlayer extends Player{
      * <p>Add faith points to the player if a red marble has been drawn.</p>
      * @param dim 'c' for column, 'r' for row.
      * @param index range 1-4 for column, 1-3 for row*/
-    public void buyFromMarket(char dim, int index, LeaderCard leader){
+    public void buyFromMarket(char dim, int index, List<LeaderCard> leaders){
         turnType = 'm';
         if(dim!='c' && dim!='r'){
             throw new IllegalArgumentException("Chosen dimension must be either 'c' (column) or 'r' (row), instead it's "+dim);
@@ -288,8 +288,17 @@ public class ProPlayer extends Player{
             resAcquired.remove(Resource.FAITH);
         }
 
-        if(checkLeaderAvailability(leader)){
-            leader.applyEffect(this);
+        //TURN BLANK INTO SOMETHING: call controller to let the player choose which leaders he wants
+        if(resAcquired.contains(Resource.BLANK) && leaders!=null && !leaders.isEmpty()){
+            int count = (int) resAcquired.stream().filter(x->x.equals(Resource.BLANK)).count();
+            for(; count>0; count--){
+                LeaderCard leader = null;//call controller that returns a leader chosen by Player;
+                if(checkLeaderAvailability(leader)){
+                    if(!leader.applyEffect(this)){
+                        throw new RuntimeException("Invalid Leader");
+                    }
+                }
+            }
         }
 
         //call controller and let the player choose on which warehouse tier it should place each resource

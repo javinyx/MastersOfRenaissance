@@ -75,12 +75,8 @@ public class StorageAbility implements LeaderCard {
         }
 
         public boolean applyEffect(ProPlayer player) {
-
-            if (player.getTurnType() == 'm') {
-                player.setExtraStorage(this);
-                return true;
-            }
-            return false;
+            player.setExtraStorage(this);
+            return true;
         }
 
     /**

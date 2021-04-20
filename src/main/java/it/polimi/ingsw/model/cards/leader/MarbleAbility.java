@@ -72,13 +72,21 @@ public class MarbleAbility implements LeaderCard {
     }
 
     public boolean applyEffect(ProPlayer player) {
+        if(player.getTurnType()=='m') {
+            List<Resource> res = player.getResAcquired();
+            if (res.contains(Resource.BLANK)) {
+                res.remove(Resource.BLANK);
+                res.add(replacingResource);
+                return true;
+            }
 
-        for (Resource r : player.getResAcquired()) {
+        /*for (Resource r : player.getResAcquired()) {
             if (r == Resource.BLANK) {
                 player.getResAcquired().remove(r);
                 player.getResAcquired().add(replacingResource);
                 return true;
             }
+        }*/
         }
         return false;
     }

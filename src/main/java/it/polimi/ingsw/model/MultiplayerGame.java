@@ -15,8 +15,7 @@ import java.util.stream.Collectors;
 public class MultiplayerGame extends Game implements Observer {
     private List<ProPlayer> players;
     private List<ProPlayer> activePlayers;
-    private int totalPlayers;
-    private ProPlayer currPlayer;
+
 
     public MultiplayerGame(){
         players = new ArrayList<>();
@@ -205,6 +204,14 @@ public class MultiplayerGame extends Game implements Observer {
                 p.addFaithPoints(1);
             }
         }
+    }
+
+    public ProPlayer getNextPlayer() {
+        int turnID = getCurrPlayer().getTurnID();
+        turnID++;
+        if(activePlayers.contains(activePlayers.get(turnID)))
+            return activePlayers.get(turnID);
+        return null;
     }
 }
 

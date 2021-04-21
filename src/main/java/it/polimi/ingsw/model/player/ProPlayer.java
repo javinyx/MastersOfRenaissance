@@ -296,7 +296,7 @@ public class ProPlayer extends Player{
             }
         }
 
-        //call controller and let the player choose on which warehouse tier it should place each resource
+        //call controller and let the player choose on which warehouse tier it should place each resource    controller.organizeResource(resAcquired);
     }
 
     /**Discard resources when there is no space left in the warehouse.

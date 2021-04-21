@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Market;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.player.ProPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,8 @@ public abstract class Game implements Observer{
     protected Player winner;
     protected List<Deck> productionDecks;
     protected Deck leaderDeck;
+    protected int totalPlayers;
+    protected ProPlayer currPlayer;
 
     public abstract void start(int numPlayers);
     public abstract void createPlayer(String nickname);
@@ -69,4 +72,12 @@ public abstract class Game implements Observer{
 
     }
     public Player getWinner(){return winner;}
+
+    public int getTotalPlayers() {
+        return totalPlayers;
+    }
+
+    public ProPlayer getCurrPlayer() {
+        return currPlayer;
+    }
 }

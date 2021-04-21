@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.player;
 
+import it.polimi.ingsw.model.market.Buyable;
 import it.polimi.ingsw.model.market.Resource;
 
 import java.util.ArrayList;
@@ -215,6 +216,22 @@ public class Warehouse {
         if (largeInventory != null) items.addAll(largeInventory);
 
         return items;
+    }
+
+    public int numberOf(Buyable res){
+        int counter = 0;
+        if(res instanceof Resource){
+            if(smallInventory.equals(res)){
+                counter++;
+            }
+            if(midInventory.contains(res)){
+                counter += getMidInventory().size();
+            }
+            if(largeInventory.contains(res)){
+                counter += getLargeInventory().size();
+            }
+        }
+        return counter;
     }
 
 }

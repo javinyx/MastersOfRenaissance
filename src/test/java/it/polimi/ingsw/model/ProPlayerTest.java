@@ -4,6 +4,8 @@ import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.StorageAbility;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
+import it.polimi.ingsw.model.cards.production.ProductionCard;
+import it.polimi.ingsw.model.market.Buyable;
 import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.player.BadStorageException;
 import it.polimi.ingsw.model.player.ProPlayer;
@@ -15,6 +17,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -231,7 +234,41 @@ class ProPlayerTest extends PlayerTest {
 
     @Test
     void activateLeaderCard() {
+        LeaderCard leader1 = (LeaderCard) g.leaderDeck.getFirst();
+        LeaderCard leader2 = (LeaderCard) g.leaderDeck.getFirst();
 
+        assertNotEquals(leader1,leader2);
+        System.out.println(leader1);
+        System.out.println(leader2);
+        assertFalse(leader1.isActive());
+        assertFalse(leader2.isActive());
+
+        assertFalse(p.activateLeaderCard(leader1)); //doesn't have the card yet
+        p.setLeaderCards(leader1);
+        assertFalse(p.activateLeaderCard(leader1));//doesn't have resources to activate it
+
+        List<Buyable> cost1 = leader1.getCost();
+        if(cost1.get(0) instanceof Resource) {
+            List<Resource> cost1R = cost1.stream().map(x -> (Resource)x).collect(Collectors.toList());
+            p.setLootChest(cost1R);
+        }else{
+            List<ProductionCard> cost1P = cost1.stream().map(x -> (ProductionCard)x).collect(Collectors.toList());
+            int id=1;
+            List<Resource> prodCost= new ArrayList<>();
+            prodCost.add(Resource.STONE);
+            List<Resource> input, output;
+            input = output = prodCost;
+            for(ProductionCard pc : cost1P){
+                ConcreteProductionCard actualCard = new ConcreteProductionCard(id,1, pc.getColor(), pc.getLevel(), prodCost, input, output);
+                id++;
+                p.setProductionStacks(id, actualCard);
+            }
+        }
+        //assertTrue(p.activateLeaderCard(leader1)); //perchè se è doppio non funziona e ritorna false nel test????
+        assertTrue(p.activateLeaderCard(leader1));
+        assertTrue(leader1.isActive());
+        assertFalse(p.activateLeaderCard(leader2));
+        assertFalse(leader2.isActive());
     }
 
     @Test
@@ -323,16 +360,26 @@ class ProPlayerTest extends PlayerTest {
         StorageAbility storageCard2 = new StorageAbility(2, 1, cardCost, Resource.SHIELD);
         StorageAbility storageCard3 = new StorageAbility(3, 1, cardCost, Resource.COIN);
 
-        /*assertNull(p1.getExtraStorage1());
-        assertNull(p1.getExtraStorage2());
-        p1.setExtraStorage(storageCard1);
-        assertEquals(storageCard1, p1.getExtraStorage1());
-        assertNull(p1.getExtraStorage2());
+        assertThrows(NullPointerException.class, () -> p.setExtraStorage(null));
 
-        p1.setExtraStorage(storageCard2);
-        assertEquals(storageCard1, p1.getExtraStorage1());
-        assertEquals(storageCard2, p1.getExtraStorage2());
-        assertThrows(RuntimeException.class, () -> p1.setExtraStorage(storageCard3));*/
+        p.setExtraStorage(storageCard1);
+        assertEquals(1, p.getExtraStorage().size());
+        assertEquals(storageCard1, p.getExtraStorage().get(0));
+
+        p.setExtraStorage(storageCard2);
+        assertEquals(2, p.getExtraStorage().size());
+        assertEquals(storageCard1, p.getExtraStorage().get(0));
+        assertEquals(storageCard2, p.getExtraStorage().get(1));
+
+        //too many cards
+        p.setExtraStorage(storageCard3);
+        assertThrows(RuntimeException.class, () -> p.setExtraStorage(storageCard3));
+
+        //nothing changes cause trying to add an already present card
+        p.setExtraStorage(storageCard1);
+        assertEquals(2, p.getExtraStorage().size());
+        assertEquals(storageCard1, p.getExtraStorage().get(0));
+        assertEquals(storageCard2, p.getExtraStorage().get(1));
 
         assertDoesNotThrow(()-> p1.setExtraStorage(storageCard1));
     }

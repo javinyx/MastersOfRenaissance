@@ -83,6 +83,7 @@ public class PlayerStub extends ProPlayer {
         }
     }
 
+
     public void setTurnType(char type){
         turnType = type;
     }

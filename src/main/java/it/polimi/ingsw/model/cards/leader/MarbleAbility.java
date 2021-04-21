@@ -93,7 +93,7 @@ public class MarbleAbility implements LeaderCard {
     @Override
     public String toString(){
         List<ProductionCard> generalCost = cost.stream().map(x -> (ProductionCard)x).collect(Collectors.toList());
-        return "MarbleAbility(Victory Points: " + victoryPoints +("\nActivation Cost: " + generalCost==null ? "null" : generalCost) +
+        return "MarbleAbility(Victory Points: " + victoryPoints +"\nActivation Cost: " + (/*generalCost==null ? "null" :*/ generalCost) +
                 "\nReplacing Resource: " + replacingResource + ")";
     }
 

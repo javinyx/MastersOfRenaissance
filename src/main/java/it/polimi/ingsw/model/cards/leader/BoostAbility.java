@@ -139,7 +139,7 @@ public class BoostAbility implements LeaderCard {
     @Override
     public String toString(){
         List<ProductionCard> generalCost = cost.stream().map(x -> (ProductionCard)x).collect(Collectors.toList());
-        return "BoostAbility(Victory Points: " + victoryPoints + ("\nActivation Cost: " + generalCost==null ? "null" : generalCost)
+        return "BoostAbility(Victory Points: " + victoryPoints + "\nActivation Cost: " + (/*generalCost==null ? "null" :*/ generalCost)
                 + "\nResource Needed: " + resourceNeeded + ")";
     }
 

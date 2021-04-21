@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.cards.leader.BoostAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.StorageAbility;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
+import it.polimi.ingsw.model.market.Buyable;
 import it.polimi.ingsw.model.market.Market;
 import it.polimi.ingsw.model.market.Resource;
 
@@ -251,7 +252,7 @@ public class ProPlayer extends Player{
     }
 
     public List<StorageAbility> getExtraStorage(){
-        return extraStorage.orElse(null);
+        return extraStorage.orElse(new ArrayList<>());
     }
 
     /**Obtains the resources chosen from market by column or row.
@@ -324,11 +325,94 @@ public class ProPlayer extends Player{
     }
     /**Activate the leader card, only if the player has that card. From now on it's available for usage.
      * @param leader chosen leaderCard to activate */
-    public void activateLeaderCard(LeaderCard leader){
+    public boolean activateLeaderCard(LeaderCard leader){
         for(LeaderCard l : leaderCards){
-            if(l.equals(leader)){
+            if(l.equals(leader) && hasEnoughResources(leader.getCost())){
                 l.setStatus(true);
+                return true;
             }
+        }
+        return false;
+    }
+
+    private boolean hasEnoughResources(List<Buyable> cost){
+        List<BuyableMap> requirements = new ArrayList<>();
+        List<Buyable> distinctBuyable = cost.stream().distinct().collect(Collectors.toList());
+        for(int j=0; j<distinctBuyable.size(); j++){
+            requirements.add(new BuyableMap(distinctBuyable.get(j), 0));
+            for(int i=0; i<cost.size(); i++){
+                if(cost.get(i).equals(distinctBuyable.get(j))){
+                    requirements.get(j).addOccurrence(1);
+                }
+            }
+        }
+        int x;
+        //searching between storages
+        for(int j=0; j<requirements.size(); j++){
+            Buyable res = requirements.get(j).getBuyableResource();
+            if(lootChest.getInventory().containsKey(res)){
+                requirements.get(j).subOccurrence(lootChest.getInventory().get(res));
+            }else if((x=warehouse.numberOf(requirements.get(j).getBuyableResource()))>0){
+                requirements.get(j).subOccurrence(x);
+            }else if(extraStorage.isPresent() && (extraStorage.get().get(0).getStorageType().equals(res)
+                            || extraStorage.get().get(1).getStorageType().equals(res))){
+                if(extraStorage.get().get(0).getStorageType().equals(res)){
+                    requirements.get(j).subOccurrence(extraStorage.get().get(0).size());
+                }else if(extraStorage.get().get(1).getStorageType().equals(res)){
+                    requirements.get(j).subOccurrence(extraStorage.get().get(1).size());
+                }
+            }else{
+                for(ConcreteProductionCard pp : prodCards1){
+                    if(pp.isOfType(res)){
+                        requirements.get(j).subOccurrence(1);
+                    }
+                }
+                for(ConcreteProductionCard pp :prodCards2){
+                    if(pp.isOfType(res)){
+                        requirements.get(j).subOccurrence(1);
+                    }
+                }
+                for(ConcreteProductionCard pp : prodCards3){
+                    if(pp.isOfType(res)){
+                        requirements.get(j).subOccurrence(1);
+                    }
+                }
+            }
+        }
+
+        //check
+        for(BuyableMap b : requirements){
+            if(b.getOccurrence()>0)
+                return false;
+        }
+        return true;
+    }
+
+    private class BuyableMap{
+        int occurrence;
+        Buyable buyableResource;
+
+        public BuyableMap(Buyable buyableResource, int occurrence){
+            this.buyableResource = buyableResource;
+            this.occurrence = occurrence;
+        }
+
+        public void setOccurrence(int occurrence){
+            this.occurrence = occurrence;
+        }
+
+        public void addOccurrence(int adding){
+            this.occurrence += adding;
+        }
+
+        public void subOccurrence(int sub){
+            this.occurrence -= sub;
+        }
+
+        public int getOccurrence(){return occurrence;}
+
+        public Buyable getBuyableResource() {
+            return buyableResource;
         }
     }
 

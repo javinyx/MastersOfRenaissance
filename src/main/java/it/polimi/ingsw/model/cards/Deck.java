@@ -128,35 +128,34 @@ public class Deck {
     // ******************************** PUBLIC METHODS ********************************
 
     /**
-     * Get the list of cards inside a deck.
-     *
-     * @return the list of cards inside a single deck
+     * Get the deque of cards inside a deck.
+     * @return the deque of cards inside a single deck
      */
-    public ArrayDeque<Card> getCards(){
+    public Deque<Card> getCards(){
         return cardDeque;
     }
 
     /**
-     * Peek the first card of the chosen deck.
-     *
-     * @return the first card of the deck
+     * Peek the first card of the chosen deck, without removing it.
+     * @return the first card of the deck, or null if the deck is empty
      */
     public Card peekFirst() {
         return cardDeque.peekFirst();
     }
 
     /**
-     * Get the first card of the chosen deck.
-     *
-     * @return the first card of the deck
+     * Get the first card of the chosen deck and remove it.
+     * @return the first card of the deck, or null if the deck is empty
      */
     public Card getFirst(){
         return cardDeque.pollFirst();
     }
 
+    public boolean remove(Card card){return this.cardDeque.remove(card);}
+    public boolean contains(Card card){return this.cardDeque.contains(card);}
+
     /**
      * Create the list that contains all the ProductionCard Decks, 12 in total.
-     *
      * @return the list that contains all the small decks
      */
     public static List<Deck> createProdDeckList(){

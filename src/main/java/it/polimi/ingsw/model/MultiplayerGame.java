@@ -68,7 +68,10 @@ public class MultiplayerGame extends Game implements Observer {
      * @param nickname the nickname of the player
      */
 
-    public void createPlayer(String nickname){
+    public boolean createPlayer(String nickname){
+        if(totalPlayers>3){
+            return false;//too many players
+        }
         List<String> nicknames = players.stream()
                 .map(Player :: getNickname)
                 .collect(Collectors.toList());
@@ -97,6 +100,7 @@ public class MultiplayerGame extends Game implements Observer {
 
         p.registerObserver(this);
         activePlayers.add(p);
+        return true;
     }
 
     public List<ProPlayer> getPlayers() {

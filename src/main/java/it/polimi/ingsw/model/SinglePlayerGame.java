@@ -67,14 +67,21 @@ public class SinglePlayerGame extends Game implements Observer{
      * @param nickname the nickname of the player
      */
 
-    public void createPlayer(String nickname){
+    public boolean createPlayer(String nickname){
+        if(totalPlayers>0){
+            //too many players
+            return false;
+        }
         if(nickname == null){
             throw new NullPointerException();
         }
         if(nickname.equals(lorenzo.getNickname())){
             throw new IllegalArgumentException("Player cannot have "+lorenzo.getNickname()+ " as nickname");
         }
+        totalPlayers = 1;
         player = new ProPlayer(nickname, 1, this);
+        currPlayer = player;
+        return true;
     }
     public Market getMarket(){
         return market;

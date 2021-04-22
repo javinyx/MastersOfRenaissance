@@ -22,12 +22,12 @@ public abstract class Game implements Observer{
     protected ProPlayer currPlayer;
 
     public abstract void start(int numPlayers);
-    public abstract void createPlayer(String nickname);
+    public abstract boolean createPlayer(String nickname);
     public Market getMarket(){
         return market;
     }
     /**Returns the list of every ProductionCard still in Production Deck */
-    public List<ConcreteProductionCard> getProductionDecks(){
+    public List<ConcreteProductionCard> getAllProductionDecks(){
         List<Card> availableCards = new ArrayList<>();
         for(Deck d : productionDecks){
             availableCards.addAll(d.getCards());
@@ -38,7 +38,7 @@ public abstract class Game implements Observer{
     }
 
     public Deck getProductionDeck(int numDeck){
-        if(numDeck<0 || numDeck>12){
+        if(numDeck<0 || numDeck>=12){
             return null;
         }
         return productionDecks.get(numDeck);
@@ -47,7 +47,8 @@ public abstract class Game implements Observer{
     public List<ConcreteProductionCard> getBuyableProductionCards(){
         List<Card> availableCards = new ArrayList<>();
         for(Deck d : productionDecks){
-            availableCards.add(d.peekFirst());
+            if(d.size()>0) //if deck is empty (null) that means the deck doesn't exist anymore
+                availableCards.add(d.peekFirst());
         }
         return availableCards.stream()
                 .map(x -> (ConcreteProductionCard)x)
@@ -68,8 +69,19 @@ public abstract class Game implements Observer{
     //public abstract List<LeaderCard> distributeLeaders();
     /**Remove the specified ProductionCard from Production Deck.
      * @param card the one to be removed */
-    public void removeFromProdDeck(ConcreteProductionCard card){
-
+    public boolean removeFromProdDeck(ConcreteProductionCard card){
+        List<Deck> decksClone = new ArrayList<>(productionDecks);
+        for(Deck d : decksClone){
+            if(d.contains(card) && d.size()>1 ){
+                d.remove(card);
+                return true;
+            }else if(d.contains(card)){
+                d.remove(card);
+                productionDecks.remove(d);
+                return true;
+            }
+        }
+        return false;
     }
     public Player getWinner(){return winner;}
 

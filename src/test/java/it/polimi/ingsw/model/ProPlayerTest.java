@@ -26,7 +26,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class ProPlayerTest extends PlayerTest {
     ProPlayer p1, p2, p3;
     PlayerStub p;
-    Game g, g1, g2;
+    Game g1, g2;
+    SingleGameStub g;
     MultiGameStub gm1;
     @BeforeEach
     public void testSetup(){
@@ -229,12 +230,32 @@ class ProPlayerTest extends PlayerTest {
 
     @Test
     void activateLeaderCard() {
+        /*LeaderCard leader1 = g.createMarbleCard();
+        p.setLeaderCards(leader1);
+        List<Buyable> cost1 = leader1.getCost();
+        if(cost1.get(0) instanceof Resource) {
+            List<Resource> cost1R = cost1.stream().map(x -> (Resource)x).collect(Collectors.toList());
+            p.setLootChest(cost1R);
+        }else{
+            List<ProductionCard> cost1P = cost1.stream().map(x -> (ProductionCard)x).collect(Collectors.toList());
+            System.out.println(cost1P);
+            int id=1;
+            List<Resource> prodCost= new ArrayList<>();
+            prodCost.add(Resource.STONE);
+            List<Resource> input, output;
+            input = output = prodCost;
+            for(ProductionCard pc : cost1P){
+                ConcreteProductionCard actualCard = new ConcreteProductionCard(id,1, pc.getColor(), pc.getLevel(), prodCost, input, output);
+                p.setProductionStacks(id, actualCard);
+                id++;
+            }
+            System.out.println(p.getProdCards1().peekFirst()+ "\n" + p.getProdCards2().peekFirst() + "\n" + p.getProdCards3().peekFirst() +"\n");
+        }
+        assertTrue(p.activateLeaderCard(leader1));*/
         LeaderCard leader1 = (LeaderCard) g.leaderDeck.getFirst();
         LeaderCard leader2 = (LeaderCard) g.leaderDeck.getFirst();
 
         assertNotEquals(leader1,leader2);
-        //System.out.println(leader1);
-        //System.out.println(leader2);
         assertFalse(leader1.isActive());
         assertFalse(leader2.isActive());
 
@@ -255,13 +276,13 @@ class ProPlayerTest extends PlayerTest {
             input = output = prodCost;
             for(ProductionCard pc : cost1P){
                 ConcreteProductionCard actualCard = new ConcreteProductionCard(id,1, pc.getColor(), pc.getLevel(), prodCost, input, output);
-                id++;
                 p.setProductionStacks(id, actualCard);
+                id++;
             }
         }
         Deque<ConcreteProductionCard> cardsBackup1 = p.getProdCards1();
         Deque<ConcreteProductionCard> cardsBackup2 = p.getProdCards2();
-        assertTrue(p.activateLeaderCard(leader1)); //perchè se è doppio non funziona e ritorna false nel test????
+        assertTrue(p.activateLeaderCard(leader1));
         assertEquals(cardsBackup1, p.getProdCards1());
         assertEquals(cardsBackup2, p.getProdCards2());
         assertTrue(p.activateLeaderCard(leader1));

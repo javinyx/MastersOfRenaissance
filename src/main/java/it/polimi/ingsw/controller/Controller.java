@@ -2,13 +2,18 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.MultiplayerGame;
+import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.SinglePlayerGame;
+import it.polimi.ingsw.model.cards.leader.BoostAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
+import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
+import it.polimi.ingsw.model.player.BadStorageException;
 import it.polimi.ingsw.view.RemoteView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Timer;
 
 public class Controller implements ControllerObserver {
@@ -109,7 +114,28 @@ public class Controller implements ControllerObserver {
     private void buyProdCard(int turnId) {
     }
 
-    private void activateProd(int turnId) {
+    private void activateProd(int turnId, List<ConcreteProductionCard> cards, ResourcesWallet wallet, List<BoostAbility> leaders,
+                              List<Resource> leadersOutputs, boolean basicProd, Resource basicOutput) {
+        //check
+        if(turnId!= game.getCurrPlayer().getTurnID()){
+            //error: wrong player trying to communicate
+        }
+        Optional<Resource> basicOut;
+        if(basicOutput==null){
+            basicOut = Optional.empty();
+        }else{
+            basicOut = Optional.of(basicOutput);
+        }
+        try {
+            game.getCurrPlayer().startProduction(cards, wallet, leaders, leadersOutputs, basicProd, basicOut);
+        }catch(BadStorageException e1){
+            //notify that there's something wrong with the player storage
+            //Message: BAD_PRODUCTION_REQUEST
+        }catch(RuntimeException e2){
+            //notify that some cards in production cards chosen by the player for this task cannot produce
+            //Message: CARD_NOT_AVAILABLE
+        }
+        //update view
     }
 
     // END TURN STRUCTURE --------------------------------------------------------------------------------

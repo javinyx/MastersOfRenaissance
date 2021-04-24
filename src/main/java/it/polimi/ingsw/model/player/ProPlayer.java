@@ -59,7 +59,7 @@ public class ProPlayer extends Player{
         passes.add(1, new PopePass(2));
         passes.add(2, new PopePass(3));
     }
-
+    //------------------------------------GETTERS----------------------------------
     public static int getMaxNumExtraStorage(){
         return maxNumExtraStorage;
     }
@@ -68,7 +68,6 @@ public class ProPlayer extends Player{
     public char getTurnType() {
         return turnType;
     }
-
     public int getTurnID(){
         return turnID;
     }
@@ -81,6 +80,79 @@ public class ProPlayer extends Player{
     public Deque<ConcreteProductionCard> getProdCards2(){return prodCards2;}
     public Deque<ConcreteProductionCard> getProdCards3(){return prodCards3;}
 
+    /**Get all the resources just bought from the market by the player. */
+    public List<Resource> getResAcquired(){
+        return resAcquired;
+    }
+    public ResourcesWallet getResAsCash(){
+        return resAsCash;
+    }
+    public Warehouse getWarehouse(){
+        return new Warehouse(warehouse);
+    }
+    public LootChest getLootChest(){
+        return new LootChest(lootChest);
+    }
+    public List<StorageAbility> getExtraStorage(){
+        return extraStorage.orElse(new ArrayList<>());
+    }
+
+
+//-------------------------------VICTORY POINTS---------------------------------
+    /**Returns the sum of player's victory points taking in consideration:
+     * <li>productionCards (hidden or not); </li>
+     * <li>leaderCards if active;</li>
+     * <li>popePasses if active;</li>
+     * <li>current position on board;</li>
+     * <li>all resources stored in warehouse,lootchest and StorageAbility LeaderCards. </li>*/
+    public int getVictoryPoints(){
+        int victoryPoints = 0;
+        //sum all victory points from prodCards, leaderCards, faithTrack, Resources...
+        List<ConcreteProductionCard> prodCards = new ArrayList<>();
+        prodCards.addAll(prodCards1);
+        prodCards.addAll(prodCards2);
+        prodCards.addAll(prodCards3);
+        for(ConcreteProductionCard pc : prodCards){
+            victoryPoints += pc.getVictoryPoints();
+        }
+        for(LeaderCard lc : leaderCards){
+            if(lc.isActive())
+                victoryPoints += lc.getVictoryPoints();
+        }
+        for(PopePass pp : passes){
+            if(pp.isActive())
+                victoryPoints += pp.getVictoryPoints();
+        }
+
+        victoryPoints += victoryPointsFromPos();
+
+        victoryPoints += countAllResources()/5;
+
+        return victoryPoints;
+    }
+
+    /**Count all the resources the players have in their warehouse, lootchest and extra storage given by leader cards. */
+    public int countAllResources(){
+        return (lootChest.getCountResInLootchest() + warehouse.getMidInventory().size()
+                + warehouse.getLargeInventory().size() + (warehouse.getSmallInventory()!=null ? 1 : 0)
+                + pointsFromExtraStorage.apply(extraStorage));
+    }
+
+    private int victoryPointsFromPos(){
+        switch(currPos){
+            case 24: return 20;
+            case 23: case 22: case 21: return 16;
+            case 20: case 19: case 18: return 12;
+            case 17: case 16: case 15: return 9;
+            case 14: case 13: case 12: return 6;
+            case 11: case 10: case 9: return 4;
+            case 8: case 7: case 6: return 2;
+            case 5: case 4: case 3: return 1;
+            default: return 0;
+        }
+    }
+
+//----------------------------------BUY PRODUCTION CARDS-------------------------------
     /**Buy the specified ProductionCard and place it onto the specified {@code stack}.
      * <p>This will remove the card from the game production deck</p>
      * <p>Player can decide to play a LeaderCard that may affect the cost of the chosen ProductionCard.
@@ -90,7 +162,7 @@ public class ProPlayer extends Player{
      * @param leader LeaderCard: just DiscountAbility might have an effect here
      * @param resourcesWallet resources distributed among different types of storage as the player wish to spend them*/
     public void buyProductionCard(ConcreteProductionCard card, int stack, LeaderCard leader, ResourcesWallet resourcesWallet)
-                                throws BadStorageException{
+            throws BadStorageException{
         List<ConcreteProductionCard> availableProdCards = game.getBuyableProductionCards();
         Warehouse warBackup = new Warehouse(warehouse);
         LootChest lootBackup = new LootChest(lootChest);
@@ -115,11 +187,11 @@ public class ProPlayer extends Player{
 
         switch(stack){
             case 1: prodStack = prodCards1;
-                    break;
+                break;
             case 2: prodStack = prodCards2;
-                    break;
+                break;
             case 3: prodStack = prodCards3;
-                    break;
+                break;
             default : throw new IndexOutOfBoundsException("Stack parameter must be between 1 and 3");
         }
 
@@ -184,81 +256,7 @@ public class ProPlayer extends Player{
         game.removeFromProdDeck(card);
         prodStack.addFirst(card);
     }
-
-    /**Returns the sum of player's victory points taking in consideration:
-     * <li>productionCards (hidden or not); </li>
-     * <li>leaderCards if active;</li>
-     * <li>popePasses if active;</li>
-     * <li>current position on board;</li>
-     * <li>all resources stored in warehouse,lootchest and StorageAbility LeaderCards. </li>*/
-    public int getVictoryPoints(){
-        int victoryPoints = 0;
-        //sum all victory points from prodCards, leaderCards, faithTrack, Resources...
-        List<ConcreteProductionCard> prodCards = new ArrayList<>();
-        prodCards.addAll(prodCards1);
-        prodCards.addAll(prodCards2);
-        prodCards.addAll(prodCards3);
-        for(ConcreteProductionCard pc : prodCards){
-            victoryPoints += pc.getVictoryPoints();
-        }
-        for(LeaderCard lc : leaderCards){
-            if(lc.isActive())
-                victoryPoints += lc.getVictoryPoints();
-        }
-        for(PopePass pp : passes){
-            if(pp.isActive())
-                victoryPoints += pp.getVictoryPoints();
-        }
-
-        victoryPoints += victoryPointsFromPos();
-
-        victoryPoints += countAllResources()/5;
-
-        return victoryPoints;
-    }
-
-    /**Count all the resources the players have in their warehouse, lootchest and extra storage given by leader cards. */
-    public int countAllResources(){
-        return (lootChest.getCountResInLootchest() + warehouse.getMidInventory().size()
-                + warehouse.getLargeInventory().size() + (warehouse.getSmallInventory()!=null ? 1 : 0)
-                + pointsFromExtraStorage.apply(extraStorage));
-    }
-
-    private int victoryPointsFromPos(){
-        switch(currPos){
-            case 24: return 20;
-            case 23: case 22: case 21: return 16;
-            case 20: case 19: case 18: return 12;
-            case 17: case 16: case 15: return 9;
-            case 14: case 13: case 12: return 6;
-            case 11: case 10: case 9: return 4;
-            case 8: case 7: case 6: return 2;
-            case 5: case 4: case 3: return 1;
-            default: return 0;
-        }
-    }
-
-    /**Get all the resources just bought from the market by the player. */
-    public List<Resource> getResAcquired(){
-        return resAcquired;
-    }
-
-    public ResourcesWallet getResAsCash(){
-        return resAsCash;
-    }
-
-    public Warehouse getWarehouse(){
-        return new Warehouse(warehouse);
-    }
-
-    public LootChest getLootChest(){
-        return new LootChest(lootChest);
-    }
-
-    public List<StorageAbility> getExtraStorage(){
-        return extraStorage.orElse(new ArrayList<>());
-    }
-
+//----------------------------------------MARKET-------------------------------
     /**Obtains the resources chosen from market by column or row.
      * <p>Add faith points to the player if a red marble has been drawn.</p>
      * @param dim 'c' for column, 'r' for row.
@@ -300,9 +298,10 @@ public class ProPlayer extends Player{
             }
         }
         //call to controller notifying that the player has to organize the resources just bought
-        controller.organizeResource(resAcquired);
+        //controller.organizeResource(resAcquired);
     }
 
+//----------------------------------RESOURCES------------------------------------------
     /**Discard resources when there is no space left in the warehouse. Blank and Faith types of resources won't
      * be taken in consideration since it's not possible to discard Faith.
      * <p>Alert Game that will add Faith Points to other players.</p>
@@ -313,7 +312,47 @@ public class ProPlayer extends Player{
                 observer.alertDiscardResource(this);
         }
     }
+    /**Let the player choose an extra resource to add during initialization phase.*/
+    public void chooseResource(){
+        //wait for the player to choose a resource
+        //then add to warehouse
+    }
 
+    /**Place the resource in the specified warehouse tier.
+     * @param resource resource the player wants to store
+     * @param tier Warehouse inventory shelf's id on which the player want to place {@code resource}
+     * @return true if the storing ended successfully*/
+    public boolean storeInWarehouse(Resource resource, int tier){
+        if(resource==null || !resource.isValidForTrading()){
+            return false;
+        }
+        switch(tier){
+            case 1 : return warehouse.addSmall(resource);
+            case 2 : return warehouse.addMid(resource);
+            case 3 : return warehouse.addLarge(resource);
+            default : return false;
+        }
+    }
+
+    /**Place the rescources in the leader card slots.
+     * <p>Mind that the method will check if the player has the specified {@code extraStorage} leader active and
+     * if its storage type is compatible with {@code resource} type.</p>
+     * @return true if it has correctly placed the resource, otherwise false.*/
+    public boolean storeInExtraStorage(Resource resource, StorageAbility extraStorage){
+        if(extraStorage==null || this.extraStorage.isEmpty() || !this.extraStorage.get().contains(extraStorage)
+                || !extraStorage.getStorageType().equals(resource)){
+            return false;
+        }
+        for(StorageAbility sa : this.extraStorage.get()){
+            if(sa.equals(extraStorage) && sa.isActive() && sa.size()<2){
+                sa.add(resource);
+                return true;
+            }
+        }
+        return false;
+    }
+
+//------------------------------------------LEADERS---------------------------------------
     /**Let the player communicating his/her choice of leader: 2 out of the 4 given by the game.
      * @param leaders chosen leaders*/
     public void chooseLeaders(List<LeaderCard> leaders){
@@ -333,6 +372,7 @@ public class ProPlayer extends Player{
      * @param leader chosen leaderCard to activate */
     public boolean activateLeaderCard(LeaderCard leader){
         for(LeaderCard l : leaderCards){
+            System.out.println(l + "\n");
             if(l.equals(leader) && hasEnoughResources(leader.getCost())){
                 l.setStatus(true);
                 return true;
@@ -386,18 +426,19 @@ public class ProPlayer extends Player{
                     requirements.get(j).subOccurrence(extraStorage.get().get(1).size());
                 }
             }else{
+                System.out.println("Res type" + res);
                 for(ConcreteProductionCard pp : prodCards1){
-                    if(pp.isOfType(res)){
+                    if(pp.isEquivalent(res)){
                         requirements.get(j).subOccurrence(1);
                     }
                 }
-                for(ConcreteProductionCard pp :prodCards2){
-                    if(pp.isOfType(res)){
+                for(ConcreteProductionCard pp : prodCards2){
+                    if(pp.isEquivalent(res)){
                         requirements.get(j).subOccurrence(1);
                     }
                 }
                 for(ConcreteProductionCard pp : prodCards3){
-                    if(pp.isOfType(res)){
+                    if(pp.isEquivalent(res)){
                         requirements.get(j).subOccurrence(1);
                     }
                 }
@@ -405,6 +446,7 @@ public class ProPlayer extends Player{
         }
         //check
         for(BuyableMap b : requirements){
+            //System.out.println(b + "\n");
             if(b.getOccurrence()>0)
                 return false;
         }
@@ -420,9 +462,6 @@ public class ProPlayer extends Player{
             this.occurrence = occurrence;
         }
 
-        public void setOccurrence(int occurrence){
-            this.occurrence = occurrence;
-        }
 
         public void addOccurrence(int adding){
             this.occurrence += adding;
@@ -462,28 +501,7 @@ public class ProPlayer extends Player{
         }
     }
 
-    /**Let the player choose an extra resource to add during initialization phase.*/
-    public void chooseResource(){
-        //wait for the player to choose a resource
-        //then add to warehouse
-    }
-
-    /**Place the resource in the specified warehouse tier.
-     * @param resource resource the player wants to store
-     * @param tier Warehouse inventory shelf's id on which the player want to place {@code resource}
-     * @return true if the storing ended successfully*/
-    public boolean storeInWarehouse(Resource resource, int tier){
-        if(resource==null || !resource.isValidForTrading()){
-            return false;
-        }
-        switch(tier){
-            case 1 : return warehouse.addSmall(resource);
-            case 2 : return warehouse.addMid(resource);
-            case 3 : return warehouse.addLarge(resource);
-            default : return false;
-        }
-    }
-
+//--------------------------------------BOARD---------------------------------------
     /**Add the specified quantity of Faith Points causing the player to move forward on the board.
      * <p>If the movement causes a Vatican Report or the end of the match, the Game will be notified.</p>
      * @param quantity number of Faith Points the player gains*/
@@ -500,6 +518,7 @@ public class ProPlayer extends Player{
         }
     }
 
+//------------------------------PRODUCTION---------------------------
     private void basicProductionFromLootchest(Resource input1, Resource input2) throws BadStorageException{
         if(!input1.isValidForTrading() || !input2.isValidForTrading()){
             throw new BadStorageException();
@@ -654,13 +673,13 @@ public class ProPlayer extends Player{
             if(prodCards1.peekFirst().equals(p) || prodCards2.peekFirst().equals(p) || prodCards3.peekFirst().equals(p)){
                 //controller will ask the player to adjust the ProdCards selection and try again to call this method
                 repairBackup(warBackup, lootBackup, extraStorageBackup);
-                throw new RuntimeException(p.toString() + " cannot produce");
+                throw new RuntimeException("Production card " + p + " cannot produce");
             }
             try {
                 tempProduction.addAll(produce(p, resAsCash));
-            }catch(Exception e){
+            }catch(BadStorageException e){
                 repairBackup(warBackup, lootBackup, extraStorageBackup);
-                throw new RuntimeException("Not enough resources");
+                throw new BadStorageException();
             }
         }
 
@@ -868,6 +887,7 @@ public class ProPlayer extends Player{
         return false;
     }
 
+//--------------------------EXTRA STORAGE SETTER----------------------------------------
     public void setExtraStorage(StorageAbility card){
         if(card==null){
             throw new NullPointerException();
@@ -893,6 +913,7 @@ public class ProPlayer extends Player{
         }
     }
 
+//--------------------------------------TOKENS----------------------------------
     public void drawActionToken (){
         ((ActionToken)((SinglePlayerGame)game).getTokenDeck().getFirst()).draw(this, (SinglePlayerGame)game);
     }

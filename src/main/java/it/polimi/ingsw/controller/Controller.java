@@ -5,9 +5,7 @@ import it.polimi.ingsw.model.MultiplayerGame;
 import it.polimi.ingsw.model.SinglePlayerGame;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.market.Resource;
-import it.polimi.ingsw.view.MessagesToClient;
 import it.polimi.ingsw.view.RemoteView;
-import it.polimi.ingsw.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +80,7 @@ public class Controller implements ControllerObserver {
 
     }
 
-    public void organizeResource(ArrayList<Resource> resAquired){
+    public void organizeResource(List<Resource> resAquired){
 
         //in qualche modo manda un messaggio alla view vera chiamando la remote view che a quel punto ritorna la lista con le risorse ordinate
 

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.player;
 
+import it.polimi.ingsw.controller.ControllerObserver;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.SinglePlayerGame;
@@ -30,6 +31,7 @@ public class ProPlayer extends Player{
     protected char turnType;
     protected Optional<List<StorageAbility>> extraStorage;
     protected static int maxNumExtraStorage = 2;
+    protected ControllerObserver controller;
     protected Function<Optional<List<StorageAbility>>, Integer> pointsFromExtraStorage = (Optional<List<StorageAbility>> x) ->
     {int points=0;
         if(x.isPresent()){
@@ -41,6 +43,7 @@ public class ProPlayer extends Player{
 
     public ProPlayer(String nickname, int turnID, Game game){
         super(nickname, game);
+        controller = game.getControllerObserver();
         this.turnID = turnID;
         warehouse = new Warehouse();
         lootChest = new LootChest();
@@ -296,8 +299,8 @@ public class ProPlayer extends Player{
                 }
             }
         }
-
-        //call controller and let the player choose on which warehouse tier it should place each resource    controller.organizeResource(resAcquired);
+        //call to controller notifying that the player has to organize the resources just bought
+        controller.organizeResource(resAcquired);
     }
 
     /**Discard resources when there is no space left in the warehouse. Blank and Faith types of resources won't
@@ -357,7 +360,7 @@ public class ProPlayer extends Player{
                 distinctBuyable.add(b);
             }
         }
-        System.out.println("DISTINCT" + distinctBuyable);
+        //System.out.println("DISTINCT" + distinctBuyable);
         for(int j=0; j<distinctBuyable.size(); j++){
             requirements.add(new BuyableMap(distinctBuyable.get(j), 0));
             for(int i=0; i<cost.size(); i++){
@@ -366,7 +369,7 @@ public class ProPlayer extends Player{
                 }
             }
         }
-        System.out.println("REQUIREMENTS" + requirements);
+        //System.out.println("REQUIREMENTS" + requirements);
         int x;
         //searching between storages
         for(int j=0; j<requirements.size(); j++){

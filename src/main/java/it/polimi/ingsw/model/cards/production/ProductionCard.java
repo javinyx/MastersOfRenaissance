@@ -41,4 +41,13 @@ public abstract class ProductionCard implements Buyable, Card {
     public String toString(){
         return "Color: " + color + ", level: " + level;
     }
+
+    public boolean isEquivalent(Buyable other){
+        if(other instanceof ProductionCard || other instanceof ConcreteProductionCard){
+            if(((ProductionCard) other).level==this.level && ((ProductionCard) other).color==this.color){
+                return true;
+            }
+        }
+        return false;
+    }
 }

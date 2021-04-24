@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model.cards.production;
 
 import it.polimi.ingsw.model.cards.Card;
-import it.polimi.ingsw.model.market.Buyable;
 import it.polimi.ingsw.model.market.Resource;
 
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import java.util.function.BiFunction;
  * the conversion gets better the higher the level of the card is.</p>
  * <p>It's also important to know that if a player reaches 7 owned ProductionCards, the game ends.</p>
  */
-public class ConcreteProductionCard extends ProductionCard implements Buyable, Card {
+public class ConcreteProductionCard extends ProductionCard implements Card {
     private final int id;
     private int victoryPoints;
     private List<Resource> cost;

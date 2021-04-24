@@ -27,4 +27,11 @@ public enum Resource implements Buyable{
         }
         return true;
     }
+
+    public boolean isEquivalent(Buyable other){
+        if(other instanceof Resource && this.equals(other)){
+            return true;
+        }
+        return false;
+    }
 }

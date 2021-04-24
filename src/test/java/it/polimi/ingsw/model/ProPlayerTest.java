@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.market.Buyable;
 import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.player.BadStorageException;
 import it.polimi.ingsw.model.player.ProPlayer;
+import it.polimi.ingsw.model.stub.MultiGameStub;
 import it.polimi.ingsw.model.stub.PlayerStub;
 import it.polimi.ingsw.model.stub.SingleGameStub;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,8 +26,10 @@ class ProPlayerTest extends PlayerTest {
     ProPlayer p1, p2, p3;
     PlayerStub p;
     Game g, g1, g2;
+    MultiGameStub gm1;
     @BeforeEach
     public void testSetup(){
+        gm1 = new MultiGameStub();
         g = new SingleGameStub();
         g1 = new SinglePlayerGame();
         g2 = new MultiplayerGame();
@@ -130,34 +133,10 @@ class ProPlayerTest extends PlayerTest {
         assertTrue(p.getWarehouse().getLargeInventory().isEmpty());
     }
 
-    /*private ConcreteProductionCard generateFirstProdCard(){
-        List<Resource> cost = new ArrayList<>();
-        List<Resource> requiredRes = new ArrayList<>();
-        List<Resource> prod = new ArrayList<>();
-        cost.add(Resource.SHIELD);
-        cost.add(Resource.SHIELD);
-        requiredRes.add(Resource.COIN);
-        prod.add(Resource.FAITH);
+    @Test
+    void buyProductionCardWithExtraStorage(){
 
-        return new ConcreteProductionCard(1, 1, ColorEnum.GREEN, 1, cost, requiredRes, prod);
     }
-
-    private boolean fillWarehouse(ConcreteProductionCard card, ProPlayer p){
-        switch(card.getId()){
-            case 1: p.storeInWarehouse(Resource.SHIELD, 2);
-                p.storeInWarehouse(Resource.SHIELD, 2);
-                return true;
-            case 5: p.storeInWarehouse(Resource.SHIELD,1);
-                p.storeInWarehouse(Resource.SERVANT, 2);
-                p.storeInWarehouse(Resource.COIN,3);
-                return true;
-            case 9: p.storeInWarehouse(Resource.SHIELD,3);
-                p.storeInWarehouse(Resource.SHIELD,3);
-                p.storeInWarehouse(Resource.SHIELD, 3);
-                return true;
-            default: return false;
-        }
-    }*/
 
     @Test
     void getVictoryPoints() {
@@ -210,11 +189,26 @@ class ProPlayerTest extends PlayerTest {
 
     @Test
     void buyFromMarket() {
-
+        p1.buyFromMarket('c', 1, null);
     }
 
     @Test
     void discardResources() {
+        p = gm1.addPlayer("Banano");
+        PlayerStub pm1 = gm1.addPlayer("OliOli");
+
+        List<Resource> discarding = new ArrayList<>();
+        discarding.add(Resource.COIN);
+        discarding.add(Resource.STONE);
+        p.discardResources(discarding);
+        assertEquals(2, pm1.getCurrentPosition());
+        assertEquals(0, p.getCurrentPosition());
+        discarding.clear();
+        discarding.add(Resource.COIN);
+        discarding.add(Resource.BLANK);
+        p.discardResources(discarding);
+        assertEquals(3, pm1.getCurrentPosition());
+        assertEquals(0, p.getCurrentPosition());
     }
 
     @Test

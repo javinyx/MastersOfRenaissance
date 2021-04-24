@@ -13,6 +13,7 @@ import it.polimi.ingsw.model.market.Market;
 import it.polimi.ingsw.model.market.Resource;
 
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -299,12 +300,14 @@ public class ProPlayer extends Player{
         //call controller and let the player choose on which warehouse tier it should place each resource    controller.organizeResource(resAcquired);
     }
 
-    /**Discard resources when there is no space left in the warehouse.
+    /**Discard resources when there is no space left in the warehouse. Blank and Faith types of resources won't
+     * be taken in consideration since it's not possible to discard Faith.
      * <p>Alert Game that will add Faith Points to other players.</p>
      * @param resources resources list to discard*/
     public void discardResources(List<Resource> resources){
         for(Resource resource : resources){
-            observer.alertDiscardResource(this);
+            if(resource.isValidForTrading())
+                observer.alertDiscardResource(this);
         }
     }
 
@@ -336,16 +339,34 @@ public class ProPlayer extends Player{
     }
 
     private boolean hasEnoughResources(List<Buyable> cost){
+        BiFunction<Buyable, List<Buyable>, Boolean> isUnique = (x, list) -> {
+            if(list.isEmpty()){
+                return true;
+            }
+            for(Buyable b : list){
+                if(b.isEquivalent(x)){
+                    return false;
+                }
+            }
+            return true;
+        };
         List<BuyableMap> requirements = new ArrayList<>();
-        List<Buyable> distinctBuyable = cost.stream().distinct().collect(Collectors.toList());
+        List<Buyable> distinctBuyable = new ArrayList<>();
+        for(Buyable b : cost){
+            if (isUnique.apply(b, distinctBuyable)){
+                distinctBuyable.add(b);
+            }
+        }
+        System.out.println("DISTINCT" + distinctBuyable);
         for(int j=0; j<distinctBuyable.size(); j++){
             requirements.add(new BuyableMap(distinctBuyable.get(j), 0));
             for(int i=0; i<cost.size(); i++){
-                if(cost.get(i).equals(distinctBuyable.get(j))){
+                if(cost.get(i).isEquivalent(distinctBuyable.get(j))){
                     requirements.get(j).addOccurrence(1);
                 }
             }
         }
+        System.out.println("REQUIREMENTS" + requirements);
         int x;
         //searching between storages
         for(int j=0; j<requirements.size(); j++){
@@ -379,7 +400,6 @@ public class ProPlayer extends Player{
                 }
             }
         }
-
         //check
         for(BuyableMap b : requirements){
             if(b.getOccurrence()>0)
@@ -413,6 +433,11 @@ public class ProPlayer extends Player{
 
         public Buyable getBuyableResource() {
             return buyableResource;
+        }
+
+        @Override
+        public String toString(){
+            return "BUYABLE MAP(Type: " + buyableResource + "; Occurrence: " + occurrence + ")\n";
         }
     }
 

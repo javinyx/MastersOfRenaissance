@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class MultiplayerGame extends Game implements Observer {
-    private List<ProPlayer> players;
-    private List<ProPlayer> activePlayers;
+    protected List<ProPlayer> players;
+    protected List<ProPlayer> activePlayers;
 
 
     public MultiplayerGame(){

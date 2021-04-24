@@ -4,8 +4,8 @@ import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.production.ColorEnum;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.player.ProPlayer;
-import it.polimi.ingsw.model.stub.MultiGameStub;
-import it.polimi.ingsw.model.stub.SingleGameStub;
+import it.polimi.ingsw.model.stub.MultiPlayerGameStub;
+import it.polimi.ingsw.model.stub.SinglePlayerGameStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,8 +18,8 @@ class GameTest{
 
     @BeforeEach
     void setUp(){
-       gs1 = new SingleGameStub();
-       gm1 = new MultiGameStub();
+       gs1 = new SinglePlayerGameStub();
+       gm1 = new MultiPlayerGameStub();
     }
 
     @Test
@@ -105,7 +105,7 @@ class GameTest{
     @Test
     void getCurrPlayer() {
         ProPlayer p = new ProPlayer("Bb", 1, gm1);
-        ((MultiGameStub)gm1).setCurrPlayer(p);
+        ((MultiPlayerGameStub)gm1).setCurrPlayer(p);
         assertEquals(p, gm1.getCurrPlayer());
         gs1.createPlayer("boh");
         assertEquals("boh", gs1.getCurrPlayer().getNickname());

@@ -9,9 +9,9 @@ import it.polimi.ingsw.model.market.Buyable;
 import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.player.BadStorageException;
 import it.polimi.ingsw.model.player.ProPlayer;
-import it.polimi.ingsw.model.stub.MultiGameStub;
-import it.polimi.ingsw.model.stub.PlayerStub;
-import it.polimi.ingsw.model.stub.SingleGameStub;
+import it.polimi.ingsw.model.stub.MultiPlayerGameStub;
+import it.polimi.ingsw.model.stub.ProPlayerStub;
+import it.polimi.ingsw.model.stub.SinglePlayerGameStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -25,17 +25,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ProPlayerTest extends PlayerTest {
     ProPlayer p1, p2, p3;
-    PlayerStub p;
+    ProPlayerStub p;
     Game g1, g2;
-    SingleGameStub g;
-    MultiGameStub gm1;
+    SinglePlayerGameStub g;
+    MultiPlayerGameStub gm1;
     @BeforeEach
     public void testSetup(){
-        gm1 = new MultiGameStub();
-        g = new SingleGameStub();
+        gm1 = new MultiPlayerGameStub();
+        g = new SinglePlayerGameStub();
         g1 = new SinglePlayerGame();
-        g2 = new MultiplayerGame();
-        p = new PlayerStub("Gatto", 1, g);
+        g2 = new MultiPlayerGame();
+        p = new ProPlayerStub("Gatto", 1, g);
         p.registerObserver(g);
         p1 = new ProPlayer("Anacleto", 1, g1);
         p1.registerObserver(g1);
@@ -197,7 +197,7 @@ class ProPlayerTest extends PlayerTest {
     @Test
     void discardResources() {
         p = gm1.addPlayer("Banano");
-        PlayerStub pm1 = gm1.addPlayer("OliOli");
+        ProPlayerStub pm1 = gm1.addPlayer("OliOli");
 
         List<Resource> discarding = new ArrayList<>();
         discarding.add(Resource.COIN);

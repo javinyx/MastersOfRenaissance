@@ -1,26 +1,19 @@
 package it.polimi.ingsw.model.cards.leader;
 
-import it.polimi.ingsw.model.MultiplayerGame;
-import it.polimi.ingsw.model.SinglePlayerGame;
-import it.polimi.ingsw.model.cards.Deck;
-import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
-import it.polimi.ingsw.model.player.ProPlayer;
+import it.polimi.ingsw.model.stub.MultiPlayerGameStub;
+import it.polimi.ingsw.model.stub.ProPlayerStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class BoostAbilityTest {
 
-    MultiplayerGame game;
-    ProPlayer bubu;
-    ProPlayer javin;
+    MultiPlayerGameStub game;
+    ProPlayerStub bubu;
 
     @BeforeEach
     public void testSetUp(){
-        game = new MultiplayerGame();
-        bubu = new ProPlayer("Bubu", 1, game);
-        javin = new ProPlayer("Javin", 2, game);
+        game = new MultiPlayerGameStub();
+        bubu = new ProPlayerStub("Bubu", 1, game);
     }
 
     @Test
@@ -45,9 +38,6 @@ class BoostAbilityTest {
 
     @Test
     void applyEffect() {
-        while (!((LeaderCard)(game).getLeaderDeckNew().getFirst()).getNameNew().equals("BoostAbility"))
-            game.getLeaderDeckNew().getFirst();
-
 
 
     }

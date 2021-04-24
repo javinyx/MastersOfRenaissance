@@ -1,23 +1,19 @@
 package it.polimi.ingsw.model.cards.leader;
 
-import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.MultiplayerGame;
-import it.polimi.ingsw.model.cards.leader.DiscountAbility;
-import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
-import it.polimi.ingsw.model.market.Resource;
+import it.polimi.ingsw.model.MultiPlayerGame;
 import it.polimi.ingsw.model.player.ProPlayer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class DiscountAbilityTest {
 
-    MultiplayerGame game;
+    MultiPlayerGame game;
     ProPlayer bubu;
     ProPlayer javin;
 
     @BeforeEach
     public void testSetUp(){
-        game = new MultiplayerGame();
+        game = new MultiPlayerGame();
         bubu = new ProPlayer("Bubu", 1, game);
         javin = new ProPlayer("Javin", 2, game);
     }

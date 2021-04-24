@@ -8,9 +8,9 @@ import it.polimi.ingsw.model.player.ProPlayer;
 
 import java.util.List;
 
-public class PlayerStub extends ProPlayer {
+public class ProPlayerStub extends ProPlayer {
 
-    public PlayerStub(String nickname, int turnID, Game game){
+    public ProPlayerStub(String nickname, int turnID, Game game){
         super(nickname, turnID, game);
     }
 

@@ -1,18 +1,18 @@
 package it.polimi.ingsw.model.stub;
 
-import it.polimi.ingsw.model.MultiplayerGame;
+import it.polimi.ingsw.model.MultiPlayerGame;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.ProPlayer;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MultiGameStub extends MultiplayerGame {
+public class MultiPlayerGameStub extends MultiPlayerGame {
 
     public void setCurrPlayer(ProPlayer p){
         currPlayer = p;
     }
-    public PlayerStub addPlayer(String nickname){
+    public ProPlayerStub addPlayer(String nickname){
         if(totalPlayers>3){
             return null;//too many players
         }
@@ -24,7 +24,7 @@ public class MultiGameStub extends MultiplayerGame {
         }
 
         totalPlayers++;
-        PlayerStub p = new PlayerStub(nickname, totalPlayers, this);
+        ProPlayerStub p = new ProPlayerStub(nickname, totalPlayers, this);
         players.add(p);
         p.registerObserver(this);
         activePlayers.add(p);

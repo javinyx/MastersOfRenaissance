@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.cards.production;
 
-import it.polimi.ingsw.model.MultiplayerGame;
+import it.polimi.ingsw.model.MultiPlayerGame;
 import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.player.ProPlayer;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,12 +10,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ConcreteProductionCardTest {
 
-    MultiplayerGame game;
+    MultiPlayerGame game;
     ProPlayer player;
 
     @BeforeEach
     public void testSetUp(){
-        game = new MultiplayerGame();
+        game = new MultiPlayerGame();
         player = new ProPlayer("ale", 1, game);
     }
 

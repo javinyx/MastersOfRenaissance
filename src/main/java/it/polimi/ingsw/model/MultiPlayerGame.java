@@ -12,12 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MultiplayerGame extends Game implements Observer {
+public class MultiPlayerGame extends Game implements Observer {
     protected List<ProPlayer> players;
     protected List<ProPlayer> activePlayers;
 
 
-    public MultiplayerGame(){
+    public MultiPlayerGame(){
         players = new ArrayList<>();
         market = new Market();
         totalPlayers = 0;

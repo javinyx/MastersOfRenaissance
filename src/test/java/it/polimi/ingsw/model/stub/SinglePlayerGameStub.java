@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class SingleGameStub extends SinglePlayerGame {
+public class SinglePlayerGameStub extends SinglePlayerGame {
 
-    public SingleGameStub(){
+    public SinglePlayerGameStub(){
         super();
     }
 

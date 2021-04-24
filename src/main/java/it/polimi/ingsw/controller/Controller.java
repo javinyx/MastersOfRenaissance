@@ -1,7 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.MultiplayerGame;
+import it.polimi.ingsw.model.MultiPlayerGame;
 import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.SinglePlayerGame;
 import it.polimi.ingsw.model.cards.leader.BoostAbility;
@@ -42,7 +42,7 @@ public class Controller implements ControllerObserver {
     public void createMultiplayerGame(int numPlayer){
         if (numPlayer > 1 && numPlayer < 5) {
             this.numPlayer = numPlayer;
-            game = new MultiplayerGame();
+            game = new MultiPlayerGame();
             createLobby();
         }
         //else
@@ -214,7 +214,7 @@ public class Controller implements ControllerObserver {
     public void resetTimer() {
         timer.cancel();
         timer = new Timer(true);
-        timer.schedule(new TurnTimerTask(this, ((MultiplayerGame)game).getNextPlayer().getTurnID()),turnTime*1000);
+        timer.schedule(new TurnTimerTask(this, ((MultiPlayerGame)game).getNextPlayer().getTurnID()),turnTime*1000);
     }
 
 }

@@ -2,7 +2,6 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.player.Player;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -10,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class PlayerTest {
     Player player;
     Game singleGame = new SinglePlayerGame();
-    Game multiGame = new MultiplayerGame();
+    Game multiGame = new MultiPlayerGame();
     @BeforeEach
     void setUp() {
        player = new Player("Gatto", singleGame);

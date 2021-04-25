@@ -35,7 +35,7 @@ public class RemoteView extends View{
         MessagesToServer typeOfMessage = MessagesToServer.valueOf(MessagesToServer.class, gson.fromJson(clientMessageReceived.get("code"), String.class));
         switch (typeOfMessage) {
 
-            case BUY_FROM_MARKET -> controller.buyFromMar(gson.fromJson(clientMessageReceived.get("payload"), Integer.class), gson.fromJson(clientMessageReceived.get("payload1"), Character.class), gson.fromJson(clientMessageReceived.get("payload2"), Integer.class), gson.fromJson(clientMessageReceived.get("payload3"), new TypeToken<ArrayList<LeaderCard>>(){}.getType()));
+            case BUY_FROM_MARKET -> controller.buyFromMar(gson.fromJson(clientMessageReceived.get("payload1"), Character.class), gson.fromJson(clientMessageReceived.get("payload2"), Integer.class), gson.fromJson(clientMessageReceived.get("payload3"), new TypeToken<ArrayList<LeaderCard>>(){}.getType()));
 
         }
     }

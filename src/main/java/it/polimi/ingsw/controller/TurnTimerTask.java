@@ -7,15 +7,15 @@ import java.util.TimerTask;
  */
 public class TurnTimerTask extends TimerTask {
     private final Controller controller;
-    private final int turnId;
+    private final char turnType;
 
-    TurnTimerTask(Controller controller, int turnId){
+    TurnTimerTask(Controller controller, char turnType){
         this.controller= controller;
-        this.turnId = turnId;
+        this.turnType = turnType;
     }
 
     @Override
     public void run() {
-        controller.turnTimeOver(turnId);
+        controller.turnTimeOver(turnType);
     }
 }

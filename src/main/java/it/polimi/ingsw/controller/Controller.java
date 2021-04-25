@@ -24,7 +24,7 @@ public class Controller implements ControllerObserver {
     private boolean gameOver;
     private int numPlayer;
     private boolean initializationPhase;
-    private int busy;
+    private char turnType;
     private RemoteView remoteView;
 
     public Controller() {
@@ -34,9 +34,9 @@ public class Controller implements ControllerObserver {
     // GAME INITIALIZATION -------------------------------------------------------------------------------
 
     public void createSinglePlayerGame(){
-            numPlayer = 1;
-            game = new SinglePlayerGame();
-            initializationPhase = false;
+        numPlayer = 1;
+        game = new SinglePlayerGame();
+        initializationPhase = false;
     }
 
     public void createMultiplayerGame(int numPlayer){
@@ -46,7 +46,7 @@ public class Controller implements ControllerObserver {
             createLobby();
         }
         //else
-            //invia messaggio TOO MANY PLAYERS
+        //invia messaggio TOO MANY PLAYERS
     }
 
     public synchronized void addPlayer(String nickname){
@@ -65,7 +65,7 @@ public class Controller implements ControllerObserver {
         }
 
         timer = new Timer(true);
-        timer.schedule(new TurnTimerTask(this, game.getCurrPlayer().getTurnID()),turnTime*1000);
+        timer.schedule(new TurnTimerTask(this, game.getCurrPlayer().getTurnType()),turnTime*1000);
 
         initializationPhase = false;
         game.start(numPlayer);
@@ -77,7 +77,7 @@ public class Controller implements ControllerObserver {
 
     //m == buymarket, b == buyproduction, p == activateProduction
 
-    public synchronized void buyFromMar(int turnId, char rowOrCol, int index, List<LeaderCard> leaders) {
+    public synchronized void buyFromMar(char rowOrCol, int index, List<LeaderCard> leaders) {
 
         game.getCurrPlayer().buyFromMarket(rowOrCol, index, leaders);
 
@@ -116,10 +116,7 @@ public class Controller implements ControllerObserver {
 
     private void activateProd(int turnId, List<ConcreteProductionCard> cards, ResourcesWallet wallet, List<BoostAbility> leaders,
                               List<Resource> leadersOutputs, boolean basicProd, Resource basicOutput) {
-        //check
-        if(turnId!= game.getCurrPlayer().getTurnID()){
-            //error: wrong player trying to communicate
-        }
+
         Optional<Resource> basicOut;
         if(basicOutput==null){
             basicOut = Optional.empty();
@@ -139,15 +136,6 @@ public class Controller implements ControllerObserver {
     }
 
     // END TURN STRUCTURE --------------------------------------------------------------------------------
-
-    public int getBusy() {
-        return busy;
-    }
-
-    public void setBusy(int busy) {
-        this.busy = busy;
-    }
-
 
     /**
      * Eliminates a player
@@ -173,20 +161,6 @@ public class Controller implements ControllerObserver {
     }*/
 
     /**
-     * Called when timer expires, eliminates the player whose turn is over
-     * @param turnId identifier for the turn the timer is referring to
-     */
-    synchronized void turnTimeOver(int turnId) {
-        if (gameOver || turnId != this.game.getCurrPlayer().getTurnID()) return;
-        if (initializationPhase == true){
-            abortGame();
-            return;
-        }
-        //game.setRequest(GameMessagesToClient.TIME_OVER.name());
-        //eliminatePlayer(null);
-    }
-
-    /**
      * @return {@code true}, if the game already ended
      */
     synchronized boolean isGameOver() {
@@ -209,12 +183,26 @@ public class Controller implements ControllerObserver {
     }
 
     /**
+     * Called when timer expires, eliminates the player whose turn is over
+     * @param turnType identifier for the turn the timer is referring to
+     */
+    synchronized void turnTimeOver(char turnType) {
+        if (gameOver || turnType != this.game.getCurrPlayer().getTurnType()) return;
+        if (initializationPhase == true){
+            abortGame();
+            return;
+        }
+        //game.setRequest(GameMessagesToClient.TIME_OVER.name());
+        //eliminatePlayer(null);
+    }
+
+    /**
      * Resets the turn timer.
      */
     public void resetTimer() {
         timer.cancel();
         timer = new Timer(true);
-        timer.schedule(new TurnTimerTask(this, ((MultiPlayerGame)game).getNextPlayer().getTurnID()),turnTime*1000);
+        timer.schedule(new TurnTimerTask(this, game.getCurrPlayer().getTurnType()),turnTime*1000);
     }
 
 }

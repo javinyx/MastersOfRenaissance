@@ -426,7 +426,7 @@ public class ProPlayer extends Player{
                     requirements.get(j).subOccurrence(extraStorage.get().get(1).size());
                 }
             }else{
-                System.out.println("Res type" + res);
+                //System.out.println("Res type" + res);
                 for(ConcreteProductionCard pp : prodCards1){
                     if(pp.isEquivalent(res)){
                         requirements.get(j).subOccurrence(1);

@@ -79,6 +79,8 @@ public class Controller implements ControllerObserver {
 
     public synchronized void buyFromMar(char rowOrCol, int index, List<LeaderCard> leaders) {
 
+        resetTimer();
+
         game.getCurrPlayer().buyFromMarket(rowOrCol, index, leaders);
 
         game.updateEndTurn(game.getCurrPlayer());
@@ -112,10 +114,15 @@ public class Controller implements ControllerObserver {
     }
 
     private void buyProdCard(int turnId) {
+
+        resetTimer();
+
     }
 
     private void activateProd(int turnId, List<ConcreteProductionCard> cards, ResourcesWallet wallet, List<BoostAbility> leaders,
                               List<Resource> leadersOutputs, boolean basicProd, Resource basicOutput) {
+
+        resetTimer();
 
         Optional<Resource> basicOut;
         if(basicOutput==null){

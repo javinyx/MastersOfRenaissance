@@ -333,10 +333,11 @@ class ProPlayerTest extends PlayerTest {
     @Test
     void startProduction() {
         ResourcesWallet wallet = new ResourcesWallet();
-        ConcreteProductionCard card1, card2, card3;
+        ConcreteProductionCard card1, card2, card3, card4;
         p.setProductionStacks(1, card1 = g.getBuyableProductionCards().get(0)); //lv1 green
         p.setProductionStacks(1, card2 = g.getBuyableProductionCards().get(4)); //lvl2 green
         p.setProductionStacks(2, card3 = g.getBuyableProductionCards().get(1)); //lvl1 purple
+        p.setProductionStacks(3, card4 = g.getBuyableProductionCards().get(11)); //lvl3 yellow
 
         //THAT CARD CANNOT PRODUCE
         List<ConcreteProductionCard> productionCards = new ArrayList<>();
@@ -352,6 +353,8 @@ class ProPlayerTest extends PlayerTest {
 
         //NOT ENOUGH RES: check that storages are saved
         List<Resource> resources = new ArrayList<>();
+        productionCards.clear();
+        productionCards.add(card4);
         resources.add(Resource.COIN);
         wallet.setLootchestTray(resources);
         p.setLootChest(resources);
@@ -364,9 +367,11 @@ class ProPlayerTest extends PlayerTest {
 
 
         //ACTUAL PRODUCTION
-        p.setLootChest(card2.getCost());
+        p.setLootChest(card2.getRequiredResources());
+        productionCards.clear();
+        productionCards.add(card2);
         ResourcesWallet wallet2 = new ResourcesWallet();
-        wallet2.setLootchestTray(card2.getCost());
+        wallet2.setLootchestTray(card2.getRequiredResources());
         assertDoesNotThrow(() -> p.startProduction(productionCards, wallet2, null, null, false, Optional.empty()));
         int coins=1, servants=0, shields=0, stones=0;
         for(Resource r : card2.getProduction()){
@@ -378,6 +383,7 @@ class ProPlayerTest extends PlayerTest {
                 default -> {}
             }
         }
+        System.out.println(card2);
         assertEquals(coins, p.getLootChest().getInventory().get(Resource.COIN));
         assertEquals(servants, p.getLootChest().getInventory().get(Resource.SERVANT));
         assertEquals(shields, p.getLootChest().getInventory().get(Resource.SHIELD));
@@ -426,14 +432,69 @@ class ProPlayerTest extends PlayerTest {
                 default -> {}
             }
         }
+        System.out.println(card2);
 
-        /*assertDoesNotThrow(() -> p.startProduction(productionCards, wallet, leaderList, leaderOutput, false, Optional.empty()));
+        assertDoesNotThrow(() -> p.startProduction(productionCards, wallet, leaderList, leaderOutput, false, Optional.empty()));
         assertEquals(faith, p.getCurrentPosition());
         assertEquals(coins, p.getLootChest().getInventory().get(Resource.COIN));
         assertEquals(servants, p.getLootChest().getInventory().get(Resource.SERVANT));
         assertEquals(shields, p.getLootChest().getInventory().get(Resource.SHIELD));
-        assertEquals(stones, p.getLootChest().getInventory().get(Resource.STONE));*/
+        assertEquals(stones, p.getLootChest().getInventory().get(Resource.STONE));
 
+    }
+
+    @Test
+    void startProductionBasic(){
+        BoostAbility leaderCard = (BoostAbility) g.createBoostAbility();
+        List<BoostAbility> leaderList = new ArrayList<>();
+        leaderList.add(leaderCard);
+        ConcreteProductionCard card1, card2, card3;
+        List<ConcreteProductionCard> productionCards = new ArrayList<>();
+        int levelIndex = 0;
+        p.setLeaderCards(leaderCard);
+        leaderCard.setStatus(true);
+        switch(((ProductionCard) leaderCard.getCost().get(0)).getColor()){
+            case GREEN -> {levelIndex = 4;}
+            case PURPLE -> {levelIndex = 5;}
+            case BLUE -> {levelIndex = 6;}
+            case YELLOW -> {levelIndex = 7;}
+        }
+        p.setProductionStacks(1, card1 = g.getBuyableProductionCards().get(1)); //lv1 green
+        p.setProductionStacks(1, card2 = g.getBuyableProductionCards().get(levelIndex)); //lvl2 color unknown
+        p.setProductionStacks(2, card3 = g.getBuyableProductionCards().get(1)); //lvl1 purple
+
+        List<Resource> resourceList = new ArrayList<>();
+        resourceList.add(leaderCard.getResource());
+        resourceList.addAll(card2.getRequiredResources());
+        //for basic input
+        resourceList.add(Resource.SERVANT);
+        resourceList.add(Resource.COIN);
+        p.setLootChest(resourceList);
+        ResourcesWallet wallet = new ResourcesWallet();
+        wallet.setLootchestTray(resourceList);
+
+        productionCards.add(card2);
+        List<Resource> leaderOutput = new ArrayList<>();
+        leaderOutput.add(Resource.STONE);
+
+        int coins=0, servants=0, shields=1, stones=1, faith=1; //stone because of leaderOutput, faith because of LeaderCard, shield for basicOpt
+        for(Resource r : card2.getProduction()){
+            switch(r){
+                case COIN -> {coins++;}
+                case SERVANT -> {servants++;}
+                case SHIELD -> {shields++;}
+                case STONE -> {stones++;}
+                case FAITH -> {faith++;}
+                default -> {}
+            }
+        }
+
+        assertDoesNotThrow(() -> p.startProduction(productionCards, wallet, leaderList, leaderOutput, true, Optional.of(Resource.SHIELD)));
+        assertEquals(faith, p.getCurrentPosition());
+        assertEquals(coins, p.getLootChest().getInventory().get(Resource.COIN));
+        assertEquals(servants, p.getLootChest().getInventory().get(Resource.SERVANT));
+        assertEquals(shields, p.getLootChest().getInventory().get(Resource.SHIELD));
+        assertEquals(stones, p.getLootChest().getInventory().get(Resource.STONE));
     }
 
 

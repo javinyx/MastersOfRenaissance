@@ -88,10 +88,10 @@ public class ProPlayer extends Player{
         return resAsCash;
     }
     public Warehouse getWarehouse(){
-        return new Warehouse(warehouse);
+        return warehouse;
     }
     public LootChest getLootChest(){
-        return new LootChest(lootChest);
+        return lootChest;
     }
     public List<StorageAbility> getExtraStorage(){
         return extraStorage.orElse(new ArrayList<>());
@@ -671,7 +671,7 @@ public class ProPlayer extends Player{
         if(cards!=null) {
             for (ConcreteProductionCard p : cards) {
                 //check if they can produce
-                if (p.equals(prodCards1.peekFirst()) || p.equals(prodCards2.peekFirst()) || p.equals(prodCards3.peekFirst())) {
+                if (!(p.equals(prodCards1.peekFirst()) || p.equals(prodCards2.peekFirst()) || p.equals(prodCards3.peekFirst()))) {
                     //controller will ask the player to adjust the ProdCards selection and try again to call this method
                     repairBackup(warBackup, lootBackup, extraStorageBackup);
                     throw new RuntimeException("Production card " + p + " cannot produce");
@@ -813,8 +813,8 @@ public class ProPlayer extends Player{
      * @param resourcesWallet wallet of resources redistributed as the player wishes across the possible storage option*/
     private List<Resource> produce(ConcreteProductionCard card, ResourcesWallet resourcesWallet) throws BadStorageException{
         //BACKUPS
-        List<Resource> cost = card.getCost();
-        List<Resource> costDupe = card.getCost(); //since cannot modify cost while forEach is running and taking elements from it
+        List<Resource> cost = card.getRequiredResources();
+        List<Resource> costDupe = card.getRequiredResources(); //since cannot modify cost while forEach is running and taking elements from it
 
         List<Resource> removeFromWar = resourcesWallet.getWarehouseTray();
         List<Resource> removeFromLoot = resourcesWallet.getLootchestTray();

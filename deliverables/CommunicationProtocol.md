@@ -2,6 +2,7 @@
 ## Group ID: AM13 - A.Y. 2020/21
 
  This document's aim is to provide a clear overview of _Maestri del Rinascimento_ project's communication protocol. Most relevant and crucial exhanges are going to be highlighted here. All the messages follow the JSON format shown below:
+ # THIS IS ALL A LIE!!!
 
  ```
  Message style:

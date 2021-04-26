@@ -1,7 +1,7 @@
 # Communication Protocol
 ## Group ID: AM13 - A.Y. 2020/21
 
- This document's aim is to provide a clear overview of _Maestri del Rinascimento_ project's communication protocol. Most relevant and crucial exhanges are going to be highlighted here. All the messages follows the JSON format shown below:
+ This document's aim is to provide a clear overview of _Maestri del Rinascimento_ project's communication protocol. Most relevant and crucial exhanges are going to be highlighted here. All the messages follow the JSON format shown below:
 
  ```
  Message style:
@@ -145,7 +145,7 @@ The following messages are sent to each player in the game, because everyone has
      }"
  }
 ```
-* ```dimension``` and ```ìndex``` are the coordinates on the market board where some changes have been applied because somobody has bought resources from there.
+* ```dimension``` and ```index``` are the coordinates on the market board where some changes have been applied because somobody has bought resources from there.
 * new setup of market (only changes notification)
 
 **Purchase of Production Cards**

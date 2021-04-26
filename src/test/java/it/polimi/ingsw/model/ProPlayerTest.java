@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.cards.Deck;
+import it.polimi.ingsw.model.cards.leader.BoostAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.StorageAbility;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -329,21 +330,110 @@ class ProPlayerTest extends PlayerTest {
         assertTrue(p1.isInRangeForReport(3));
     }
 
-    @Disabled
+    @Test
     void startProduction() {
-        List<Deck> prodDecks = Deck.createProdDeckList();
-        ConcreteProductionCard productionCard = (ConcreteProductionCard) prodDecks.get(0).getFirst();
         ResourcesWallet wallet = new ResourcesWallet();
-        List<ConcreteProductionCard> cards = new ArrayList<>();
-        cards.add(productionCard);
-        p1.storeInWarehouse(Resource.COIN, 1);
-        //p1.buyProductionCard(productionCard, 1, null, wallet);
+        ConcreteProductionCard card1, card2, card3;
+        p.setProductionStacks(1, card1 = g.getBuyableProductionCards().get(0)); //lv1 green
+        p.setProductionStacks(1, card2 = g.getBuyableProductionCards().get(4)); //lvl2 green
+        p.setProductionStacks(2, card3 = g.getBuyableProductionCards().get(1)); //lvl1 purple
 
-        assertThrows(RuntimeException.class, () -> p1.startProduction(cards, wallet, null, null, false, null));
+        //THAT CARD CANNOT PRODUCE
+        List<ConcreteProductionCard> productionCards = new ArrayList<>();
+        productionCards.add(card1);
+        assertThrows(RuntimeException.class, () ->
+            p.startProduction(productionCards, wallet, null, null, false, Optional.empty()));
 
-        List<Resource> resFromLoot = new ArrayList<>();
-        resFromLoot.add(Resource.COIN);
-        wallet.setLootchestTray(resFromLoot);
+        //NOT ENOUGH RES
+        productionCards.clear();
+        productionCards.add(card2);
+        assertThrows(BadStorageException.class, () ->
+                p.startProduction(productionCards, wallet, null, null, false, Optional.empty()));
+
+        //NOT ENOUGH RES: check that storages are saved
+        List<Resource> resources = new ArrayList<>();
+        resources.add(Resource.COIN);
+        wallet.setLootchestTray(resources);
+        p.setLootChest(resources);
+        assertThrows(BadStorageException.class, () ->
+                p.startProduction(productionCards, wallet,null, null, false, Optional.empty()));
+        assertEquals(1, p.getLootChest().getInventory().get(Resource.COIN));
+        assertEquals(0, p.getLootChest().getInventory().get(Resource.SERVANT));
+        assertEquals(0, p.getLootChest().getInventory().get(Resource.SHIELD));
+        assertEquals(0, p.getLootChest().getInventory().get(Resource.STONE));
+
+
+        //ACTUAL PRODUCTION
+        p.setLootChest(card2.getCost());
+        ResourcesWallet wallet2 = new ResourcesWallet();
+        wallet2.setLootchestTray(card2.getCost());
+        assertDoesNotThrow(() -> p.startProduction(productionCards, wallet2, null, null, false, Optional.empty()));
+        int coins=1, servants=0, shields=0, stones=0;
+        for(Resource r : card2.getProduction()){
+            switch(r){
+                case COIN -> {coins++;}
+                case SERVANT -> {servants++;}
+                case SHIELD -> {shields++;}
+                case STONE -> {stones++;}
+                default -> {}
+            }
+        }
+        assertEquals(coins, p.getLootChest().getInventory().get(Resource.COIN));
+        assertEquals(servants, p.getLootChest().getInventory().get(Resource.SERVANT));
+        assertEquals(shields, p.getLootChest().getInventory().get(Resource.SHIELD));
+        assertEquals(stones, p.getLootChest().getInventory().get(Resource.STONE));
+    }
+
+    @Test
+    void startProductionWithLeaders(){
+        BoostAbility leaderCard = (BoostAbility) g.createBoostAbility();
+        List<BoostAbility> leaderList = new ArrayList<>();
+        leaderList.add(leaderCard);
+        ConcreteProductionCard card1, card2, card3;
+        List<ConcreteProductionCard> productionCards = new ArrayList<>();
+        int levelIndex = 0;
+        p.setLeaderCards(leaderCard);
+        leaderCard.setStatus(true);
+        switch(((ProductionCard) leaderCard.getCost().get(0)).getColor()){
+            case GREEN -> {levelIndex = 4;}
+            case PURPLE -> {levelIndex = 5;}
+            case BLUE -> {levelIndex = 6;}
+            case YELLOW -> {levelIndex = 7;}
+        }
+        p.setProductionStacks(1, card1 = g.getBuyableProductionCards().get(1)); //lv1 green
+        p.setProductionStacks(1, card2 = g.getBuyableProductionCards().get(levelIndex)); //lvl2 color unknown
+        p.setProductionStacks(2, card3 = g.getBuyableProductionCards().get(1)); //lvl1 purple
+
+        List<Resource> resourceList = new ArrayList<>();
+        resourceList.add(leaderCard.getResource());
+        resourceList.addAll(card2.getRequiredResources());
+        p.setLootChest(resourceList);
+        ResourcesWallet wallet = new ResourcesWallet();
+        wallet.setLootchestTray(resourceList);
+
+        productionCards.add(card2);
+        List<Resource> leaderOutput = new ArrayList<>();
+        leaderOutput.add(Resource.STONE);
+
+        int coins=0, servants=0, shields=0, stones=1, faith=1; //stone because of leaderOutput, faith because of LeaderCard
+        for(Resource r : card2.getProduction()){
+            switch(r){
+                case COIN -> {coins++;}
+                case SERVANT -> {servants++;}
+                case SHIELD -> {shields++;}
+                case STONE -> {stones++;}
+                case FAITH -> {faith++;}
+                default -> {}
+            }
+        }
+
+        /*assertDoesNotThrow(() -> p.startProduction(productionCards, wallet, leaderList, leaderOutput, false, Optional.empty()));
+        assertEquals(faith, p.getCurrentPosition());
+        assertEquals(coins, p.getLootChest().getInventory().get(Resource.COIN));
+        assertEquals(servants, p.getLootChest().getInventory().get(Resource.SERVANT));
+        assertEquals(shields, p.getLootChest().getInventory().get(Resource.SHIELD));
+        assertEquals(stones, p.getLootChest().getInventory().get(Resource.STONE));*/
+
     }
 
 
@@ -378,6 +468,7 @@ class ProPlayerTest extends PlayerTest {
         assertEquals(storageCard2, p.getExtraStorage().get(1));
 
         assertDoesNotThrow(()-> p1.setExtraStorage(storageCard1));
+
     }
 
     @Test

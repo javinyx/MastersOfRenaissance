@@ -668,23 +668,25 @@ public class ProPlayer extends Player{
         turnType = 'p';
 
         //Production for Production Cards
-        for(ConcreteProductionCard p : cards){
-            //check if they can produce
-            if(prodCards1.peekFirst().equals(p) || prodCards2.peekFirst().equals(p) || prodCards3.peekFirst().equals(p)){
-                //controller will ask the player to adjust the ProdCards selection and try again to call this method
-                repairBackup(warBackup, lootBackup, extraStorageBackup);
-                throw new RuntimeException("Production card " + p + " cannot produce");
-            }
-            try {
-                tempProduction.addAll(produce(p, resAsCash));
-            }catch(BadStorageException e){
-                repairBackup(warBackup, lootBackup, extraStorageBackup);
-                throw new BadStorageException();
+        if(cards!=null) {
+            for (ConcreteProductionCard p : cards) {
+                //check if they can produce
+                if (p.equals(prodCards1.peekFirst()) || p.equals(prodCards2.peekFirst()) || p.equals(prodCards3.peekFirst())) {
+                    //controller will ask the player to adjust the ProdCards selection and try again to call this method
+                    repairBackup(warBackup, lootBackup, extraStorageBackup);
+                    throw new RuntimeException("Production card " + p + " cannot produce");
+                }
+                try {
+                    tempProduction.addAll(produce(p, resAsCash));
+                } catch (BadStorageException e) {
+                    repairBackup(warBackup, lootBackup, extraStorageBackup);
+                    throw new BadStorageException();
+                }
             }
         }
 
         //Leader: BoostAbility production
-        if(!prodLeaders.isEmpty()){
+        if(prodLeaders!=null && !prodLeaders.isEmpty()){
             if(prodLeaders.size()==outputBoost.size() && prodLeaders.size()<=2) {
                 int i = 0;
                 for (LeaderCard lc : prodLeaders) {

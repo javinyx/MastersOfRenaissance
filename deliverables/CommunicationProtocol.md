@@ -115,7 +115,7 @@ Players will wait until the the lobby is full. The lobby creator will be the fir
 ## Mid-game messages
 ### 2. Messages from server to client
 #### 2.1 Update client view
-The following messages are sent to each player in the game, because everyone has to see the changes in the model cause by other players as well.
+The following messages are sent to each player in the game, because everyone has to see the changes in the model caused by other players as well.
 <br/>
 
 **Progression onto the _Faith Track_**
@@ -167,7 +167,7 @@ The following messages are sent to each player in the game, because everyone has
      }"
  }
 ```
-The payload contains all the 12 deck of still available production cards. A player can buy only the card on top of all the others belonging to the same deck, so the view can just show the 12 available ones. If a deck has been totally consumed, then ```"cardID" : 0```.
+The payload displays all 12 decks containing still available production cards. A player can buy only the card on top of all the others belonging to the same deck, so the view can just show the 12 available ones. If a deck has been totally consumed, then ```"cardID" : 0```.
 * ```deck``` indicates the deck among the (initial) 12 available;
 * ```cardID```is the ID of the card to show on that deck.
 <br/>

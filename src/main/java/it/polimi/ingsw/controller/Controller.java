@@ -11,15 +11,12 @@ import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.player.BadStorageException;
 import it.polimi.ingsw.view.RemoteView;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Timer;
+import java.util.*;
 
 public class Controller implements ControllerObserver {
 
-    private int turnTime = 300; // max turn time in seconds
-    private Timer timer;
+    //private int turnTime = 300; // max turn time in seconds
+    //private Timer timer;
     private Game game;
     private boolean gameOver;
     private int numPlayer;
@@ -46,7 +43,7 @@ public class Controller implements ControllerObserver {
             createLobby();
         }
         //else
-        //invia messaggio TOO MANY PLAYERS
+        //Message: TOO_MANY_PLAYERS
     }
 
     public synchronized void addPlayer(String nickname){
@@ -64,8 +61,8 @@ public class Controller implements ControllerObserver {
             }
         }
 
-        timer = new Timer(true);
-        timer.schedule(new TurnTimerTask(this, game.getCurrPlayer().getTurnType()),turnTime*1000);
+        //timer = new Timer(true);
+        //timer.schedule(new TurnTimerTask(this, game.getCurrPlayer().getTurnType()),turnTime*1000);
 
         initializationPhase = false;
         game.start(numPlayer);
@@ -78,8 +75,6 @@ public class Controller implements ControllerObserver {
     //m == buymarket, b == buyproduction, p == activateProduction
 
     public synchronized void buyFromMar(char rowOrCol, int index, List<LeaderCard> leaders) {
-
-        resetTimer();
 
         game.getCurrPlayer().buyFromMarket(rowOrCol, index, leaders);
 
@@ -113,16 +108,37 @@ public class Controller implements ControllerObserver {
 
     }
 
-    private void buyProdCard(int turnId) {
+    public void buyProdCard(ConcreteProductionCard prodCard, int stack, LeaderCard leader, ResourcesWallet resourcesWallet) {
 
-        resetTimer();
+            try {
+                game.getCurrPlayer().buyProductionCard(prodCard, stack, leader, resourcesWallet);
+            }
+            catch (BadStorageException e){
+                //player has no resources
+                //Message: BAD_PAYMENT_REQUEST
+            }
+            catch (IllegalArgumentException e){
+                //prodcard have no cards
+                //Message: BAD_BUY_REQUEST
+            }
+            catch(IndexOutOfBoundsException e){
+                //stack < 1 || stack > 3
+                //Message: WRONG_STACK_REQUEST;
+            }
+            catch (RuntimeException e){
+                //prodcard has wrong level
+                //Message: WRONG_LEVEL_REQUEST
+            }
+
+
+        //invia messaggio esito corretto alla view;
+
+        game.updateEndTurn(game.getCurrPlayer());
 
     }
 
-    private void activateProd(int turnId, List<ConcreteProductionCard> cards, ResourcesWallet wallet, List<BoostAbility> leaders,
+    public void activateProd(List<ConcreteProductionCard> cards, ResourcesWallet wallet, List<BoostAbility> leaders,
                               List<Resource> leadersOutputs, boolean basicProd, Resource basicOutput) {
-
-        resetTimer();
 
         Optional<Resource> basicOut;
         if(basicOutput==null){
@@ -139,7 +155,10 @@ public class Controller implements ControllerObserver {
             //notify that some cards in production cards chosen by the player for this task cannot produce
             //Message: CARD_NOT_AVAILABLE
         }
+
         //update view
+
+        game.updateEndTurn(game.getCurrPlayer());
     }
 
     // END TURN STRUCTURE --------------------------------------------------------------------------------
@@ -189,11 +208,11 @@ public class Controller implements ControllerObserver {
         //game.setRequest(GameMessagesToClient.ABORT_GAME.name());
     }
 
-    /**
+    /*/**
      * Called when timer expires, eliminates the player whose turn is over
      * @param turnType identifier for the turn the timer is referring to
      */
-    synchronized void turnTimeOver(char turnType) {
+    /*synchronized void turnTimeOver(char turnType) {
         if (gameOver || turnType != this.game.getCurrPlayer().getTurnType()) return;
         if (initializationPhase == true){
             abortGame();
@@ -206,10 +225,10 @@ public class Controller implements ControllerObserver {
     /**
      * Resets the turn timer.
      */
-    public void resetTimer() {
+    /*public void resetTimer() {
         timer.cancel();
         timer = new Timer(true);
         timer.schedule(new TurnTimerTask(this, game.getCurrPlayer().getTurnType()),turnTime*1000);
-    }
+    }*/
 
 }

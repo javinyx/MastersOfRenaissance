@@ -48,7 +48,7 @@ public class LootChest {
      * <p>Mind that only SHIELD, STONE, COIN and SERVANT will be considered
      * removable item since there cannot be FAITH or BLANK resources in Lootchest.</p>
      * @param item the item to remove
-     * @return true if the deletion has been successfull, false otherwise
+     * @return true if the deletion has been successful, false otherwise
      */
     public boolean removeResources(Resource item){
         switch (item){

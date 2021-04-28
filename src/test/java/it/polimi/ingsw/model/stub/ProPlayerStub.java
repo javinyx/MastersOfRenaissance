@@ -1,9 +1,11 @@
 package it.polimi.ingsw.model.stub;
 
 import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
+import it.polimi.ingsw.model.player.LootChest;
 import it.polimi.ingsw.model.player.ProPlayer;
 
 import java.util.List;
@@ -53,12 +55,14 @@ public class ProPlayerStub extends ProPlayer {
     public void setLootChest(List<Resource> res){
         lootChest.addResources(res);
     }
-
+    public void resetLootChest(){
+        lootChest = new LootChest();
+    }
     public void setProductionStacks(int stack, ConcreteProductionCard card){
         switch(stack){
-            case 1 -> {prodCards1.addFirst(card);}
-            case 2 -> {prodCards2.addFirst(card);}
-            case 3 -> {prodCards3.addFirst(card);}
+            case 1 -> {prodCards1.add(card);}
+            case 2 -> {prodCards2.add(card);}
+            case 3 -> {prodCards3.add(card);}
             default -> {return;}
         }
     }
@@ -94,5 +98,9 @@ public class ProPlayerStub extends ProPlayer {
 
     public void resetPosition(){
         currPos = 0;
+    }
+
+    public void setResAsCash() {
+        this.resAsCash = new ResourcesWallet();
     }
 }

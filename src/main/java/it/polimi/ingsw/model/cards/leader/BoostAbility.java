@@ -89,7 +89,7 @@ public class BoostAbility implements LeaderCard {
                     warehouse.removeLarge();
                     removeFromWar.remove(resourceNeeded);
                 }else{
-                    //player said that there were resourced to be removed from warehouse but there isn't that res in Warehouse
+                    //player said that there were resources to be removed from warehouse but there isn't that res in Warehouse
                     return false;
                 }
 

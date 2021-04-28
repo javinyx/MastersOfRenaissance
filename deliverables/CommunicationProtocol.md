@@ -1,10 +1,9 @@
 # Communication Protocol
 ## Group ID: AM13 - A.Y. 2020/21
 
- This document's aim is to provide a clear overview of _Maestri del Rinascimento_ project's communication protocol. Most relevant and crucial exhanges are going to be highlighted here. All the messages follow the JSON format shown below:
+ This document's aim is to provide a clear overview of Maestri del Rinascimento project's communication protocol. Most relevant and crucial exchanges are going to be highlighted here. All the messages follow the JSON format shown below:
 
  ```
- Message style:
  {
      "messageID" : "TAG",
      "payload" : "{message content for the receiver}"
@@ -15,47 +14,46 @@
 <br/>
  Once the server receives the MessageEnvelope, through a MessageAllocator it maps the messageID to the corresponding Java Message Class so that it can be deserialized correctly into the message object, which will contain all the necessary information for the Model’s public methods’ calls.
 
- 
-
 ## Initialization
 ### 1. Client-server connection phase
  The connection phase is executed upon the players' insertion of their IP address and port. They will contact the server on the default port (which can be configured through the config.json file), that has the purpose of listening for new incoming players and directing them to a new port that will be dinamically assigned to them for the whole game duration. This expedient has been thought as a way to allow the server to host multiple games at the same time.<br/>
- The client app contains some logic for the correct game initialization. Players have to insert their nickname and choose the type of game they wish to play (_singleplayer mode_ or _multiplayer mode_).<br/>
+ The client app contains some logic for the correct game initialization. Players have to insert their nickname and choose the type of game they wish to play (_singleplayer mode_ or _multiplayer mode_) after the server checks if the player was already part of a game, otherwise the player is reconnected to that game. The initial registration is as follows:<br/>
 
- If **singleplayer mode** is chosen, then the registration will roughly be like this:
  ```
- Message: client -> server
+ // Message: client -> server
  {
      "messageID" : "REGISTER_SINGLE",
      "payload" : "{
-        "nickname" : "Banana"
+        "nickname" : "Gatto"
      }"
  }
 
- Message: server -> client
+ // Message: server -> client
  {
      "messageID" : "SERVER_STATE",
      "payload" : "{
          "accepted" : true,
          "starting" : true,
+         "wasInGame" : false
      }"
  }
  ```
- This will cause the creation of a new solo game for the player, that can start immediately.<br/>
+ If the player wasn’t already part of a game, he will be given the choice of SinglePlayer or MultiPlayer game.
+For the MultiPlayer game, more choices have to be made:
+<br/>
 
- Otherwise, if **multiplayer mode** is chosen, then another choice has to be faced:<br/>
  * **(A)** Create a new multiplayer game and specify how large they wish the lobby to be;
- *  **(B)** Join an already existing game on hold for other players
+ *  **(B)** Join an already existing game on hold for other players.
  <br/>
 
  Case **(A)**:
  
  ```
- (A) Message: client -> server
+ // Message: client -> server
  {
      "messageID" : "REGISTER_MULTI",
      "payload" : "{
-        "nickname" : "Banana",
+        "nickname" : "Gatto",
         "nPlayers" : 4
      }"
  } 
@@ -66,14 +64,14 @@ Players will wait until the the lobby is full. The lobby creator will be the fir
  Case **(B)**:
 
 ``` 
- (B) Message: client -> server
+ // Message: client -> server
  {
     "messageID" : "REQUEST_LOBBY",
     "payload" : "{}"
  }
  
 
- (B) Message: server -> client
+ // Message: server -> client
  {
      "messageID" : "SHOW_LOBBY",
      "payload" : "{
@@ -93,11 +91,11 @@ Players will wait until the the lobby is full. The lobby creator will be the fir
      }"
  }
 
- (B) Message: client -> server
+ // Message: client -> server
  {
      "messageID" : "REGISTER_MULTI",
      "payload" : "{
-        "nickname" : "Banana",
+        "nickname" : "Gatto",
         "idLobby" : 1,
      }"
  }
@@ -105,7 +103,7 @@ Players will wait until the the lobby is full. The lobby creator will be the fir
  Where ```idLobby``` indicates which lobby the player wishes to join among those available sent by server. <br/>
  Server respose for accepting the player:
  ```
- Message: server -> client
+ // Message: server -> client
  {
      "messageID" : "SERVER_STATE",
      "payload" : "{
@@ -114,9 +112,89 @@ Players will wait until the the lobby is full. The lobby creator will be the fir
      }"
  }
 ```
- Mind that, in case **(B)**, ```accepted``` could be false if simultaneously someone else filled the last free spot. In that case, the player should choose another lobby.<br/>
- Once a lobby is full, the server sends a *SERVER_STATE* message to all clients waiting for that lobby stating ```"starting" : true```.
+ Mind that, in case **(B)**, ```accepted``` could be false if someone else simultaneously filled the last free spot. In that case, the player should choose another lobby.<br/>
+ Once a lobby is full, the server sends a *SERVER_STATE* message to all clients waiting for that lobby, stating ```"starting" : true```.
  
+## Inizialization
+There are a few things to do upon game initiation:
+* Update each player's view with their initial position on the faith track based on their turn order, with messages like the following:
+```
+ {
+     "messageID" : “PLAYER_POSITION",
+     "payload" : "{
+         "player" : 1,
+         "boardCell" : 2
+     }"
+ }
+```
+
+* Request players' preferred resources based on their turn order, with messages like the following: 
+```
+ // Message: server -> client
+ {
+    "messageID" : "REQUEST_RESOURCE_CHOICE",
+    "payload" : "{
+        "quantity": 2
+    }"
+ }
+ 
+
+ // Message: client -> server
+ {
+     "messageID" : "STORE_RESOURCE",
+     "payload" : "{
+         {
+             "resource": "SHIELD",
+             "position": "SmallW"
+         },
+         {
+             "resource": "COIN",
+             "position": "MediumW"
+         }
+     }"
+ }
+
+ // Message: server -> client
+ {
+     "messageID" : "ACTION_STATUS",
+     "payload" : "{
+        "accepted": true
+     }"
+ }
+ ```
+
+Every value and faithPoint assignment follows the ruleset in the table below:
+TABELA
+
+* Each player needs to choose 2 out of their 4 given LeaderCards, the messages will look as such:
+```
+ // Message: server -> client
+ {
+    "messageID" : "REQUEST_LEADER_DISCARD",
+    "payload" : "{
+        "leaderCards" : "[3, 4, 6, 8]"
+    }"
+ }
+ 
+
+ // Message: client -> server
+ {
+     "messageID" : "DISCARD_LEADER",
+     "payload" : "{
+        "leaderCardsToKeep" : "[4, 8]"
+    }"
+ }
+
+ // Message: server -> client
+ {
+     "messageID" : "ACTION_STATUS",
+     "payload" : "{
+        "accepted": true
+     }"
+ }
+ ```
+
+
 ## Mid-game messages
 ### 2. Messages from server to client
 #### 2.1 Update client view

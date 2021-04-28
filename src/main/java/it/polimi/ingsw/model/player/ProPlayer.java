@@ -87,9 +87,7 @@ public class ProPlayer extends Player{
     public ResourcesWallet getResAsCash(){
         return resAsCash;
     }
-    public Warehouse getWarehouse(){
-        return warehouse;
-    }
+    public Warehouse getWarehouse(){ return warehouse; }
     public LootChest getLootChest(){
         return lootChest;
     }
@@ -813,8 +811,8 @@ public class ProPlayer extends Player{
      * @param resourcesWallet wallet of resources redistributed as the player wishes across the possible storage option*/
     private List<Resource> produce(ConcreteProductionCard card, ResourcesWallet resourcesWallet) throws BadStorageException{
         //BACKUPS
-        List<Resource> cost = card.getRequiredResources();
-        List<Resource> costDupe = card.getRequiredResources(); //since cannot modify cost while forEach is running and taking elements from it
+        List<Resource> cost = card.getCost();
+        List<Resource> costDupe = card.getCost(); //since cannot modify cost while forEach is running and taking elements from it
 
         List<Resource> removeFromWar = resourcesWallet.getWarehouseTray();
         List<Resource> removeFromLoot = resourcesWallet.getLootchestTray();

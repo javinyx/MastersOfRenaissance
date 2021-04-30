@@ -26,12 +26,12 @@ Once the server receives the MessageEnvelope, through a MessageAllocator it maps
   * [2. Game initiation](#2-game-initiation)
 - [Mid-game messages](#mid-game-messages)
   * [3. Server to Client Messages](#3-server-to-client-messages)
-    + [Client View Update](#client-view-update)
-    + [Current player notification](#current-player-notification)
-    + [Progression inside the _Faith Track_](#progression-inside-the--faith-track-)
-    + [Purchase from Market](#purchase-from-market)
-    + [Purchase of Production Cards](#purchase-of-production-cards)
-    + [End game](#end-game)
+    + [3.1 Client View Update](#3-1-client-view-update)
+      - [Current player notification](#current-player-notification)
+      - [Progression inside the _Faith Track_](#progression-inside-the--faith-track-)
+      - [Purchase from Market](#purchase-from-market)
+      - [Purchase of Production Cards](#purchase-of-production-cards)
+      - [End game](#end-game)
     + [Requests for current player turn](#requests-for-current-player-turn)
       - [Production](#production)
       - [Resources placement](#resources-placement)
@@ -200,7 +200,7 @@ Every value and faithPoint assignment follows the ruleset in the table below:
 ```
 // Message: server -> client
 {
-	"messageID" : "REQUEST_LEADER_DISCARD",
+	"messageID" : "REQUEST_LEADER_CHOICE",
 	"payload" : "{
 		"leaderCards" : "[3, 4, 6, 8]"
 	}"
@@ -208,7 +208,7 @@ Every value and faithPoint assignment follows the ruleset in the table below:
 
 // Message: client -> server
 {
-	"messageID" : "DISCARD_LEADER",
+	"messageID" : "LEADER_CHOICE",
 	"payload" : "{
 		"leaderCardsToKeep" : "[4, 8]"
 	}"
@@ -225,10 +225,10 @@ Every value and faithPoint assignment follows the ruleset in the table below:
 
 # Mid-game messages
 ## 3. Server to Client Messages
-### Client View Update
+### 3.1 Client View Update
 The following messages are sent to each player in the game, because everyone has to see the changes in the model caused by other players as well:
 
-### Current player notification
+#### Current player notification
 ```
 {
 	"messageID" : “CURRENT_PLAYER",
@@ -239,7 +239,7 @@ The following messages are sent to each player in the game, because everyone has
 ```
 This incapsulate the player's id that has to play.
 
-### Progression inside the _Faith Track_
+#### Progression onto the _Faith Track_
 ```
 {
 	"messageID" : “PLAYER_POSITION",
@@ -249,10 +249,11 @@ This incapsulate the player's id that has to play.
 	}"
 }
 ```
-* `player` specifies which player has gone forward onto the _Faith Track_. The id refers to the player's turn. This message can be caused by the current player's production phase if some faith points are generated;
+* `player` specifies which player has gone forward onto the _Faith Track_. The id refers to the player's turn. This message can be caused by the current player's production phase 
+   if some faith points are generated, or from someone else discarding resources;
 * `boardCell` is the updated position on the player's board.
 
-### Purchase from Market
+#### Purchase from Market
 ```
 {
 	"messageID" : "MARKET_UPDATE",
@@ -267,7 +268,7 @@ This incapsulate the player's id that has to play.
 * `dimension` and `index` are the coordinates on the market board where some changes have been applied because somobody has bought resources from there.
 * new setup of market (only changes notification).
 
-### Purchase of Production Cards
+#### Purchase of Production Cards
 ```
 {
 	"messageID" : "AVAILABLE_PRODUCTION_CARDS",
@@ -290,7 +291,7 @@ The payload displays all 12 decks containing the currently available production 
 * `deck` indicates the deck among the (initial) 12 available;
 * `cardID` is the ID of the card to show on that deck.
 
-### End game
+#### End game
 ```
 {
 	"messageID" : "END_GAME",
@@ -301,7 +302,7 @@ The payload displays all 12 decks containing the currently available production 
 ```
 In a singleplayer game, if Lorenzo wins, then `"winner" : 0`.
 
-### Requests for current player turn
+### 3.2 Requests for current player turn
 #### Production
 ```
 {
@@ -326,6 +327,15 @@ In a singleplayer game, if Lorenzo wins, then `"winner" : 0`.
 The server notifies the players that they have to place the resources that they previously acquired, for example, from the market.
 
 ## 4. Client to Server Messages
+### Leader card activation
+```
+{
+  "messageID" : "ACTIVATE_LEADER",
+  "payload" : "{
+       "leaderCard" : id
+  }"
+}
+```
 ### Production
 ```
 {
@@ -346,9 +356,9 @@ The server notifies the players that they have to place the resources that they 
 * `productionCards` contains the cards that the user wants to use for production.
 * `fromWarehouse` indicates the resources that should be taken from the warehouse.
 * `fromLootchest` indicates the resources that should be taken from the lootchest.
-* `fromExtraStorage1` and `fromExtraStorage2` indicate the resource that should be taken from the extra storage supplied by an active leader card of StorageType.
+* `fromExtraStorage1` and `fromExtraStorage2` indicate the resource that should be taken from the extra storage supplied by an active leader card of StorageAbility.
 * `boostAbilityCards` contains the leader cards of type BoostAbility that will be used during production.
-* `outputLeader` contains all the BoostAbility leaderCards outputs as a list of resources.
+* `outputLeader` contains all the BoostAbility leaderCards outputs of player's choice as a list of resources.
 * `basicProduction` indicates if the user would like to use the standard production given by the game board.
 * `outputBasic` indicates the type of Resource the user wants to receive from basicProduction.
 
@@ -357,29 +367,27 @@ The server notifies the players that they have to place the resources that they 
 {
 	"messageID" : “BUY_MARKET",
 	"payload" : "{
-		"dimension" : "row",
-		"index" : 2,
-		"marbleLeader" : boolean
-	}"
-}
-
--------------------------------------
-
-// Message: server -> client
-{
-	"messageID" : "CHOOSE_BLANK",
-	"payload" : "{}"
-}
-
--------------------------------------
-
-{
-	"messageID" : "BLANK_CHOICE",
-	"payload" : "{
-		"marbleCard" : id
+		"info" : {
+                    "dimension" : "row",
+                    "index" : 2
+		},
+		{ 
+		"leaders" : [
+                     {
+                       "marbleLeader" : id,
+                        "quantity" : 1
+                     },
+                     {
+                        "marbleLeader" : id,
+                        "quantity" : 2
+                     }
+		]
 	}"
 }
 ```
+`leaders` contains the information regarding active MarbleAbility leader cards
+which the player would like to use upon the specified quantity of 
+blank marbles collected from the market.
 
 ### Buy Production Cards
 ```
@@ -395,3 +403,9 @@ The server notifies the players that they have to place the resources that they 
 	}"
 }
 ```
+* `prodCards` contains the cards that the user wants to buy.
+* `fromWarehouse` indicates the resources that should be taken from the warehouse.
+* `fromLootchest` indicates the resources that should be taken from the lootchest.
+* `fromExtraStorage1` and `fromExtraStorage2` indicate the resource that should be taken from the extra storage supplied by an active leader card of StorageAbility.
+* `discountAbility` indicates the leader cards of Discount type that the player wants
+to use during this phase.

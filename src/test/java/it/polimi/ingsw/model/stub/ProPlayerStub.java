@@ -60,9 +60,9 @@ public class ProPlayerStub extends ProPlayer {
     }
     public void setProductionStacks(int stack, ConcreteProductionCard card){
         switch(stack){
-            case 1 -> {prodCards1.add(card);}
-            case 2 -> {prodCards2.add(card);}
-            case 3 -> {prodCards3.add(card);}
+            case 1 -> {prodCards1.addFirst(card);}
+            case 2 -> {prodCards2.addFirst(card);}
+            case 3 -> {prodCards3.addFirst(card);}
             default -> {return;}
         }
     }

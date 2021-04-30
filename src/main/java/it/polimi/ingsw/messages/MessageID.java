@@ -30,6 +30,11 @@ public enum MessageID {
 
     REGISTER_SINGLE,
 
-    REGISTER_MULTI;
+    REGISTER_MULTI,
+
+    RESOURCE_ORGANIZED,
+
+    BUY_FROM_MARKET;
+
 
     }

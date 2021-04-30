@@ -1,5 +1,6 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.messages.BuyMarketMessage;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.MultiPlayerGame;
 import it.polimi.ingsw.model.ResourcesWallet;
@@ -74,15 +75,17 @@ public class Controller implements ControllerObserver {
 
     //m == buymarket, b == buyproduction, p == activateProduction
 
-    public synchronized void buyFromMar(char rowOrCol, int index, List<LeaderCard> leaders) {
+    public synchronized void buyFromMarAction(BuyMarketMessage classe) {
 
-        game.getCurrPlayer().buyFromMarket(rowOrCol, index, leaders);
+        //fare cose per avere i parametri
+
+        //game.getCurrPlayer().buyFromMarket(rowOrCol, index, leaders);
 
         game.updateEndTurn(game.getCurrPlayer());
 
     }
 
-    public void organizeResource(List<Resource> resAquired){
+    public void organizeResourceAction(List<Resource> resAquired){
 
         //in qualche modo manda un messaggio alla view vera chiamando la remote view che a quel punto ritorna la lista con le risorse ordinate
 
@@ -108,7 +111,7 @@ public class Controller implements ControllerObserver {
 
     }
 
-    public void buyProdCard(ConcreteProductionCard prodCard, int stack, LeaderCard leader, ResourcesWallet resourcesWallet) {
+    public void buyProdCardAction(ConcreteProductionCard prodCard, int stack, LeaderCard leader, ResourcesWallet resourcesWallet) {
 
             try {
                 game.getCurrPlayer().buyProductionCard(prodCard, stack, leader, resourcesWallet);
@@ -137,7 +140,7 @@ public class Controller implements ControllerObserver {
 
     }
 
-    public void activateProd(List<ConcreteProductionCard> cards, ResourcesWallet wallet, List<BoostAbility> leaders,
+    public void activateProdAction(List<ConcreteProductionCard> cards, ResourcesWallet wallet, List<BoostAbility> leaders,
                               List<Resource> leadersOutputs, boolean basicProd, Resource basicOutput) {
 
         Optional<Resource> basicOut;

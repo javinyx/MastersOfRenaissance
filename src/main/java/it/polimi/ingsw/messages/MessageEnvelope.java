@@ -12,4 +12,8 @@ public class MessageEnvelope {
     public MessageID getMessageID(){
         return type;
     }
+
+    public String getPayload() {
+        return payload;
+    }
 }

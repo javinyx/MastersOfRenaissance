@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface ControllerObserver {
 
-    public void organizeResource(List<Resource> organizedRes);
+    public void organizeResourceAction(List<Resource> organizedRes);
 
 }

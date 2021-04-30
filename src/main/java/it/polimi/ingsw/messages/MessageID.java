@@ -1,6 +1,6 @@
-package it.polimi.ingsw.view;
+package it.polimi.ingsw.messages;
 
-public enum MessagesToClient {
+public enum MessageID {
 
     DISPLAY_LEADER_CARD, // mostra al giocatore i 4 leader tra cui scegliere, quindi dovrà sceglierne 2
 
@@ -26,6 +26,10 @@ public enum MessagesToClient {
 
     PLAYER_LOSE,
 
-    PLAYER_WIN;
+    PLAYER_WIN,
+
+    REGISTER_SINGLE,
+
+    REGISTER_MULTI;
 
     }

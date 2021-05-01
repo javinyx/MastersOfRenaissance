@@ -5,9 +5,9 @@ package it.polimi.ingsw.messages;
  * called {@code payload}*/
 public class MessageEnvelope {
     private final MessageID type;
-    private final String payload;
+    private final Object payload;
 
-    public MessageEnvelope(MessageID type, String payload){
+    public MessageEnvelope(MessageID type, Object payload){
         this.type = type;
         this.payload = payload;
     }
@@ -16,7 +16,7 @@ public class MessageEnvelope {
         return type;
     }
 
-    public String getPayload() {
+    public Object getPayload() {
         return payload;
     }
 }

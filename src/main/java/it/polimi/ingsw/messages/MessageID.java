@@ -30,6 +30,8 @@ public enum MessageID {
 
     REGISTER_SINGLE,
 
+    ABORT_GAME,
+
     REGISTER_MULTI,
 
     RESOURCE_ORGANIZED,

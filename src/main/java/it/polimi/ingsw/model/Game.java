@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.controller.ControllerObserver;
+import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
@@ -21,10 +21,10 @@ public abstract class Game implements Observer{
     protected Deck leaderDeck;
     protected int totalPlayers;
     protected ProPlayer currPlayer;
-    protected ControllerObserver controller; // bisogna farselo passare dal Controller in fase di costruzione di SinglePlayerGame o Multi
+    protected Controller controller; // bisogna farselo passare dal Controller in fase di costruzione di SinglePlayerGame o Multi
 
     public abstract void start(int numPlayers);
-    public ControllerObserver getControllerObserver(){return controller;}
+    public Controller getControllerObserver(){return controller;}
     public abstract boolean createPlayer(String nickname);
     public Market getMarket(){
         return market;

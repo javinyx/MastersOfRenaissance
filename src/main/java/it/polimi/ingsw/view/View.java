@@ -1,5 +1,7 @@
 package it.polimi.ingsw.view;
 
+import it.polimi.ingsw.messages.MessageEnvelope;
+
 public abstract class View {
 
     private final String nickname;
@@ -18,5 +20,5 @@ public abstract class View {
      * Shows the passed message to the player. Implementing classes should override it according to the specific architecture.
      * @param message message to display.
      */
-    protected abstract void showMessage(String message);
+    protected abstract void sendMessage(String message);
 }

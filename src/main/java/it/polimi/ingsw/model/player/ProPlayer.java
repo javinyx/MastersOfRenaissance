@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.player;
 
-import it.polimi.ingsw.controller.ControllerObserver;
+
+import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.SinglePlayerGame;
@@ -31,7 +32,7 @@ public class ProPlayer extends Player{
     protected char turnType;
     protected Optional<List<StorageAbility>> extraStorage;
     protected static int maxNumExtraStorage = 2;
-    protected ControllerObserver controller;
+    protected Controller controller;
     protected Function<Optional<List<StorageAbility>>, Integer> pointsFromExtraStorage = (Optional<List<StorageAbility>> x) ->
     {int points=0;
         if(x.isPresent()){

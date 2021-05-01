@@ -13,11 +13,10 @@ import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.player.BadStorageException;
-import it.polimi.ingsw.view.RemoteView;
 
 import java.util.*;
 
-public class Controller implements Observer {
+public class Controller implements Observer<MessageID> {
 
     //private int turnTime = 300; // max turn time in seconds
     //private Timer timer;
@@ -26,10 +25,16 @@ public class Controller implements Observer {
     private int numPlayer;
     private boolean initializationPhase;
     private char turnType;
-    private RemoteView remoteView;
+    private List<Observer<MessageEnvelope>> remoteViews;
 
     public Controller() {
         initializationPhase = true;
+        remoteViews = new ArrayList<>();
+
+    }
+
+    public boolean registerObserver (Observer<MessageEnvelope> obs){
+        return remoteViews.add(obs);
     }
 
     // GAME INITIALIZATION -------------------------------------------------------------------------------
@@ -72,20 +77,11 @@ public class Controller implements Observer {
         game.start(numPlayer);
     }
 
-    // END GAME INITIALIZATION ---------------------------------------------------------------------------
+    // END GAME INITIALIZATION -----------------------------------------------------------------------------------------
 
-    // TURN STRUCTURE ------------------------------------------------------------------------------------
+    // TURN STRUCTURE --------------------------------------------------------------------------------------------------
 
     //m == buymarket, b == buyproduction, p == activateProduction
-
-    public void update(MessageID messageID){
-        switch(messageID){
-            case CHOOSE_RESOURCE -> {}
-            case CHOOSE_CARD -> {}
-            case ORGANIZE_RESOURCES -> {new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString());}//send to message handler
-            default -> {}
-        }
-    }
 
     public synchronized void buyFromMarAction(BuyMarketMessage classe) {
 
@@ -176,7 +172,22 @@ public class Controller implements Observer {
         game.updateEndTurn(game.getCurrPlayer());
     }
 
-    // END TURN STRUCTURE --------------------------------------------------------------------------------
+    // END TURN STRUCTURE ----------------------------------------------------------------------------------------------
+
+    // ENVELOPE CREATOR ------------------------------------------------------------------------------------------------
+
+    @Override
+    public void update(MessageID messageID){
+
+        switch(messageID){
+            case CHOOSE_RESOURCE -> {}
+            case CHOOSE_CARD -> {}
+            case ORGANIZE_RESOURCES -> remoteViews.get(game.getCurrPlayer().getTurnID()-1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
+            default -> {}
+        }
+    }
+
+    // END ENVELOPE CREATOR --------------------------------------------------------------------------------------------
 
     /**
      * Eliminates a player

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.messages.MessageEnvelope;
+import it.polimi.ingsw.messages.SimpleMessage;
 
 import java.io.PrintWriter;
 
@@ -8,7 +9,7 @@ import java.io.PrintWriter;
 public abstract class MessageToServerHandler {
     /*protected final ViewInterface view;
     protected final Gson gson;*/
-    protected static PrintWriter toServer;
+    protected volatile static PrintWriter toServer;
 
     /**Set to whom this MessageToServerHandler has to send the envelopes.*/
     public static void setToServer(PrintWriter toServer){
@@ -19,7 +20,7 @@ public abstract class MessageToServerHandler {
 
     }
 
-    public abstract void generateEnvelope();
+    public abstract void generateEnvelope(SimpleMessage message);
 
     /**Send the envelope to the server receiver.
      * <p>It's thread-safe.</p>*/

@@ -6,6 +6,8 @@ public enum MessageID {
 
     LEADER_ACTIVATED,
 
+    ACTIVATE_LEADER,
+
     CHOOSE_CARD,
 
     CHOOSE_RESOURCE,
@@ -37,6 +39,8 @@ public enum MessageID {
     RESOURCE_ORGANIZED,
 
     ORGANIZE_RESOURCES,
+
+    STORE_RESOURCES,
 
     BUY_FROM_MARKET;
 

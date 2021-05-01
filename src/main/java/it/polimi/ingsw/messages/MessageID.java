@@ -42,6 +42,8 @@ public enum MessageID {
 
     STORE_RESOURCES,
 
+    PRODUCE,
+
     BUY_FROM_MARKET;
 
 

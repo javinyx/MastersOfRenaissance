@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client;
 
+import com.google.gson.Gson;
 import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.SimpleMessage;
 
@@ -7,9 +8,14 @@ import java.io.PrintWriter;
 
 /**This class allows the Client to read/send messages from/to the server. */
 public abstract class MessageToServerHandler {
-    /*protected final ViewInterface view;
-    protected final Gson gson;*/
+    protected final ViewInterface view;
+    protected final Gson gson;
     protected volatile static PrintWriter toServer;
+
+    public MessageToServerHandler(ViewInterface view, Gson gson){
+        this.view = view;
+        this.gson = gson;
+    }
 
     /**Set to whom this MessageToServerHandler has to send the envelopes.*/
     public static void setToServer(PrintWriter toServer){

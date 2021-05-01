@@ -9,12 +9,9 @@ import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.SimpleMessage;
 
 public class ActivateLeaderCommand extends MessageToServerHandler {
-    private final ViewInterface view;
-    private final Gson gson;
 
     public ActivateLeaderCommand(ViewInterface view, Gson gson){
-        this.view = view;
-        this.gson = gson;
+        super(view, gson);
     }
 
     @Override

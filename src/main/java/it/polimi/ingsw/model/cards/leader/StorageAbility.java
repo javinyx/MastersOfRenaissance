@@ -150,4 +150,12 @@ public class StorageAbility implements LeaderCard {
         return "StorageAbility";
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
 }

@@ -44,6 +44,8 @@ public enum MessageID {
 
     PRODUCE,
 
+    OK_PRODUCTION,
+
     BUY_FROM_MARKET;
 
 

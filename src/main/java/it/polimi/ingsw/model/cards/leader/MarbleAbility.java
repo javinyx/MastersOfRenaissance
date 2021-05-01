@@ -102,4 +102,11 @@ public class MarbleAbility implements LeaderCard {
         return "MarbleAbility";
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
 }

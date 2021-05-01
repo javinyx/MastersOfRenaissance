@@ -3,6 +3,7 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.messages.BuyMarketMessage;
 import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
+import it.polimi.ingsw.messages.ProduceMessage;
 import it.polimi.ingsw.misc.Observer;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.MultiPlayerGame;
@@ -11,6 +12,7 @@ import it.polimi.ingsw.model.SinglePlayerGame;
 import it.polimi.ingsw.model.cards.leader.BoostAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
+import it.polimi.ingsw.model.cards.production.ProductionCard;
 import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.player.BadStorageException;
 
@@ -148,42 +150,97 @@ public class Controller implements Observer<MessageID> {
 
     }
 
-    public void activateProdAction(List<ConcreteProductionCard> cards, ResourcesWallet wallet, List<BoostAbility> leaders,
-                              List<Resource> leadersOutputs, boolean basicProd, Resource basicOutput) {
+    public void activateProdAction(ProduceMessage produce) {
 
         Optional<Resource> basicOut;
-        if(basicOutput==null){
+        if(produce.getBasicOutput() == null){
             basicOut = Optional.empty();
-        }else{
-            basicOut = Optional.of(basicOutput);
+        }
+        else{
+            basicOut = Optional.of(produce.getBasicOutput());
         }
         try {
-            game.getCurrPlayer().startProduction(cards, wallet, leaders, leadersOutputs, basicProd, basicOut);
+
+            List<ConcreteProductionCard> productionCards = new ArrayList<>();
+            List<BoostAbility> leaderCards = new ArrayList<>();
+
+            //Production cards
+            for (int i = 0; i < produce.getProductionCardsIDs().size(); i++) {
+
+                if(produce.getProductionCardsIDs().get(i) == game.getCurrPlayer().getProdCards1().peekFirst().getId())
+                    productionCards.add(game.getCurrPlayer().getProdCards1().peekFirst());
+
+                else if(produce.getProductionCardsIDs().get(i) == game.getCurrPlayer().getProdCards2().peekFirst().getId())
+                    productionCards.add(game.getCurrPlayer().getProdCards2().peekFirst());
+
+                else if(produce.getProductionCardsIDs().get(i) == game.getCurrPlayer().getProdCards3().peekFirst().getId())
+                    productionCards.add(game.getCurrPlayer().getProdCards2().peekFirst());
+            }
+
+            //Leader cards
+            for (int i = 0; i < produce.getLeaderCardsIDs().size(); i++) {
+
+                if(produce.getLeaderCardsIDs().get(i) == game.getCurrPlayer().getLeaderCards().get(0).getId())
+                    leaderCards.add((BoostAbility) game.getCurrPlayer().getLeaderCards().get(0));
+
+                else if(produce.getLeaderCardsIDs().get(i) == game.getCurrPlayer().getLeaderCards().get(1).getId())
+                    leaderCards.add((BoostAbility) game.getCurrPlayer().getLeaderCards().get(1));
+
+            }
+
+            game.getCurrPlayer().startProduction(productionCards, produce.getResourcesWallet(), leaderCards, produce.getLeaderOutputs(), produce.isBasicProduction(), basicOut);
+
         }catch(BadStorageException e1){
             //notify that there's something wrong with the player storage
-            //Message: BAD_PRODUCTION_REQUEST
+            update(MessageID.BAD_PRODUCTION_REQUEST);
         }catch(RuntimeException e2){
             //notify that some cards in production cards chosen by the player for this task cannot produce
-            //Message: CARD_NOT_AVAILABLE
+            update(MessageID.CARD_NOT_AVAILABLE);
         }
 
-        //update view
+        update(MessageID.OK_PRODUCTION);
 
         game.updateEndTurn(game.getCurrPlayer());
     }
 
     // END TURN STRUCTURE ----------------------------------------------------------------------------------------------
 
+    // TURN UTILITIES --------------------------------------------------------------------------------------------------
+
+    public void activateLeader(LeaderCard leaderCard){
+
+    }
+
+    // END TURN UTILITIES ----------------------------------------------------------------------------------------------
+
     // ENVELOPE CREATOR ------------------------------------------------------------------------------------------------
 
     @Override
     public void update(MessageID messageID){
 
-        switch(messageID){
-            case CHOOSE_RESOURCE -> {}
-            case CHOOSE_CARD -> {}
-            case ORGANIZE_RESOURCES -> remoteViews.get(game.getCurrPlayer().getTurnID()-1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
-            default -> {}
+        //CAPIRE QUALI MESSAGGI SONO INDIRIZZATI A TUTTI E QUALI NO
+        /*
+         MODIFICARE POI METODI MODEL:
+         ORGANIZE_RESOURCES
+         OK_PRODUCTION
+         */
+
+
+        switch(messageID) {
+            case CHOOSE_RESOURCE -> { }
+            case CHOOSE_CARD -> { }
+
+            case ORGANIZE_RESOURCES -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
+            case BAD_PRODUCTION_REQUEST -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "There something wrong with the storage"));
+            case CARD_NOT_AVAILABLE -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "The chosen card is not available"));
+
+            case OK_PRODUCTION -> {
+                for (int i = 0; i < game.getTotalPlayers(); i++)
+                    remoteViews.get(i).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
+                }
+
+
+            default -> throw new IllegalStateException("Unexpected value: " + messageID);
         }
     }
 

@@ -50,4 +50,8 @@ public interface LeaderCard extends Card{
 
     public String getNameNew();
 
+    int getId();
+
+    boolean isStatus();
+
 }

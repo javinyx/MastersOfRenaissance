@@ -91,4 +91,12 @@ public class DiscountAbility implements LeaderCard {
         return "DiscountAbility";
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
 }

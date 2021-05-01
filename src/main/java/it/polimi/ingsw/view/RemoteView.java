@@ -6,7 +6,9 @@ import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.messages.BuyMarketMessage;
 import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
+import it.polimi.ingsw.messages.ProduceMessage;
 import it.polimi.ingsw.misc.Observer;
+import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.market.Resource;
 
 import java.io.PrintWriter;
@@ -44,10 +46,15 @@ public class RemoteView extends View implements Observer<MessageEnvelope> {
     public void readMessageFromClient(MessageEnvelope envelope){
 
         switch (envelope.getMessageID()){
+            case BUY_FROM_MARKET -> controller.buyFromMarAction(gson.fromJson(envelope.getPayload(), BuyMarketMessage.class));
+
+            case PRODUCE ->controller.activateProdAction(gson.fromJson(envelope.getPayload(), ProduceMessage.class));
 
             case RESOURCE_ORGANIZED -> controller.organizeResourceAction(gson.fromJson(envelope.getPayload(), new TypeToken<ArrayList<Resource>>(){}.getType()));
 
-            case BUY_FROM_MARKET -> controller.buyFromMarAction(gson.fromJson(envelope.getPayload(), BuyMarketMessage.class));
+            case ACTIVATE_LEADER -> controller.activateLeader(gson.fromJson(envelope.getPayload(), LeaderCard.class));
+
+
 
         }
     }

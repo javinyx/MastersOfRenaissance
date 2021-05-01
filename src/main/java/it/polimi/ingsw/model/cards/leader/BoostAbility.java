@@ -146,4 +146,12 @@ public class BoostAbility implements LeaderCard {
     public String getNameNew(){
         return "BoostAbility";
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
 }

@@ -1,6 +1,9 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.messages.BuyMarketMessage;
+import it.polimi.ingsw.messages.MessageEnvelope;
+import it.polimi.ingsw.messages.MessageID;
+import it.polimi.ingsw.misc.Observer;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.MultiPlayerGame;
 import it.polimi.ingsw.model.ResourcesWallet;
@@ -14,7 +17,7 @@ import it.polimi.ingsw.view.RemoteView;
 
 import java.util.*;
 
-public class Controller implements ControllerObserver {
+public class Controller implements Observer {
 
     //private int turnTime = 300; // max turn time in seconds
     //private Timer timer;
@@ -74,6 +77,15 @@ public class Controller implements ControllerObserver {
     // TURN STRUCTURE ------------------------------------------------------------------------------------
 
     //m == buymarket, b == buyproduction, p == activateProduction
+
+    public void update(MessageID messageID){
+        switch(messageID){
+            case CHOOSE_RESOURCE -> {}
+            case CHOOSE_CARD -> {}
+            case ORGANIZE_RESOURCES -> {new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString());}//send to message handler
+            default -> {}
+        }
+    }
 
     public synchronized void buyFromMarAction(BuyMarketMessage classe) {
 

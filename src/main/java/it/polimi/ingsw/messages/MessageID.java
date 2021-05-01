@@ -36,6 +36,8 @@ public enum MessageID {
 
     RESOURCE_ORGANIZED,
 
+    ORGANIZE_RESOURCES,
+
     BUY_FROM_MARKET;
 
 

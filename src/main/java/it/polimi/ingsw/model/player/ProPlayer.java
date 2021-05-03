@@ -2,12 +2,14 @@ package it.polimi.ingsw.model.player;
 
 
 import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.SinglePlayerGame;
 import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
 import it.polimi.ingsw.model.cards.leader.BoostAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
+import it.polimi.ingsw.model.cards.leader.MarbleAbility;
 import it.polimi.ingsw.model.cards.leader.StorageAbility;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Buyable;
@@ -260,7 +262,7 @@ public class ProPlayer extends Player{
      * <p>Add faith points to the player if a red marble has been drawn.</p>
      * @param dim 'c' for column, 'r' for row.
      * @param index range 1-4 for column, 1-3 for row*/
-    public void buyFromMarket(char dim, int index, List<LeaderCard> leaders){
+    public void buyFromMarket(char dim, int index, List<BiElement<MarbleAbility, Integer>> leaders){
         turnType = 'm';
         if(dim!='c' && dim!='r'){
             throw new IllegalArgumentException("Chosen dimension must be either 'c' (column) or 'r' (row), instead it's "+dim);

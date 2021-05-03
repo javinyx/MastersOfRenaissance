@@ -53,6 +53,18 @@ public class RemoteView extends View implements Observer<MessageEnvelope> {
 
             switch (envelope.getMessageID()) {
 
+                // INITIALIZATION
+
+                case REGISTER_SINGLE -> controller.createSinglePlayerGame(gson.fromJson(envelope.getPayload(), String.class));
+
+                case REGISTER_MULTI -> controller.createMultiplayerGame(gson.fromJson(envelope.getPayload(), Integer.class));
+
+                // PLAYER REGISTRATION
+
+                case ADD_PLAYER_REQUEST -> controller.addPlayer(gson.fromJson(envelope.getPayload(), String.class));
+
+                // GAME PHASES
+
                 case BUY_FROM_MARKET -> controller.buyFromMarAction(gson.fromJson(envelope.getPayload(), BuyMarketMessage.class));
 
                 case PRODUCE -> controller.activateProdAction(gson.fromJson(envelope.getPayload(), ProduceMessage.class));
@@ -66,7 +78,7 @@ public class RemoteView extends View implements Observer<MessageEnvelope> {
             }
         }
 
-        else 
+        else
             update(new MessageEnvelope(MessageID.WRONG_PLAYER_REQUEST, "Request from wrong player"));
     }
 
@@ -77,8 +89,8 @@ public class RemoteView extends View implements Observer<MessageEnvelope> {
 
         sendMessage(gson.toJson(messageToSend));
 
-        if(messageToSend.getMessageID() != null && (messageToSend.getMessageID().equals(MessageID.PLAYER_WIN) || messageToSend.getMessageID().equals(MessageID.ABORT_GAME)))
-            System.out.println("gg");
+        if(messageToSend.getMessageID() != null && (messageToSend.getMessageID().equals(MessageID.PLAYER_WIN) || messageToSend.getMessageID().equals(MessageID.ABORT_GAME))) {
             //clientConnection.setActive(false);
+        }
     }
 }

@@ -20,7 +20,7 @@ class ControllerTest {
     @BeforeEach
     void setUp() {
 
-        controller.update(MessageID.STORE_RESOURCES);
+        controller.createMultiplayerGame(3);
 
     }
 

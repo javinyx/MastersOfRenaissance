@@ -42,10 +42,14 @@ public class Controller implements Observer<MessageID> {
 
     // GAME INITIALIZATION -------------------------------------------------------------------------------
 
-    public void createSinglePlayerGame(){
+    public void createSinglePlayerGame(String nickName){
         numPlayer = 1;
         game = new SinglePlayerGame();
         initializationPhase = false;
+
+        addPlayer(nickName);
+
+        update(MessageID.ACK);
     }
 
     public void createMultiplayerGame(int numPlayer){
@@ -54,17 +58,25 @@ public class Controller implements Observer<MessageID> {
             game = new MultiPlayerGame();
             createLobby();
         }
-        //else
-        //Message: TOO_MANY_PLAYERS
+        else
+            update(MessageID.TOO_MANY_PLAYERS);
+
+        //timer = new Timer(true);
+        //timer.schedule(new TurnTimerTask(this, game.getCurrPlayer().getTurnType()),turnTime*1000);
+
+        initializationPhase = false;
+        game.start(numPlayer);
+
+        update(MessageID.ACK);
     }
 
     public synchronized void addPlayer(String nickname){
         game.createPlayer(nickname);
+        update(MessageID.ACK);
         notifyAll();
     }
 
     private synchronized void createLobby(){
-
         while(game.getTotalPlayers() != numPlayer) {
             try {
                 wait();
@@ -72,12 +84,6 @@ public class Controller implements Observer<MessageID> {
                 e.printStackTrace();
             }
         }
-
-        //timer = new Timer(true);
-        //timer.schedule(new TurnTimerTask(this, game.getCurrPlayer().getTurnType()),turnTime*1000);
-
-        initializationPhase = false;
-        game.start(numPlayer);
     }
 
     // END GAME INITIALIZATION -----------------------------------------------------------------------------------------
@@ -103,8 +109,6 @@ public class Controller implements Observer<MessageID> {
         }
 
         update(MessageID.OK_BUY_MARKET);
-
-        game.updateEndTurn(game.getCurrPlayer());
 
     }
 
@@ -144,9 +148,7 @@ public class Controller implements Observer<MessageID> {
             basicOut = Optional.of(produce.getBasicOutput());
         }
         try {
-
             game.getCurrPlayer().startProduction(produce.getProductionCards(), produce.getResourcesWallet(), produce.getLeaderCards(), produce.getLeaderOutputs(), produce.isBasicProduction(), basicOut);
-
         }catch(BadStorageException e1){
             //notify that there's something wrong with the player storage
             update(MessageID.BAD_PRODUCTION_REQUEST);
@@ -207,7 +209,7 @@ public class Controller implements Observer<MessageID> {
         //CAPIRE QUALI MESSAGGI SONO INDIRIZZATI A TUTTI E QUALI NO
         /*
          MODIFICARE POI METODI MODEL:
-         ORGANIZE_RESOURCES
+         STORE_RESOURCE
          OK_PRODUCTION
          OK_BUY_PROD_CARD
          OK_BUY_MARKET
@@ -216,6 +218,14 @@ public class Controller implements Observer<MessageID> {
         switch(messageID) {
             case CHOOSE_RESOURCE -> { }
             case CHOOSE_CARD -> { }
+
+            case ACK -> remoteViews.get(0).update(new MessageEnvelope(messageID, "Operation confirmed"));
+
+            //INITIALIZATION
+
+            case TOO_MANY_PLAYERS -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "The number of player must be from 2 to 4"));
+
+            //GAME PHASES
 
             case CARD_NOT_AVAILABLE -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "The chosen card is not available"));
 

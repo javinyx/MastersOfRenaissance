@@ -1,12 +1,13 @@
-package it.polimi.ingsw.messages;
+package it.polimi.ingsw.messages.concreteMessage;
 
+import it.polimi.ingsw.messages.SimpleMessage;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.model.cards.leader.MarbleAbility;
 import it.polimi.ingsw.model.player.ProPlayer;
 
 import java.util.List;
 
-public class BuyMarketMessage extends SimpleMessage{
+public class BuyMarketMessage extends SimpleMessage {
     private final char dimension;
     private final int index;
     private final List<BiElement<MarbleAbility, Integer>> marbleUsage;

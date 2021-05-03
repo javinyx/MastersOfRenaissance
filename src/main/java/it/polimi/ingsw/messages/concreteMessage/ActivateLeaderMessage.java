@@ -1,8 +1,9 @@
-package it.polimi.ingsw.messages;
+package it.polimi.ingsw.messages.concreteMessage;
 
+import it.polimi.ingsw.messages.SimpleMessage;
 import it.polimi.ingsw.model.player.ProPlayer;
 
-public class ActivateLeaderMessage extends SimpleMessage{
+public class ActivateLeaderMessage extends SimpleMessage {
     private final int leaderId;
 
     public ActivateLeaderMessage(ProPlayer player, int leaderId){

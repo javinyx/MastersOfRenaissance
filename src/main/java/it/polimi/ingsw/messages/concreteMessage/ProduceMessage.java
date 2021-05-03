@@ -1,5 +1,6 @@
-package it.polimi.ingsw.messages;
+package it.polimi.ingsw.messages.concreteMessage;
 
+import it.polimi.ingsw.messages.SimpleMessage;
 import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.cards.leader.BoostAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
@@ -9,7 +10,7 @@ import it.polimi.ingsw.model.player.ProPlayer;
 
 import java.util.List;
 
-public class ProduceMessage extends SimpleMessage{
+public class ProduceMessage extends SimpleMessage {
     private final List<ConcreteProductionCard> productionCards;
     private final ResourcesWallet resourcesWallet;
     private final List<BoostAbility> leaderCards;

@@ -1,16 +1,21 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.messages.*;
+import it.polimi.ingsw.messages.concreteMessage.BuyMarketMessage;
+import it.polimi.ingsw.messages.concreteMessage.BuyProductionMessage;
+import it.polimi.ingsw.messages.concreteMessage.ProduceMessage;
+import it.polimi.ingsw.messages.concreteMessage.StoreResourcesMessage;
+import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Observer;
+import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.MultiPlayerGame;
 import it.polimi.ingsw.model.SinglePlayerGame;
-import it.polimi.ingsw.model.cards.leader.BoostAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
-import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
-import it.polimi.ingsw.model.market.Market;
+import it.polimi.ingsw.model.cards.leader.MarbleAbility;
 import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.player.BadStorageException;
+import it.polimi.ingsw.model.player.ProPlayer;
 
 import java.util.*;
 
@@ -103,58 +108,29 @@ public class Controller implements Observer<MessageID> {
 
     }
 
-    public void organizeResourceAction(List<Resource> resAquired){
-
-        //TODO: FARE QUESTO METODO MA COME FARLO NON LO SO, COCO HELP
-
-        List<Resource> organizedRes = new ArrayList<>(resAquired);
-
-        //in qualche modo devo avere questa lista e metterla in organizedRes
-
-        //organizedRes = cose organizzate dalla view
-        for (int i = 0; i < 6; i++) {
-            if (organizedRes.get(0) != null)
-                game.getCurrPlayer().storeInWarehouse(organizedRes.get(0), 1);
-
-            if (organizedRes.get(1) != null) {
-                game.getCurrPlayer().storeInWarehouse(organizedRes.get(1), 2);
-                game.getCurrPlayer().storeInWarehouse(organizedRes.get(2), 2);
-            }
-            if (organizedRes.get(3) != null) {
-                game.getCurrPlayer().storeInWarehouse(organizedRes.get(3), 3);
-                game.getCurrPlayer().storeInWarehouse(organizedRes.get(4), 3);
-                game.getCurrPlayer().storeInWarehouse(organizedRes.get(5), 3);
-            }
-        }
-
-    }
-
     public void buyProdCardAction(BuyProductionMessage buyProd) {
 
-            try {
-                game.getCurrPlayer().buyProductionCard(buyProd.getProdCard(), buyProd.getStack(), buyProd.getLeader(), buyProd.getResourcesWallet());
-            }
-            catch (BadStorageException e){
-                //player has no resources
-                update(MessageID.BAD_PAYMENT_REQUEST);
-            }
-            catch (IllegalArgumentException e){
-                //prodcard have no cards
-                update(MessageID.CARD_NOT_AVAILABLE);
-            }
-            catch(IndexOutOfBoundsException e){
-                //stack < 1 || stack > 3
-                update(MessageID.WRONG_STACK_CHOICE);
-            }
-            catch (RuntimeException e){
-                //prodcard has wrong level
-                update(MessageID.WRONG_LEVEL_REQUEST);
-            }
-
+        try {
+            game.getCurrPlayer().buyProductionCard(buyProd.getProdCard(), buyProd.getStack(), buyProd.getLeader(), buyProd.getResourcesWallet());
+        }
+        catch (BadStorageException e){
+            //player has no resources
+            update(MessageID.BAD_PAYMENT_REQUEST);
+        }
+        catch (IllegalArgumentException e){
+            //prodcard have no cards
+            update(MessageID.CARD_NOT_AVAILABLE);
+        }
+        catch(IndexOutOfBoundsException e){
+            //stack < 1 || stack > 3
+            update(MessageID.WRONG_STACK_CHOICE);
+        }
+        catch (RuntimeException e){
+            //prodcard has wrong level
+            update(MessageID.WRONG_LEVEL_REQUEST);
+        }
 
         update(MessageID.OK_BUY_PRODUCTION_CARD);
-
-        game.updateEndTurn(game.getCurrPlayer());
 
     }
 
@@ -181,7 +157,6 @@ public class Controller implements Observer<MessageID> {
 
         update(MessageID.OK_PRODUCTION);
 
-        game.updateEndTurn(game.getCurrPlayer());
     }
 
     // END TURN STRUCTURE ----------------------------------------------------------------------------------------------
@@ -190,12 +165,36 @@ public class Controller implements Observer<MessageID> {
 
     public void activateLeader(LeaderCard leaderCard){
 
-        if(game.getCurrPlayer().getLeaderCards().get(0).equals(leaderCard))
-            game.getCurrPlayer().activateLeaderCard(leaderCard);
-        else if (game.getCurrPlayer().getLeaderCards().get(1).equals(leaderCard))
-            game.getCurrPlayer().activateLeaderCard(leaderCard);
-        else
-            update(MessageID.CARD_NOT_AVAILABLE);
+        for (int i = 0; i < ProPlayer.getMaxNumExtraStorage(); i++) {
+            if(game.getCurrPlayer().getLeaderCards().get(i).equals(leaderCard)) {
+                game.getCurrPlayer().activateLeaderCard(leaderCard);
+                break;
+            }
+        }
+
+        update(MessageID.CARD_NOT_AVAILABLE);
+    }
+
+    public void organizeResourceAction(List<BiElement<Resource, Storage>> message){
+
+        for (BiElement<Resource, Storage> element: message ) {
+
+            switch (element.getV()){
+
+                case WAREHOUSE_SMALL -> game.getCurrPlayer().storeInWarehouse(element.getT(), 1);
+                case WAREHOUSE_MID -> game.getCurrPlayer().storeInWarehouse(element.getT(), 2);
+                case WAREHOUSE_LARGE -> game.getCurrPlayer().storeInWarehouse(element.getT(), 3);
+
+                case EXTRA1 -> game.getCurrPlayer().storeInExtraStorage(element.getT(), game.getCurrPlayer().getExtraStorage().get(0));
+                case EXTRA2 -> game.getCurrPlayer().storeInExtraStorage(element.getT(), game.getCurrPlayer().getExtraStorage().get(1));
+
+                default -> update(MessageID.BAD_STORAGE_REQUEST);
+            }
+        }
+    }
+
+    public String getNick(){
+        return game.getCurrPlayer().getNickname();
     }
 
     // END TURN UTILITIES ----------------------------------------------------------------------------------------------
@@ -214,20 +213,19 @@ public class Controller implements Observer<MessageID> {
          OK_BUY_MARKET
          */
 
-        update(MessageID.OK_BUY_MARKET);
-
         switch(messageID) {
             case CHOOSE_RESOURCE -> { }
             case CHOOSE_CARD -> { }
 
-            case ORGANIZE_RESOURCES -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
+            case CARD_NOT_AVAILABLE -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "The chosen card is not available"));
 
             case BAD_PRODUCTION_REQUEST -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "There something wrong with the storage"));
-            case CARD_NOT_AVAILABLE -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "The chosen card is not available"));
             case BAD_PAYMENT_REQUEST -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "don't have enough resources"));
+            case BAD_DIMENSION_REQUEST -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "The dimension is wrong"));
             case WRONG_STACK_CHOICE -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "Stacks are from 1 to 3/4"));
             case WRONG_LEVEL_REQUEST ->  remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "The level of the card is wrong"));
-            case BAD_DIMENSION_REQUEST -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "The dimension is wrong"));
+
+            case STORE_RESOURCES -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
 
             case OK_BUY_MARKET -> {
                 for (int i = 0; i < game.getTotalPlayers(); i++)

@@ -3,16 +3,20 @@ package it.polimi.ingsw.view;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import it.polimi.ingsw.controller.Controller;
-import it.polimi.ingsw.messages.BuyMarketMessage;
+import it.polimi.ingsw.messages.concreteMessage.BuyMarketMessage;
 import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
-import it.polimi.ingsw.messages.ProduceMessage;
+import it.polimi.ingsw.messages.concreteMessage.BuyProductionMessage;
+import it.polimi.ingsw.messages.concreteMessage.ProduceMessage;
+import it.polimi.ingsw.messages.concreteMessage.StoreResourcesMessage;
+import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Observer;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
+import it.polimi.ingsw.model.cards.leader.MarbleAbility;
 import it.polimi.ingsw.model.market.Resource;
 
-import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 
 /*
 **guardare il tipo del paylod della message envelop
@@ -45,18 +49,25 @@ public class RemoteView extends View implements Observer<MessageEnvelope> {
 
     public void readMessageFromClient(MessageEnvelope envelope){
 
-        switch (envelope.getMessageID()){
-            case BUY_FROM_MARKET -> controller.buyFromMarAction(gson.fromJson(envelope.getPayload(), BuyMarketMessage.class));
+        if (controller.getNick().equals(getNickname())) {
 
-            case PRODUCE ->controller.activateProdAction(gson.fromJson(envelope.getPayload(), ProduceMessage.class));
+            switch (envelope.getMessageID()) {
 
-            case RESOURCE_ORGANIZED -> controller.organizeResourceAction(gson.fromJson(envelope.getPayload(), new TypeToken<ArrayList<Resource>>(){}.getType()));
+                case BUY_FROM_MARKET -> controller.buyFromMarAction(gson.fromJson(envelope.getPayload(), BuyMarketMessage.class));
 
-            case ACTIVATE_LEADER -> controller.activateLeader(gson.fromJson(envelope.getPayload(), LeaderCard.class));
+                case PRODUCE -> controller.activateProdAction(gson.fromJson(envelope.getPayload(), ProduceMessage.class));
 
+                case BUY_PRODUCTION_CARD -> controller.buyProdCardAction(gson.fromJson(envelope.getPayload(), BuyProductionMessage.class));
 
+                case ACTIVATE_LEADER -> controller.activateLeader(gson.fromJson(envelope.getPayload(), LeaderCard.class));
 
+                case STORE_RESOURCES -> controller.organizeResourceAction(gson.fromJson(envelope.getPayload(), new TypeToken<ArrayList<BiElement<MarbleAbility, Integer>>>() {}.getType()));
+
+            }
         }
+
+        else 
+            update(new MessageEnvelope(MessageID.WRONG_PLAYER_REQUEST, "Request from wrong player"));
     }
 
     // MESSAGE SENDER --------------------------------------------------------------------------------------------------

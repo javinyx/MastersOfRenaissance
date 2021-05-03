@@ -6,21 +6,19 @@ public enum MessageID {
 
     LEADER_ACTIVATED,
 
-    ACTIVATE_LEADER,
 
-    CHOOSE_CARD,
 
-    CHOOSE_RESOURCE,
+
 
     CHOOSE_TURN_TYPE, // nel senso che quando il giocatore riceve questo messaggio è libero di cliccare su una delle 3 zone: zona mercato, zona produzione, zona acquisto carte produzione, e di conseguenza il server saprà le sue intenzioni
 
-    CARD_NOT_AVAILABLE,
+
 
     CHOOSE_PLACEMENTS_IN_WAREHOUSE, // per quando il giocatore compra dal mercato e deve disporre ogni singola risorsa nella warehouse
 
     BAD_STORAGE_REQUEST, // quando sbaglia a scegliere la posizione della risorsa nella warehouse o leader, oppure se richiede di metterla nella lootchest
 
-    BAD_PRODUCTION_REQUEST, //quando viene attivata la produzione ma nel model viene sollevata l'eccezione di BadStorageException e quindi non ha completato la richiesta
+     //quando viene attivata la produzione ma nel model viene sollevata l'eccezione di BadStorageException e quindi non ha completato la richiesta
 
     TURN_OVER,
 
@@ -28,31 +26,60 @@ public enum MessageID {
 
     PLAYER_LOSE,
 
-    PLAYER_WIN,
+
 
     REGISTER_SINGLE,
 
-    ABORT_GAME,
+
 
     REGISTER_MULTI,
 
     RESOURCE_ORGANIZED,
 
-    ORGANIZE_RESOURCES,
 
-    STORE_RESOURCES,
 
-    PRODUCE,
 
-    OK_PRODUCTION,
+
+
+
+    //PLAYERS REGISTRATION
+    CHOOSE_CARD,
+
+    // GAME INITIALIZATION
+    ABORT_GAME,
+    PLAYER_WIN,
+
+    // ERRORS / EXCEPTIONS
+
+    BAD_DIMENSION_REQUEST,
+    BAD_PRODUCTION_REQUEST,
     BAD_PAYMENT_REQUEST,
     WRONG_STACK_CHOICE,
     WRONG_LEVEL_REQUEST,
-    OK_BUY_PRODUCTION_CARD,
-    BAD_DIMENSION_REQUEST,
-    OK_BUY_MARKET,
+    WRONG_PLAYER_REQUEST,
 
-    BUY_FROM_MARKET;
+    CARD_NOT_AVAILABLE,
+
+    // TURNS UTILS
+    STORE_RESOURCES,    // ORGANIZZAZIONE RISORSE
+    ACTIVATE_LEADER,    // ACTIVE LEADER CARD
+
+    CHOOSE_RESOURCE,
+
+
+    // BUY PRODUCTION CARD
+    BUY_PRODUCTION_CARD,
+    OK_BUY_PRODUCTION_CARD,
+
+    // START PRODUCTION
+    PRODUCE,
+    OK_PRODUCTION,
+
+    // BUY FROM MARKET
+    BUY_FROM_MARKET,
+    OK_BUY_MARKET
+
+
 
 
     }

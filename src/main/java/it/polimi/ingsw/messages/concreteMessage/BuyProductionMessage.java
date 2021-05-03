@@ -1,4 +1,4 @@
-package it.polimi.ingsw.messages;
+package it.polimi.ingsw.messages.concreteMessage;
 
 import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;

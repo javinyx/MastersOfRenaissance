@@ -5,7 +5,7 @@ import it.polimi.ingsw.client.MessageToServerHandler;
 import it.polimi.ingsw.client.ViewInterface;
 import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
-import it.polimi.ingsw.messages.ProduceMessage;
+import it.polimi.ingsw.messages.concreteMessage.ProduceMessage;
 import it.polimi.ingsw.messages.SimpleMessage;
 
 

@@ -1,5 +1,6 @@
-package it.polimi.ingsw.messages;
+package it.polimi.ingsw.messages.concreteMessage;
 
+import it.polimi.ingsw.messages.SimpleMessage;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.market.Resource;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**Players inform the server of how they wish to place the resources into the different types of storage.*/
-public class StoreResourcesMessage extends SimpleMessage{
+public class StoreResourcesMessage extends SimpleMessage {
     List<BiElement<Resource, Storage>> placements;
 
     public StoreResourcesMessage(ProPlayer player){

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MultiPlayerGame extends Game implements Observer {
+public class MultiPlayerGame extends Game implements ModelObserver {
     protected List<ProPlayer> players;
     protected List<ProPlayer> activePlayers;
 
@@ -62,12 +62,8 @@ public class MultiPlayerGame extends Game implements Observer {
         return winner;
     }
 
-    /**
-     * Create the player with also the initial extra resources
-     *
-     * @param nickname the nickname of the player
-     */
-
+    /**Create the player with also the initial extra resources.
+     * @param nickname the nickname of the player*/
     public boolean createPlayer(String nickname){
         if(totalPlayers>3){
             return false;//too many players
@@ -83,19 +79,17 @@ public class MultiPlayerGame extends Game implements Observer {
         ProPlayer p = new ProPlayer(nickname, totalPlayers, this);
         players.add(p);
 
-        switch(p.getTurnID()){
-            case 2:
-                p.chooseResource();
-                break;
-            case 3:
+        switch (p.getTurnID()) {
+            case 2 -> p.chooseResource();
+            case 3 -> {
                 p.moveOnBoard(1);
                 p.chooseResource();
-                break;
-            case 4:
+            }
+            case 4 -> {
                 p.moveOnBoard(1);
                 p.chooseResource();
                 p.chooseResource();
-                break;
+            }
         }
 
         p.registerObserver(this);
@@ -136,8 +130,8 @@ public class MultiPlayerGame extends Game implements Observer {
         }
     }
 
-    /**When {@player} reaches the end of the faith track or buys their 7th production card, call this method to finalize the game.
-     * It will let all the players on the {@player}'s left side play their last turn. After that, the winner will be chosen
+    /**When {@code player} reaches the end of the faith track or buys their 7th production card, call this method to finalize the game.
+     * It will let all the players on the {@code player}'s left side play their last turn. After that, the winner will be chosen
      * based on how many Victory Points they've cumulated during the whole game. Sometimes a draw occurs: if this
      * is the case, then the winner will be the one with more resources between the max-points-players.
      * @param player First player to reach the end of the track or to buy their 7th production card*/

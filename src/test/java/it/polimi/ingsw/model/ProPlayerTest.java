@@ -41,7 +41,7 @@ class ProPlayerTest extends PlayerTest {
         p1 = new ProPlayer("Anacleto", 1, g1);
         p1.registerObserver(g1);
         p2 = new ProPlayer("Coco", 1, g2);
-        p2.registerObserver((Observer)g2);
+        p2.registerObserver((ModelObserver)g2);
         p3 = new ProPlayer("Noob", 2, g2);
         p3.registerObserver(g2);
     }

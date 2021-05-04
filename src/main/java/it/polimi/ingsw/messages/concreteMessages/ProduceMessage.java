@@ -1,9 +1,8 @@
-package it.polimi.ingsw.messages.concreteMessage;
+package it.polimi.ingsw.messages.concreteMessages;
 
 import it.polimi.ingsw.messages.SimpleMessage;
 import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.cards.leader.BoostAbility;
-import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.player.ProPlayer;

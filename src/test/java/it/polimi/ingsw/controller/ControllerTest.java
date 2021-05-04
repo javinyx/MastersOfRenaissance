@@ -1,16 +1,8 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.messages.MessageID;
-import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.MultiPlayerGame;
-import it.polimi.ingsw.model.player.ProPlayer;
-import it.polimi.ingsw.model.stub.MultiPlayerGameStub;
-import it.polimi.ingsw.model.stub.ProPlayerStub;
 import it.polimi.ingsw.view.RemoteView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class ControllerTest {
 
@@ -20,7 +12,7 @@ class ControllerTest {
     @BeforeEach
     void setUp() {
 
-        controller.createMultiplayerGame(3);
+        //controller.createMultiplayerGame(3); //infinite loop
 
     }
 

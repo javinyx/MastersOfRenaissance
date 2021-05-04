@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-public abstract class Game implements Observer{
+public abstract class Game implements ModelObserver {
     protected Market market;
     protected Player winner;
     protected List<Deck> productionDecks;
@@ -24,11 +24,14 @@ public abstract class Game implements Observer{
     protected Controller controller; // bisogna farselo passare dal Controller in fase di costruzione di SinglePlayerGame o Multi
 
     public abstract void start(int numPlayers);
-    public Controller getControllerObserver(){return controller;}
     public abstract boolean createPlayer(String nickname);
+
+    //------------------GETTERS------------------
+    public Controller getControllerObserver(){return controller;}
     public Market getMarket(){
         return market;
     }
+
     /**Returns the list of every ProductionCard still in Production Deck */
     public List<ConcreteProductionCard> getAllProductionDecks(){
         List<Card> availableCards = new ArrayList<>();
@@ -40,12 +43,15 @@ public abstract class Game implements Observer{
                 .collect(Collectors.toList());
     }
 
+    /**@return one of the 12 production deck. {@code numDeck} is an index: between 0 and 11.
+     * It can return an empty deck, if that deck has already been used up.*/
     public Deck getProductionDeck(int numDeck){
         if(numDeck<0 || numDeck>=12){
             return null;
         }
         return productionDecks.get(numDeck);
     }
+
     /**Returns the list of ProductionCards that can be bought from each Production Deck*/
     public List<ConcreteProductionCard> getBuyableProductionCards(){
         List<Card> availableCards = new ArrayList<>();

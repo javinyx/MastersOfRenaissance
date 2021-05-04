@@ -14,7 +14,7 @@ public enum MessageID {
 
 
 
-    CHOOSE_PLACEMENTS_IN_WAREHOUSE, // per quando il giocatore compra dal mercato e deve disporre ogni singola risorsa nella warehouse
+    CHOOSE_PLACEMENTS_IN_STORAGE, // per quando il giocatore compra dal mercato e deve disporre ogni singola risorsa nella warehouse
 
     BAD_STORAGE_REQUEST, // quando sbaglia a scegliere la posizione della risorsa nella warehouse o leader, oppure se richiede di metterla nella lootchest
 
@@ -31,7 +31,7 @@ public enum MessageID {
 
     //PLAYERS REGISTRATION
     ADD_PLAYER_REQUEST,
-    CHOOSE_CARD,
+    CHOOSE_LEADER_CARDS,
     TOO_MANY_PLAYERS,
 
     // GAME INITIALIZATION
@@ -40,13 +40,16 @@ public enum MessageID {
     ABORT_GAME,
     PLAYER_WIN,
 
-    // ERRORS / EXCEPTIONS
+    // ERRORS / EXCEPTIONS -> grouping them into INFO_MESSAGE
+
     BAD_DIMENSION_REQUEST,
     BAD_PRODUCTION_REQUEST,
     BAD_PAYMENT_REQUEST,
     WRONG_STACK_CHOICE,
     WRONG_LEVEL_REQUEST,
     WRONG_PLAYER_REQUEST,
+
+    INFO,
 
     CARD_NOT_AVAILABLE,
 

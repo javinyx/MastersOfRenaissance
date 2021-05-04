@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class SinglePlayerGame extends Game implements Observer{
+public class SinglePlayerGame extends Game implements ModelObserver {
     private Market market;
 
     private ProPlayer player;

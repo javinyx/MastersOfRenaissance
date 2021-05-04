@@ -1,4 +1,4 @@
-package it.polimi.ingsw.messages.concreteMessage;
+package it.polimi.ingsw.messages.concreteMessages;
 
 import it.polimi.ingsw.messages.SimpleMessage;
 import it.polimi.ingsw.model.player.ProPlayer;

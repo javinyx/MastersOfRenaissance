@@ -1,10 +1,8 @@
-package it.polimi.ingsw.messages.concreteMessage;
+package it.polimi.ingsw.messages.concreteMessages;
 
 import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
-
-import java.util.List;
 
 public class BuyProductionMessage {
 

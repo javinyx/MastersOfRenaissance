@@ -13,7 +13,7 @@ class PlayerTest {
     @BeforeEach
     void setUp() {
        player = new Player("Gatto", singleGame);
-       player.registerObserver((Observer)singleGame);
+       player.registerObserver((ModelObserver)singleGame);
     }
 
     @Test
@@ -39,10 +39,10 @@ class PlayerTest {
 
     @Test
     void registerObserver() {
-        player.registerObserver((Observer)singleGame);
+        player.registerObserver((ModelObserver)singleGame);
         assertSame(singleGame, player.getObserver(), "Got singlePlayer game wrong");
-        player.registerObserver((Observer)multiGame);
-        assertSame(multiGame, player.getObserver(), "Observer substitution: cannot go from single to multi");
+        player.registerObserver((ModelObserver)multiGame);
+        assertSame(multiGame, player.getObserver(), "ModelObserver substitution: cannot go from single to multi");
     }
 
     @Test

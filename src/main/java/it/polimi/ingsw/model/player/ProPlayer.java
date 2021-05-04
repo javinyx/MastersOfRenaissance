@@ -256,6 +256,7 @@ public class ProPlayer extends Player{
         //if we are here, then the cost has been payed completely
         game.removeFromProdDeck(card);
         prodStack.addFirst(card);
+        observer.updateEndTurn(this);
     }
 //----------------------------------------MARKET-------------------------------
     /**Obtains the resources chosen from market by column or row.
@@ -728,6 +729,8 @@ public class ProPlayer extends Player{
 
         //Adding all outputs produced
         lootChest.addResources(tempProduction);
+
+        observer.updateEndTurn(this);
     }
 
     /**It resets Warehouse, Lootchest and Storage Cards substituting them with all the backups passed

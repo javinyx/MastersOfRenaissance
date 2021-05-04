@@ -1,14 +1,14 @@
 package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.ModelObserver;
 import it.polimi.ingsw.model.Observable;
-import it.polimi.ingsw.model.Observer;
 
 public class Player implements Observable {
 
     protected String nickname;
     protected int currPos;
-    protected Observer observer;
+    protected ModelObserver observer;
     protected Game game;
 
     public Player(String nickname, Game game){
@@ -71,11 +71,11 @@ public class Player implements Observable {
     }
 
 
-    public void registerObserver(Observer observer){
+    public void registerObserver(ModelObserver observer){
         this.observer = observer;
     }
 
-    public Observer getObserver(){
+    public ModelObserver getObserver(){
         return observer;
     }
 

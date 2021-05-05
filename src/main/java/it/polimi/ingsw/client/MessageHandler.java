@@ -30,8 +30,8 @@ public class MessageHandler {
             case CHOOSE_RESOURCE -> {view.showMessage(gson.fromJson(envelope.getPayload(), ChooseResourceMessage.class));}
             case CHOOSE_PLACEMENTS_IN_STORAGE -> {view.showMessage(gson.fromJson(envelope.getPayload(), ChoosePlacementsInStorageMessage.class));}
             case CHOOSE_LEADER_CARDS -> {view.showMessage(gson.fromJson(envelope.getPayload(), ChooseLeaderCardsMessage.class));}
-            case ACK -> {/*boh?*/}
-            case INFO -> {view.showMessage(gson.fromJson(envelope.getPayload(), InfoMessage.class));}
+            case ACK -> {/*boh?*/}  // questo serve a chi gestisce i metodi di sapere che tutto è andato a buon fine vedi tipo riga 73 nel controller
+            case INFO -> {view.showMessage(gson.fromJson(envelope.getPayload(), InfoMessage.class));} // questa cosa non funzoina devi fare tutti i casi di exception e metterli nella classe info, non posso mandare tanti messaggi di errore tutti con lo stesso message id
             default -> {/*messageID not recognised*/}
         }
     }

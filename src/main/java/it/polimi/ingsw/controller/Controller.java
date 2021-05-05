@@ -214,10 +214,8 @@ public class Controller implements Observer<MessageID> {
          */
 
         switch(messageID) {
-            case CHOOSE_RESOURCE -> { }
-            case CHOOSE_LEADER_CARDS ->  { }
 
-            case ACK -> remoteViews.get(0).update(new MessageEnvelope(messageID, "Operation confirmed"));
+            case ACK -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "Operation confirmed"));
 
             //INITIALIZATION
 
@@ -232,6 +230,9 @@ public class Controller implements Observer<MessageID> {
             case BAD_DIMENSION_REQUEST -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "The dimension is wrong"));
             case WRONG_STACK_CHOICE -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "Stacks are from 1 to 3/4"));
             case WRONG_LEVEL_REQUEST ->  remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "The level of the card is wrong"));
+
+            case CHOOSE_LEADER_CARDS -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "You have to choose a leader card")); //non usata
+            case CHOOSE_RESOURCE -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "You have to choose a resources"));       //non usata
 
             case STORE_RESOURCES -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
 
@@ -248,9 +249,7 @@ public class Controller implements Observer<MessageID> {
                   //  remoteViews.get(i).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
                 }
 
-
-
-            default -> throw new IllegalStateException("Unexpected value: " + messageID);
+            default -> System.out.println("No no no");
         }
     }
 

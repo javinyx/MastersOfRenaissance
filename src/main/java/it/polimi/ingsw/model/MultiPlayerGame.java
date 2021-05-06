@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 
+import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.market.Market;
@@ -80,16 +81,12 @@ public class MultiPlayerGame extends Game implements ModelObserver {
         players.add(p);
 
         switch (p.getTurnID()) {
-            case 2 -> p.chooseResource();
-            case 3 -> {
+            case 2 -> controller.update(MessageID.CHOOSE_RESOURCE);
+            case 3, 4 -> {
                 p.moveOnBoard(1);
-                p.chooseResource();
+                controller.update(MessageID.CHOOSE_RESOURCE);
             }
-            case 4 -> {
-                p.moveOnBoard(1);
-                p.chooseResource();
-                p.chooseResource();
-            }
+
         }
 
         p.registerObserver(this);
@@ -97,6 +94,11 @@ public class MultiPlayerGame extends Game implements ModelObserver {
         return true;
     }
 
+    /**Let the player choose an extra resource to add during initialization phase.*/
+    public void chooseResource(){
+        //wait for the player to choose a resource
+        //then add to warehouse
+    }
     public List<ProPlayer> getPlayers() {
         return players;
     }

@@ -314,11 +314,7 @@ public class ProPlayer extends Player{
                 observer.alertDiscardResource(this);
         }
     }
-    /**Let the player choose an extra resource to add during initialization phase.*/
-    public void chooseResource(){
-        //wait for the player to choose a resource
-        //then add to warehouse
-    }
+
 
     /**Place the resource in the specified warehouse tier.
      * @param resource resource the player wants to store

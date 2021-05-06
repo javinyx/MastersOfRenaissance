@@ -46,7 +46,7 @@ public class RemoteView extends View implements Observer<MessageEnvelope> {
 
     public void readMessageFromClient(MessageEnvelope envelope){
 
-        if (controller.getNick().equals(getNickname())) {
+        //if (controller.getNick().equals(getNickname())) {
 
             switch (envelope.getMessageID()) {
 
@@ -73,10 +73,11 @@ public class RemoteView extends View implements Observer<MessageEnvelope> {
                 case STORE_RESOURCES -> controller.organizeResourceAction(gson.fromJson(envelope.getPayload(), new TypeToken<ArrayList<BiElement<MarbleAbility, Integer>>>() {}.getType()));
 
             }
-        }
+        /*}
 
         else
             update(new MessageEnvelope(MessageID.WRONG_PLAYER_REQUEST, "Request from wrong player"));
+    */
     }
 
     // MESSAGE SENDER --------------------------------------------------------------------------------------------------

@@ -3,6 +3,7 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.messages.*;
 import it.polimi.ingsw.messages.concreteMessages.BuyMarketMessage;
 import it.polimi.ingsw.messages.concreteMessages.BuyProductionMessage;
+import it.polimi.ingsw.messages.concreteMessages.ChooseResourceMessage;
 import it.polimi.ingsw.messages.concreteMessages.ProduceMessage;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Observer;
@@ -220,6 +221,12 @@ public class Controller implements Observer<MessageID> {
             //INITIALIZATION
 
             case TOO_MANY_PLAYERS -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "The number of player must be from 2 to 4"));
+            case CHOOSE_RESOURCE -> {
+                if (game.getCurrPlayer().getTurnID() == 4)
+                    remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "2"));
+                else
+                    remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "1"));
+            }
 
             //GAME PHASES
 
@@ -232,7 +239,6 @@ public class Controller implements Observer<MessageID> {
             case WRONG_LEVEL_REQUEST ->  remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "The level of the card is wrong"));
 
             case CHOOSE_LEADER_CARDS -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "You have to choose a leader card")); //non usata
-            case CHOOSE_RESOURCE -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "You have to choose a resources"));       //non usata
 
             case STORE_RESOURCES -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
 

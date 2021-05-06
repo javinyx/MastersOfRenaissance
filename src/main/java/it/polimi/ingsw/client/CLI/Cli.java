@@ -10,8 +10,8 @@ public class Cli extends ViewInterface {
 
 
     @Override
-    public void showMessage(ChooseResourceMessage msg) {
-        System.out.println("Choose no." + msg.getQuantity() + " resources");
+    public void showLeaderMessage(int msg) {
+        System.out.println("Choose no." + msg + " resources");
     }
 
     @Override

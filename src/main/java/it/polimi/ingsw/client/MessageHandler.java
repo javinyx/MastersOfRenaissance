@@ -27,7 +27,7 @@ public class MessageHandler {
 
     public void readMessageFromServer(MessageEnvelope envelope){
         switch(envelope.getMessageID()){
-            case CHOOSE_RESOURCE -> {view.showMessage(gson.fromJson(envelope.getPayload(), ChooseResourceMessage.class));}
+            case CHOOSE_RESOURCE -> view.showLeaderMessage(gson.fromJson(envelope.getPayload(), Integer.class)); // quella iniziale
             case CHOOSE_PLACEMENTS_IN_STORAGE -> {view.showMessage(gson.fromJson(envelope.getPayload(), ChoosePlacementsInStorageMessage.class));}
             case CHOOSE_LEADER_CARDS -> {view.showMessage(gson.fromJson(envelope.getPayload(), ChooseLeaderCardsMessage.class));}
             case ACK -> {/*boh?*/}  // questo serve a chi gestisce i metodi di sapere che tutto è andato a buon fine vedi tipo riga 73 nel controller

@@ -2,14 +2,16 @@ package it.polimi.ingsw.messages.concreteMessages;
 
 import it.polimi.ingsw.model.ResourcesWallet;
 
+import java.util.List;
+
 public class BuyProductionMessage {
 
     private int prodCardId;
     private int stack;
-    private int leaderId;
+    private List<Integer> leaderId;
     private ResourcesWallet resourcesWallet;
 
-    public BuyProductionMessage(int prodCardId, int stack, int leaderId, ResourcesWallet resourcesWallet) {
+    public BuyProductionMessage(int prodCardId, int stack, List<Integer> leaderId, ResourcesWallet resourcesWallet) {
         this.prodCardId = prodCardId;
         this.stack = stack;
         this.leaderId = leaderId;
@@ -24,7 +26,7 @@ public class BuyProductionMessage {
         return stack;
     }
 
-    public int getLeader() {
+    public List<Integer> getLeader() {
         return leaderId;
     }
 

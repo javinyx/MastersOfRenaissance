@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.cards.production;
 
+import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.MultiPlayerGame;
 import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.player.ProPlayer;
@@ -12,10 +13,11 @@ class ConcreteProductionCardTest {
 
     MultiPlayerGame game;
     ProPlayer player;
+    Controller controller = new Controller();
 
     @BeforeEach
     public void testSetUp(){
-        game = new MultiPlayerGame();
+        game = new MultiPlayerGame(controller);
         player = new ProPlayer("ale", 1, game);
     }
 

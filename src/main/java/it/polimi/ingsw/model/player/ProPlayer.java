@@ -164,10 +164,12 @@ public class ProPlayer extends Player{
      * @param resourcesWallet resources distributed among different types of storage as the player wish to spend them*/
     public void buyProductionCard(ConcreteProductionCard card, int stack, List<LeaderCard> leaders, ResourcesWallet resourcesWallet)
             throws BadStorageException{
+
         List<ConcreteProductionCard> availableProdCards = game.getBuyableProductionCards();
         Warehouse warBackup = new Warehouse(warehouse);
         LootChest lootBackup = new LootChest(lootChest);
         List<StorageAbility> extraStorageBackup = null;
+
         if(resourcesWallet==null || resourcesWallet.isEmpty()){
             throw new BadStorageException();
         }

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.cards.leader;
 
+import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.MultiPlayerGame;
 import it.polimi.ingsw.model.player.ProPlayer;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,10 +11,11 @@ class StorageAbilityTest {
     MultiPlayerGame game;
     ProPlayer bubu;
     ProPlayer javin;
+    Controller controller = new Controller();
 
     @BeforeEach
     public void testSetUp(){
-        game = new MultiPlayerGame();
+        game = new MultiPlayerGame(controller);
         bubu = new ProPlayer("Bubu", 1, game);
         javin = new ProPlayer("Javin", 2, game);
     }

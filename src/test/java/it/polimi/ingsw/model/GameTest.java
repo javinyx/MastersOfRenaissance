@@ -56,13 +56,14 @@ class GameTest{
         for(ConcreteProductionCard card : cards){
             assertTrue(gs1.getAllProductionDecks().contains(card));
         }
-        assertTrue(gs1.removeFromProdDeck(cards.get(0)));
+        assertTrue(gs1.removeFromProdDeck(cards.get(0)) > -1);
+
         assertEquals(12, gs1.getBuyableProductionCards().size());
         assertEquals(ColorEnum.GREEN, gs1.getBuyableProductionCards().get(0).getColor());
         for(int i=0; i<3; i++){
             cards = gs1.getBuyableProductionCards();
             System.out.println(cards.get(0));
-            assertTrue(gs1.removeFromProdDeck(cards.get(0)));
+            assertTrue(gs1.removeFromProdDeck(cards.get(0)) > -1);
             assertEquals(ColorEnum.GREEN, cards.get(0).getColor());
         }
         //1st deck is over

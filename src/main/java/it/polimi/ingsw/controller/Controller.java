@@ -1,17 +1,16 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.messages.*;
-import it.polimi.ingsw.messages.concreteMessages.BuyMarketMessage;
-import it.polimi.ingsw.messages.concreteMessages.BuyProductionMessage;
-import it.polimi.ingsw.messages.concreteMessages.ChooseResourceMessage;
-import it.polimi.ingsw.messages.concreteMessages.ProduceMessage;
+import it.polimi.ingsw.messages.concreteMessages.*;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Observer;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.MultiPlayerGame;
 import it.polimi.ingsw.model.SinglePlayerGame;
+import it.polimi.ingsw.model.cards.leader.DiscountAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
+import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.player.BadStorageException;
 import it.polimi.ingsw.model.player.ProPlayer;
@@ -43,7 +42,7 @@ public class Controller implements Observer<MessageID> {
 
     public void createSinglePlayerGame(String nickName){
         numPlayer = 1;
-        game = new SinglePlayerGame();
+        game = new SinglePlayerGame(this);
         initializationPhase = false;
 
         addPlayer(nickName);
@@ -54,7 +53,7 @@ public class Controller implements Observer<MessageID> {
     public void createMultiplayerGame(int numPlayer){
         if (numPlayer > 1 && numPlayer < 5) {
             this.numPlayer = numPlayer;
-            game = new MultiPlayerGame();
+            game = new MultiPlayerGame(this);
             createLobby();
         }
         else
@@ -93,7 +92,7 @@ public class Controller implements Observer<MessageID> {
 
     public synchronized void buyFromMarAction(BuyMarketMessage buyMark) {
 
-        //TODO: MODIFICARE IL MODEL PER ADATTARE LA BIFUNCTION E TOGLIERE LA DIPENDENZA DAL CONTROLLER PER I LEADER
+        //TODO: MODIFICARE IL MODEL PER ADATTARE LA BIELEMET E TOGLIERE LA DIPENDENZA DAL CONTROLLER PER I LEADER
         try {
             game.getCurrPlayer().buyFromMarket(buyMark.getDimension(), buyMark.getIndex(), buyMark.getMarbleUsage());
         }
@@ -107,14 +106,43 @@ public class Controller implements Observer<MessageID> {
             update(MessageID.CARD_NOT_AVAILABLE);
         }
 
-        update(MessageID.OK_BUY_MARKET);
+        update(MessageID.UPDATE);
+
+        game.updateEndTurn(game.getCurrPlayer());
 
     }
 
     public void buyProdCardAction(BuyProductionMessage buyProd) {
 
+        UpdateMessage msg;
+
         try {
-            game.getCurrPlayer().buyProductionCard(buyProd.getProdCard(), buyProd.getStack(), buyProd.getLeader(), buyProd.getResourcesWallet());
+
+            ConcreteProductionCard card = null;
+            List<LeaderCard> leaderCards = new ArrayList<>();
+
+            for (int i = 0; i < 12; i++) {
+                if (game.getBuyableProductionCards().get(i).getId() == buyProd.getProdCardId())
+                    card = game.getBuyableProductionCards().get(i);
+                else {
+                    update(MessageID.CARD_NOT_AVAILABLE);
+                    return;
+                }
+            }
+
+            for (int i = 0; i < buyProd.getLeader().size(); i++) {
+
+                if (game.getCurrPlayer().getLeaderCards().get(0).getId() == buyProd.getLeader().get(i))
+                    leaderCards.add(game.getCurrPlayer().getLeaderCards().get(0));
+                if (game.getCurrPlayer().getLeaderCards().get(1).getId() == buyProd.getLeader().get(i))
+                    leaderCards.add(game.getCurrPlayer().getLeaderCards().get(1));
+
+            }
+
+
+            if (card != null)
+                game.getCurrPlayer().buyProductionCard(card, buyProd.getStack(), leaderCards, buyProd.getResourcesWallet());
+
         }
         catch (BadStorageException e){
             //player has no resources
@@ -133,7 +161,11 @@ public class Controller implements Observer<MessageID> {
             update(MessageID.WRONG_LEVEL_REQUEST);
         }
 
-        update(MessageID.OK_BUY_PRODUCTION_CARD);
+        //msg = new UpdateMessage(game.getCurrPlayer(), game.getBuyableProductionCards().get(index));
+
+        update(MessageID.UPDATE);
+
+        game.updateEndTurn(game.getCurrPlayer());
 
     }
 
@@ -156,7 +188,9 @@ public class Controller implements Observer<MessageID> {
             update(MessageID.CARD_NOT_AVAILABLE);
         }
 
-        update(MessageID.OK_PRODUCTION);
+        update(MessageID.UPDATE);
+
+        game.updateEndTurn(game.getCurrPlayer());
 
     }
 
@@ -205,13 +239,9 @@ public class Controller implements Observer<MessageID> {
     @Override
     public void update(MessageID messageID){
 
-        //CAPIRE QUALI MESSAGGI SONO INDIRIZZATI A TUTTI E QUALI NO
         /*
          MODIFICARE POI METODI MODEL:
-         STORE_RESOURCE
-         OK_PRODUCTION
-         OK_BUY_PROD_CARD
-         OK_BUY_MARKET
+
          */
 
         switch(messageID) {
@@ -243,8 +273,10 @@ public class Controller implements Observer<MessageID> {
             case STORE_RESOURCES -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
 
             case OK_BUY_MARKET -> {
-                for (int i = 0; i < game.getTotalPlayers(); i++)
-                    remoteViews.get(i).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
+                for (int i = 0; i < 4; i++)
+                    if (i != game.getCurrPlayer().getTurnID() - 1)
+                        remoteViews.get(i).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
+                remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
             }
             case OK_PRODUCTION -> {
                 //for (int i = 0; i < game.getTotalPlayers(); i++)

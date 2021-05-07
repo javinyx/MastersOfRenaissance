@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.market.Market;
@@ -26,7 +27,7 @@ public class SinglePlayerGame extends Game implements ModelObserver {
     protected Deck leaderDeck;
      */
 
-    public SinglePlayerGame() {
+    public SinglePlayerGame(Controller controller) {
         market = new Market();
         player = null;
         lorenzo = new Player("Lorenzo", this);
@@ -35,6 +36,7 @@ public class SinglePlayerGame extends Game implements ModelObserver {
         tokenDeck = new Deck("ActionToken");
         leaderDeck = new Deck("LeaderCard");
         productionDecks = Deck.createProdDeckList();
+        this.controller = controller;
     }
 
 /*

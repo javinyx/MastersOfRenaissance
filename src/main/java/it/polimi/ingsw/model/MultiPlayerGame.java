@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 
+import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.Deck;
@@ -18,7 +19,7 @@ public class MultiPlayerGame extends Game implements ModelObserver {
     protected List<ProPlayer> activePlayers;
 
 
-    public MultiPlayerGame(){
+    public MultiPlayerGame(Controller controller){
         players = new ArrayList<>();
         market = new Market();
         totalPlayers = 0;
@@ -28,6 +29,7 @@ public class MultiPlayerGame extends Game implements ModelObserver {
 
         leaderDeck = new Deck("LeaderCard");
         productionDecks = Deck.createProdDeckList();
+        this.controller = controller;
     }
 
     /*
@@ -80,11 +82,14 @@ public class MultiPlayerGame extends Game implements ModelObserver {
         ProPlayer p = new ProPlayer(nickname, totalPlayers, this);
         players.add(p);
 
+
         switch (p.getTurnID()) {
-            case 2 -> controller.update(MessageID.CHOOSE_RESOURCE);
-            case 3, 4 -> {
+            case 2: controller.update(MessageID.CHOOSE_RESOURCE);
+                     break;
+            case 3: case 4: {
                 p.moveOnBoard(1);
                 controller.update(MessageID.CHOOSE_RESOURCE);
+                break;
             }
 
         }

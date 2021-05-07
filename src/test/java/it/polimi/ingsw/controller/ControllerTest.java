@@ -6,6 +6,8 @@ import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.concreteMessages.BuyMarketMessage;
 import it.polimi.ingsw.misc.BiElement;
+import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.MultiPlayerGame;
 import it.polimi.ingsw.model.cards.leader.MarbleAbility;
 import it.polimi.ingsw.model.stub.ProPlayerStub;
 import it.polimi.ingsw.model.stub.SinglePlayerGameStub;
@@ -32,11 +34,18 @@ class ControllerTest {
         BuyMarketMessage mar = new BuyMarketMessage(p, c, i, null);
 
         MessageEnvelope msg = new MessageEnvelope(MessageID.BUY_FROM_MARKET, mar.toString());
-        */
+
         BiElement<Integer, String> lol = new BiElement<Integer, String>(1,"lol");
 
         String js = gson.toJson(lol);
-        BiElement<Integer, String> lol2 = gson.fromJson(js, new TypeToken<BiElement<Integer, String>>() {}.getType());
+        BiElement<Integer, String> lol2 = gson.fromJson(js, new TypeToken<BiElement<Integer, String>>() {}.getType());*/
+
+        System.out.println("  /\\\\,/\\\\,                     ,                  |\\         ,,       -__ /\\                                                       ,       \n" +
+                " /| || ||    _                ||         '         \\\\        ||         || \\,   '         _               '                       ||       \n" +
+                " || || ||   < \\,  _-_   _-_, =||= ,._-_ \\\\        / \\\\  _-_  ||        /|| /   \\\\ \\\\/\\\\  < \\,  _-_,  _-_ \\\\ \\\\/\\\\/\\\\  _-_  \\\\/\\\\ =||=  /'\\\\\n" +
+                " ||=|= ||   /-|| || \\\\ ||_.   ||   ||   ||       || || || \\\\ ||        \\||/-   || || ||  /-|| ||_.  ||   || || || || || \\\\ || ||  ||  || ||\n" +
+                "~|| || ||  (( || ||/    ~ ||  ||   ||   ||       || || ||/   ||         ||  \\  || || || (( ||  ~ || ||   || || || || ||/   || ||  ||  || ||\n" +
+                " |, \\\\,\\\\,  \\/\\\\ \\\\,/  ,-_-   \\\\,  \\\\,  \\\\        \\\\/  \\\\,/  \\\\       _---_-|, \\\\ \\\\ \\\\  \\/\\\\ ,-_-  \\\\,/ \\\\ \\\\ \\\\ \\\\ \\\\,/  \\\\ \\\\  \\\\, \\\\,/   ");
 
     }
 

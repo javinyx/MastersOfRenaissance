@@ -21,7 +21,7 @@ public abstract class Game implements ModelObserver {
     protected Deck leaderDeck;
     protected int totalPlayers;
     protected ProPlayer currPlayer;
-    protected Controller controller; // bisogna farselo passare dal Controller in fase di costruzione di SinglePlayerGame o Multi
+    protected Controller controller;
 
     public abstract void start(int numPlayers);
     public abstract boolean createPlayer(String nickname);
@@ -78,19 +78,17 @@ public abstract class Game implements ModelObserver {
     //public abstract List<LeaderCard> distributeLeaders();
     /**Remove the specified ProductionCard from Production Deck.
      * @param card the one to be removed */
-    public boolean removeFromProdDeck(ConcreteProductionCard card){
+    public int removeFromProdDeck(ConcreteProductionCard card){
         List<Deck> decksClone = new ArrayList<>(productionDecks);
+        int index = -1;
         for(Deck d : decksClone){
-            if(d.contains(card) && d.size()>1 ){
+            index++;
+            if(d.contains(card)) {
                 d.remove(card);
-                return true;
-            }else if(d.contains(card)){
-                d.remove(card);
-                productionDecks.remove(d);
-                return true;
+                return index;
             }
         }
-        return false;
+        return -1;
     }
     public Player getWinner(){return winner;}
 

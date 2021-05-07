@@ -34,8 +34,8 @@ class ProPlayerTest extends PlayerTest {
     public void testSetup(){
         gm1 = new MultiPlayerGameStub();
         g = new SinglePlayerGameStub();
-        g1 = new SinglePlayerGame();
-        g2 = new MultiPlayerGame();
+        g1 = new SinglePlayerGame(controller);
+        g2 = new MultiPlayerGame(controller);
         p = new ProPlayerStub("Gatto", 1, g);
         p.registerObserver(g);
         p1 = new ProPlayer("Anacleto", 1, g1);

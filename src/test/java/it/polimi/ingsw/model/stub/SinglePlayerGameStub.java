@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.stub;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import it.polimi.ingsw.MastersOfRenaissance;
+import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.SinglePlayerGame;
 import it.polimi.ingsw.model.cards.leader.BoostAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
@@ -19,8 +20,10 @@ import java.util.Objects;
 
 public class SinglePlayerGameStub extends SinglePlayerGame {
 
+    private static Controller controller = new Controller();
+
     public SinglePlayerGameStub(){
-        super();
+        super(controller);
     }
 
     public ConcreteProductionCard getFirstProdAvailable(){

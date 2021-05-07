@@ -3,6 +3,7 @@ package it.polimi.ingsw.client;
 import it.polimi.ingsw.messages.concreteMessages.ChooseLeaderCardsMessage;
 import it.polimi.ingsw.messages.concreteMessages.ChoosePlacementsInStorageMessage;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
+import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.ProPlayer;
 
@@ -13,6 +14,7 @@ public class ClientController {
     private ViewInterface view;
     private boolean myTurn;
     private List<LeaderCard> leaders = new ArrayList<>();
+    private List<ConcreteProductionCard> availableProductionCard = new ArrayList<>();
     private List<Player> players = new ArrayList<>();
     private ProPlayer player;
 
@@ -29,6 +31,7 @@ public class ClientController {
     public void addPlayers(ProPlayer player){this.players.add(player);}
     public List<Player> getPlayers(){return players;}
     public ProPlayer getPlayer(){return player;}
+    public void initAvailableProductionCard(){}
 
     public void chooseResourceAction(int quantity) {
         view.showMessage("Choose no." + quantity + " resources");

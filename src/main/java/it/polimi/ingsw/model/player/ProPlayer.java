@@ -160,9 +160,9 @@ public class ProPlayer extends Player{
      * Its applicability will be checked by the method.</p>
      * @param card  chosen card for the transaction
      * @param stack indicates on which board's stack the player wants to place the card
-     * @param leader LeaderCard: just DiscountAbility might have an effect here
+     * @param leaders LeaderCards: just DiscountAbility might have an effect here
      * @param resourcesWallet resources distributed among different types of storage as the player wish to spend them*/
-    public void buyProductionCard(ConcreteProductionCard card, int stack, LeaderCard leader, ResourcesWallet resourcesWallet)
+    public void buyProductionCard(ConcreteProductionCard card, int stack, List<LeaderCard> leaders, ResourcesWallet resourcesWallet)
             throws BadStorageException{
         List<ConcreteProductionCard> availableProdCards = game.getBuyableProductionCards();
         Warehouse warBackup = new Warehouse(warehouse);
@@ -210,8 +210,10 @@ public class ProPlayer extends Player{
             fromExtra.add(i, resourcesWallet.getExtraStorage(i));
         }
 
-        if(checkLeaderAvailability(leader))
-            leader.applyEffect(this);
+        for(LeaderCard leader : leaders) {
+            if (checkLeaderAvailability(leader))
+                leader.applyEffect(this);
+        }
 
         for(Resource r : removeFromWar){
             if(resAcquired.contains(r)) {
@@ -256,7 +258,6 @@ public class ProPlayer extends Player{
         //if we are here, then the cost has been payed completely
         game.removeFromProdDeck(card);
         prodStack.addFirst(card);
-        observer.updateEndTurn(this);
     }
 //----------------------------------------MARKET-------------------------------
     /**Obtains the resources chosen from market by column or row.
@@ -289,13 +290,15 @@ public class ProPlayer extends Player{
 
         //TURN BLANK INTO SOMETHING: call controller to let the player choose which leaders he wants
         if(resAcquired.contains(Resource.BLANK) && leaders!=null && !leaders.isEmpty()){
-            int count = (int) resAcquired.stream().filter(x->x.equals(Resource.BLANK)).count();
-            for(; count>0; count--){
-                LeaderCard leader = null;//call controller that returns a leader chosen by Player;
-                if(checkLeaderAvailability(leader)){
-                    if(!leader.applyEffect(this)){
-                        throw new RuntimeException("Invalid Leader");
+            for(BiElement<MarbleAbility, Integer> bi : leaders){
+                if(checkLeaderAvailability(bi.getT())) {
+                    for (int i = 0; i < bi.getV() - 1; i++) {
+                        if(!bi.getT().applyEffect(this)){
+                            throw new RuntimeException("Invalid Leader");
+                        }
                     }
+                }else{
+                    throw new RuntimeException("Invalid Leader");
                 }
             }
         }
@@ -726,7 +729,6 @@ public class ProPlayer extends Player{
         //Adding all outputs produced
         lootChest.addResources(tempProduction);
 
-        observer.updateEndTurn(this);
     }
 
     /**It resets Warehouse, Lootchest and Storage Cards substituting them with all the backups passed

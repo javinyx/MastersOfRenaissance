@@ -26,8 +26,9 @@ public class MessageHandler {
     public void readMessageFromServer(MessageEnvelope envelope){
         switch(envelope.getMessageID()){
             case CHOOSE_RESOURCE -> controller.chooseResourceAction(gson.fromJson(envelope.getPayload(), Integer.class));
-            case CHOOSE_PLACEMENTS_IN_STORAGE -> {controller.chooseStorageAction(gson.fromJson(envelope.getPayload(), ChoosePlacementsInStorageMessage.class));}
-            case CHOOSE_LEADER_CARDS -> {controller.chooseLeadersAction(gson.fromJson(envelope.getPayload(), ChooseLeaderCardsMessage.class));}
+            case CHOOSE_PLACEMENTS_IN_STORAGE -> controller.chooseStorageAction(gson.fromJson(envelope.getPayload(), ChoosePlacementsInStorageMessage.class));
+            case CHOOSE_LEADER_CARDS -> controller.chooseLeadersAction(gson.fromJson(envelope.getPayload(), ChooseLeaderCardsMessage.class));
+            case UPDATE -> {}
             case ACK -> {/*boh?*/}
             case INFO -> {controller.errorAction(gson.fromJson(envelope.getPayload(), String.class));} // questa cosa non funzoina devi fare tutti i casi di exception e metterli nella classe info, non posso mandare tanti messaggi di errore tutti con lo stesso message id
             default -> {/*messageID not recognised*/}

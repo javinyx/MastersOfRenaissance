@@ -70,9 +70,9 @@ public enum MessageID {
 
     // BUY FROM MARKET
     BUY_FROM_MARKET,
-    OK_BUY_MARKET
+    OK_BUY_MARKET,
 
 
-
+    UPDATE
 
     }

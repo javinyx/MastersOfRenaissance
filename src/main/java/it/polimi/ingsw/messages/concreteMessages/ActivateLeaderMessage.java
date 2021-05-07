@@ -6,8 +6,7 @@ import it.polimi.ingsw.model.player.ProPlayer;
 public class ActivateLeaderMessage extends SimpleMessage {
     private final int leaderId;
 
-    public ActivateLeaderMessage(ProPlayer player, int leaderId){
-        super(player);
+    public ActivateLeaderMessage(int leaderId){
         this.leaderId = leaderId;
     }
 

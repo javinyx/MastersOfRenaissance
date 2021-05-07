@@ -9,8 +9,7 @@ import java.util.List;
 public class ChoosePlacementsInStorageMessage extends SimpleMessage {
     private final List<Resource> resources;
 
-    public ChoosePlacementsInStorageMessage(ProPlayer player, List<Resource> resources){
-        super(player);
+    public ChoosePlacementsInStorageMessage(List<Resource> resources){
         this.resources = resources;
     }
 

@@ -6,8 +6,7 @@ import it.polimi.ingsw.model.player.ProPlayer;
 public class ChooseResourceMessage extends SimpleMessage {
     private final int quantity;
 
-    public ChooseResourceMessage(ProPlayer player, int quantity){
-        super(player);
+    public ChooseResourceMessage(int quantity){
         this.quantity = quantity;
     }
 

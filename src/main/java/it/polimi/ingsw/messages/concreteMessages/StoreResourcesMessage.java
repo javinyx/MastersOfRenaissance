@@ -1,5 +1,6 @@
 package it.polimi.ingsw.messages.concreteMessages;
 
+import it.polimi.ingsw.client.commands.StoreResourcesCommand;
 import it.polimi.ingsw.messages.SimpleMessage;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
@@ -13,9 +14,12 @@ import java.util.List;
 public class StoreResourcesMessage extends SimpleMessage {
     List<BiElement<Resource, Storage>> placements;
 
-    public StoreResourcesMessage(ProPlayer player){
-        super(player);
+    public StoreResourcesMessage(){
         placements = new ArrayList<>();
+    }
+
+    public StoreResourcesMessage(List<BiElement<Resource, Storage>> placements){
+        this.placements = placements;
     }
 
 

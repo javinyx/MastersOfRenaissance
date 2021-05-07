@@ -76,7 +76,7 @@ public class Cli extends ViewInterface {
         }
 
         BuyMarketCommand buyMarketCommand = new BuyMarketCommand(controller);
-        BuyMarketMessage message = new BuyMarketMessage(controller.getPlayer(), dimChar, index, leaderUsage);
+        BuyMarketMessage message = new BuyMarketMessage(dimChar, index, leaderUsage);
         buyMarketCommand.generateEnvelope(message);
     }
 

@@ -12,8 +12,7 @@ public class BuyMarketMessage extends SimpleMessage {
     private final int index;
     private final List<BiElement<MarbleAbility, Integer>> marbleUsage;
 
-    public BuyMarketMessage(ProPlayer player, char dimension, int index, List<BiElement<MarbleAbility, Integer>> marbleUsage){
-        super(player);
+    public BuyMarketMessage(char dimension, int index, List<BiElement<MarbleAbility, Integer>> marbleUsage){
         this.dimension = dimension;
         this.index = index;
         this.marbleUsage = marbleUsage;

@@ -8,8 +8,7 @@ import it.polimi.ingsw.model.player.ProPlayer;
 public class InfoMessage extends SimpleMessage {
     private final String info;
 
-    public InfoMessage(ProPlayer player, String info){
-        super(player);
+    public InfoMessage(String info){
         this.info = info;
     }
 

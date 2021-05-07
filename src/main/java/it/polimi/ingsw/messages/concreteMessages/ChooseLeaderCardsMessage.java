@@ -12,8 +12,7 @@ public class ChooseLeaderCardsMessage extends SimpleMessage {
     private final List<LeaderCard> leaders;
     private final int quantity;
 
-    public ChooseLeaderCardsMessage(ProPlayer player, List<LeaderCard> leaders, int quantity){
-        super(player);
+    public ChooseLeaderCardsMessage(List<LeaderCard> leaders, int quantity){
         this.leaders = leaders;
         this.quantity = quantity;
     }

@@ -17,9 +17,8 @@ public class ProduceMessage extends SimpleMessage {
     private final boolean basicProduction;
     private final Resource basicOutput;
 
-    public ProduceMessage(ProPlayer player, List<ConcreteProductionCard> productionCards, ResourcesWallet wallet, List<BoostAbility> leaderCards
+    public ProduceMessage(List<ConcreteProductionCard> productionCards, ResourcesWallet wallet, List<BoostAbility> leaderCards
                         , List<Resource> leaderOutputs, boolean basicProduction, Resource basicOutput){
-        super(player);
         this.productionCards = productionCards;
         this.resourcesWallet = wallet;
         this.leaderCards = leaderCards;

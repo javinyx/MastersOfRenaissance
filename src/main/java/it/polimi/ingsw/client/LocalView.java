@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client;
 
+import it.polimi.ingsw.client.model.NubPlayer;
 import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.misc.Observer;
 
@@ -27,6 +28,26 @@ public class LocalView extends ViewInterface implements Observer<MessageEnvelope
 
     @Override
     public void showMessage(String str) {
+
+    }
+
+    @Override
+    public void updateMarket() {
+
+    }
+
+    @Override
+    public void updateAvailableProductionCards() {
+
+    }
+
+    @Override
+    public void updateThisPlayer() {
+
+    }
+
+    @Override
+    public void updateOtherPlayer(NubPlayer player) {
 
     }
 }

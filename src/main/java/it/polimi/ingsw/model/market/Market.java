@@ -157,7 +157,19 @@ public class Market{
             marketBoard[i][col] = marketBoard[i-1][col];
         }
         marketBoard[0][col] = extraMarble;
+
         extraMarble = last;
+
+
+        /*
+        marketBoard[0][col] = marketBoard[1][col];
+        marketBoard[1][col] = marketBoard[2][col];
+
+        for (int i = 1; i > 1;  i--){
+            marketBoard[i][col] = marketBoard[i-1][col];
+        }
+        marketBoard[2][col] = extraMarble;
+         */
     }
 
     /**

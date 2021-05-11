@@ -7,15 +7,18 @@ import it.polimi.ingsw.messages.concreteMessages.ChooseLeaderCardsMessage;
 import it.polimi.ingsw.messages.concreteMessages.ChoosePlacementsInStorageMessage;
 import it.polimi.ingsw.messages.concreteMessages.UpdateMessage;
 
+import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 
 /**This class allows the Client to read/send messages from/to the server. */
-public class MessageHandler {
+public class MessageHandler implements Runnable{
     protected final ClientController controller;
     protected static final Gson gson = new Gson();
+    private final ObjectInputStream socketIn;
     private volatile static PrintWriter toServer;
 
-    public MessageHandler(ClientController controller){
+    public MessageHandler(ObjectInputStream socketIn, ClientController controller){
+        this.socketIn = socketIn;
         this.controller = controller;
     }
 
@@ -51,4 +54,11 @@ public class MessageHandler {
         }
     }
 
+    /**
+     * Receives messages from server and calls the right method on controller.
+     */
+    @Override
+    public void run() {
+
+    }
 }

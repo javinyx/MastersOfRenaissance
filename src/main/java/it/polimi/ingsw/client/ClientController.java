@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class ClientController {
+public abstract class ClientController {
     private ViewInterface view;
     private boolean myTurn;
     private List<ConcreteProductionCard> allProductionCards;
@@ -38,12 +38,6 @@ public class ClientController {
             tokenDiscardPath = "/json/ActionTokens/DiscardTokens.json",
             tokenDoubleMovePath = "/json/ActionTokens/DoubleMoveTokens.json",
             tokenMoveShufflePath = "/json/ActionTokens/MoveShuffleTokens.json";
-
-    public ClientController(ViewInterface view, NubPlayer player){
-        this.view = view;
-        this.player = player;
-        initAllCards();
-    }
 
     private void initAllCards(){
         Gson gson = new Gson();
@@ -72,9 +66,7 @@ public class ClientController {
     public void setMarket(Resource[][] market, Resource extra){ this.market = new Market(market,extra);}
 
     //---------------------------------ACTIONS: behaviours caused by Messages--------------------------
-    public void chooseResourceAction(int quantity) {
-        view.showMessage("Choose no." + quantity + " resources");
-    }
+    public void chooseResourceAction(int quantity) {};
 
     public void chooseStorageAction(ChoosePlacementsInStorageMessage msg){
         view.showMessage("Choose a storage for each of the following resources: " + msg.getResources());

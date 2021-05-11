@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.production.ColorEnum;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
@@ -15,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GameTest{
     Game gs1, gm1;
+    Controller controller = new Controller();
 
     @BeforeEach
     void setUp(){

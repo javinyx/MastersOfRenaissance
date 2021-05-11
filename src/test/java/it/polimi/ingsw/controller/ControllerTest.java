@@ -38,7 +38,7 @@ class ControllerTest {
         BiElement<Integer, String> lol = new BiElement<Integer, String>(1,"lol");
 
         String js = gson.toJson(lol);
-        BiElement<Integer, String> lol2 = gson.fromJson(js, new TypeToken<BiElement<Integer, String>>() {}.getType());*/
+        BiElement<Integer, String> lol2 = gson.fromJson(js, new TypeToken<BiElement<Integer, String>>() {}.getType());
 
         System.out.println("  /\\\\,/\\\\,                     ,                  |\\         ,,       -__ /\\                                                       ,       \n" +
                 " /| || ||    _                ||         '         \\\\        ||         || \\,   '         _               '                       ||       \n" +
@@ -46,7 +46,8 @@ class ControllerTest {
                 " ||=|= ||   /-|| || \\\\ ||_.   ||   ||   ||       || || || \\\\ ||        \\||/-   || || ||  /-|| ||_.  ||   || || || || || \\\\ || ||  ||  || ||\n" +
                 "~|| || ||  (( || ||/    ~ ||  ||   ||   ||       || || ||/   ||         ||  \\  || || || (( ||  ~ || ||   || || || || ||/   || ||  ||  || ||\n" +
                 " |, \\\\,\\\\,  \\/\\\\ \\\\,/  ,-_-   \\\\,  \\\\,  \\\\        \\\\/  \\\\,/  \\\\       _---_-|, \\\\ \\\\ \\\\  \\/\\\\ ,-_-  \\\\,/ \\\\ \\\\ \\\\ \\\\ \\\\,/  \\\\ \\\\  \\\\, \\\\,/   ");
-
+*/
+        System.out.print("\033[H\033[2J");
     }
 
     @Test

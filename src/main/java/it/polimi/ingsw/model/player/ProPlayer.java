@@ -212,10 +212,11 @@ public class ProPlayer extends Player{
             fromExtra.add(i, resourcesWallet.getExtraStorage(i));
         }
 
-        for(LeaderCard leader : leaders) {
-            if (checkLeaderAvailability(leader))
-                leader.applyEffect(this);
-        }
+        if (leaders != null)
+            for(LeaderCard leader : leaders) {
+                if (checkLeaderAvailability(leader))
+                    leader.applyEffect(this);
+            }
 
         for(Resource r : removeFromWar){
             if(resAcquired.contains(r)) {

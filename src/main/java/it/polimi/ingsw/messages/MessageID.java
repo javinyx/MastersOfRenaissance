@@ -72,6 +72,9 @@ public enum MessageID {
     BUY_FROM_MARKET,
     OK_BUY_MARKET,
 
+    // SERVER STUFF
+    SERVER_STATE,
+    PLAYER_NUM,
 
     UPDATE
 

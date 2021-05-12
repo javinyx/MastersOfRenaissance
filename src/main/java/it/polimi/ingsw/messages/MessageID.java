@@ -76,6 +76,7 @@ public enum MessageID {
     // SERVER STUFF
     SERVER_STATE,
     PLAYER_NUM,
+    PLAYER_LIST,
     ASK_NICK,
     NICK_ERR,
 

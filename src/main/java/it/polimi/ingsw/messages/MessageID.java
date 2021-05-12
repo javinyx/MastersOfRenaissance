@@ -30,8 +30,6 @@ public enum MessageID {
     ACK,
 
     //PLAYERS REGISTRATION
-    ASK_NICK,
-    ASK_NUMBER,
     ADD_PLAYER_REQUEST,
     CHOOSE_LEADER_CARDS,
     TOO_MANY_PLAYERS,
@@ -78,6 +76,8 @@ public enum MessageID {
     // SERVER STUFF
     SERVER_STATE,
     PLAYER_NUM,
+    ASK_NICK,
+    NICK_ERR,
 
     UPDATE
 

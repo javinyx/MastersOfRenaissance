@@ -3,7 +3,6 @@ package it.polimi.ingsw.client;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import it.polimi.ingsw.MastersOfRenaissance;
-import it.polimi.ingsw.client.commands.BuyMarketCommand;
 import it.polimi.ingsw.client.model.Market;
 import it.polimi.ingsw.client.model.NubPlayer;
 import it.polimi.ingsw.messages.MessageID;

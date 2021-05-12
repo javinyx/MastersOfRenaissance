@@ -48,7 +48,7 @@ public class MessageReceiver implements Runnable{
 
             //INITIALIZATION
             case ASK_NICK -> controller.askNickname();
-            case ASK_NUMBER -> controller.askNumberOfPlayers();
+            case PLAYER_NUM -> controller.askNumberOfPlayers();
 
             case TOO_MANY_PLAYERS -> controller.displayMessage(gson.fromJson(envelope.getPayload(), String.class));
             case CHOOSE_RESOURCE -> controller.chooseResourceAction(gson.fromJson(envelope.getPayload(), String.class));

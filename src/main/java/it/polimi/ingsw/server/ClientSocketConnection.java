@@ -88,7 +88,7 @@ public class ClientSocketConnection implements ClientConnection, Runnable {
             String readNumber = null;
             boolean correctRegistration = false;
 
-            c.sendData(gson.toJson(new MessageEnvelope(MessageID.REGISTER_MULTI, "playerName")));
+            c.sendData(gson.toJson(new MessageEnvelope(MessageID.ASK_NICK, "playerName")));
 
             while (!correctRegistration) {
                 readName = in.nextLine();
@@ -96,18 +96,18 @@ public class ClientSocketConnection implements ClientConnection, Runnable {
 
                 readNumber = in.nextLine();
                 while (!readNumber.equals("1") && !readNumber.equals("2") && !readNumber.equals("3") && !readNumber.equals("4")) {
-                    c.sendData(gson.toJson(new MessageEnvelope(MessageID.INFO, "numPlayers ERROR")));
+                    c.sendData(gson.toJson(new MessageEnvelope(MessageID.TOO_MANY_PLAYERS, "numPlayers ERROR")));
                     readNumber = in.nextLine();
                 }
 
                 correctRegistration = server.isNameAvailable(readName, Integer.parseInt(readNumber));
 
                 if (!correctRegistration){
-                    c.sendData(gson.toJson(new MessageEnvelope(MessageID.INFO, "nickName ERROR")));
+                    c.sendData(gson.toJson(new MessageEnvelope(MessageID.NICK_ERR, "nickName ERROR")));
                 }
             }
 
-            c.sendData(gson.toJson(new MessageEnvelope(MessageID.ACK, "registration CONFIRMED")));
+            c.sendData(gson.toJson(new MessageEnvelope(MessageID.ACK, "True")));
 
             server.lobby(this, readName, Integer.parseInt(readNumber));
 

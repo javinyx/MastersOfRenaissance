@@ -5,12 +5,9 @@ import com.google.gson.reflect.TypeToken;
 import it.polimi.ingsw.MastersOfRenaissance;
 import it.polimi.ingsw.client.model.Market;
 import it.polimi.ingsw.client.model.NubPlayer;
-import it.polimi.ingsw.messages.MessageID;
-import it.polimi.ingsw.messages.concreteMessages.BuyMarketMessage;
 import it.polimi.ingsw.messages.concreteMessages.ChooseLeaderCardsMessage;
 import it.polimi.ingsw.messages.concreteMessages.ChoosePlacementsInStorageMessage;
 import it.polimi.ingsw.messages.concreteMessages.UpdateMessage;
-import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.model.cards.leader.*;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
@@ -33,6 +30,7 @@ public abstract class ClientController {
     private NubPlayer player;
     private Market market;
     private boolean active = true;
+
 
     public boolean isActive(){
         return active;

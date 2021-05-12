@@ -36,56 +36,54 @@
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-fxml</artifactId>
-      <version>17-ea+9</version>
+      <version>16</version>
     </dependency>
-
 
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-controls</artifactId>
-      <version>17-ea+9</version>
+      <version>16</version>
     </dependency>
 
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-graphics</artifactId>
-      <version>17-ea+9</version>
+      <version>16</version>
       <classifier>win</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-graphics</artifactId>
-      <version>17-ea+9</version>
+      <version>16</version>
       <classifier>linux</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-graphics</artifactId>
-      <version>17-ea+9</version>
+      <version>16</version>
       <classifier>mac</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-media</artifactId>
-      <version>17-ea+9</version>
+      <version>16</version>
       <classifier>win</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-media</artifactId>
-      <version>17-ea+9</version>
+      <version>16</version>
       <classifier>linux</classifier>
     </dependency>
-
 
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-media</artifactId>
-      <version>17-ea+9</version>
+      <version>16</version>
       <classifier>mac</classifier>
     </dependency>
 

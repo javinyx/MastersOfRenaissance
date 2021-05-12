@@ -246,7 +246,7 @@ public class Controller implements Observer<MessageID> {
 
         switch(messageID) {
 
-            case ACK -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "Operation confirmed"));
+            case ACK -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "True"));
 
             //INITIALIZATION
 
@@ -268,24 +268,16 @@ public class Controller implements Observer<MessageID> {
             case WRONG_STACK_CHOICE -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "Stacks are from 1 to 3/4"));
             case WRONG_LEVEL_REQUEST ->  remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "The level of the card is wrong"));
 
-            case CHOOSE_LEADER_CARDS -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "You have to choose a leader card")); //non usata
+/*TODO*/    case CHOOSE_LEADER_CARDS -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "You have to choose a leader card"));
 
             case STORE_RESOURCES -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
 
-            case OK_BUY_MARKET -> {
+            case UPDATE -> {
                 for (int i = 0; i < 4; i++)
                     if (i != game.getCurrPlayer().getTurnID() - 1)
                         remoteViews.get(i).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
                 remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
             }
-            case OK_PRODUCTION -> {
-                //for (int i = 0; i < game.getTotalPlayers(); i++)
-                  //  remoteViews.get(i).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
-                }
-            case OK_BUY_PRODUCTION_CARD -> {
-                //for (int i = 0; i < game.getTotalPlayers(); i++)
-                  //  remoteViews.get(i).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
-                }
 
             default -> System.out.println("No no no");
         }

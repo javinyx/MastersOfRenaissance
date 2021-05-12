@@ -15,11 +15,13 @@ public class Server {
     private static int PORT = 27001;
     private final ServerSocket serverSocket;
     private ExecutorService executor = Executors.newFixedThreadPool(128);
+
     private Map<String, ClientConnection> singlePlayerWait = new HashMap<>();
     private Map<String, ClientConnection> twoPlayerWait = new HashMap<>();
     private Map<String, ClientConnection> threePlayerWait = new HashMap<>();
     private Map<String, ClientConnection> fourPlayerWait = new HashMap<>();
-    private Map<ClientConnection, ClientConnection> singlePlayerPlay = new HashMap<>();
+
+    private ClientConnection singlePlayerPlay;
     private Map<ClientConnection, ClientConnection> twoPlayerPlay = new HashMap<>();
     private Map<ClientConnection, List<ClientConnection>> threePlayerPlay = new HashMap<>();
     private Map<ClientConnection, List<ClientConnection>> fourPlayerPlay = new HashMap<>();
@@ -29,7 +31,7 @@ public class Server {
      * @param c the connection that will be removed
      */
     public synchronized void deregisterConnection(ClientConnection c) {
-        if (singlePlayerPlay.containsKey(c))
+        if (singlePlayerPlay.equals(c))
             deregFromSinglePlayerGame(c);
         else if (twoPlayerPlay.containsKey(c))
             deregFromTwoPlayerGame(c);
@@ -67,7 +69,7 @@ public class Server {
      * @param c the connection that will be removed
      */
     private void deregFromSinglePlayerGame(ClientConnection c) {
-        twoPlayerPlay.remove(c);
+        singlePlayerPlay = null;
     }
 
     /**
@@ -91,14 +93,16 @@ public class Server {
         List<ClientConnection> opponents = threePlayerPlay.get(c);
         if (opponents != null){
             switch(opponents.size()){
-                case 1:
+                case 1 -> {
                     opponents.get(0).closeConnection();
                     threePlayerPlay.remove(c);
                     threePlayerPlay.remove(opponents.get(0));
-                case 2:
+                }
+                case 2 -> {
                     threePlayerPlay.get(opponents.get(0)).remove(c);
                     threePlayerPlay.get(opponents.get(1)).remove(c);
                     threePlayerPlay.remove(c);
+                }
             }
         }
     }
@@ -111,19 +115,22 @@ public class Server {
         List<ClientConnection> opponents = fourPlayerPlay.get(c);
         if (opponents != null){
             switch(opponents.size()){
-                case 1:
+                case 1 -> {
                     opponents.get(0).closeConnection();
                     fourPlayerPlay.remove(c);
                     fourPlayerPlay.remove(opponents.get(0));
-                case 2:
+                }
+                case 2 -> {
                     fourPlayerPlay.get(opponents.get(0)).remove(c);
                     fourPlayerPlay.get(opponents.get(1)).remove(c);
                     fourPlayerPlay.remove(c);
-                case 3:
+                }
+                case 3 -> {
                     fourPlayerPlay.get(opponents.get(0)).remove(c);
                     fourPlayerPlay.get(opponents.get(1)).remove(c);
                     fourPlayerPlay.get(opponents.get(2)).remove(c);
                     fourPlayerPlay.remove(c);
+                }
             }
         }
     }
@@ -137,24 +144,43 @@ public class Server {
     public synchronized void lobby(ClientConnection c, String name, int playerNum) {
         try {
             switch(playerNum) {
-                case 1:
+                case 1 -> {
                     singlePlayerWait.put(name, c);
-                case 2:
+                    createSinglePlayerGame();
+                }
+                case 2 -> {
                     twoPlayerWait.put(name, c);
                     if (twoPlayerWait.size() == 2)
                         createTwoPlayerGame();
-                case 3:
+                }
+                case 3 -> {
                     threePlayerWait.put(name, c);
                     if (threePlayerWait.size() == 3)
                         createThreePlayerGame();
-                case 4:
+                }
+                case 4 -> {
                     fourPlayerWait.put(name, c);
                     if (fourPlayerWait.size() == 4)
                         createFourPlayerGame();
+                }
             }
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Creates a single player game.
+     */
+    public void createSinglePlayerGame() {
+        List<String> keys = new ArrayList<>(singlePlayerWait.keySet());
+        ClientConnection c1 = singlePlayerWait.get(keys.get(0));
+        String p1 = keys.get(0);
+
+        createGame(new ArrayList<>(Arrays.asList(c1)), new ArrayList<>(Arrays.asList(p1)));
+
+        singlePlayerPlay = c1;
+        singlePlayerWait.clear();
     }
 
     /**
@@ -218,8 +244,8 @@ public class Server {
     }
 
     /**
-     * Creates a new game from the specified players. There is no limit on the size of the passed lists.
-     * @param connectionList the list containing the connections with clients
+     * Creates a new game from the specified players.
+     * @param connectionList the list containing the connections with the clients
      * @param playerNames the list containing the nicknames of all the players
      */
     public void createGame(List<ClientConnection> connectionList, List<String> playerNames) {

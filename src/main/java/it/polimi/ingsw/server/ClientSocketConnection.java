@@ -2,6 +2,7 @@ package it.polimi.ingsw.server;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import it.polimi.ingsw.client.MessageToServerHandler;
 import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.misc.Observer;
@@ -30,8 +31,8 @@ public class ClientSocketConnection implements ClientConnection, Runnable {
     }
 
     @Override
-    public synchronized void setActive(boolean newValue){
-        active = newValue;
+    public synchronized void setActive(boolean isActive){
+        active = isActive;
     }
 
     @Override
@@ -55,10 +56,9 @@ public class ClientSocketConnection implements ClientConnection, Runnable {
         }
     }
 
-    @Override
+    /*@Override
     public void addObserver(Observer<String> observer) {
-
-    }
+    }*/
 
     /**
      * Calls {@link ClientConnection#closeConnection()} and deregisters the client from the server.
@@ -69,7 +69,6 @@ public class ClientSocketConnection implements ClientConnection, Runnable {
         server.deregisterConnection(this);
         System.out.println("Done");
     }
-
 
     /**
      * Manages the client connections and keeps them alive.
@@ -114,9 +113,9 @@ public class ClientSocketConnection implements ClientConnection, Runnable {
             String read;
             while(isActive()){
                 read = in.nextLine();
-                notify(read);
+                //notify(read);
             }
-            //} catch (IOException | NoSuchElementException e) {
+
         } catch (IOException e) {
             e.printStackTrace();
             c.sendData(gson.toJson(new MessageEnvelope(MessageID.INFO, "player SURRENDER")));
@@ -125,8 +124,8 @@ public class ClientSocketConnection implements ClientConnection, Runnable {
         }
     }
 
-    private void notify(String read) {
-    }
+    /*private void notify(String read) {
+    }*/
 
     /**
      * Sends an object trough the socket

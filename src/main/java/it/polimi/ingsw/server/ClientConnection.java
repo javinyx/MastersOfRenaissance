@@ -12,11 +12,11 @@ public interface ClientConnection {
      * Adds a new observer.
      * @param observer the new observer
      */
-    void addObserver(Observer<String> observer);
+    //void addObserver(Observer<String> observer);
 
     /**
      * Sends the specified message to the client.
-     * @param message message for the client
+     * @param message the message for the client
      */
     void send(Object message);
 

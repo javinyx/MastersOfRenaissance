@@ -19,11 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 class ControllerTest {
-    SinglePlayerGameStub game = new SinglePlayerGameStub();
+    /*SinglePlayerGameStub game = new SinglePlayerGameStub();
     Controller controller = new Controller();
     RemoteView remoteView = new RemoteView("luca", controller);
     ProPlayerStub p = new ProPlayerStub("luca", 0, game);
-    Gson gson = new Gson();
+    Gson gson = new Gson();*/
 
     @BeforeEach
     void setUp() {

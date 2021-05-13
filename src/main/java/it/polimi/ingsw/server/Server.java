@@ -250,12 +250,10 @@ public class Server {
      */
     public void createGame(List<ClientConnection> connectionList, List<String> playerNames) {
         Controller controller = new Controller();
-        /*for (int i = 0; i < connectionList.size(); i++){
+        for (int i = 0; i < connectionList.size(); i++){
             View v = new RemoteView(playerNames.get(i), playerNames, connectionList.get(i));
-            v.addPropertyChangeListener(controller.getControllerMessageHandler());
-            game.addListener(v);
         }
-        game.setPlayerList(nicknames);
+        /*game.setPlayerList(nicknames);
         controller.startGame();*/
     }
 

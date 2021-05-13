@@ -12,8 +12,11 @@ import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Observer;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.MarbleAbility;
+import it.polimi.ingsw.server.ClientConnection;
+import it.polimi.ingsw.server.ClientSocketConnection;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /*
 **guardare il tipo del paylod della message envelop
@@ -29,12 +32,13 @@ public class RemoteView extends View implements Observer<MessageEnvelope> {
 
     Controller controller;
     Gson gson = new Gson();
+    ClientConnection clientConnection;
+    ClientSocketConnection c;
 
-    public RemoteView(String playerNickname, Controller controller) {
+    public RemoteView(String playerNickname, List<String> playerNames, ClientConnection clientConnection) {
         super(playerNickname);
-        this.controller = controller;
-        controller.registerObserver(this);
-
+        this.clientConnection = clientConnection;
+        c.sendData(gson.toJson(new MessageEnvelope(MessageID.PLAYER_LIST, "player names")));
     }
 
     @Override

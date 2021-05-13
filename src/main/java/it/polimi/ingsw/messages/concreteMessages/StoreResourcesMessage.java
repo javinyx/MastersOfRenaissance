@@ -1,6 +1,5 @@
 package it.polimi.ingsw.messages.concreteMessages;
 
-import it.polimi.ingsw.client.commands.StoreResourcesCommand;
 import it.polimi.ingsw.messages.SimpleMessage;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;

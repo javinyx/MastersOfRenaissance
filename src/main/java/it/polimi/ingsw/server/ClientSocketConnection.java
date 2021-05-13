@@ -77,8 +77,6 @@ public class ClientSocketConnection implements ClientConnection, Runnable {
     public void run() {
         Scanner in;
         Gson gson = new Gson();
-        JsonObject outputToSend = new JsonObject();
-        ClientSocketConnection c = new ClientSocketConnection(this.socket, this.server);
 
         try{
             in = new Scanner(socket.getInputStream());
@@ -87,26 +85,26 @@ public class ClientSocketConnection implements ClientConnection, Runnable {
             String readNumber = null;
             boolean correctRegistration = false;
 
-            c.sendData(gson.toJson(new MessageEnvelope(MessageID.ASK_NICK, "playerName")));
+            sendData(gson.toJson(new MessageEnvelope(MessageID.ASK_NICK, "playerName")));
 
             while (!correctRegistration) {
                 readName = in.nextLine();
-                c.sendData(gson.toJson(new MessageEnvelope(MessageID.PLAYER_NUM, "numPlayers")));
+                sendData(gson.toJson(new MessageEnvelope(MessageID.PLAYER_NUM, "numPlayers")));
 
                 readNumber = in.nextLine();
                 while (!readNumber.equals("1") && !readNumber.equals("2") && !readNumber.equals("3") && !readNumber.equals("4")) {
-                    c.sendData(gson.toJson(new MessageEnvelope(MessageID.TOO_MANY_PLAYERS, "numPlayers ERROR")));
+                    sendData(gson.toJson(new MessageEnvelope(MessageID.TOO_MANY_PLAYERS, "numPlayers ERROR")));
                     readNumber = in.nextLine();
                 }
 
                 correctRegistration = server.isNameAvailable(readName, Integer.parseInt(readNumber));
 
                 if (!correctRegistration){
-                    c.sendData(gson.toJson(new MessageEnvelope(MessageID.NICK_ERR, "nickName ERROR")));
+                    sendData(gson.toJson(new MessageEnvelope(MessageID.NICK_ERR, "nickName ERROR")));
                 }
             }
 
-            c.sendData(gson.toJson(new MessageEnvelope(MessageID.ACK, "True")));
+            sendData(gson.toJson(new MessageEnvelope(MessageID.CONFIRM_REGISTRATION, readName)));
 
             server.lobby(this, readName, Integer.parseInt(readNumber));
 
@@ -118,7 +116,7 @@ public class ClientSocketConnection implements ClientConnection, Runnable {
 
         } catch (IOException e) {
             e.printStackTrace();
-            c.sendData(gson.toJson(new MessageEnvelope(MessageID.INFO, "player SURRENDER")));
+            sendData(gson.toJson(new MessageEnvelope(MessageID.INFO, "player SURRENDER")));
         } finally {
             close();
         }

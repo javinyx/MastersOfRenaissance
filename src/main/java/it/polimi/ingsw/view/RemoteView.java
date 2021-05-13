@@ -38,12 +38,12 @@ public class RemoteView extends View implements Observer<MessageEnvelope> {
     public RemoteView(String playerNickname, List<String> playerNames, ClientConnection clientConnection) {
         super(playerNickname);
         this.clientConnection = clientConnection;
-        c.sendData(gson.toJson(new MessageEnvelope(MessageID.PLAYER_LIST, "player names")));
+        c.sendData(gson.toJson(new MessageEnvelope(MessageID.PLAYER_LIST, playerNames.toString())));
     }
 
     @Override
     protected void sendMessage(String message) {
-        //manda messaggio a socket che si arrangia
+        c.send(message);
     }
 
     // MESSAGE RECEIVER ------------------------------------------------------------------------------------------------
@@ -92,7 +92,7 @@ public class RemoteView extends View implements Observer<MessageEnvelope> {
         sendMessage(gson.toJson(messageToSend));
 
         if(messageToSend.getMessageID() != null && (messageToSend.getMessageID().equals(MessageID.PLAYER_WIN) || messageToSend.getMessageID().equals(MessageID.ABORT_GAME))) {
-            //clientConnection.setActive(false);
+            clientConnection.setActive(false);
         }
     }
 }

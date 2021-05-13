@@ -3,6 +3,7 @@ package it.polimi.ingsw.client;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import it.polimi.ingsw.MastersOfRenaissance;
+import it.polimi.ingsw.client.model.ClientGame;
 import it.polimi.ingsw.client.model.Market;
 import it.polimi.ingsw.client.model.NubPlayer;
 import it.polimi.ingsw.messages.MessageID;
@@ -33,12 +34,62 @@ public abstract class ClientController {
     private NubPlayer player;
     private Market market;
     private boolean active = true;
+    private ClientGame game = new ClientGame();
 
-    public boolean isActive(){
-        return active;
+    private MessageID lastRegistrationMessage;
+    private MessageID lastGameMessage;
+
+    private boolean waitingServerUpdate = false;
+    private boolean registrationPhase = true;
+    private boolean gameOver = false;
+
+    public MessageID getLastRegistrationMessage() {
+        return lastRegistrationMessage;
     }
 
-    protected abstract void setWaitingServerUpdate(boolean b);
+    public MessageID getLastGameMessage() {
+        return lastGameMessage;
+    }
+
+    public boolean isWaitingServerUpdate() {
+        return waitingServerUpdate;
+    }
+
+    public void setRegistrationPhase(boolean registrationPhase) {
+        this.registrationPhase = registrationPhase;
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
+    }
+
+    public synchronized boolean isActive(){
+        return active;
+    }
+    public void setLastGameMessage(MessageID lastGameMessage) {
+        this.lastGameMessage = lastGameMessage;
+    }
+
+    public void setLastRegistrationMessage(MessageID lastRegistrationMessage) {
+        this.lastRegistrationMessage = lastRegistrationMessage;
+    }
+
+    public synchronized void setClosedConnection(String s) {
+        gameOver = true;
+        displayMessage(s);
+    }
+
+    public synchronized void setWaitingServerUpdate(boolean waitingServerUpdate) {
+        this.waitingServerUpdate = waitingServerUpdate;
+    }
+
+    public synchronized boolean isRegistrationPhase() {
+        return registrationPhase;
+    }
 
     protected void connectionError(){
         setActive(false);
@@ -59,14 +110,19 @@ public abstract class ClientController {
 
     private void initAllCards(){
         Gson gson = new Gson();
+
         Reader reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(prodPath)));
         allProductionCards = gson.fromJson(reader, new TypeToken<List<ConcreteProductionCard>>(){}.getType());
+
         reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(leadDiscountPath)));
         allLeaders.addAll(gson.fromJson(reader, new TypeToken<List<DiscountAbility>>(){}.getType()));
+
         reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(leadStoragePath)));
         allLeaders.addAll(gson.fromJson(reader, new TypeToken<List<StorageAbility>>(){}.getType()));
+
         reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(leadMarblePath)));
         allLeaders.addAll(gson.fromJson(reader, new TypeToken<List<MarbleAbility>>(){}.getType()));
+
         reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(leadBoostPath)));
         allLeaders.addAll(gson.fromJson(reader, new TypeToken<List<BoostAbility>>(){}.getType()));
     }
@@ -80,8 +136,8 @@ public abstract class ClientController {
     public List<NubPlayer> getPlayers(){return otherPlayers;}
     public NubPlayer getPlayer(){return player;}
     public void initAvailableProductionCard(){}
-
     public void setMarket(Resource[][] market, Resource extra){ this.market = new Market(market,extra);}
+
 
     // INITIALIZATION MESSAGES -----------------------------------------------------------------------------------------
 
@@ -222,5 +278,7 @@ public abstract class ClientController {
     }
 
 
-
+    public void confirmRegistration(String nickName){
+        game.setNickName(nickName);
+    };
 }

@@ -20,16 +20,19 @@ public class MessageToServerHandler {
 
     public void generateEnvelope(MessageID messageID, String payload){
         MessageEnvelope envelope = new MessageEnvelope(messageID, payload);
-        sendMessageToServer(envelope);
+        sendMessageToServer(gson.toJson(envelope));
     }
 
-    /**Send the envelope to the server receiver.
-     * <p>It's thread-safe.</p>*/
-    public synchronized void sendMessageToServer(MessageEnvelope envelope){
-            if(!toServer.checkError())
-                toServer.println(gson.toJson(envelope, MessageEnvelope.class));
-    }
+    public void sendMessageToServer(String message){
+        try{
+            controller.setWaitingServerUpdate(true);
+            toServer.println(message);
+            toServer.flush();
+        } catch (Exception ex){
+            controller.setActive(false);
+        }
 
+    }
 
     // UTILS
     public void manageSurrender(){

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import it.polimi.ingsw.client.CLI.printer.Printer;
 import it.polimi.ingsw.client.CLI.printer.UnixPrinter;
 import it.polimi.ingsw.client.CLI.printer.WindowsPrinter;
+import it.polimi.ingsw.client.ViewInterface;
 import it.polimi.ingsw.model.cards.leader.MarbleAbility;
 
 import java.io.BufferedReader;
@@ -12,14 +13,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.*;
 
-public class Cli{
+public class Cli /*extends ViewInterface*/ {
     private final Scanner scanner = new Scanner(System.in);
     private CliController controller;
     private final Printer OSPrinter;
     private static final String OS = System.getProperty("os.name").toLowerCase();
     private final int imageLength = 160;
     private final Scanner inputScanner = new Scanner(System.in);
-    Gson gson = new Gson();
+
 
     /**
      * Instantiates the correct version of {@link Printer} based on the current OS
@@ -112,9 +113,9 @@ public class Cli{
         return t;
     }
 
-    public void printBoard() {
+    /*public void printBoard() {
         OSPrinter.printBoard();
-    }
+    }*/
 
 
 

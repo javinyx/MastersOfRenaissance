@@ -34,4 +34,24 @@ public class Gui extends ViewInterface {
     public void updateOtherPlayer(NubPlayer player) {
 
     }
+
+    @Override
+    public void updateMarket() {
+
+    }
+
+    @Override
+    public void updateAvailableProductionCards() {
+
+    }
+
+    @Override
+    public void updateThisPlayer() {
+
+    }
+
+    @Override
+    public void updateOtherPlayer(NubPlayer player) {
+
+    }
 }

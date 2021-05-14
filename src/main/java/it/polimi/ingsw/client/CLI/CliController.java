@@ -25,12 +25,7 @@ public class CliController extends ClientController {
     private final Cli cli;
     Gson gson = new Gson();
     MessageToServerHandler messageToServerHandler;
-    MessageReceiver messageReceiver;
 
-
-    private boolean waitingServerUpdate = false;
-    private boolean registrationPhase = true;
-    private boolean gameOver = false;
 
     public CliController() {
         this.cli = new Cli(this);
@@ -66,15 +61,13 @@ public class CliController extends ClientController {
         return true;
     }
 
-    public synchronized void setClosedConnection(String s) {
-        gameOver = true;
-        displayMessage(s);
+
+    public synchronized void confirmRegistration(String nickname) {
+        super.confirmRegistration(nickname);
+        setWaitingServerUpdate(true);
+        cli.showMessage("Hello " + nickname + "! Registration has been completed successfully.");
     }
 
-    @Override
-    public synchronized void setWaitingServerUpdate(boolean waitingServerUpdate) {
-        this.waitingServerUpdate = waitingServerUpdate;
-    }
 
     // Input Part ------------------------------------------------------------------------------------------------------
 
@@ -82,15 +75,15 @@ public class CliController extends ClientController {
     * @return {@code true} if current player can perform actions, based on whether is his turn or not, if match is over or if he's waiting for server updates
     */
     public boolean canPlay() {
-        if(gameOver){
+        if(isGameOver()){
             displayMessage("The current match is over.");
             return false;
         }
-        if (waitingServerUpdate){
+        if (isWaitingServerUpdate()){
             displayMessage("Waiting Server's updates");
             return false;
         }
-        if (registrationPhase) return true;
+        if (isRegistrationPhase()) return true;
         /*if (!game.isMyTurn()) {
             displayMessage("It is not your turn!");
             return false;
@@ -111,20 +104,52 @@ public class CliController extends ClientController {
             return;
         }
         if (!canPlay()) return;
-        /*if (registrationPhase) checkInputRegistrationPhase(input);
-        else checkInputGamePhase(input);*/
+        if (isRegistrationPhase()) checkInputRegistrationPhase(input);
+        else checkInputGamePhase(input);
     }
+    /**
+     * Checks messages during registration phase, based on the current action, sends message to socket if input is correct, else sets an error message
+     * @param input cli input
+     */
+    private void checkInputRegistrationPhase(String input) {
 
+        switch (getLastRegistrationMessage()){
+            case ASK_NICK , NICK_ERR-> {
+                if (input.equals("")) {
+                    cli.showMessage("Name not valid!");
+                    askNickname();
+                    return;
+                }
+                if (input.length() > 25){
+                    cli.showMessage("Name too long!");
+                    askNickname();
+                    return;
+                }
+            }
+            case PLAYER_NUM, TOO_MANY_PLAYERS -> {
+                if (!input.equals("2") && !input.equals("3")) {
+                    cli.showMessage("Number of players not available!");
+                    askNumberOfPlayers();
+                    return;
+                }
+            }
+        }
+        messageToServerHandler.sendMessageToServer(input);
+    }
+    private void checkInputGamePhase(String input) {
+
+
+    }
 
 
 
     // INITIALIZATION PHASE --------------------------------------------------------------------------------------------
 
     @Override
-    public void askNickname (){ System.out.println("Hello, what's your Nickname?"); }
+    public synchronized void askNickname (){ System.out.println("Hello, what's your Nickname?"); }
 
     @Override
-    public void askNumberOfPlayers() { System.out.println("How many players do you want to play with"); }
+    public synchronized void askNumberOfPlayers() { System.out.println("How many players do you want to play with"); }
 
 
     // Message From Server ---------------------------------------------------------------------------------------------

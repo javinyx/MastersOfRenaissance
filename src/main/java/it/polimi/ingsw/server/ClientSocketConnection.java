@@ -14,6 +14,7 @@ public class ClientSocketConnection extends Observable<String> implements Client
     private final Socket socket;
     private ObjectOutputStream output;
     private final Server server;
+
     private boolean active = true;
 
     public ClientSocketConnection(Socket socket, Server server) {

@@ -45,16 +45,19 @@ public class Controller implements Observer<MessageID> {
         game = new SinglePlayerGame(this);
         initializationPhase = false;
 
-        addPlayer(nickName);
+        game.createPlayer(nickName);
+        game.start(1);
 
-        update(MessageID.ACK);
+        System.out.println("Hey, sei qui, nel controller");
     }
 
-    public void createMultiplayerGame(int numPlayer){
-        /*if (numPlayer > 1 && numPlayer < 5) {
-            this.numPlayer = numPlayer;
+    public void createMultiplayerGame(List<String> players){
+        if (players.size() > 1 && players.size() < 5) {
+            this.numPlayer = players.size();
             game = new MultiPlayerGame(this);
-            createLobby();
+            for (int i = 0; i < numPlayer; i++) {
+                game.createPlayer(players.get(i));
+            }
         }
         else
             update(MessageID.TOO_MANY_PLAYERS);
@@ -65,25 +68,7 @@ public class Controller implements Observer<MessageID> {
         initializationPhase = false;
         game.start(numPlayer);
 
-        update(MessageID.ACK);*/
-
-        System.out.println("sei qui, nel controller");
-    }
-
-    public synchronized void addPlayer(String nickname){
-        game.createPlayer(nickname);
-        update(MessageID.ACK);
-        notifyAll();
-    }
-
-    private synchronized void createLobby(){
-        while(game.getTotalPlayers() != numPlayer) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        System.out.println("Hey, sei qui, nel controller");
     }
 
     // END GAME INITIALIZATION -----------------------------------------------------------------------------------------
@@ -254,9 +239,9 @@ public class Controller implements Observer<MessageID> {
 
             case TOO_MANY_PLAYERS -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "The number of player must be from 2 to 4"));
             case CHOOSE_RESOURCE -> {
-                if (game.getCurrPlayer().getTurnID() == 4)
+                /*if (game.getCurrPlayer().getTurnID() == 4)
                     remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "2"));
-                else
+                else*/
                     remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "1"));
             }
 

@@ -28,24 +28,23 @@ cioè chiamate vs pattern observer(property change)
 
  */
 
-public class RemoteView extends View implements Observer<MessageEnvelope> {
+public class RemoteView extends View {
 
     Controller controller;
     Gson gson = new Gson();
     ClientConnection clientConnection;
-    ClientSocketConnection c;
 
     public RemoteView(String playerNickname, List<String> playerNames, ClientConnection clientConnection) {
         super(playerNickname);
         this.clientConnection = clientConnection;
-        c.registerObserver(new InputMessageHandler());
-        c.sendData(gson.toJson(new MessageEnvelope(MessageID.PLAYER_LIST, playerNames.toString())));
+        clientConnection.registerObserver(new InputMessageHandler());
+        clientConnection.send(gson.toJson(new MessageEnvelope(MessageID.PLAYER_LIST, playerNames.toString())));
 
     }
 
     @Override
     protected void sendMessage(String message) {
-        c.send(message);
+        clientConnection.send(message);
     }
 
     // MESSAGE RECEIVER ------------------------------------------------------------------------------------------------
@@ -56,15 +55,8 @@ public class RemoteView extends View implements Observer<MessageEnvelope> {
 
             switch (envelope.getMessageID()) {
 
-                // INITIALIZATION
-
-                case REGISTER_SINGLE -> controller.createSinglePlayerGame(gson.fromJson(envelope.getPayload(), String.class));
-
-                case REGISTER_MULTI -> controller.createMultiplayerGame(gson.fromJson(envelope.getPayload(), Integer.class));
-
                 // PLAYER REGISTRATION
 
-                case ADD_PLAYER_REQUEST -> controller.addPlayer(gson.fromJson(envelope.getPayload(), String.class));
 
                 // GAME PHASES
 

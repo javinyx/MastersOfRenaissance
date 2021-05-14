@@ -1,8 +1,9 @@
 package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.messages.MessageEnvelope;
+import it.polimi.ingsw.misc.Observer;
 
-public abstract class View {
+public abstract class View implements Observer<MessageEnvelope> {
 
     private final String nickname;
 

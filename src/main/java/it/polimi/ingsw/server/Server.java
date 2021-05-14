@@ -254,8 +254,13 @@ public class Server {
         Controller controller = new Controller();
         for (int i = 0; i < connectionList.size(); i++){
             View v = new RemoteView(playerNames.get(i), playerNames, connectionList.get(i));
+            controller.registerObserver(v);
         }
-        controller.createMultiplayerGame(playerNames.size());
+
+        if(playerNames.size() > 1)
+            controller.createMultiplayerGame(playerNames);
+        else
+            controller.createSinglePlayerGame(playerNames.get(0));
     }
 
 
@@ -268,6 +273,7 @@ public class Server {
     public synchronized boolean isNameAvailable(String name, int playerNum) {
         try {
             return switch (playerNum) {
+                case 1 -> true;
                 case 2 -> (!twoPlayerWait.containsKey(name));
                 case 3 -> (!threePlayerWait.containsKey(name));
                 case 4 -> (!fourPlayerWait.containsKey(name));

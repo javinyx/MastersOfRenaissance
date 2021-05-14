@@ -126,7 +126,7 @@ public class CliController extends ClientController {
                 }
             }
             case PLAYER_NUM, TOO_MANY_PLAYERS -> {
-                if (!input.equals("2") && !input.equals("3")) {
+                if (!input.equals("2") && !input.equals("3") && !input.equals("1") && !input.equals("4")) {
                     cli.showMessage("Number of players not available!");
                     askNumberOfPlayers();
                     return;

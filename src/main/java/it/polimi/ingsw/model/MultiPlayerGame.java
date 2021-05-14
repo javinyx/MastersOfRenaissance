@@ -49,6 +49,23 @@ public class MultiPlayerGame extends Game implements ModelObserver {
 
         List<Card> tempList;
 
+
+
+        for (int i = 0; i < numPlayers; i++) {
+            currPlayer = activePlayers.get(i);
+                switch (currPlayer.getTurnID()) {
+                    case 2: controller.update(MessageID.CHOOSE_RESOURCE);
+                        break;
+                    case 3: case 4: {
+                        currPlayer.moveOnBoard(1);
+                        controller.update(MessageID.CHOOSE_RESOURCE);
+                        break;
+                    }
+                }
+        }
+
+        currPlayer = activePlayers.get(0);
+
         //distribuisci leader
         for (int i = 0; i < numPlayers; i++) {
             tempList = new ArrayList<>();
@@ -57,7 +74,7 @@ public class MultiPlayerGame extends Game implements ModelObserver {
             }
             //players.get(i).gaveLeaderOption(tempList);
         }
-        currPlayer = activePlayers.get(0);
+
 
     }
 
@@ -81,19 +98,6 @@ public class MultiPlayerGame extends Game implements ModelObserver {
         totalPlayers++;
         ProPlayer p = new ProPlayer(nickname, totalPlayers, this);
         players.add(p);
-
-
-        switch (p.getTurnID()) {
-            case 2: controller.update(MessageID.CHOOSE_RESOURCE);
-                     break;
-            case 3: case 4: {
-                p.moveOnBoard(1);
-                controller.update(MessageID.CHOOSE_RESOURCE);
-                break;
-            }
-
-        }
-
         p.registerObserver(this);
         activePlayers.add(p);
         return true;

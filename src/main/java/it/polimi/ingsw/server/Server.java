@@ -143,6 +143,7 @@ public class Server {
      */
     public synchronized void lobby(ClientConnection c, String name, int playerNum) {
         try {
+            System.out.println("sono qui");
             switch(playerNum) {
                 case 1 -> {
                     singlePlayerWait.put(name, c);
@@ -249,12 +250,12 @@ public class Server {
      * @param playerNames the list containing the nicknames of all the players
      */
     public void createGame(List<ClientConnection> connectionList, List<String> playerNames) {
+        //qui ci arriva
         Controller controller = new Controller();
         for (int i = 0; i < connectionList.size(); i++){
             View v = new RemoteView(playerNames.get(i), playerNames, connectionList.get(i));
         }
-        /*game.setPlayerList(nicknames);
-        controller.startGame();*/
+        controller.createMultiplayerGame(playerNames.size());
     }
 
 

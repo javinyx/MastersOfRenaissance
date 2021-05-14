@@ -51,7 +51,7 @@ public class Controller implements Observer<MessageID> {
     }
 
     public void createMultiplayerGame(int numPlayer){
-        if (numPlayer > 1 && numPlayer < 5) {
+        /*if (numPlayer > 1 && numPlayer < 5) {
             this.numPlayer = numPlayer;
             game = new MultiPlayerGame(this);
             createLobby();
@@ -65,7 +65,9 @@ public class Controller implements Observer<MessageID> {
         initializationPhase = false;
         game.start(numPlayer);
 
-        update(MessageID.ACK);
+        update(MessageID.ACK);*/
+
+        System.out.println("sei qui, nel controller");
     }
 
     public synchronized void addPlayer(String nickname){

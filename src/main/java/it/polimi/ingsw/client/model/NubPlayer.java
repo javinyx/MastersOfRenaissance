@@ -1,5 +1,7 @@
 package it.polimi.ingsw.client.model;
 
+import it.polimi.ingsw.misc.Storage;
+import it.polimi.ingsw.misc.TriElement;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
@@ -15,7 +17,7 @@ public class NubPlayer {
     private boolean isMyTurn = false;
     private List<Deque<ConcreteProductionCard>> productionStacks;
     private List<LeaderCard> leaders;
-    private List<Resource> allResources;
+    private List<TriElement<Resource, Storage, Integer>> allResources;
 
     public NubPlayer(String nickname, int turnId){
         this.nickname = nickname;
@@ -37,11 +39,14 @@ public class NubPlayer {
     public void setCurrPos(int pos){currPos = pos;}
 
     /**Clears all the resources owned by the player and add the new ones.*/
-    public void setAllResources(List<Resource> resources){
+    public void setAllResources(List<TriElement<Resource,Storage, Integer>> resources){
         allResources.clear();
         allResources.addAll(resources);
     }
+    public void addResources(TriElement<Resource,Storage,Integer> resources){this.allResources.add(resources);}
+    public void addResources(List<TriElement<Resource,Storage,Integer>> resources){this.allResources.addAll(resources);}
 
+    public List<TriElement<Resource,Storage,Integer>> getAllResources(){return allResources;}
     public boolean setPosition(int pos){
         if(pos>0 && pos<25) {
             currPos = pos;

@@ -344,6 +344,7 @@ public class Controller implements Observer<MessageID> {
             ((MultiPlayerGame) game).removeFromActivePlayers(playerName);
         }else{
             //do nothing, unless we want reset the game instead of leaving it pending
+            //timer and then disconnect?
         }
     }
 

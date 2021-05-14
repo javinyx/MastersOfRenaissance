@@ -6,13 +6,12 @@ import it.polimi.ingsw.MastersOfRenaissance;
 import it.polimi.ingsw.client.model.ClientGame;
 import it.polimi.ingsw.client.model.Market;
 import it.polimi.ingsw.client.model.NubPlayer;
-import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
-import it.polimi.ingsw.messages.concreteMessages.BuyMarketMessage;
 import it.polimi.ingsw.messages.concreteMessages.ChooseLeaderCardsMessage;
 import it.polimi.ingsw.messages.concreteMessages.ChoosePlacementsInStorageMessage;
 import it.polimi.ingsw.messages.concreteMessages.UpdateMessage;
-import it.polimi.ingsw.misc.BiElement;
+import it.polimi.ingsw.misc.Storage;
+import it.polimi.ingsw.misc.TriElement;
 import it.polimi.ingsw.model.cards.leader.*;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
@@ -199,7 +198,35 @@ public abstract class ClientController {
                 pp.setCurrPos(msg.getPlayerPos());
                 pp.addProductionCard(boughtProductionCard, msg.getProductionCardId().getV()-1);
                 pp.setLeaders(convertIdToLeaderCard(msg.getLeadersId()));
-                pp.setAllResources(msg.getResources());
+
+                List<TriElement<Resource, Storage,Integer>> actualResources, actualResourcesDupe, resources;
+                actualResources = pp.getAllResources();
+                actualResourcesDupe = new ArrayList<>(actualResources);
+                resources = msg.getAddedResources();
+                for(TriElement<Resource, Storage, Integer> actualElem : actualResourcesDupe){
+                    for(TriElement<Resource,Storage,Integer> elem : resources) {
+                        if (actualElem.getFirstValue().equals(elem.getFirstValue()) && actualElem.getSecondValue().equals(elem.getSecondValue())) {
+                            actualElem.setThirdValue(actualElem.getThirdValue() + elem.getThirdValue());
+                        }else{
+                            pp.addResources(elem);
+                        }
+                    }
+                }
+
+                pp.addResources(msg.getAddedResources());
+
+                resources = msg.getRemovedResources();
+                actualResources = pp.getAllResources();
+                actualResourcesDupe = new ArrayList<>(actualResources);
+                for(TriElement<Resource,Storage, Integer> elem : resources){
+                    for(TriElement<Resource,Storage,Integer> actualElem : actualResourcesDupe)
+                    if(elem.getFirstValue().equals(actualElem.getFirstValue()) && elem.getSecondValue().equals(actualElem.getSecondValue())){
+                        actualElem.setThirdValue(actualElem.getThirdValue() - elem.getThirdValue());
+                        if(actualElem.getThirdValue()<1){
+                            actualResources.remove(actualElem);
+                        }
+                    }
+                }
                 view.updateOtherPlayer(pp);
                 break;
             }

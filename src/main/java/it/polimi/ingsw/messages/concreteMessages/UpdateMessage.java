@@ -2,6 +2,8 @@ package it.polimi.ingsw.messages.concreteMessages;
 
 import it.polimi.ingsw.messages.SimpleMessage;
 import it.polimi.ingsw.misc.BiElement;
+import it.polimi.ingsw.misc.Storage;
+import it.polimi.ingsw.misc.TriElement;
 import it.polimi.ingsw.model.market.Resource;
 
 import java.util.List;
@@ -14,7 +16,7 @@ public class UpdateMessage extends SimpleMessage {
 
     private final BiElement<Integer,Integer> productionCardId;
     private final List<Integer> leadersId;
-    private final List<Resource> resources;
+    private final List<TriElement<Resource, Storage,Integer>> addedResources, removedResources;
 
     /**@param playerId is the player that has caused changes in the model
      * @param marketBoard the new market configuration
@@ -24,9 +26,11 @@ public class UpdateMessage extends SimpleMessage {
      * @param productionCardId production card's id bought by the {@code playerId} ({@code T}) player
      *        and the stack where it's been put ({@code V})
      * @param leadersId active leaders that {@code playerId} has
-     * @param resources all the resources that {@code playerId} has (lootchest, warehouse, extraStorage) in that moment*/
+     * @param addedResources all the resources that {@code playerId} has (lootchest, warehouse, extraStorage) in that moment
+     * @param removedResources all the resources removed from {@code playerId}'s storage (lootchest, warehouse, extraStorage) once the turn was over*/
     public UpdateMessage(int playerId, int playerPos, Resource[][] marketBoard, Resource extraMarble, List<Integer> availableProductionCards,
-                         BiElement<Integer, Integer> productionCardId, List<Integer> leadersId, List<Resource> resources){
+                         BiElement<Integer, Integer> productionCardId, List<Integer> leadersId,
+                         List<TriElement<Resource, Storage,Integer>> addedResources, List<TriElement<Resource, Storage,Integer>> removedResources){
         this.playerId = playerId;
         this.playerPos = playerPos;
         this.marketBoard = marketBoard;
@@ -34,7 +38,8 @@ public class UpdateMessage extends SimpleMessage {
         this.availableProductionCards = availableProductionCards;
         this.productionCardId = productionCardId;
         this.leadersId = leadersId;
-        this.resources = resources;
+        this.addedResources = addedResources;
+        this.removedResources = removedResources;
     }
 
     public Resource[][] getMarketBoard(){
@@ -58,7 +63,12 @@ public class UpdateMessage extends SimpleMessage {
     }
 
     /**@return all the resources that the player owns in that moment across all types of storage*/
-    public List<Resource> getResources() {
-        return resources;
+    public List<TriElement<Resource, Storage,Integer>> getAddedResources() {
+        return addedResources;
+    }
+
+    /**@return all the resources removed from the player's storages*/
+    public List<TriElement<Resource, Storage,Integer>> getRemovedResources() {
+        return removedResources;
     }
 }

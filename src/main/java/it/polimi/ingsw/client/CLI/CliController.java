@@ -5,7 +5,6 @@ import it.polimi.ingsw.client.ClientController;
 import it.polimi.ingsw.client.MessageReceiver;
 import it.polimi.ingsw.client.MessageToServerHandler;
 import it.polimi.ingsw.messages.MessageID;
-import it.polimi.ingsw.messages.concreteMessages.BuyMarketMessage;
 import it.polimi.ingsw.messages.concreteMessages.ChooseLeaderCardsMessage;
 import it.polimi.ingsw.messages.concreteMessages.ChoosePlacementsInStorageMessage;
 import it.polimi.ingsw.misc.BiElement;
@@ -38,7 +37,7 @@ public class CliController extends ClientController {
 
         String ip=cli.askForIp();
         int port=cli.askForPort();
-        Socket socket=new Socket(ip,port);
+        Socket socket = new Socket(ip,port);
         socket.setKeepAlive(true);
 
         PrintWriter toServer = new PrintWriter(socket.getOutputStream());

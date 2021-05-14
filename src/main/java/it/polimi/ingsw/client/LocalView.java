@@ -5,10 +5,11 @@ import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.misc.Observer;
 
 /**View for a local single game. No network between View and Controller/Model*/
-public class LocalView extends ViewInterface implements Observer<MessageEnvelope> {
+public class LocalView implements Observer<MessageEnvelope>, ViewInterface {
+    private ClientController controller;
 
     public LocalView(ClientController controller){
-        super(controller);
+        this.controller = controller;
     }
 
     @Override
@@ -16,12 +17,10 @@ public class LocalView extends ViewInterface implements Observer<MessageEnvelope
 
     }
 
-    @Override
     public void buyFromMarket() {
 
     }
 
-    @Override
     public void activateLeader() {
 
     }

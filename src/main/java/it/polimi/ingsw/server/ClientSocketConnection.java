@@ -1,21 +1,16 @@
 package it.polimi.ingsw.server;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import it.polimi.ingsw.client.MessageToServerHandler;
 import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
-import it.polimi.ingsw.misc.Observer;
-import it.polimi.ingsw.model.ModelObserver;
-import it.polimi.ingsw.model.Observable;
+import it.polimi.ingsw.misc.Observable;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Scanner;
 
-//public class ClientSocketConnection extends Observable<String> implements ClientConnection, Runnable {
-public class ClientSocketConnection implements ClientConnection, Runnable {
+public class ClientSocketConnection extends Observable<String> implements ClientConnection, Runnable {
     private final Socket socket;
     private ObjectOutputStream output;
     private final Server server;
@@ -111,7 +106,7 @@ public class ClientSocketConnection implements ClientConnection, Runnable {
             String read;
             while(isActive()){
                 read = in.nextLine();
-                //notify(read);
+                notify(read);
             }
 
         } catch (IOException e) {

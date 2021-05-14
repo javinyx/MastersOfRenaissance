@@ -46,7 +46,8 @@ public class Cli /*extends ViewInterface*/ {
             // Print Logo
             InputStream in = getClass().getResourceAsStream("/startLogo.txt");
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            for (int i = 0; i < 30; i++) System.out.println(reader.readLine());
+            for (int i = 0; i < 30; i++)
+                System.out.println(reader.readLine());
 
             OSPrinter.printAlignedCenter("1: Start Game", imageLength);
             System.out.println("\n");

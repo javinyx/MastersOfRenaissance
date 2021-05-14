@@ -16,6 +16,7 @@ import it.polimi.ingsw.model.cards.leader.*;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -138,7 +139,7 @@ public abstract class ClientController {
     public void initAvailableProductionCard(){}
     public void setMarket(Resource[][] market, Resource extra){ this.market = new Market(market,extra);}
 
-
+    public abstract boolean setup() throws IOException;
     // INITIALIZATION MESSAGES -----------------------------------------------------------------------------------------
 
     public abstract void askNickname ();

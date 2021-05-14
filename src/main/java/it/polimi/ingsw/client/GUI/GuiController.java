@@ -3,11 +3,23 @@ package it.polimi.ingsw.client.GUI;
 import it.polimi.ingsw.client.ClientController;
 import it.polimi.ingsw.messages.concreteMessages.ChooseLeaderCardsMessage;
 import it.polimi.ingsw.messages.concreteMessages.ChoosePlacementsInStorageMessage;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class GuiController extends ClientController {
-    @Override
-    protected void setWaitingServerUpdate(boolean b) {
+    private Stage stage;
 
+    public GuiController(Stage stage){
+        this.stage = stage;
+    }
+    @Override
+    public boolean setup() throws IOException {
+        return true;
+    }
+
+    @Override
+    public void setWaitingServerUpdate(boolean b) {
     }
 
     @Override

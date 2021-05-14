@@ -46,10 +46,7 @@ public class MultiPlayerGame extends Game implements ModelObserver {
      */
 
     public void start(int numPlayers){
-
         List<Card> tempList;
-
-
 
         for (int i = 0; i < numPlayers; i++) {
             currPlayer = activePlayers.get(i);
@@ -85,7 +82,7 @@ public class MultiPlayerGame extends Game implements ModelObserver {
     /**Create the player with also the initial extra resources.
      * @param nickname the nickname of the player*/
     public boolean createPlayer(String nickname){
-        if(totalPlayers>3){
+        if(totalPlayers>3){ //è giusto
             return false;//too many players
         }
         List<String> nicknames = players.stream()
@@ -111,6 +108,16 @@ public class MultiPlayerGame extends Game implements ModelObserver {
     public List<ProPlayer> getPlayers() {
         return players;
     }
+    public List<ProPlayer> getActivePlayers(){return activePlayers;}
+
+    public void removeFromActivePlayers(String nickname){
+        for(ProPlayer p : activePlayers){
+            if(p.getNickname().equals(nickname)){
+                activePlayers.remove(p);
+                return;
+            }
+        }
+    }
 
     public Market getMarket(){
         return market;
@@ -127,7 +134,7 @@ public class MultiPlayerGame extends Game implements ModelObserver {
             return;
         }
         for(ProPlayer p : activePlayers){
-            //next active player found: give him the currPlayer title
+            //next active player found: give him/her the currPlayer title
             if(p.getTurnID() == currID){
                 currPlayer = p;
                 return;

@@ -3,9 +3,9 @@ package it.polimi.ingsw.view;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import it.polimi.ingsw.controller.Controller;
-import it.polimi.ingsw.messages.concreteMessages.BuyMarketMessage;
 import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
+import it.polimi.ingsw.messages.concreteMessages.BuyMarketMessage;
 import it.polimi.ingsw.messages.concreteMessages.BuyProductionMessage;
 import it.polimi.ingsw.messages.concreteMessages.ProduceMessage;
 import it.polimi.ingsw.misc.BiElement;
@@ -13,7 +13,6 @@ import it.polimi.ingsw.misc.Observer;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.MarbleAbility;
 import it.polimi.ingsw.server.ClientConnection;
-import it.polimi.ingsw.server.ClientSocketConnection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +69,8 @@ public class RemoteView extends View {
 
                 case STORE_RESOURCES -> controller.organizeResourceAction(gson.fromJson(envelope.getPayload(), new TypeToken<ArrayList<BiElement<MarbleAbility, Integer>>>() {}.getType()));
 
+                //PING PONG
+                case PONG -> clientConnection.setStillConnected(true);
             }
         /*}
 

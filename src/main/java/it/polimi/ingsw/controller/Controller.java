@@ -1,21 +1,26 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.messages.*;
-import it.polimi.ingsw.messages.concreteMessages.*;
+import it.polimi.ingsw.messages.MessageEnvelope;
+import it.polimi.ingsw.messages.MessageID;
+import it.polimi.ingsw.messages.concreteMessages.BuyMarketMessage;
+import it.polimi.ingsw.messages.concreteMessages.BuyProductionMessage;
+import it.polimi.ingsw.messages.concreteMessages.ProduceMessage;
+import it.polimi.ingsw.messages.concreteMessages.UpdateMessage;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Observer;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.MultiPlayerGame;
 import it.polimi.ingsw.model.SinglePlayerGame;
-import it.polimi.ingsw.model.cards.leader.DiscountAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.player.BadStorageException;
 import it.polimi.ingsw.model.player.ProPlayer;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class Controller implements Observer<MessageID> {
 
@@ -333,5 +338,13 @@ public class Controller implements Observer<MessageID> {
         timer = new Timer(true);
         timer.schedule(new TurnTimerTask(this, game.getCurrPlayer().getTurnType()),turnTime*1000);
     }*/
+
+    public void setInactivePlayer(String playerName){
+        if(game instanceof MultiPlayerGame){
+            ((MultiPlayerGame) game).removeFromActivePlayers(playerName);
+        }else{
+            //do nothing, unless we want reset the game instead of leaving it pending
+        }
+    }
 
 }

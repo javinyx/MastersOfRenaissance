@@ -26,6 +26,8 @@ public class Server {
     private Map<ClientConnection, List<ClientConnection>> threePlayerPlay = new HashMap<>();
     private Map<ClientConnection, List<ClientConnection>> fourPlayerPlay = new HashMap<>();
 
+    private Controller controller;
+
     /**
      * Deregisters a connection from any type of game.
      * @param c the connection that will be removed
@@ -251,7 +253,7 @@ public class Server {
      */
     public void createGame(List<ClientConnection> connectionList, List<String> playerNames) {
         //qui ci arriva
-        Controller controller = new Controller();
+        controller = new Controller();
         for (int i = 0; i < connectionList.size(); i++){
             View v = new RemoteView(playerNames.get(i), playerNames, connectionList.get(i));
             controller.registerObserver(v);
@@ -261,6 +263,11 @@ public class Server {
             controller.createMultiplayerGame(playerNames);
         else
             controller.createSinglePlayerGame(playerNames.get(0));
+
+        for(ClientConnection cc : connectionList){
+            Thread pingPong = cc.getPingPongSystem();
+            pingPong.start();
+        }
     }
 
 
@@ -271,6 +278,9 @@ public class Server {
      * @return boolean true if the name is available, false otherwise
      */
     public synchronized boolean isNameAvailable(String name, int playerNum) {
+        if(name.equals("")){
+            return false; //we don't want an empty string as a valid name
+        }
         try {
             return switch (playerNum) {
                 case 1 -> true;
@@ -310,4 +320,22 @@ public class Server {
             }
         }
     }
+
+    public boolean playerCrashed(ClientConnection connection, String name, int gameSize){
+        switch (gameSize) {
+            case 1 : if(!singlePlayerPlay.equals(connection))
+                        return false;
+            case 2 : if(!twoPlayerPlay.containsKey(connection))
+                        return false;
+            case 3 : if(!threePlayerWait.containsKey(name))
+                        return false;
+            case 4 : if(!fourPlayerWait.containsKey(name))
+                        return false;
+                controller.setInactivePlayer(name);
+                return true;
+            default : return false;
+        }
+
+    }
+
 }

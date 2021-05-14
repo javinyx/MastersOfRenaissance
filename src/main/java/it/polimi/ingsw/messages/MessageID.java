@@ -52,6 +52,8 @@ public enum MessageID {
     WRONG_PLAYER_REQUEST,
 
     INFO,
+    PING,
+    PONG,
 
     CARD_NOT_AVAILABLE,
 

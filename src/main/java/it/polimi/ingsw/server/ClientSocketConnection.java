@@ -10,12 +10,17 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Scanner;
 
+import static java.lang.Thread.sleep;
+
 public class ClientSocketConnection extends Observable<String> implements ClientConnection, Runnable {
     private final Socket socket;
     private ObjectOutputStream output;
     private final Server server;
+    private String readName;
+    private int gameSize;
 
     private boolean active = true;
+    private Boolean stillConnected = false;
 
     public ClientSocketConnection(Socket socket, Server server) {
         this.socket = socket;
@@ -30,6 +35,14 @@ public class ClientSocketConnection extends Observable<String> implements Client
     public synchronized void setActive(boolean isActive){
         active = isActive;
     }
+
+    @Override
+    public void setStillConnected(boolean isStillConnected) {
+        synchronized (stillConnected) {
+            stillConnected = isStillConnected;
+        }
+    }
+
 
     @Override
     public void send(Object message) {
@@ -77,61 +90,75 @@ public class ClientSocketConnection extends Observable<String> implements Client
         try{
             in = new Scanner(socket.getInputStream());
             output = new ObjectOutputStream(socket.getOutputStream());
-            String readName = null;
+            //String readName = null;
             String readNumber = null;
             boolean correctRegistration = false;
 
-            sendData(gson.toJson(new MessageEnvelope(MessageID.ASK_NICK, "playerName")));
+            send(gson.toJson(new MessageEnvelope(MessageID.ASK_NICK, "playerName")));
 
             while (!correctRegistration) {
                 readName = in.nextLine();
-                sendData(gson.toJson(new MessageEnvelope(MessageID.PLAYER_NUM, "numPlayers")));
+                send(gson.toJson(new MessageEnvelope(MessageID.PLAYER_NUM, "numPlayers")));
 
                 readNumber = in.nextLine();
                 while (!readNumber.equals("1") && !readNumber.equals("2") && !readNumber.equals("3") && !readNumber.equals("4")) {
-                    sendData(gson.toJson(new MessageEnvelope(MessageID.TOO_MANY_PLAYERS, "numPlayers ERROR")));
+                    send(gson.toJson(new MessageEnvelope(MessageID.TOO_MANY_PLAYERS, "numPlayers ERROR")));
                     readNumber = in.nextLine();
                 }
+                gameSize = Integer.parseInt(readNumber);
 
                 correctRegistration = server.isNameAvailable(readName, Integer.parseInt(readNumber));
 
                 if (!correctRegistration){
-                    sendData(gson.toJson(new MessageEnvelope(MessageID.NICK_ERR, "nickName ERROR")));
+                    send(gson.toJson(new MessageEnvelope(MessageID.NICK_ERR, "nickName ERROR")));
                 }
             }
 
-            sendData(gson.toJson(new MessageEnvelope(MessageID.CONFIRM_REGISTRATION, readName)));
+            send(gson.toJson(new MessageEnvelope(MessageID.CONFIRM_REGISTRATION, readName)));
 
             server.lobby(this, readName, Integer.parseInt(readNumber));
 
             String read;
-            while(isActive()){
+            while(active){
                 read = in.nextLine();
                 notify(read);
             }
 
         } catch (IOException e) {
             e.printStackTrace();
-            sendData(gson.toJson(new MessageEnvelope(MessageID.INFO, "player SURRENDER")));
+            send(gson.toJson(new MessageEnvelope(MessageID.INFO, "player SURRENDER")));
         } finally {
             close();
         }
     }
 
-    /*private void notify(String read) {
-    }*/
+    @Override
+    public Thread getPingPongSystem(){
+        Gson gson = new Gson();
+        stillConnected = true;
+        Thread pingPong = new Thread(() -> {
+            while(!socket.isClosed() && stillConnected){
+                MessageEnvelope pingEnvelope = new MessageEnvelope(MessageID.PING, "");
+                send(gson.toJson(pingEnvelope, MessageEnvelope.class));
+                synchronized (stillConnected) {
+                    stillConnected = false;
+                }
+                try {
+                    sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            //if we're here, then the socket has been closed because hasn't received any PONG back
+            //inform model and close socket
+            server.playerCrashed(this, readName, gameSize);
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
 
-    /**
-     * Sends an object trough the socket
-     * @param o the object that will be sent
-     */
-    public synchronized void sendData(Object o) {
-        try {
-            output.reset();
-            output.writeObject(o);
-            output.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        return pingPong;
     }
 }

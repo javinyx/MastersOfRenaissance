@@ -26,4 +26,10 @@ public interface ClientConnection {
      */
     void setActive(boolean updated);
 
+    /**Set stillConnected in {@link ClientConnection} if the client has responded with a pong.
+     * <p>This method should be thread-safe on the {@code stillConnected} object.</p>*/
+    void setStillConnected(boolean isStillConnected);
+
+    Thread getPingPongSystem();
+
 }

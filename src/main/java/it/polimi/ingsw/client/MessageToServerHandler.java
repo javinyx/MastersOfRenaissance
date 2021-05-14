@@ -1,7 +1,6 @@
 package it.polimi.ingsw.client;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
 
@@ -17,6 +16,8 @@ public class MessageToServerHandler {
         this.toServer = toServer;
         this.controller = controller;
     }
+
+    protected PrintWriter getToServer(){return toServer;}
 
     public void generateEnvelope(MessageID messageID, String payload){
         MessageEnvelope envelope = new MessageEnvelope(messageID, payload);

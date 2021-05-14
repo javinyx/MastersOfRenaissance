@@ -44,6 +44,10 @@ public abstract class ClientController {
     private boolean registrationPhase = true;
     private boolean gameOver = false;
 
+    protected MessageToServerHandler messageToServerHandler;
+
+    protected MessageToServerHandler getMessageToServerHandler(){return messageToServerHandler;}
+
     public MessageID getLastRegistrationMessage() {
         return lastRegistrationMessage;
     }

@@ -1,9 +1,7 @@
 package it.polimi.ingsw.client;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.concreteMessages.ChooseLeaderCardsMessage;
@@ -11,7 +9,6 @@ import it.polimi.ingsw.messages.concreteMessages.UpdateMessage;
 import it.polimi.ingsw.model.market.Resource;
 
 import java.io.ObjectInputStream;
-import java.io.PrintWriter;
 import java.util.List;
 
 /**This class allows the Client to read/send messages from/to the server. */
@@ -20,7 +17,7 @@ public class MessageReceiver implements Runnable{
     protected static final Gson gson = new Gson();
     private final ObjectInputStream socketIn;
 
-
+    private volatile Object pongLock;
 
     public MessageReceiver(ObjectInputStream socketIn, ClientController controller){
         this.socketIn = socketIn;
@@ -34,14 +31,22 @@ public class MessageReceiver implements Runnable{
      */
     @Override
     public void run() {
+        Thread pong = getPingPongSystem();
+        pong.start();
         try {
             while (controller.isActive()) {
                 String inputObject = (String)socketIn.readObject();
                 controller.setWaitingServerUpdate(false);
                 MessageEnvelope envelope = gson.fromJson(inputObject, MessageEnvelope.class);
-                controller.setWaitingServerUpdate(false);
-                if (controller.isRegistrationPhase()) readRegistrationMessage(envelope);
-                else readGameMessage(envelope);
+                if(envelope.getMessageID().equals(MessageID.PING)){
+                    pongLock.notifyAll();
+                }else {
+                    controller.setWaitingServerUpdate(false);
+                    if (controller.isRegistrationPhase())
+                        readRegistrationMessage(envelope);
+                    else
+                        readGameMessage(envelope);
+                }
             }
         } catch (Exception e){
             controller.connectionError();
@@ -88,6 +93,30 @@ public class MessageReceiver implements Runnable{
             default -> System.err.println("MessageID not recognised");
         }
 
+    }
+
+    /**Return the thread that will send a PONG message to server through {@link MessageToServerHandler} class.
+     * <p>In order to send the pong, it must be awakened via {@code pongLock.notify()}. So when {@link MessageReceiver}
+     *'s thread gets a PING, it should invoke this thread.</p>*/
+    public Thread getPingPongSystem(){
+        Gson gson = new Gson();
+        MessageToServerHandler msgHandler = controller.getMessageToServerHandler();
+        Thread pong = new Thread(() -> {
+            synchronized (pongLock) {
+                while (true) {
+                    try {
+                        pongLock.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    MessageEnvelope pongEnvelope = new MessageEnvelope(MessageID.PONG, "");
+                    msgHandler.sendMessageToServer(gson.toJson(pongEnvelope, MessageEnvelope.class));
+
+                }
+            }
+        });
+
+        return pong;
     }
 
 }

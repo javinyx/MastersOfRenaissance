@@ -22,8 +22,8 @@ import java.util.NoSuchElementException;
 public class CliController extends ClientController {
 
     private final Cli cli;
-    Gson gson = new Gson();
-    MessageToServerHandler messageToServerHandler;
+    private Gson gson = new Gson();
+
 
 
     public CliController() {

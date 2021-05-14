@@ -1,17 +1,15 @@
 package it.polimi.ingsw.client.CLI;
 
-import com.google.gson.Gson;
 import it.polimi.ingsw.client.CLI.printer.Printer;
 import it.polimi.ingsw.client.CLI.printer.UnixPrinter;
 import it.polimi.ingsw.client.CLI.printer.WindowsPrinter;
-import it.polimi.ingsw.client.ViewInterface;
 import it.polimi.ingsw.model.cards.leader.MarbleAbility;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.Scanner;
 
 public class Cli /*extends ViewInterface*/ {
     private final Scanner scanner = new Scanner(System.in);
@@ -166,8 +164,6 @@ public class Cli /*extends ViewInterface*/ {
     public void showMessage(String str){
         System.out.println(str);
     }
-
-
 
 
 

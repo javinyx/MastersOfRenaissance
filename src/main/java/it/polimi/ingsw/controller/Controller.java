@@ -226,18 +226,13 @@ public class Controller implements Observer<MessageID> {
     @Override
     public void update(MessageID messageID){
 
-        /*
-         MODIFICARE POI METODI MODEL:
-
-         */
-
         switch(messageID) {
 
             case ACK -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "True"));
 
             //INITIALIZATION
 
-            case TOO_MANY_PLAYERS -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "The number of player must be from 2 to 4"));
+            case TOO_MANY_PLAYERS -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, ""));
             case CHOOSE_RESOURCE -> {
                 /*if (game.getCurrPlayer().getTurnID() == 4)
                     remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "2"));
@@ -247,13 +242,12 @@ public class Controller implements Observer<MessageID> {
 
             //GAME PHASES
 
-            case CARD_NOT_AVAILABLE -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "The chosen card is not available"));
-
-            case BAD_PRODUCTION_REQUEST -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "There something wrong with the storage"));
-            case BAD_PAYMENT_REQUEST -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "don't have enough resources"));
-            case BAD_DIMENSION_REQUEST -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "The dimension is wrong"));
-            case WRONG_STACK_CHOICE -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "Stacks are from 1 to 3/4"));
-            case WRONG_LEVEL_REQUEST ->  remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "The level of the card is wrong"));
+            case CARD_NOT_AVAILABLE,
+                 BAD_PRODUCTION_REQUEST,
+                 BAD_PAYMENT_REQUEST,
+                 BAD_DIMENSION_REQUEST,
+                 WRONG_STACK_CHOICE,
+                 WRONG_LEVEL_REQUEST ->  remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, ""));
 
 /*TODO*/    case CHOOSE_LEADER_CARDS -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "You have to choose a leader card"));
 

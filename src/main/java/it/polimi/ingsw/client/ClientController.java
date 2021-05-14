@@ -6,6 +6,7 @@ import it.polimi.ingsw.MastersOfRenaissance;
 import it.polimi.ingsw.client.model.ClientGame;
 import it.polimi.ingsw.client.model.Market;
 import it.polimi.ingsw.client.model.NubPlayer;
+import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.concreteMessages.BuyMarketMessage;
 import it.polimi.ingsw.messages.concreteMessages.ChooseLeaderCardsMessage;
@@ -147,6 +148,28 @@ public abstract class ClientController {
 
 
     // ERROR MESSAGE ACTIONS -------------------------------------------------------------------------------------------
+
+    public void cardNotAvailable(){
+        displayMessage("The chosen card is not available");
+    }
+
+    public void badProductionRequest(){
+        displayMessage("There something wrong with the storage");
+    }
+
+    public void badPaymentRequest(){
+        displayMessage("don't have enough resources");
+    }
+
+    public void badDimensionRequest(){
+        displayMessage("The dimension is wrong");
+    }
+    public void wrongStackRequest(){
+        displayMessage("Stacks are from 1 to 3/4");
+    }
+    public void wrongLevelRequest(){
+        displayMessage("The level of the card is wrong");
+    }
 
     public abstract boolean ackConfirmed (String msg);
     public abstract void displayMessage(String str);

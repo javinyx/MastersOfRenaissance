@@ -3,6 +3,7 @@ package it.polimi.ingsw.client;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.concreteMessages.ChooseLeaderCardsMessage;
@@ -71,12 +72,12 @@ public class MessageReceiver implements Runnable{
 
         switch(envelope.getMessageID()){
 
-            case CARD_NOT_AVAILABLE,
-                    BAD_PRODUCTION_REQUEST,
-                    WRONG_LEVEL_REQUEST,
-                    WRONG_STACK_CHOICE,
-                    BAD_DIMENSION_REQUEST,
-                    BAD_PAYMENT_REQUEST -> controller.displayMessage(gson.fromJson(envelope.getPayload(), String.class));
+            case CARD_NOT_AVAILABLE -> controller.cardNotAvailable();
+            case BAD_PRODUCTION_REQUEST -> controller.badProductionRequest();
+            case BAD_PAYMENT_REQUEST -> controller.badPaymentRequest();
+            case BAD_DIMENSION_REQUEST -> controller.badDimensionRequest();
+            case WRONG_STACK_CHOICE -> controller.wrongStackRequest();
+            case WRONG_LEVEL_REQUEST -> controller.wrongLevelRequest();
 
             case CHOOSE_LEADER_CARDS -> controller.chooseLeadersAction(gson.fromJson(envelope.getPayload(), ChooseLeaderCardsMessage.class));
             case STORE_RESOURCES -> controller.chooseStorageAction(gson.fromJson(envelope.getPayload(), new TypeToken<List<Resource>>(){}.getType()));

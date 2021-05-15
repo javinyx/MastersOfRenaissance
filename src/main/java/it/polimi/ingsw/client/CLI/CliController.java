@@ -60,13 +60,10 @@ public class CliController extends ClientController {
         return true;
     }
 
-
-    public synchronized void confirmRegistration(String nickname) {
-        super.confirmRegistration(nickname);
-        setWaitingServerUpdate(true);
-        cli.showMessage("Hello " + nickname + "! Registration has been completed successfully.");
+    @Override
+    public void displayMessage(String str) {
+        cli.showMessage(str);
     }
-
 
     // Input Part ------------------------------------------------------------------------------------------------------
 
@@ -140,15 +137,26 @@ public class CliController extends ClientController {
 
     }
 
-
-
-    // INITIALIZATION PHASE --------------------------------------------------------------------------------------------
+    // REGISTRATION PHASE --------------------------------------------------------------------------------------------
 
     @Override
     public synchronized void askNickname (){ System.out.println("Hello, what's your Nickname?"); }
 
     @Override
     public synchronized void askNumberOfPlayers() { System.out.println("How many players do you want to play with"); }
+
+    public synchronized void confirmRegistration(String nickname) {
+        super.confirmRegistration(nickname);
+        setWaitingServerUpdate(true);
+        cli.showMessage("Hello " + nickname + "! Registration has been completed successfully.");
+    }
+
+    // SETUP PHASE -----------------------------------------------------------------------------------------------------
+
+    @Override
+    public void chooseResourceAction(String quantity) {
+        cli.showMessage("Choose no." + quantity + " resources");
+    }
 
 
     // Message From Server ---------------------------------------------------------------------------------------------
@@ -160,15 +168,6 @@ public class CliController extends ClientController {
         return false;
     }
 
-    @Override
-    public void displayMessage(String str) {
-        cli.showMessage(str);
-    }
-
-    @Override
-    public void chooseResourceAction(String quantity) {
-        cli.showMessage("Choose no." + quantity + " resources");
-    }
     @Override
     public void chooseStorageAction(ChoosePlacementsInStorageMessage msg){
         cli.showMessage("Choose a storage for each of the following resources: " + msg.getResources());

@@ -44,7 +44,7 @@ public class Cli /*extends ViewInterface*/ {
             // Print Logo
             InputStream in = getClass().getResourceAsStream("/startLogo.txt");
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i < 34; i++)
                 System.out.println(reader.readLine());
 
             OSPrinter.printAlignedCenter("1: Start Game", imageLength);
@@ -91,7 +91,7 @@ public class Cli /*extends ViewInterface*/ {
     }
 
     /**
-     * Sets a new {@link Thread} to constantly wait for input until his {@link InputChecker} goes inactive
+     * Sets a new {@link Thread} to constantly wait for input until controller goes inactive
      * @return the reading created {@link Thread}
      */
     public Thread startContinuousRead() {

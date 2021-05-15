@@ -17,7 +17,7 @@ public class MessageReceiver implements Runnable{
     protected static final Gson gson = new Gson();
     private final ObjectInputStream socketIn;
 
-    private volatile Object pongLock;
+    private volatile Object pongLock = new Object();
 
     public MessageReceiver(ObjectInputStream socketIn, ClientController controller){
         this.socketIn = socketIn;
@@ -31,15 +31,19 @@ public class MessageReceiver implements Runnable{
      */
     @Override
     public void run() {
+
         Thread pong = getPingPongSystem();
         pong.start();
+
         try {
             while (controller.isActive()) {
                 String inputObject = (String)socketIn.readObject();
                 controller.setWaitingServerUpdate(false);
                 MessageEnvelope envelope = gson.fromJson(inputObject, MessageEnvelope.class);
                 if(envelope.getMessageID().equals(MessageID.PING)){
-                    pongLock.notifyAll();
+                    synchronized (pongLock){
+                        pongLock.notifyAll();
+                    }
                 }else {
                     controller.setWaitingServerUpdate(false);
                     if (controller.isRegistrationPhase())
@@ -102,8 +106,8 @@ public class MessageReceiver implements Runnable{
         Gson gson = new Gson();
         MessageToServerHandler msgHandler = controller.getMessageToServerHandler();
         Thread pong = new Thread(() -> {
-            synchronized (pongLock) {
                 while (true) {
+                    synchronized (pongLock){
                     try {
                         pongLock.wait();
                     } catch (InterruptedException e) {

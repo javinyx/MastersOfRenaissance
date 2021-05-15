@@ -57,20 +57,17 @@ public class Controller implements Observer<MessageID> {
     }
 
     public void createMultiplayerGame(List<String> players){
-        if (players.size() > 1 && players.size() < 5) {
-            this.numPlayer = players.size();
-            game = new MultiPlayerGame(this);
-            for (int i = 0; i < numPlayer; i++) {
-                game.createPlayer(players.get(i));
-            }
+
+        this.numPlayer = players.size();
+        game = new MultiPlayerGame(this);
+        for (int i = 0; i < numPlayer; i++) {
+            game.createPlayer(players.get(i));
+
         }
-        else
-            update(MessageID.TOO_MANY_PLAYERS);
 
         //timer = new Timer(true);
         //timer.schedule(new TurnTimerTask(this, game.getCurrPlayer().getTurnType()),turnTime*1000);
 
-        initializationPhase = false;
         game.start(numPlayer);
 
         System.out.println("Hey, sei qui, nel controller");

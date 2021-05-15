@@ -144,7 +144,7 @@ public class ClientSocketConnection extends Observable<String> implements Client
                     stillConnected = false;
                 }
                 try {
-                    sleep(3000);
+                    sleep(30000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

@@ -46,6 +46,7 @@ public class MultiPlayerGame extends Game implements ModelObserver {
      */
 
     public void start(int numPlayers){
+
         List<Card> tempList;
 
         for (int i = 0; i < numPlayers; i++) {

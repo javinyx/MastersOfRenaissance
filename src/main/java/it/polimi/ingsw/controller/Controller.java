@@ -46,12 +46,19 @@ public class Controller implements Observer<MessageID> {
     // GAME INITIALIZATION -------------------------------------------------------------------------------
 
     public void createSinglePlayerGame(String nickName){
+        MessageEnvelope envelope;
+
         numPlayer = 1;
         game = new SinglePlayerGame(this);
         initializationPhase = false;
 
         game.createPlayer(nickName);
-        game.start(1);
+
+        int curr = game.getCurrPlayer().getTurnID()-1;
+
+        //Leader choice
+        envelope = new MessageEnvelope(MessageID.CHOOSE_LEADER_CARDS, String.valueOf(game.leaderDistribution()));
+        remoteViews.get(curr).update(envelope);
 
         System.out.println("Hey, sei qui, nel controller");
     }
@@ -60,15 +67,36 @@ public class Controller implements Observer<MessageID> {
 
         this.numPlayer = players.size();
         game = new MultiPlayerGame(this);
+
+        //Player Creation
         for (int i = 0; i < numPlayer; i++) {
+            MessageEnvelope envelope;
+
             game.createPlayer(players.get(i));
 
+            int curr = game.getCurrPlayer().getTurnID()-1;
+
+            envelope = new MessageEnvelope(MessageID.TURN_NUMBER, String.valueOf(curr+1));
+            remoteViews.get(curr).update(envelope);
+
+            //Leader choice
+            envelope = new MessageEnvelope(MessageID.CHOOSE_LEADER_CARDS, String.valueOf(game.leaderDistribution()));
+            remoteViews.get(curr).update(envelope);
+
+            //Resource Choice
+            if (curr == 1)
+                update(MessageID.CHOOSE_RESOURCE);
+            else if (curr == 2 || curr == 3){
+                update(MessageID.CHOOSE_RESOURCE);
+                game.getCurrPlayer().moveOnBoard(1);
+            }
         }
+
 
         //timer = new Timer(true);
         //timer.schedule(new TurnTimerTask(this, game.getCurrPlayer().getTurnType()),turnTime*1000);
 
-        game.start(numPlayer);
+        //game.start(numPlayer);
 
         System.out.println("Hey, sei qui, nel controller");
     }
@@ -235,11 +263,9 @@ public class Controller implements Observer<MessageID> {
             //INITIALIZATION
 
             case TOO_MANY_PLAYERS -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, ""));
+            //case CHOOSE_LEADER_CARDS -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "You have to choose a leader card"));
             case CHOOSE_RESOURCE -> {
-                /*if (game.getCurrPlayer().getTurnID() == 4)
-                    remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "2"));
-                else*/
-                    remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "1"));
+                remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, String.valueOf(game.getCurrPlayer().getTurnID())));
             }
 
             //GAME PHASES
@@ -250,8 +276,6 @@ public class Controller implements Observer<MessageID> {
                  BAD_DIMENSION_REQUEST,
                  WRONG_STACK_CHOICE,
                  WRONG_LEVEL_REQUEST ->  remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, ""));
-
-/*TODO*/    case CHOOSE_LEADER_CARDS -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "You have to choose a leader card"));
 
             case STORE_RESOURCES -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
 

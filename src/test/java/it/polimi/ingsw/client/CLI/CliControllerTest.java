@@ -9,8 +9,6 @@ class CliControllerTest {
 
     @BeforeEach
     void setUp() {
-        Cli cli = new Cli(new CliController());
-        cli.initialScreen();
     }
 
     @Test

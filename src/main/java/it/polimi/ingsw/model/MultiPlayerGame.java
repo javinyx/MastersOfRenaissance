@@ -5,6 +5,7 @@ import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.Deck;
+import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.market.Market;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.PopePass;
@@ -39,43 +40,6 @@ public class MultiPlayerGame extends Game implements ModelObserver {
     5 mercato, gia fatto
      */
 
-    /**
-     * Start the game and give the leader cards to players
-     *
-     * @param numPlayers the number of players that will play the game
-     */
-
-    public void start(int numPlayers){
-
-        List<Card> tempList;
-
-        for (int i = 0; i < numPlayers; i++) {
-            currPlayer = activePlayers.get(i);
-                switch (currPlayer.getTurnID()) {
-                    case 2: controller.update(MessageID.CHOOSE_RESOURCE);
-                        break;
-                    case 3: case 4: {
-                        currPlayer.moveOnBoard(1);
-                        controller.update(MessageID.CHOOSE_RESOURCE);
-                        break;
-                    }
-                }
-        }
-
-        currPlayer = activePlayers.get(0);
-
-        //distribuisci leader
-        for (int i = 0; i < numPlayers; i++) {
-            tempList = new ArrayList<>();
-            for (int j = 0; j < 4; j++) {
-                tempList.add(leaderDeck.getFirst());
-            }
-            //players.get(i).gaveLeaderOption(tempList);
-        }
-
-
-    }
-
     public Player getWinner(){
         return winner;
     }
@@ -83,7 +47,7 @@ public class MultiPlayerGame extends Game implements ModelObserver {
     /**Create the player with also the initial extra resources.
      * @param nickname the nickname of the player*/
     public boolean createPlayer(String nickname){
-        if(totalPlayers>3){ //è giusto
+        /*if(totalPlayers>3){ //è giusto
             return false;//too many players
         }
         List<String> nicknames = players.stream()
@@ -91,13 +55,13 @@ public class MultiPlayerGame extends Game implements ModelObserver {
                 .collect(Collectors.toList());
         if(!nicknames.isEmpty() && nicknames.contains(nickname)){
             throw new IllegalArgumentException("Already exists a player with "+ nickname + "as nickname");
-        }
-
+        }*/
         totalPlayers++;
         ProPlayer p = new ProPlayer(nickname, totalPlayers, this);
         players.add(p);
-        p.registerObserver(this);
         activePlayers.add(p);
+        currPlayer = p;
+        p.registerObserver(this);
         return true;
     }
 

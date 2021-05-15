@@ -255,7 +255,7 @@ public class Server {
         //qui ci arriva
         controller = new Controller();
         for (int i = 0; i < connectionList.size(); i++){
-            View v = new RemoteView(playerNames.get(i), playerNames, connectionList.get(i));
+            View v = new RemoteView(playerNames.get(i), playerNames, connectionList.get(i), controller);
             controller.registerObserver(v);
         }
 

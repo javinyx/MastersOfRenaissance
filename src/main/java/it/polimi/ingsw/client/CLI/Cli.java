@@ -3,12 +3,20 @@ package it.polimi.ingsw.client.CLI;
 import it.polimi.ingsw.client.CLI.printer.Printer;
 import it.polimi.ingsw.client.CLI.printer.UnixPrinter;
 import it.polimi.ingsw.client.CLI.printer.WindowsPrinter;
+import it.polimi.ingsw.misc.BiElement;
+import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.MarbleAbility;
+import it.polimi.ingsw.model.market.Resource;
+import it.polimi.ingsw.model.player.Warehouse;
 
+import java.awt.geom.RectangularShape;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class Cli /*extends ViewInterface*/ {
@@ -116,6 +124,48 @@ public class Cli /*extends ViewInterface*/ {
         OSPrinter.printBoard();
     }*/
 
+
+    // SETUP PHASE -----------------------------------------------------------------------------------------------------
+
+    public List<BiElement<Resource, Integer>> chooseResources(int quantity){
+        List<BiElement<Resource, Integer>> resources = new ArrayList<>();
+        String res;
+        int pos;
+
+        for (int i = 0; i < quantity; i++){
+            do {
+                System.out.println("Choose a Resources by typing: Stone, Shield, Servant, Coin");
+                res = scanner.nextLine().toLowerCase();
+            }while (!res.equals("stone") && !res.equals("shield") && !res.equals("servant") && !res.equals("coin"));
+
+            do{
+                System.out.println("Where do you want to store it in the warehouse? Small(1), Medium(2), Large(3)");
+                pos = scanner.nextInt();
+            } while (pos != 1 && pos != 2 && pos != 3);
+
+            switch(res){
+                case "stone" -> resources.add(new BiElement<>(Resource.STONE, pos));
+                case "servant" -> resources.add(new BiElement<>(Resource.SERVANT, pos));
+                case "coin" -> resources.add(new BiElement<>(Resource.COIN, pos));
+                case "shield" -> resources.add(new BiElement<>(Resource.SHIELD, pos));
+            }
+        }
+
+        return resources;
+    }
+
+    public void chooseLeader(List<LeaderCard> leaders){
+
+        for (int i = 0; i < leaders.size(); i++) {
+            OSPrinter.printLeaders(leaders.get(i));
+
+        }
+
+
+    }
+
+
+    // GAME PHASE --------------------------------------------------------------------------------------------
 
 
     public String marketDimChoose() {

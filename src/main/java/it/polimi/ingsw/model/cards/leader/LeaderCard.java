@@ -48,7 +48,7 @@ public interface LeaderCard extends Card{
     boolean applyEffect(ProPlayer player);
 
 
-    public String getNameNew();
+    String getNameNew();
 
     int getId();
 

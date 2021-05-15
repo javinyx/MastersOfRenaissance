@@ -41,6 +41,7 @@ public enum MessageID {
     REGISTER_MULTI,
     ABORT_GAME,
     PLAYER_WIN,
+    TURN_NUMBER,
 
     // ERRORS / EXCEPTIONS -> grouping them into INFO_MESSAGE
 

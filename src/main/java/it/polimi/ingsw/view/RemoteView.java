@@ -33,12 +33,12 @@ public class RemoteView extends View {
     Gson gson = new Gson();
     ClientConnection clientConnection;
 
-    public RemoteView(String playerNickname, List<String> playerNames, ClientConnection clientConnection) {
+    public RemoteView(String playerNickname, List<String> playerNames, ClientConnection clientConnection, Controller controller) {
         super(playerNickname);
+        this.controller = controller;
         this.clientConnection = clientConnection;
         clientConnection.registerObserver(new InputMessageHandler());
         clientConnection.send(gson.toJson(new MessageEnvelope(MessageID.PLAYER_LIST, playerNames.toString())));
-
     }
 
     @Override

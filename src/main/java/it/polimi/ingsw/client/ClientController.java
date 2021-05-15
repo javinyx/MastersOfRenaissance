@@ -12,6 +12,7 @@ import it.polimi.ingsw.messages.concreteMessages.ChoosePlacementsInStorageMessag
 import it.polimi.ingsw.messages.concreteMessages.UpdateMessage;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.misc.TriElement;
+import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.leader.*;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -28,7 +30,7 @@ public abstract class ClientController {
     private ViewInterface view;
     private boolean myTurn;
     private List<ConcreteProductionCard> allProductionCards;
-    private List<LeaderCard> allLeaders;
+    private List<LeaderCard> allLeaders = new ArrayList<>();
     private List<LeaderCard> leaders = new ArrayList<>();
     private List<ConcreteProductionCard> availableProductionCard = new ArrayList<>();
     private List<NubPlayer> otherPlayers = new ArrayList<>();
@@ -115,8 +117,9 @@ public abstract class ClientController {
 
     private void initAllCards(){
         Gson gson = new Gson();
+        Reader reader;
 
-        Reader reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(prodPath)));
+        reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(prodPath)));
         allProductionCards = gson.fromJson(reader, new TypeToken<List<ConcreteProductionCard>>(){}.getType());
 
         reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(leadDiscountPath)));
@@ -149,6 +152,20 @@ public abstract class ClientController {
     public abstract void askNickname ();
     public abstract void askNumberOfPlayers ();
 
+    public void setTurnNumber(int turnNumber){
+        player.setTurnNumber(turnNumber);
+    }
+
+    public void setLeaderAvailable(String leaders){
+        player.setLeaders(new ArrayList<>(convertIdToLeaderCard(convertStringToListInteger(leaders))));
+
+        chooseLeadersAction();
+    }
+
+    public void setPlayerList(){
+
+    }
+
 
     // ERROR MESSAGE ACTIONS -------------------------------------------------------------------------------------------
 
@@ -179,9 +196,9 @@ public abstract class ClientController {
 
     //---------------------------------ACTIONS: behaviours caused by Messages--------------------------
 
-    public abstract void chooseResourceAction(String quantity);
+    public abstract void chooseResourceAction();
     public abstract void chooseStorageAction(ChoosePlacementsInStorageMessage msg);
-    public abstract void chooseLeadersAction(ChooseLeaderCardsMessage msg);
+    public abstract void chooseLeadersAction();
 
 
     public void updateAction(UpdateMessage msg){
@@ -198,7 +215,7 @@ public abstract class ClientController {
 
         ConcreteProductionCard boughtProductionCard = convertIdToProductionCard(msg.getProductionCardId().getT());
         for(NubPlayer pp : otherPlayers){
-            if(pp.getTurnID()==msg.getPlayerId()){
+            if(pp.getTurnNumber()==msg.getPlayerId()){
                 pp.setCurrPos(msg.getPlayerPos());
                 pp.addProductionCard(boughtProductionCard, msg.getProductionCardId().getV()-1);
                 pp.setLeaders(convertIdToLeaderCard(msg.getLeadersId()));
@@ -329,11 +346,24 @@ public abstract class ClientController {
     }
 
     private List<LeaderCard> convertIdToLeaderCard(List<Integer> ids){
-        return allLeaders.stream().filter(x -> ids.contains(x.getId())).collect(Collectors.toList());
+
+        List <LeaderCard> leaders = (allLeaders.stream().filter(x -> ids.contains(x.getId()))
+                                                        .collect(Collectors.toList()));
+
+        return leaders;
+
+    }
+
+    private List<Integer> convertStringToListInteger (String s){
+        List<Integer> intList = (new ArrayList<>(Arrays.asList(s.substring(1, s.length()-1).split(", ")))).stream()
+                                                                                                                .map(Integer::parseInt)
+                                                                                                                .collect(Collectors.toList());
+        return intList;
     }
 
 
     public void confirmRegistration(String nickName){
-        game.setNickName(nickName);
-    };
+        player = new NubPlayer(nickName);
+        initAllCards();
+    }
 }

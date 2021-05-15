@@ -23,7 +23,18 @@ public abstract class Game implements ModelObserver {
     protected ProPlayer currPlayer;
     protected Controller controller;
 
-    public abstract void start(int numPlayers);
+    // SETUP PHASE ----------------------------------------------
+
+    public List<Integer> leaderDistribution(){
+        List<Integer> tempList = new ArrayList<>();
+
+        for (int j = 0; j < 4; j++) {
+            tempList.add(((LeaderCard)leaderDeck.getFirst()).getId());
+        }
+
+        return tempList;
+    }
+
     public abstract boolean createPlayer(String nickname);
 
     //------------------GETTERS------------------
@@ -99,4 +110,5 @@ public abstract class Game implements ModelObserver {
     public ProPlayer getCurrPlayer() {
         return currPlayer;
     }
+
 }

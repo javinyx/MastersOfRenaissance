@@ -43,7 +43,7 @@ public class GuiController extends ClientController {
     }
 
     @Override
-    public void chooseResourceAction(String quantity) {
+    public void chooseResourceAction() {
 
     }
 
@@ -53,7 +53,7 @@ public class GuiController extends ClientController {
     }
 
     @Override
-    public void chooseLeadersAction(ChooseLeaderCardsMessage msg) {
+    public void chooseLeadersAction() {
 
     }
 

@@ -67,8 +67,13 @@ public class MessageReceiver implements Runnable{
             case PLAYER_NUM -> controller.askNumberOfPlayers();
             case CONFIRM_REGISTRATION -> controller.confirmRegistration(envelope.getPayload());
 
+            case PLAYER_LIST -> controller.setPlayerList();
+
+            case TURN_NUMBER -> controller.setTurnNumber(Integer.parseInt(envelope.getPayload()));
+
+            case CHOOSE_LEADER_CARDS -> controller.setLeaderAvailable(envelope.getPayload());
             case TOO_MANY_PLAYERS -> controller.displayMessage(envelope.getPayload());
-            case CHOOSE_RESOURCE -> controller.chooseResourceAction(envelope.getPayload());
+            case CHOOSE_RESOURCE -> controller.chooseResourceAction();
 
             default -> System.err.println("MessageID not recognised");
         }
@@ -88,7 +93,7 @@ public class MessageReceiver implements Runnable{
             case WRONG_STACK_CHOICE -> controller.wrongStackRequest();
             case WRONG_LEVEL_REQUEST -> controller.wrongLevelRequest();
 
-            case CHOOSE_LEADER_CARDS -> controller.chooseLeadersAction(gson.fromJson(envelope.getPayload(), ChooseLeaderCardsMessage.class));
+            case CHOOSE_LEADER_CARDS -> controller.chooseLeadersAction();
             case STORE_RESOURCES -> controller.chooseStorageAction(gson.fromJson(envelope.getPayload(), new TypeToken<List<Resource>>(){}.getType()));
 
             case UPDATE -> controller.updateAction(gson.fromJson(envelope.getPayload(), UpdateMessage.class));

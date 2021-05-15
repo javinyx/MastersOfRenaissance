@@ -10,6 +10,7 @@ import it.polimi.ingsw.messages.concreteMessages.ChoosePlacementsInStorageMessag
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.MarbleAbility;
+import it.polimi.ingsw.model.market.Resource;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -154,8 +155,26 @@ public class CliController extends ClientController {
     // SETUP PHASE -----------------------------------------------------------------------------------------------------
 
     @Override
-    public void chooseResourceAction(String quantity) {
+    public void chooseLeadersAction(){
+        cli.showMessage("Choose 2 of leaders among these:\n");
+        cli.chooseLeader(getPlayer().getLeaders());
+    }
+
+    @Override
+    public void chooseResourceAction() {
+        int quantity;
+        List<BiElement<Resource, Integer>> res;
+
+        if(getPlayer().getTurnNumber() == 2)
+            quantity = 1;
+        else
+            quantity = 2;
+
         cli.showMessage("Choose no." + quantity + " resources");
+        res = cli.chooseResources(quantity);
+
+        // TODO: set resources in the correct place;
+
     }
 
 
@@ -171,10 +190,6 @@ public class CliController extends ClientController {
     @Override
     public void chooseStorageAction(ChoosePlacementsInStorageMessage msg){
         cli.showMessage("Choose a storage for each of the following resources: " + msg.getResources());
-    }
-    @Override
-    public void chooseLeadersAction(ChooseLeaderCardsMessage msg){
-        cli.showMessage("Choose no." + msg.getQuantity() + " of leaders among these:\n" + msg.getLeaders());
     }
 
     // GAME PHASES -----------------------------------------------------------------------------------------------------

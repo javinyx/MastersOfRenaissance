@@ -109,4 +109,8 @@ public class MarbleAbility implements LeaderCard {
     public boolean isStatus() {
         return status;
     }
+
+    public Resource getReplacingResource() {
+        return replacingResource;
+    }
 }

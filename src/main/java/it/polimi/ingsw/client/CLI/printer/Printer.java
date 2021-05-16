@@ -45,7 +45,7 @@ public class Printer {
                 res = (Resource) cost.get(0);
                 for (count = 0; count < cost.size(); count++);
 
-                System.out.println("Cost: " + count + res.toString());
+                System.out.println("Cost: " + count +" "+ res.toString());
                 System.out.println("Power: add 2 extra space for the " + res + " resource");
 
             }

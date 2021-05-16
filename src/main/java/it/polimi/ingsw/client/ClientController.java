@@ -334,10 +334,10 @@ public abstract class ClientController {
     }*/
 
     //---------------------------CONVERTERS---------------------------------
-    private List<ConcreteProductionCard> convertIdToProductionCard(List<Integer> ids){
+    protected List<ConcreteProductionCard> convertIdToProductionCard(List<Integer> ids){
         return allProductionCards.stream().filter(x -> ids.contains(x.getId())).collect(Collectors.toList());
     }
-    private ConcreteProductionCard convertIdToProductionCard(int id){
+    protected ConcreteProductionCard convertIdToProductionCard(int id){
         for(ConcreteProductionCard pc : allProductionCards){
             if(pc.getId()==id)
                 return pc;
@@ -345,7 +345,7 @@ public abstract class ClientController {
         return null;
     }
 
-    private List<LeaderCard> convertIdToLeaderCard(List<Integer> ids){
+    protected List<LeaderCard> convertIdToLeaderCard(List<Integer> ids){
 
         List <LeaderCard> leaders = (allLeaders.stream().filter(x -> ids.contains(x.getId()))
                                                         .collect(Collectors.toList()));
@@ -354,7 +354,7 @@ public abstract class ClientController {
 
     }
 
-    private List<Integer> convertStringToListInteger (String s){
+    protected List<Integer> convertStringToListInteger (String s){
         List<Integer> intList = (new ArrayList<>(Arrays.asList(s.substring(1, s.length()-1).split(", ")))).stream()
                                                                                                                 .map(Integer::parseInt)
                                                                                                                 .collect(Collectors.toList());

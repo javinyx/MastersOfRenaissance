@@ -134,8 +134,8 @@ public class Cli /*extends ViewInterface*/ {
 
         for (int i = 0; i < quantity; i++){
             do {
-                System.out.println("Choose a Resources by typing: Stone, Shield, Servant, Coin");
-                res = scanner.nextLine().toLowerCase();
+                System.out.println("Choose a Resources by typing: Stone, Shield, Servant, Coin: ");
+                res = scanner.next().toLowerCase();
             }while (!res.equals("stone") && !res.equals("shield") && !res.equals("servant") && !res.equals("coin"));
 
             do{
@@ -154,14 +154,38 @@ public class Cli /*extends ViewInterface*/ {
         return resources;
     }
 
-    public void chooseLeader(List<LeaderCard> leaders){
+    public List<Integer> chooseLeader(List<LeaderCard> leaders){
+
+        List<Integer> lID = new ArrayList<>();
 
         for (int i = 0; i < leaders.size(); i++) {
             OSPrinter.printLeaders(leaders.get(i));
-
         }
 
+        System.out.println("Choose the ID of the two card you want:");
 
+        for (int i = 1; i < 3; i++) {
+            boolean lock = true;
+            while (lock) {
+                System.out.print("Leader " + i + ": ");
+                int t = scanner.nextInt();
+
+                if (t == leaders.get(0).getId() || t == leaders.get(1).getId() || t == leaders.get(2).getId() || t == leaders.get(3).getId()) {
+                    if (i == 1) {
+                        lock = false;
+                        lID.add(t);
+                    }
+                    else {
+                        if (t != lID.get(0)){
+                            lock = false;
+                            lID.add(t);
+                        }
+                    }
+                }
+            }
+        }
+
+        return lID;
     }
 
 

@@ -1,20 +1,23 @@
 package it.polimi.ingsw.client.GUI;
 
 import it.polimi.ingsw.client.ClientController;
-import it.polimi.ingsw.messages.concreteMessages.ChooseLeaderCardsMessage;
 import it.polimi.ingsw.messages.concreteMessages.ChoosePlacementsInStorageMessage;
+import it.polimi.ingsw.misc.BiElement;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 public class GuiController extends ClientController {
+    private final Gui gui;
     private Stage stage;
 
-    public GuiController(Stage stage){
+    public GuiController(Stage stage, Gui gui){
         this.stage = stage;
+        this.gui = gui;
     }
     @Override
     public boolean setup() throws IOException {
+        BiElement<String, Integer> connectionInfo = gui.askIpAndPort();
         return true;
     }
 

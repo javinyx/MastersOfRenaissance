@@ -2,6 +2,7 @@ package it.polimi.ingsw;
 
 
 import it.polimi.ingsw.client.CLI.CliController;
+import it.polimi.ingsw.client.GUI.Gui;
 
 import java.io.IOException;
 
@@ -13,26 +14,22 @@ public class ClientApp {
     public static void main(String[] args) {
         boolean playAgain = true;
 
-        /*try {
-            if(args == null || args.length == 0 || args[0].toUpperCase().equals("GUI")){
-                //Gui.main(args);
+            if (args == null || args.length == 0 || args[0].equalsIgnoreCase("GUI")) {
+                Gui.main(args);
                 return;
-            }*/
-            while(playAgain) {
+            }
+            while (playAgain) {
                 CliController controller;
                 //String graphicOption= args[0].toUpperCase();
-                /*if (graphicOption.equals("CLI"))*/ controller= new CliController();
+                /*if (graphicOption.equals("CLI"))*/
+                controller = new CliController();
                 //else return;
                 try {
-                    playAgain=controller.setup();
+                    playAgain = controller.setup();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
             }
-        /*} catch (IOException e) {
-            System.err.println("Unable to initialize the client: " + e.getMessage());
-        }*/
-
     }
 }

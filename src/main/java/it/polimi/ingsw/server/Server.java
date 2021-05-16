@@ -28,7 +28,7 @@ public class Server {
     private Map<ClientConnection, List<ClientConnection>> threePlayerPlay = new HashMap<>();
     private Map<ClientConnection, List<ClientConnection>> fourPlayerPlay = new HashMap<>();
 
-    private Map<String, SinglePlayerGame> onePlayerRejoinRoom = new HashMap<>(1);
+    private Map<String, SinglePlayerGame> onePlayerRejoiningRoom = new HashMap<>(1);
     private Map<String, MultiPlayerGame> twoPlayerRejoiningRoom = new HashMap<>();
     private Map<String, MultiPlayerGame> threePlayerRejoiningRoom = new HashMap<>();
     private Map<String, MultiPlayerGame> fourPlayerRejoiningRoom = new HashMap<>();
@@ -155,9 +155,10 @@ public class Server {
             System.out.println("sono qui");
             switch(playerNum) {
                 case 1 -> {
-                    if(onePlayerRejoinRoom.containsKey(name)){
-                        SinglePlayerGame rejoinGame = onePlayerRejoinRoom.get(name);
+                    if(onePlayerRejoiningRoom.containsKey(name)){
+                        SinglePlayerGame rejoinGame = onePlayerRejoiningRoom.get(name);
                         controller.rejoin(rejoinGame, name);
+                        onePlayerRejoiningRoom.remove(name);
                         break;
                     }
                     singlePlayerWait.put(name, c);
@@ -167,6 +168,7 @@ public class Server {
                     if(twoPlayerRejoiningRoom.containsKey(name)){
                         MultiPlayerGame rejoinGame = twoPlayerRejoiningRoom.get(name);
                         controller.rejoin(rejoinGame, name);
+                        twoPlayerRejoiningRoom.remove(name);
                         break;
                     }
                     twoPlayerWait.put(name, c);
@@ -177,6 +179,7 @@ public class Server {
                     if(threePlayerRejoiningRoom.containsKey(name)){
                         MultiPlayerGame rejoinGame = threePlayerRejoiningRoom.get(name);
                         controller.rejoin(rejoinGame, name);
+                        threePlayerRejoiningRoom.remove(name);
                         break;
                     }
                     threePlayerWait.put(name, c);
@@ -187,6 +190,7 @@ public class Server {
                     if(fourPlayerRejoiningRoom.containsKey(name)){
                         MultiPlayerGame rejoinGame = fourPlayerRejoiningRoom.get(name);
                         controller.rejoin(rejoinGame, name);
+                        fourPlayerRejoiningRoom.remove(name);
                         break;
                     }
                     fourPlayerWait.put(name, c);
@@ -359,7 +363,7 @@ public class Server {
             case 1 : if(!singlePlayerPlay.equals(connection)) {
                 return false;
             }else{
-                onePlayerRejoinRoom.put(name, (SinglePlayerGame) controller.getGame());
+                onePlayerRejoiningRoom.put(name, (SinglePlayerGame) controller.getGame());
             }
             case 2 : if(!twoPlayerPlay.containsKey(connection)) {
                 return false;

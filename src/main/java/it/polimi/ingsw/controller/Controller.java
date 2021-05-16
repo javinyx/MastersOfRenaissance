@@ -369,4 +369,24 @@ public class Controller implements Observer<MessageID> {
         }
     }
 
+    /**Let the player with this {@code nickname} rejoin the multiplayer game he/she was in before a disconnection.*/
+    public void rejoin(MultiPlayerGame game, String nickname){
+        List<ProPlayer> allPlayers = game.getPlayers();
+        int turnId;
+        for(ProPlayer p : allPlayers){
+            if(p.getNickname().equals(nickname)){
+                turnId = p.getTurnID();
+                game.getActivePlayers().add(turnId-1, p);
+                break;
+            }
+        }
+    }
+
+    public void rejoin(SinglePlayerGame game, String nickname){
+        //TODO: che politica usiamo per il rejoin del single player?
+    }
+
+    public Game getGame(){
+        return game;
+    }
 }

@@ -1,6 +1,8 @@
 package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.model.MultiPlayerGame;
+import it.polimi.ingsw.model.SinglePlayerGame;
 import it.polimi.ingsw.view.RemoteView;
 import it.polimi.ingsw.view.View;
 
@@ -25,6 +27,11 @@ public class Server {
     private Map<ClientConnection, ClientConnection> twoPlayerPlay = new HashMap<>();
     private Map<ClientConnection, List<ClientConnection>> threePlayerPlay = new HashMap<>();
     private Map<ClientConnection, List<ClientConnection>> fourPlayerPlay = new HashMap<>();
+
+    private Map<String, SinglePlayerGame> onePlayerRejoinRoom = new HashMap<>(1);
+    private Map<String, MultiPlayerGame> twoPlayerRejoiningRoom = new HashMap<>();
+    private Map<String, MultiPlayerGame> threePlayerRejoiningRoom = new HashMap<>();
+    private Map<String, MultiPlayerGame> fourPlayerRejoiningRoom = new HashMap<>();
 
     private Controller controller;
 
@@ -148,20 +155,40 @@ public class Server {
             System.out.println("sono qui");
             switch(playerNum) {
                 case 1 -> {
+                    if(onePlayerRejoinRoom.containsKey(name)){
+                        SinglePlayerGame rejoinGame = onePlayerRejoinRoom.get(name);
+                        controller.rejoin(rejoinGame, name);
+                        break;
+                    }
                     singlePlayerWait.put(name, c);
                     createSinglePlayerGame();
                 }
                 case 2 -> {
+                    if(twoPlayerRejoiningRoom.containsKey(name)){
+                        MultiPlayerGame rejoinGame = twoPlayerRejoiningRoom.get(name);
+                        controller.rejoin(rejoinGame, name);
+                        break;
+                    }
                     twoPlayerWait.put(name, c);
                     if (twoPlayerWait.size() == 2)
                         createTwoPlayerGame();
                 }
                 case 3 -> {
+                    if(threePlayerRejoiningRoom.containsKey(name)){
+                        MultiPlayerGame rejoinGame = threePlayerRejoiningRoom.get(name);
+                        controller.rejoin(rejoinGame, name);
+                        break;
+                    }
                     threePlayerWait.put(name, c);
                     if (threePlayerWait.size() == 3)
                         createThreePlayerGame();
                 }
                 case 4 -> {
+                    if(fourPlayerRejoiningRoom.containsKey(name)){
+                        MultiPlayerGame rejoinGame = fourPlayerRejoiningRoom.get(name);
+                        controller.rejoin(rejoinGame, name);
+                        break;
+                    }
                     fourPlayerWait.put(name, c);
                     if (fourPlayerWait.size() == 4)
                         createFourPlayerGame();
@@ -321,18 +348,36 @@ public class Server {
         }
     }
 
+    /**If the player crashes, then this method will move him/her in a server's Rejoin Room and
+     * communicate to the actual game that this player is not active anymore.
+     * @param connection player's connection (see {@link ClientConnection})
+     * @param name player's nickname
+     * @param gameSize game size in which the player was participating (1, 2, 3, 4)
+     * @return true if it can set the player aas inactive, false otherwise.*/
     public boolean playerCrashed(ClientConnection connection, String name, int gameSize){
         switch (gameSize) {
-            case 1 : if(!singlePlayerPlay.equals(connection))
-                        return false;
-            case 2 : if(!twoPlayerPlay.containsKey(connection))
-                        return false;
-            case 3 : if(!threePlayerWait.containsKey(name))
-                        return false;
-            case 4 : if(!fourPlayerWait.containsKey(name))
-                        return false;
-                controller.setInactivePlayer(name);
-                return true;
+            case 1 : if(!singlePlayerPlay.equals(connection)) {
+                return false;
+            }else{
+                onePlayerRejoinRoom.put(name, (SinglePlayerGame) controller.getGame());
+            }
+            case 2 : if(!twoPlayerPlay.containsKey(connection)) {
+                return false;
+            }else{
+                twoPlayerRejoiningRoom.put(name, (MultiPlayerGame) controller.getGame());
+            }
+            case 3 : if(!threePlayerWait.containsKey(name)) {
+                return false;
+            }else{
+                threePlayerRejoiningRoom.put(name, (MultiPlayerGame) controller.getGame());
+            }
+            case 4 : if(!fourPlayerWait.containsKey(name)) {
+                return false;
+            }else{
+                fourPlayerRejoiningRoom.put(name, (MultiPlayerGame) controller.getGame());
+            }
+            controller.setInactivePlayer(name);
+            return true;
             default : return false;
         }
 

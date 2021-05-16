@@ -20,6 +20,8 @@ public class ClientSocketConnection extends Observable<String> implements Client
     private int gameSize;
 
     private boolean active = true;
+    /**Indicates if the player has responded to server's PINGs. If yes, then the client-socket connection is
+     * still viable.*/
     private Boolean stillConnected = false;
 
     public ClientSocketConnection(Socket socket, Server server) {

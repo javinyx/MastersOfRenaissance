@@ -36,4 +36,7 @@ public class DoubleMoveToken implements ActionToken {
         return "DoubleMove Token";
     }
 
+    public int getId() {
+        return id;
+    }
 }

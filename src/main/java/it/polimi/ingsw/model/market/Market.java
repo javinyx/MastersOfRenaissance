@@ -179,6 +179,14 @@ public class Market{
         return marketBoard[row][col];
     }
 
+    public Resource getExtraMarble() {
+        return extraMarble;
+    }
+
+    public Resource[][] getMarketBoard() {
+        return marketBoard;
+    }
+
     /**
      * Print the MarketBoard
      */

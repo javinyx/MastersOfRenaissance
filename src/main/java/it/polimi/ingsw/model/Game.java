@@ -36,6 +36,7 @@ public abstract class Game implements ModelObserver {
     }
 
     public abstract boolean createPlayer(String nickname);
+    public abstract void start(ProPlayer p);
 
     //------------------GETTERS------------------
     public Controller getControllerObserver(){return controller;}
@@ -72,6 +73,17 @@ public abstract class Game implements ModelObserver {
         }
         return availableCards.stream()
                 .map(x -> (ConcreteProductionCard)x)
+                .collect(Collectors.toList());
+    }
+
+    public List<Integer> getBuyableProductionID(){
+        List<Card> availableCards = new ArrayList<>();
+        for(Deck d : productionDecks){
+            if(d.size()>0) //if deck is empty (null) that means the deck doesn't exist anymore
+                availableCards.add(d.peekFirst());
+        }
+        return availableCards.stream()
+                .map(x -> ((ConcreteProductionCard)x).getId())
                 .collect(Collectors.toList());
     }
 

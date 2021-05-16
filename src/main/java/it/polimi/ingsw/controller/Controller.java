@@ -2,10 +2,7 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
-import it.polimi.ingsw.messages.concreteMessages.BuyMarketMessage;
-import it.polimi.ingsw.messages.concreteMessages.BuyProductionMessage;
-import it.polimi.ingsw.messages.concreteMessages.ProduceMessage;
-import it.polimi.ingsw.messages.concreteMessages.UpdateMessage;
+import it.polimi.ingsw.messages.concreteMessages.*;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Observer;
 import it.polimi.ingsw.misc.Storage;
@@ -60,7 +57,7 @@ public class Controller implements Observer<MessageID> {
         envelope = new MessageEnvelope(MessageID.CHOOSE_LEADER_CARDS, String.valueOf(game.leaderDistribution()));
         remoteViews.get(curr).update(envelope);
 
-        System.out.println("Hey, sei qui, nel controller");
+        game.start(game.getCurrPlayer());
     }
 
     public void createMultiplayerGame(List<String> players){
@@ -69,12 +66,13 @@ public class Controller implements Observer<MessageID> {
         game = new MultiPlayerGame(this);
 
         //Player Creation
-        for (int i = 0; i < numPlayer; i++) {
-            MessageEnvelope envelope;
-
+        for (int i = 0; i < numPlayer; i++)
             game.createPlayer(players.get(i));
 
-            int curr = game.getCurrPlayer().getTurnID()-1;
+        for (ProPlayer p : ((MultiPlayerGame)game).getActivePlayers()) {
+
+            MessageEnvelope envelope;
+            int curr = p.getTurnID()-1;
 
             envelope = new MessageEnvelope(MessageID.TURN_NUMBER, String.valueOf(curr+1));
             remoteViews.get(curr).update(envelope);
@@ -90,13 +88,14 @@ public class Controller implements Observer<MessageID> {
                 update(MessageID.CHOOSE_RESOURCE);
                 game.getCurrPlayer().moveOnBoard(1);
             }
+            game.start(p);
         }
 
+        // TODO: ogni giocatore va informato della situazione degli altri 3
 
         //timer = new Timer(true);
         //timer.schedule(new TurnTimerTask(this, game.getCurrPlayer().getTurnType()),turnTime*1000);
 
-        //game.start(numPlayer);
 
         System.out.println("Hey, sei qui, nel controller");
     }
@@ -109,7 +108,6 @@ public class Controller implements Observer<MessageID> {
 
     public synchronized void buyFromMarAction(BuyMarketMessage buyMark) {
 
-        //TODO: MODIFICARE IL MODEL PER ADATTARE LA BIELEMET E TOGLIERE LA DIPENDENZA DAL CONTROLLER PER I LEADER
         try {
             game.getCurrPlayer().buyFromMarket(buyMark.getDimension(), buyMark.getIndex(), buyMark.getMarbleUsage());
         }
@@ -122,6 +120,10 @@ public class Controller implements Observer<MessageID> {
         catch(RuntimeException e){
             update(MessageID.CARD_NOT_AVAILABLE);
         }
+
+        UpdateMessage msg = new UpdateMessage(game.getCurrPlayer().getTurnID(), game.getCurrPlayer().getCurrentPosition(), game.getMarket().getMarketBoard(), game.getMarket().getExtraMarble(), null, null, null, null, null);
+
+        game.getCurrPlayer().setUpdate(msg);
 
         update(MessageID.UPDATE);
 
@@ -155,7 +157,6 @@ public class Controller implements Observer<MessageID> {
                     leaderCards.add(game.getCurrPlayer().getLeaderCards().get(1));
 
             }
-
 
             if (card != null)
                 game.getCurrPlayer().buyProductionCard(card, buyProd.getStack(), leaderCards, buyProd.getResourcesWallet());
@@ -227,9 +228,10 @@ public class Controller implements Observer<MessageID> {
         update(MessageID.CARD_NOT_AVAILABLE);
     }
 
-    public void organizeResourceAction(List<BiElement<Resource, Storage>> message){
+    public void organizeResourceAction(StoreResourcesMessage message){
 
-        for (BiElement<Resource, Storage> element: message ) {
+
+        for (BiElement<Resource, Storage> element: message.getPlacements()) {
 
             switch (element.getV()){
 
@@ -264,9 +266,7 @@ public class Controller implements Observer<MessageID> {
 
             case TOO_MANY_PLAYERS -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, ""));
             //case CHOOSE_LEADER_CARDS -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "You have to choose a leader card"));
-            case CHOOSE_RESOURCE -> {
-                remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, String.valueOf(game.getCurrPlayer().getTurnID())));
-            }
+            case CHOOSE_RESOURCE -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, String.valueOf(game.getCurrPlayer().getTurnID())));
 
             //GAME PHASES
 
@@ -279,12 +279,8 @@ public class Controller implements Observer<MessageID> {
 
             case STORE_RESOURCES -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
 
-            case UPDATE -> {
-                for (int i = 0; i < 4; i++)
-                    if (i != game.getCurrPlayer().getTurnID() - 1)
-                        remoteViews.get(i).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
-                remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
-            }
+            case UPDATE -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getUpdate()));
+
 
             default -> System.out.println("No no no");
         }

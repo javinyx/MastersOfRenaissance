@@ -4,11 +4,13 @@ import it.polimi.ingsw.client.CLI.printer.Printer;
 import it.polimi.ingsw.client.CLI.printer.UnixPrinter;
 import it.polimi.ingsw.client.CLI.printer.WindowsPrinter;
 import it.polimi.ingsw.misc.BiElement;
+import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.MarbleAbility;
 import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.player.Warehouse;
 
+import java.awt.*;
 import java.awt.geom.RectangularShape;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -191,13 +193,35 @@ public class Cli /*extends ViewInterface*/ {
 
     // GAME PHASE --------------------------------------------------------------------------------------------
 
+    public void displayTurnOption(){
+
+        int choice;
+
+        OSPrinter.printTable();
+
+        OSPrinter.printTurnOptions();
+
+        do{
+            System.out.println("Select a number:");
+            choice = scanner.nextInt();
+        } while (choice < 1 || choice > 5);
+
+        switch(choice){
+            case 1 -> controller.buyFromMarket();
+            case 2 -> controller.buyProductionCard();
+            case 3 -> controller.startProduction();
+            case 4 -> controller.viewOpponents();
+            case 5 -> controller.activateLeader();
+        }
+
+    }
+
 
     public String marketDimChoose() {
         String dim;
         do {
             System.out.println("Choose a row or a column from the market by typing 'r' or 'c'");
-            dim = scanner.nextLine();
-            dim = dim.toLowerCase();
+            dim = scanner.next().toLowerCase();
         }while(!dim.equals("c") && !dim.equals("r"));
 
         return dim;
@@ -215,6 +239,31 @@ public class Cli /*extends ViewInterface*/ {
     public int marketLeaderChoose(MarbleAbility card){
         System.out.println("How many for this card?\n" + card);
         return scanner.nextInt();
+    }
+    
+    public List<BiElement<Resource, Storage>> storeResources(List<Resource> res){
+        int c;
+        Storage s = null;
+
+        List<BiElement<Resource, Storage>> pos = new ArrayList<>();
+        for (int i = 0; i < res.size(); i++) {
+            if(res.get(i) != null){
+                do {
+                    System.out.println("Where do you want to store " + res.get(i) + "? Small(1), Medium(2), Large(3). Press 0 if you want to discard it");
+                    c = scanner.nextInt();
+                } while (c != 1 && c != 2 && c != 3);
+
+                switch(c){
+                    case 1 -> s = Storage.WAREHOUSE_SMALL;
+                    case 2 -> s = Storage.WAREHOUSE_MID;
+                    case 3 -> s = Storage.WAREHOUSE_LARGE;
+                    case 0 -> {}
+                }
+
+                pos.add(new BiElement<>(res.get(i), s));
+            }
+        }
+        return pos;
     }
 
     public int activeLeaderFromId(int activable){

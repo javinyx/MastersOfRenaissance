@@ -82,6 +82,21 @@ public class Printer {
         }
     }
 
+    public void printTurnOptions(){
+        System.out.println("Now it's your turn, you can choose between these by typing the number:\n" +
+                           "1) Buy from market: you can buy Resources from the market\n" +
+                           "2) Buy a Development Card\n" +
+                           "3) Start production: you can produce Resources\n" +
+                           "4) View your opponents status\n" +
+                           "5) Activete a Leader Card\n" +
+                           "6) DiscardLeader Card");
+    }
+
+    public void printTable(){
+
+    }
+
+
 
 
 

@@ -17,5 +17,5 @@ public interface ActionToken extends Card {
      * @param game the game that the player is part of
      */
     public void draw(ProPlayer player, SinglePlayerGame game);
-
+    int getId();
 }

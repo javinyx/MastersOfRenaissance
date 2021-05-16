@@ -20,14 +20,19 @@ public class ClientApp {
             }
             while (playAgain) {
                 CliController controller;
-                //String graphicOption= args[0].toUpperCase();
-                /*if (graphicOption.equals("CLI"))*/
-                controller = new CliController();
-                //else return;
-                try {
-                    playAgain = controller.setup();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                String graphicOption= args[0].toUpperCase();
+                if(args[1] == "local"){
+
+                }
+                else {
+                    if (graphicOption.equals("CLI"))
+                        controller = new CliController();
+                    else return;
+                    try {
+                        playAgain = controller.setup();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
 
             }

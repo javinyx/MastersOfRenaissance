@@ -8,6 +8,7 @@ import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.concreteMessages.BuyMarketMessage;
 import it.polimi.ingsw.messages.concreteMessages.BuyProductionMessage;
 import it.polimi.ingsw.messages.concreteMessages.ProduceMessage;
+import it.polimi.ingsw.messages.concreteMessages.StoreResourcesMessage;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Observer;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
@@ -67,7 +68,7 @@ public class RemoteView extends View {
 
                 case ACTIVATE_LEADER -> controller.activateLeader(gson.fromJson(envelope.getPayload(), LeaderCard.class));
 
-                case STORE_RESOURCES -> controller.organizeResourceAction(gson.fromJson(envelope.getPayload(), new TypeToken<ArrayList<BiElement<MarbleAbility, Integer>>>() {}.getType()));
+                case STORE_RESOURCES -> controller.organizeResourceAction(gson.fromJson(envelope.getPayload(), StoreResourcesMessage.class));
 
                 //PING PONG
                 case PONG -> clientConnection.setStillConnected(true);

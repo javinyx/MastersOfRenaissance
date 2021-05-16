@@ -4,6 +4,7 @@ import it.polimi.ingsw.messages.SimpleMessage;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.misc.TriElement;
+import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.market.Resource;
 
 import java.util.List;
@@ -71,4 +72,5 @@ public class UpdateMessage extends SimpleMessage {
     public List<TriElement<Resource, Storage,Integer>> getRemovedResources() {
         return removedResources;
     }
+
 }

@@ -42,6 +42,7 @@ public enum MessageID {
     ABORT_GAME,
     PLAYER_WIN,
     TURN_NUMBER,
+    GAME_READY,
 
     // ERRORS / EXCEPTIONS -> grouping them into INFO_MESSAGE
 

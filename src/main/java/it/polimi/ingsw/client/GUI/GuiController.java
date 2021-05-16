@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.GUI;
 
 import it.polimi.ingsw.client.ClientController;
+import it.polimi.ingsw.client.model.NubPlayer;
 import it.polimi.ingsw.messages.concreteMessages.ChoosePlacementsInStorageMessage;
 import it.polimi.ingsw.misc.BiElement;
 import javafx.stage.Stage;
@@ -36,6 +37,11 @@ public class GuiController extends ClientController {
     }
 
     @Override
+    public void startGame() {
+
+    }
+
+    @Override
     public boolean ackConfirmed(String msg) {
         return false;
     }
@@ -51,12 +57,27 @@ public class GuiController extends ClientController {
     }
 
     @Override
-    public void chooseStorageAction(ChoosePlacementsInStorageMessage msg) {
+    public void chooseStorageAction(String msg) {
 
     }
 
     @Override
     public void chooseLeadersAction() {
+
+    }
+
+    @Override
+    public void updateMarket() {
+
+    }
+
+    @Override
+    public void updateAvailableProductionCards() {
+
+    }
+
+    @Override
+    public void updateOtherPlayer(NubPlayer pp) {
 
     }
 

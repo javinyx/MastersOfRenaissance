@@ -36,4 +36,7 @@ public class MoveShuffleToken implements ActionToken {
         return "Move&Shuffle Token";
     }
 
+    public int getId() {
+        return id;
+    }
 }

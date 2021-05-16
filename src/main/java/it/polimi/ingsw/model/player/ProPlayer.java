@@ -1,7 +1,10 @@
 package it.polimi.ingsw.model.player;
 
 
+import com.google.gson.Gson;
 import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.messages.MessageID;
+import it.polimi.ingsw.messages.concreteMessages.UpdateMessage;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.ResourcesWallet;
@@ -306,7 +309,7 @@ public class ProPlayer extends Player{
             }
         }
         //call to controller notifying that the player has to organize the resources just bought
-        //controller.organizeResource(resAcquired);
+        controller.update(MessageID.STORE_RESOURCES);
     }
 
 //----------------------------------RESOURCES------------------------------------------
@@ -925,4 +928,14 @@ public class ProPlayer extends Player{
         ((ActionToken)((SinglePlayerGame)game).getTokenDeck().getFirst()).draw(this, (SinglePlayerGame)game);
     }
 
+    // UPDATE MESSAGE ------------------------------------------------------------------
+
+    String update;
+    public void setUpdate(UpdateMessage update) {
+        Gson gson = new Gson();
+        this.update = gson.toJson(update, UpdateMessage.class);
+    }
+    public String getUpdate() {
+        return update;
+    }
 }

@@ -2,11 +2,17 @@ package it.polimi.ingsw.model;
 
 
 import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
+import it.polimi.ingsw.messages.concreteMessages.UpdateMessage;
+import it.polimi.ingsw.misc.BiElement;
+import it.polimi.ingsw.misc.Storage;
+import it.polimi.ingsw.misc.TriElement;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.market.Market;
+import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.PopePass;
 import it.polimi.ingsw.model.player.ProPlayer;
@@ -47,20 +53,10 @@ public class MultiPlayerGame extends Game implements ModelObserver {
     /**Create the player with also the initial extra resources.
      * @param nickname the nickname of the player*/
     public boolean createPlayer(String nickname){
-        /*if(totalPlayers>3){ //è giusto
-            return false;//too many players
-        }
-        List<String> nicknames = players.stream()
-                .map(Player :: getNickname)
-                .collect(Collectors.toList());
-        if(!nicknames.isEmpty() && nicknames.contains(nickname)){
-            throw new IllegalArgumentException("Already exists a player with "+ nickname + "as nickname");
-        }*/
         totalPlayers++;
         ProPlayer p = new ProPlayer(nickname, totalPlayers, this);
         players.add(p);
         activePlayers.add(p);
-        currPlayer = p;
         p.registerObserver(this);
         return true;
     }
@@ -70,6 +66,19 @@ public class MultiPlayerGame extends Game implements ModelObserver {
         //wait for the player to choose a resource
         //then add to warehouse
     }
+
+    public void start(ProPlayer p){
+
+        currPlayer = activePlayers.get(0);
+
+        UpdateMessage msg = new UpdateMessage(p.getTurnID(), p.getCurrentPosition(), getMarket().getMarketBoard(), getMarket().getExtraMarble(),
+                getBuyableProductionID(),null, null, null, null);
+
+        getCurrPlayer().setUpdate(msg);
+        controller.update(MessageID.UPDATE);
+
+    }
+
     public List<ProPlayer> getPlayers() {
         return players;
     }

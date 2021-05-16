@@ -1,8 +1,11 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.messages.MessageID;
+import it.polimi.ingsw.messages.concreteMessages.UpdateMessage;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.Deck;
+import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
 import it.polimi.ingsw.model.market.Market;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.PopePass;
@@ -10,6 +13,7 @@ import it.polimi.ingsw.model.player.ProPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class SinglePlayerGame extends Game implements ModelObserver {
@@ -47,21 +51,17 @@ public class SinglePlayerGame extends Game implements ModelObserver {
     5 mercato, gia fatto
      */
 
-    /**1
+    /**
      * Start the game and give the leader cards to players
-     *
-     * @param numPlayers the number of players that will play the game
      */
-    public void start(int numPlayers){
+    public void start(ProPlayer p){
 
-        List<Card> tempList = new ArrayList<>();
+        UpdateMessage msg = new UpdateMessage(currPlayer.getTurnID(), currPlayer.getCurrentPosition(), getMarket().getMarketBoard(), getMarket().getExtraMarble(),
+                getBuyableProductionID(),null, null, null, null);
 
-        //distribuisci leader
-        for (int i = 0; i < 4; i++) {
-            tempList.add(leaderDeck.getFirst());
-        }
-        //player.gaveLeaderOption(tempList);
+        getCurrPlayer().setUpdate(msg);
 
+        controller.update(MessageID.UPDATE);
     }
     /**
      * Create the player
@@ -126,6 +126,13 @@ public class SinglePlayerGame extends Game implements ModelObserver {
     public Deck getTokenDeck() {
         return tokenDeck;
     }
+
+    public List<Integer> getTokenDeckByID() {
+        return new ArrayList<>().stream().map(x -> ((ActionToken)x).getId())
+                .collect(Collectors.toList());
+    }
+
+
     /**
      * Create a new shuffled token deck
      */

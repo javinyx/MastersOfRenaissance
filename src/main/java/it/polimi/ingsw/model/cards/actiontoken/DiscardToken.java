@@ -55,4 +55,8 @@ public class DiscardToken implements ActionToken {
     public String toString(){
         return "DiscardToken(Type ProductionCard: " + typeProdCard + ")";
     }
+
+    public int getId() {
+        return id;
+    }
 }

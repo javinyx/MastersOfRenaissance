@@ -4,9 +4,11 @@ import com.google.gson.Gson;
 import it.polimi.ingsw.client.ClientController;
 import it.polimi.ingsw.client.MessageReceiver;
 import it.polimi.ingsw.client.MessageToServerHandler;
+import it.polimi.ingsw.client.model.NubPlayer;
 import it.polimi.ingsw.messages.MessageID;
-import it.polimi.ingsw.messages.concreteMessages.ChooseLeaderCardsMessage;
+import it.polimi.ingsw.messages.concreteMessages.BuyMarketMessage;
 import it.polimi.ingsw.messages.concreteMessages.ChoosePlacementsInStorageMessage;
+import it.polimi.ingsw.messages.concreteMessages.StoreResourcesMessage;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.MarbleAbility;
@@ -17,8 +19,10 @@ import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 public class CliController extends ClientController {
 
@@ -170,8 +174,10 @@ public class CliController extends ClientController {
 
         if(getPlayer().getTurnNumber() == 2)
             quantity = 1;
-        else
+        else {
             quantity = 2;
+            System.out.println("You earned one faith point");
+        }
 
         cli.showMessage("You can choose no." + quantity + " resources");
         res = cli.chooseResources(quantity);
@@ -180,22 +186,34 @@ public class CliController extends ClientController {
 
     }
 
-
-    // Message From Server ---------------------------------------------------------------------------------------------
-
-   @Override
-    public boolean ackConfirmed(String msg) {
-        if (msg.equals("True"))
-            return true;
-        return false;
-    }
-
     @Override
-    public void chooseStorageAction(ChoosePlacementsInStorageMessage msg){
-        cli.showMessage("Choose a storage for each of the following resources: " + msg.getResources());
+    public void startGame() {
+        cli.showMessage("You are ready to play, wait until your turn");
+        setRegistrationPhase(false);
+
+        if (getPlayer().getTurnNumber() == 0) {
+            setMyTurn(true);
+            startTurnPhase();
+        }
+
     }
 
     // GAME PHASES -----------------------------------------------------------------------------------------------------
+
+    public void startTurnPhase(){
+        cli.displayTurnOption();
+    }
+
+    public void buyProductionCard(){
+
+    }
+
+    public void startProduction(){
+
+    }
+    public void viewOpponents(){
+
+    }
 
     @Override
     public void buyFromMarket(){
@@ -216,7 +234,7 @@ public class CliController extends ClientController {
         index = cli.marketIntChoose(upperBound, lowerBound);
 
         //if players has marble leader active, ask if he/she wants to use it and for how many times
-        List<LeaderCard> leaders = getLeaders();
+        List<LeaderCard> leaders = getPlayer().getLeaders();
         List<MarbleAbility> marbleAbilities = new ArrayList<>();
         int tot = 0;
 
@@ -241,9 +259,10 @@ public class CliController extends ClientController {
             }
         }
 
-        /*BuyMarketCommand buyMarketCommand = new BuyMarketCommand();
-        BuyMarketMessage message = new BuyMarketMessage(dimChar, index, leaderUsage);
-        buyMarketCommand.generateEnvelope(message);*/
+        BuyMarketMessage msg = new BuyMarketMessage(dimChar, index, leaderUsage);
+
+        messageToServerHandler.generateEnvelope(MessageID.BUY_FROM_MARKET, gson.toJson(msg, BuyMarketMessage.class));
+
     }
 
     @Override
@@ -267,5 +286,41 @@ public class CliController extends ClientController {
         messageToServerHandler.generateEnvelope(MessageID.ACTIVATE_LEADER, gson.toJson(cli.activeLeaderFromId(activable.size()), Integer.class));
     }
 
+    // Message From Server ---------------------------------------------------------------------------------------------
+
+    @Override
+    public boolean ackConfirmed(String msg) {
+        if (msg.equals("True"))
+            return true;
+        return false;
+    }
+
+    @Override
+    public void chooseStorageAction(String s){
+        List<Resource> res = (new ArrayList<>(Arrays.asList(s.substring(1, s.length()-1).split(", ")))).stream()
+                                                                                                          .map(this::convertStringToResource)
+                                                                                                          .collect(Collectors.toList());
+
+        cli.showMessage("Choose a storage for each of the following resources:");
+
+        StoreResourcesMessage msg = new StoreResourcesMessage(cli.storeResources(res));
+
+        messageToServerHandler.generateEnvelope(MessageID.STORE_RESOURCES, gson.toJson(msg, StoreResourcesMessage.class));
+    }
+
+    @Override
+    public void updateMarket(){
+        System.out.println("CIAO DAL MARKET");
+    }
+
+    @Override
+    public void updateAvailableProductionCards() {
+
+    }
+
+    @Override
+    public void updateOtherPlayer(NubPlayer pp) {
+
+    }
 
 }

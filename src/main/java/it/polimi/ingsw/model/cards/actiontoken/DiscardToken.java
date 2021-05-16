@@ -9,7 +9,7 @@ import it.polimi.ingsw.model.player.ProPlayer;
  * The ActionToken with the Discard ability.
  */
 public class DiscardToken implements ActionToken {
-
+    private final int id;
     private ColorEnum typeProdCard;
 
     /**
@@ -17,7 +17,8 @@ public class DiscardToken implements ActionToken {
      *
      * @param typeProdCard the type prod card
      */
-    public DiscardToken(ColorEnum typeProdCard){
+    public DiscardToken(int id, ColorEnum typeProdCard){
+        this.id = id;
         this.typeProdCard = typeProdCard;
     }
 

@@ -7,6 +7,13 @@ import it.polimi.ingsw.model.player.ProPlayer;
  * The ActionToken with the DoubleMove ability.
  */
 public class DoubleMoveToken implements ActionToken {
+    private final int id;
+    private final int moves;
+
+    public DoubleMoveToken(int id, int moves){
+        this.id = id;
+        this.moves = moves;
+    }
 
     /* private void doubleMoveCross(ProPlayer player, SinglePlayerGame game){
         player.moveOnBoard(2);

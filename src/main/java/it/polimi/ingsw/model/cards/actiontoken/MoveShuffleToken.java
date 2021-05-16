@@ -1,12 +1,20 @@
 package it.polimi.ingsw.model.cards.actiontoken;
 
 import it.polimi.ingsw.model.SinglePlayerGame;
+import it.polimi.ingsw.model.cards.production.ColorEnum;
 import it.polimi.ingsw.model.player.ProPlayer;
 
 /**
  * The ActionToken with the Move and Shuffle ability.
  */
 public class MoveShuffleToken implements ActionToken {
+    private final int id;
+    private final int moves;
+
+    public MoveShuffleToken(int id, int moves){
+        this.id = id;
+        this.moves = moves;
+    }
 
     /**
      * Draw a DoubleMoveToken, move the Black Cross token forward by 1 space.

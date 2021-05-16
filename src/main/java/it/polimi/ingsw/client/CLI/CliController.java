@@ -157,7 +157,10 @@ public class CliController extends ClientController {
     @Override
     public void chooseLeadersAction(){
         cli.showMessage("Choose 2 of leaders among these:\n");
-        cli.chooseLeader(getPlayer().getLeaders());
+        List<Integer> lId = cli.chooseLeader(getPlayer().getLeaders());
+
+        getPlayer().setLeaders(convertIdToLeaderCard(lId));
+
     }
 
     @Override
@@ -170,7 +173,7 @@ public class CliController extends ClientController {
         else
             quantity = 2;
 
-        cli.showMessage("Choose no." + quantity + " resources");
+        cli.showMessage("You can choose no." + quantity + " resources");
         res = cli.chooseResources(quantity);
 
         // TODO: set resources in the correct place;

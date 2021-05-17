@@ -85,6 +85,13 @@ public class ProPlayer extends Player{
     public Deque<ConcreteProductionCard> getProdCards1(){return prodCards1;}
     public Deque<ConcreteProductionCard> getProdCards2(){return prodCards2;}
     public Deque<ConcreteProductionCard> getProdCards3(){return prodCards3;}
+    public List<Deque<ConcreteProductionCard>> getProdStacks(){
+        List<Deque<ConcreteProductionCard>> stacks = new ArrayList<>();
+        stacks.add(prodCards1);
+        stacks.add(prodCards2);
+        stacks.add(prodCards3);
+        return stacks;
+    }
 
     /**Get all the resources just bought from the market by the player. */
     public List<Resource> getResAcquired(){
@@ -264,6 +271,8 @@ public class ProPlayer extends Player{
         //if we are here, then the cost has been payed completely
         game.removeFromProdDeck(card);
         prodStack.addFirst(card);
+
+        controller.update(MessageID.CONFIRM_END_TURN);
     }
 //----------------------------------------MARKET-------------------------------
     /**Obtains the resources chosen from market by column or row.
@@ -297,9 +306,9 @@ public class ProPlayer extends Player{
         //TURN BLANK INTO SOMETHING: call controller to let the player choose which leaders he wants
         if(resAcquired.contains(Resource.BLANK) && leaders!=null && !leaders.isEmpty()){
             for(BiElement<MarbleAbility, Integer> bi : leaders){
-                if(checkLeaderAvailability(bi.getT())) {
-                    for (int i = 0; i < bi.getV() - 1; i++) {
-                        if(!bi.getT().applyEffect(this)){
+                if(checkLeaderAvailability(bi.getFirstValue())) {
+                    for (int i = 0; i < bi.getSecondValue() - 1; i++) {
+                        if(!bi.getFirstValue().applyEffect(this)){
                             throw new RuntimeException("Invalid Leader");
                         }
                     }
@@ -309,7 +318,7 @@ public class ProPlayer extends Player{
             }
         }
         //call to controller notifying that the player has to organize the resources just bought
-        controller.update(MessageID.STORE_RESOURCES);
+        //controller.update(MessageID.STORE_RESOURCES);
     }
 
 //----------------------------------RESOURCES------------------------------------------
@@ -935,6 +944,7 @@ public class ProPlayer extends Player{
         Gson gson = new Gson();
         this.update = gson.toJson(update, UpdateMessage.class);
     }
+
     public String getUpdate() {
         return update;
     }

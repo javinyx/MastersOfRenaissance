@@ -17,6 +17,11 @@ public class LocalView implements Observer<MessageEnvelope>, ViewInterface {
 
     }
 
+    @Override
+    public void updateFrom(MessageEnvelope envelope, String nickname){
+        //nothing
+    }
+
     public void buyFromMarket() {
 
     }

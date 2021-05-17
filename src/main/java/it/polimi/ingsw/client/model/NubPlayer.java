@@ -2,12 +2,14 @@ package it.polimi.ingsw.client.model;
 
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
-import it.polimi.ingsw.misc.TriElement;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
 
-import java.util.*;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class NubPlayer {
     private final String nickname;
@@ -15,13 +17,12 @@ public class NubPlayer {
     private boolean myTurn = false;
     private List<Deque<ConcreteProductionCard>> productionStacks;
     private List<LeaderCard> leaders;
-    private List<TriElement<Resource, Storage, Integer>> allResources;
-    //private Map<BiElement<Resource, Storage>, Integer> allResources;
+    private Map<BiElement<Resource, Storage>, Integer> allResources;
     private int turnNumber;
 
     public NubPlayer(String nickname){
         this.nickname = nickname;
-        this.allResources = new ArrayList<>();
+        this.allResources = new HashMap<>();
     }
 
     public void setTurnNumber(int turnNumber) {
@@ -44,15 +45,24 @@ public class NubPlayer {
     public void setMyTurn(boolean status){myTurn = status;}
     public void setCurrPos(int pos){currPos = pos;}
 
-    /**Clears all the resources owned by the player and add the new ones.*/
-    public void setAllResources(List<TriElement<Resource,Storage, Integer>> resources){
-        allResources.clear();
-        allResources.addAll(resources);
+    public void addResources(BiElement<Resource,Storage> resources, Integer qty){
+        if(allResources.containsKey(resources)){
+            allResources.compute(resources, (k,v) -> v + qty);
+        }else{
+            allResources.put(resources, 1);
+        }
     }
-    public void addResources(TriElement<Resource,Storage,Integer> resources){this.allResources.add(resources);}
-    public void addResources(List<TriElement<Resource,Storage,Integer>> resources){this.allResources.addAll(resources);}
 
-    public List<TriElement<Resource,Storage,Integer>> getAllResources(){return allResources;}
+    public void removeResources(BiElement<Resource, Storage> resources, Integer qty){
+        if(allResources.containsKey(resources)){
+            allResources.compute(resources, (k,v) -> v - qty);
+            if(allResources.get(resources)<1){
+                allResources.remove(resources);
+            }
+        }
+    }
+
+    public Map<BiElement<Resource,Storage>,Integer> getAllResources(){return allResources;}
     public boolean setPosition(int pos){
         if(pos>0 && pos<25) {
             currPos = pos;

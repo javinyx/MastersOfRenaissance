@@ -21,7 +21,7 @@ public class ClientApp {
             while (playAgain) {
                 CliController controller;
                 String graphicOption= args[0].toUpperCase();
-                if(args[1] == "local"){
+                if(args.length>1 && args[1] == "local"){
 
                 }
                 else {

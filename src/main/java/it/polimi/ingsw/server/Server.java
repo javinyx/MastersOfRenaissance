@@ -360,31 +360,31 @@ public class Server {
      * @return true if it can set the player aas inactive, false otherwise.*/
     public boolean playerCrashed(ClientConnection connection, String name, int gameSize){
         switch (gameSize) {
-            case 1 : if(!singlePlayerPlay.equals(connection)) {
+            case 1 -> {if(!singlePlayerPlay.equals(connection)) {
                 return false;
             }else{
                 onePlayerRejoiningRoom.put(name, (SinglePlayerGame) controller.getGame());
-            }
-            case 2 : if(!twoPlayerPlay.containsKey(connection)) {
+            }}
+            case 2 -> {if(!twoPlayerPlay.containsKey(connection)) {
                 return false;
             }else{
                 twoPlayerRejoiningRoom.put(name, (MultiPlayerGame) controller.getGame());
-            }
-            case 3 : if(!threePlayerWait.containsKey(name)) {
+            }}
+            case 3 -> { if(!threePlayerWait.containsKey(name)) {
                 return false;
             }else{
                 threePlayerRejoiningRoom.put(name, (MultiPlayerGame) controller.getGame());
-            }
-            case 4 : if(!fourPlayerWait.containsKey(name)) {
+            }}
+            case 4 -> {if(!fourPlayerWait.containsKey(name)) {
                 return false;
             }else{
                 fourPlayerRejoiningRoom.put(name, (MultiPlayerGame) controller.getGame());
-            }
-            controller.setInactivePlayer(name);
-            return true;
-            default : return false;
-        }
+            }}
 
+            default -> {return false;}
+        }
+        controller.setInactivePlayer(name);
+        return true;
     }
 
 }

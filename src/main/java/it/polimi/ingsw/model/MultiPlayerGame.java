@@ -2,24 +2,16 @@ package it.polimi.ingsw.model;
 
 
 import it.polimi.ingsw.controller.Controller;
-import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.concreteMessages.UpdateMessage;
-import it.polimi.ingsw.misc.BiElement;
-import it.polimi.ingsw.misc.Storage;
-import it.polimi.ingsw.misc.TriElement;
-import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.Deck;
-import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.market.Market;
-import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.PopePass;
 import it.polimi.ingsw.model.player.ProPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MultiPlayerGame extends Game implements ModelObserver {
     protected List<ProPlayer> players;
@@ -71,12 +63,12 @@ public class MultiPlayerGame extends Game implements ModelObserver {
 
         currPlayer = activePlayers.get(0);
 
-        UpdateMessage msg = new UpdateMessage(p.getTurnID(), p.getCurrentPosition(), getMarket().getMarketBoard(), getMarket().getExtraMarble(),
-                getBuyableProductionID(),null, null, null, null);
+        UpdateMessage msg = new UpdateMessage(p.getTurnID(), p.getCurrentPosition(), 1,
+                getMarket().getMarketBoard(), getMarket().getExtraMarble(), getBuyableProductionID(),
+                null, null, null, null);
 
         getCurrPlayer().setUpdate(msg);
         controller.update(MessageID.UPDATE);
-
     }
 
     public List<ProPlayer> getPlayers() {

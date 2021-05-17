@@ -9,11 +9,11 @@ public class BiElement<T, V> {
         this.v = v;
     }
 
-    public T getT(){
+    public T getFirstValue(){
         return t;
     }
 
-    public V getV(){
+    public V getSecondValue(){
         return v;
     }
 }

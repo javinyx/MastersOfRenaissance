@@ -7,11 +7,12 @@ import java.util.List;
 
 public class TurnNumberMessage extends SimpleMessage {
 
-    private List<BiElement<String, Integer>> turnAss;
+    private final List<BiElement<String, Integer>> turnAss;
 
     public TurnNumberMessage(List<BiElement<String, Integer>> turnAss) {
         this.turnAss = turnAss;
     }
+
     public List<BiElement<String, Integer>> getTurnAss() {
         return turnAss;
     }

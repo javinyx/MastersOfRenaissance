@@ -1,16 +1,12 @@
 package it.polimi.ingsw.client;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
-import it.polimi.ingsw.messages.concreteMessages.ChooseLeaderCardsMessage;
 import it.polimi.ingsw.messages.concreteMessages.TurnNumberMessage;
 import it.polimi.ingsw.messages.concreteMessages.UpdateMessage;
-import it.polimi.ingsw.model.market.Resource;
 
 import java.io.ObjectInputStream;
-import java.util.List;
 
 /**This class allows the Client to read/send messages from/to the server. */
 public class MessageReceiver implements Runnable{
@@ -63,7 +59,7 @@ public class MessageReceiver implements Runnable{
         controller.setLastRegistrationMessage(envelope.getMessageID());
 
         switch(envelope.getMessageID()){
-
+            case CONFIRM_END_TURN -> controller.endTurn();
             case ASK_NICK -> controller.askNickname();
             case PLAYER_NUM -> controller.askNumberOfPlayers();
             case CONFIRM_REGISTRATION -> controller.confirmRegistration(envelope.getPayload());

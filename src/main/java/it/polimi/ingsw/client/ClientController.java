@@ -9,8 +9,8 @@ import it.polimi.ingsw.client.model.NubPlayer;
 import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.concreteMessages.TurnNumberMessage;
 import it.polimi.ingsw.messages.concreteMessages.UpdateMessage;
+import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
-import it.polimi.ingsw.misc.TriElement;
 import it.polimi.ingsw.model.cards.leader.*;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
@@ -18,10 +18,7 @@ import it.polimi.ingsw.model.market.Resource;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class ClientController {
@@ -115,7 +112,9 @@ public abstract class ClientController {
         this.active = active;
     }
 
-
+    public void endTurn(){
+        player.setMyTurn(false);
+    }
 
     private void initAllCards(){
         Gson gson = new Gson();
@@ -171,14 +170,14 @@ public abstract class ClientController {
 
     public void setTotalPlayers(TurnNumberMessage msg){
         for (int i = 0; i < msg.getTurnAss().size(); i++) {
-            if (!msg.getTurnAss().get(i).getT().equals(player.getNickname())){
-                NubPlayer np = new NubPlayer(msg.getTurnAss().get(i).getT());
+            if (!msg.getTurnAss().get(i).getFirstValue().equals(player.getNickname())){
+                NubPlayer np = new NubPlayer(msg.getTurnAss().get(i).getFirstValue());
                 totalPlayers.add(np);
-                np.setTurnNumber(msg.getTurnAss().get(i).getV());
+                np.setTurnNumber(msg.getTurnAss().get(i).getSecondValue());
                 otherPlayers.add(np);
             }
             else
-                player.setTurnNumber(msg.getTurnAss().get(i).getV());
+                player.setTurnNumber(msg.getTurnAss().get(i).getSecondValue());
         }
     }
 
@@ -227,9 +226,6 @@ public abstract class ClientController {
     public abstract void updateOtherPlayer(NubPlayer pp);
 
     public void updateAction(UpdateMessage msg){
-        if(player.isMyTurn())
-            player.setMyTurn(false);
-
         if(market==null){
             market = new Market(msg.getMarketBoard(), msg.getExtraMarble());
         }else {
@@ -237,55 +233,31 @@ public abstract class ClientController {
             market.setExtra(msg.getExtraMarble());
         }
 
-        if(msg.getAvailableProductionCards() != null)
+        if(msg.getAvailableProductionCards() != null || !msg.getAvailableProductionCards().isEmpty())
             availableProductionCard = convertIdToProductionCard(msg.getAvailableProductionCards());
 
         if(!isRegistrationPhase()) {
             ConcreteProductionCard boughtProductionCard = null;
             if(msg.getProductionCardId() != null)
-                boughtProductionCard = convertIdToProductionCard(msg.getProductionCardId().getT());
+                boughtProductionCard = convertIdToProductionCard(msg.getProductionCardId().getFirstValue());
             for (NubPlayer pp : otherPlayers) {
                 if (pp.getTurnNumber() == msg.getPlayerId()) {
                     pp.setCurrPos(msg.getPlayerPos());
                     if (boughtProductionCard != null)
-                        pp.addProductionCard(boughtProductionCard, msg.getProductionCardId().getV() - 1);
-                    if (msg.getLeadersId() != null)
+                        pp.addProductionCard(boughtProductionCard, msg.getProductionCardId().getSecondValue() - 1);
+                    if (msg.getLeadersId() != null || !msg.getLeadersId().isEmpty())
                         pp.setLeaders(convertIdToLeaderCard(msg.getLeadersId()));
 
-                    List<TriElement<Resource, Storage, Integer>> actualResources, actualResourcesDupe, resources;
-                    actualResources = pp.getAllResources();
-                    actualResourcesDupe = new ArrayList<>(actualResources);
-                    if (msg.getAddedResources() != null) {
-                        resources = msg.getAddedResources();
-                        for (TriElement<Resource, Storage, Integer> actualElem : actualResourcesDupe) {
-                            for (TriElement<Resource, Storage, Integer> elem : resources) {
-                                if (actualElem.getFirstValue().equals(elem.getFirstValue()) && actualElem.getSecondValue().equals(elem.getSecondValue())) {
-                                    actualElem.setThirdValue(actualElem.getThirdValue() + elem.getThirdValue());
-                                } else {
-                                    pp.addResources(elem);
-                                }
-                            }
-                        }
+                    Map<BiElement<Resource, Storage>, Integer> resources = msg.getAddedResources();
+                    if(resources.size()>0) {
+                        resources.forEach(pp::addResources);
                     }
 
-                    if(msg.getAddedResources() != null)
-                        pp.addResources(msg.getAddedResources());
-
-                    if(msg.getRemovedResources() != null) {
-                        resources = msg.getRemovedResources();
-
-                        actualResources = pp.getAllResources();
-                        actualResourcesDupe = new ArrayList<>(actualResources);
-                        for (TriElement<Resource, Storage, Integer> elem : resources) {
-                            for (TriElement<Resource, Storage, Integer> actualElem : actualResourcesDupe)
-                                if (elem.getFirstValue().equals(actualElem.getFirstValue()) && elem.getSecondValue().equals(actualElem.getSecondValue())) {
-                                    actualElem.setThirdValue(actualElem.getThirdValue() - elem.getThirdValue());
-                                    if (actualElem.getThirdValue() < 1) {
-                                        actualResources.remove(actualElem);
-                                    }
-                                }
-                        }
+                    resources = msg.getRemovedResources();
+                    if(resources.size()>0){
+                        resources.forEach(pp::removeResources);
                     }
+
                     updateOtherPlayer(pp);
                     break;
                 }
@@ -298,12 +270,13 @@ public abstract class ClientController {
         if (isRegistrationPhase())
             startGame();
         else{
+            currPlayer = totalPlayers.get(msg.getNextPlayerId()-1);
 
-            if(msg.getPlayerId() == totalPlayers.size())
+            /*if(msg.getPlayerId() == totalPlayers.size())
                 currPlayer = totalPlayers.get(0);
             else
                 currPlayer = totalPlayers.get(msg.getPlayerId()+1);
-
+            */
             if (currPlayer.getTurnNumber() == player.getTurnNumber())
                 player.setMyTurn(true);
 

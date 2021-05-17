@@ -16,9 +16,7 @@ import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.player.BadStorageException;
 import it.polimi.ingsw.model.player.ProPlayer;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class Controller implements Observer<MessageID> {
 
@@ -31,6 +29,14 @@ public class Controller implements Observer<MessageID> {
     private char turnType;
     private List<Observer<MessageEnvelope>> remoteViews;
     Gson gson = new Gson();
+
+    //player choices to create updateMessage
+    Map<BiElement<Resource, Storage>, Integer> addedResources = new HashMap<>();
+    Map<BiElement<Resource, Storage>, Integer> removedResources = new HashMap<>();
+    boolean mustChoosePlacements = false;
+    Optional<BiElement<Integer, Integer>> boughtCard = Optional.empty();
+
+    ProPlayer previousPlayer;
 
     public Controller() {
         initializationPhase = true;
@@ -54,12 +60,13 @@ public class Controller implements Observer<MessageID> {
 
         game.createPlayer(nickName);
 
-        turnNumber.add(new BiElement<>(nickName, 0));
+        turnNumber.add(new BiElement<>(nickName, game.getCurrPlayer().getTurnID()));
         TurnNumberMessage msg = new TurnNumberMessage(turnNumber);
         envelope = new MessageEnvelope(MessageID.TURN_NUMBER, gson.toJson(msg, TurnNumberMessage.class));
         remoteViews.get(0).update(envelope);
 
         //Leader choice
+        initializationPhase = true;
         envelope = new MessageEnvelope(MessageID.CHOOSE_LEADER_CARDS, String.valueOf(game.leaderDistribution()));
         remoteViews.get(0).update(envelope);
 
@@ -115,6 +122,10 @@ public class Controller implements Observer<MessageID> {
 
     //m == buymarket, b == buyproduction, p == activateProduction
 
+    /**Invoke {@code buyFromMarket()} method in {@link ProPlayer} checking the player choice's correctness.
+     * <p>If everything is fine, calls {@code update()} in order to generate a {@code MessageID.CHOOSE_PLACEMENTS_IN_STORAGE}
+     * and ask the player where to store the resources bought, otherwise generate various error messages.</p>
+    */
     public synchronized void buyFromMarAction(BuyMarketMessage buyMark) {
 
         try {
@@ -130,22 +141,14 @@ public class Controller implements Observer<MessageID> {
             update(MessageID.CARD_NOT_AVAILABLE);
         }
 
-        UpdateMessage msg = new UpdateMessage(game.getCurrPlayer().getTurnID(), game.getCurrPlayer().getCurrentPosition(), game.getMarket().getMarketBoard(), game.getMarket().getExtraMarble(), null, null, null, null, null);
-
-        game.getCurrPlayer().setUpdate(msg);
-
-        update(MessageID.UPDATE);
-
-        game.updateEndTurn(game.getCurrPlayer());
-
+        mustChoosePlacements = true;
+        update(MessageID.STORE_RESOURCES);
     }
 
     public void buyProdCardAction(BuyProductionMessage buyProd) {
-
         UpdateMessage msg;
 
         try {
-
             ConcreteProductionCard card = null;
             List<LeaderCard> leaderCards = new ArrayList<>();
 
@@ -168,6 +171,7 @@ public class Controller implements Observer<MessageID> {
             }
 
             if (card != null)
+                boughtCard = Optional.of(new BiElement<>(card.getId(), buyProd.getStack()));
                 game.getCurrPlayer().buyProductionCard(card, buyProd.getStack(), leaderCards, buyProd.getResourcesWallet());
 
         }
@@ -189,15 +193,12 @@ public class Controller implements Observer<MessageID> {
         }
 
         //msg = new UpdateMessage(game.getCurrPlayer(), game.getBuyableProductionCards().get(index));
+        update(MessageID.CONFIRM_END_TURN);
 
         update(MessageID.UPDATE);
-
-        game.updateEndTurn(game.getCurrPlayer());
-
     }
 
     public void activateProdAction(ProduceMessage produce) {
-
         Optional<Resource> basicOut;
         if(produce.getBasicOutput() == null){
             basicOut = Optional.empty();
@@ -205,6 +206,7 @@ public class Controller implements Observer<MessageID> {
         else{
             basicOut = Optional.of(produce.getBasicOutput());
         }
+
         try {
             game.getCurrPlayer().startProduction(produce.getProductionCards(), produce.getResourcesWallet(), produce.getLeaderCards(), produce.getLeaderOutputs(), produce.isBasicProduction(), basicOut);
         }catch(BadStorageException e1){
@@ -215,10 +217,9 @@ public class Controller implements Observer<MessageID> {
             update(MessageID.CARD_NOT_AVAILABLE);
         }
 
+        update(MessageID.CONFIRM_END_TURN);
+
         update(MessageID.UPDATE);
-
-        game.updateEndTurn(game.getCurrPlayer());
-
     }
 
     // END TURN STRUCTURE ----------------------------------------------------------------------------------------------
@@ -238,21 +239,85 @@ public class Controller implements Observer<MessageID> {
     }
 
     public void organizeResourceAction(StoreResourcesMessage message){
-
+        addedResources.clear();
+        removedResources.clear();
 
         for (BiElement<Resource, Storage> element: message.getPlacements()) {
-
-            switch (element.getV()){
-
-                case WAREHOUSE_SMALL -> game.getCurrPlayer().storeInWarehouse(element.getT(), 1);
-                case WAREHOUSE_MID -> game.getCurrPlayer().storeInWarehouse(element.getT(), 2);
-                case WAREHOUSE_LARGE -> game.getCurrPlayer().storeInWarehouse(element.getT(), 3);
-
-                case EXTRA1 -> game.getCurrPlayer().storeInExtraStorage(element.getT(), game.getCurrPlayer().getExtraStorage().get(0));
-                case EXTRA2 -> game.getCurrPlayer().storeInExtraStorage(element.getT(), game.getCurrPlayer().getExtraStorage().get(1));
-
-                default -> update(MessageID.BAD_STORAGE_REQUEST);
+            switch (element.getSecondValue()){
+                case WAREHOUSE_SMALL -> {
+                    if(game.getCurrPlayer().storeInWarehouse(element.getFirstValue(), 1)){
+                        addAddedResources(element);
+                    }else{
+                        addedResources.clear();
+                        mustChoosePlacements = true;
+                        update(MessageID.BAD_STORAGE_REQUEST);
+                        return;
+                    }
+                }
+                case WAREHOUSE_MID -> {
+                    if(game.getCurrPlayer().storeInWarehouse(element.getFirstValue(), 2)){
+                        addAddedResources(element);
+                    }else{
+                        addedResources.clear();
+                        mustChoosePlacements = true;
+                        update(MessageID.BAD_STORAGE_REQUEST);
+                        return;
+                    }
+                }
+                case WAREHOUSE_LARGE -> {
+                    if(game.getCurrPlayer().storeInWarehouse(element.getFirstValue(), 3)){
+                        addAddedResources(element);
+                    }else{
+                        addedResources.clear();
+                        mustChoosePlacements = true;
+                        update(MessageID.BAD_STORAGE_REQUEST);
+                        return;
+                    }
+                }
+                case EXTRA1 -> {
+                    if(game.getCurrPlayer().storeInExtraStorage(element.getFirstValue(), game.getCurrPlayer().getExtraStorage().get(0))){
+                        addAddedResources(element);
+                    }else{
+                        addedResources.clear();
+                        mustChoosePlacements = true;
+                        update(MessageID.BAD_STORAGE_REQUEST);
+                        return;
+                    }
+                }
+                case EXTRA2 -> {
+                    if (game.getCurrPlayer().storeInExtraStorage(element.getFirstValue(), game.getCurrPlayer().getExtraStorage().get(1))) {
+                        addAddedResources(element);
+                    }else{
+                        addedResources.clear();
+                        mustChoosePlacements = true;
+                        update(MessageID.BAD_STORAGE_REQUEST);
+                        return;
+                    }
+                }
+                default -> {
+                    addedResources.clear();
+                    mustChoosePlacements = true;
+                    update(MessageID.BAD_STORAGE_REQUEST);
+                    return;
+                }
             }
+        }
+
+        mustChoosePlacements = false;
+
+        update(MessageID.CONFIRM_END_TURN);
+
+        generateUpdateMessage();
+
+    }
+
+    /**If {@code element} is already contained in {@code addedResources}, then it increments its presence by 1.
+     * Otherwise, it add the element to the map as a new occurrence with is value set at 1.*/
+    private void addAddedResources(BiElement<Resource,Storage> element){
+        if(addedResources.containsKey(element)){
+            addedResources.compute(element, (k,v) -> v++);
+        }else{
+            addedResources.put(element, 1);
         }
     }
 
@@ -264,9 +329,29 @@ public class Controller implements Observer<MessageID> {
 
     // ENVELOPE CREATOR ------------------------------------------------------------------------------------------------
 
+    private UpdateMessage generateUpdateMessage(){
+        previousPlayer = game.getCurrPlayer();
+        List<Integer> thisPlayerActiveLeaders = new ArrayList<>();
+
+        //production card bought set by: buyProductionCardAction
+        //addedResources set by: organizeResourceAction,
+        //removedResources set by:
+        for(LeaderCard ld : previousPlayer.getLeaderCards()){
+            if(ld.isActive()){
+                thisPlayerActiveLeaders.add(ld.getId());
+            }
+        }
+
+        game.updateEndTurn(previousPlayer);
+        UpdateMessage msg = new UpdateMessage(previousPlayer.getTurnID(), previousPlayer.getCurrentPosition(), game.getCurrPlayer().getTurnID(),
+                game.getMarket().getMarketBoard(), game.getMarket().getExtraMarble(), game.getBuyableProductionID(),
+                boughtCard.orElse(null), thisPlayerActiveLeaders, addedResources, removedResources);
+
+        return msg;
+    }
+
     @Override
     public void update(MessageID messageID){
-
         switch(messageID) {
 
             case ACK -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "True"));
@@ -278,6 +363,11 @@ public class Controller implements Observer<MessageID> {
             case CHOOSE_RESOURCE -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, String.valueOf(game.getCurrPlayer().getTurnID())));
 
             //GAME PHASES
+            case CHOOSE_PLACEMENTS_IN_STORAGE -> {
+                ChoosePlacementsInStorageMessage msg = new ChoosePlacementsInStorageMessage(game.getCurrPlayer().getResAcquired());
+                String payload = gson.toJson(msg, ChoosePlacementsInStorageMessage.class);
+                remoteViews.get(game.getCurrPlayer().getTurnID()-1).update(new MessageEnvelope(messageID, payload));
+            }
 
             case CARD_NOT_AVAILABLE,
                  BAD_PRODUCTION_REQUEST,
@@ -288,11 +378,28 @@ public class Controller implements Observer<MessageID> {
 
             case STORE_RESOURCES -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
 
-            case UPDATE -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getUpdate()));
+            case UPDATE -> {
+                if (initializationPhase) {
+                    remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getUpdate()));
+                } else {
+                    //WARNING : generateUpdateMessage() is crucial because it generates the UpdateMessage AND set the end of the player turn
+                    UpdateMessage msg = generateUpdateMessage();
+                    String payload = gson.toJson(msg, UpdateMessage.class);
+                    MessageEnvelope envelope = new MessageEnvelope(MessageID.UPDATE, payload);
+                    for(Observer<MessageEnvelope> obs : remoteViews){
+                        obs.updateFrom(envelope, previousPlayer.getNickname());
+                    }
+                }
+            }
 
 
             default -> System.out.println("No no no");
         }
+    }
+
+    @Override
+    public void updateFrom(MessageID messageID, String nickname){
+        //nothing
     }
 
     // END ENVELOPE CREATOR --------------------------------------------------------------------------------------------

@@ -3,7 +3,6 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.concreteMessages.UpdateMessage;
-import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
 import it.polimi.ingsw.model.market.Market;
@@ -56,8 +55,9 @@ public class SinglePlayerGame extends Game implements ModelObserver {
      */
     public void start(ProPlayer p){
 
-        UpdateMessage msg = new UpdateMessage(currPlayer.getTurnID(), currPlayer.getCurrentPosition(), getMarket().getMarketBoard(), getMarket().getExtraMarble(),
-                getBuyableProductionID(),null, null, null, null);
+        UpdateMessage msg = new UpdateMessage(currPlayer.getTurnID(), currPlayer.getCurrentPosition(), 1,
+                getMarket().getMarketBoard(), getMarket().getExtraMarble(), getBuyableProductionID(),
+                null, null, null, null);
 
         getCurrPlayer().setUpdate(msg);
 

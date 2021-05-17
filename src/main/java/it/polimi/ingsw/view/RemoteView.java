@@ -1,7 +1,6 @@
 package it.polimi.ingsw.view;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
@@ -9,13 +8,10 @@ import it.polimi.ingsw.messages.concreteMessages.BuyMarketMessage;
 import it.polimi.ingsw.messages.concreteMessages.BuyProductionMessage;
 import it.polimi.ingsw.messages.concreteMessages.ProduceMessage;
 import it.polimi.ingsw.messages.concreteMessages.StoreResourcesMessage;
-import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Observer;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
-import it.polimi.ingsw.model.cards.leader.MarbleAbility;
 import it.polimi.ingsw.server.ClientConnection;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -86,7 +82,8 @@ public class RemoteView extends View {
 
         sendMessage(gson.toJson(messageToSend));
 
-        if(messageToSend.getMessageID() != null && (messageToSend.getMessageID().equals(MessageID.PLAYER_WIN) || messageToSend.getMessageID().equals(MessageID.ABORT_GAME))) {
+        if(messageToSend.getMessageID() != null && (messageToSend.getMessageID().equals(MessageID.PLAYER_WIN)
+                || messageToSend.getMessageID().equals(MessageID.ABORT_GAME))) {
             clientConnection.setActive(false);
         }
     }
@@ -97,6 +94,11 @@ public class RemoteView extends View {
         @Override
         public void update(String str){
             readMessageFromClient(gson.fromJson(str, MessageEnvelope.class));
+        }
+
+        @Override
+        public void updateFrom(String str, String nickname){
+            //niente
         }
     }
 }

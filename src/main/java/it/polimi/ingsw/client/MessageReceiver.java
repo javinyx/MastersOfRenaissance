@@ -80,9 +80,8 @@ public class MessageReceiver implements Runnable{
 
     public void readGameMessage(MessageEnvelope envelope) {
         controller.setLastGameMessage(envelope.getMessageID());
-
         switch(envelope.getMessageID()){
-
+            case CONFIRM_END_TURN -> controller.endTurn();
             case CARD_NOT_AVAILABLE -> controller.cardNotAvailable();
             case BAD_PRODUCTION_REQUEST -> controller.badProductionRequest();
             case BAD_PAYMENT_REQUEST -> controller.badPaymentRequest();
@@ -94,6 +93,9 @@ public class MessageReceiver implements Runnable{
             case STORE_RESOURCES -> controller.chooseStorageAction(envelope.getPayload());
 
             case UPDATE -> controller.updateAction(gson.fromJson(envelope.getPayload(), UpdateMessage.class));
+
+            case LORENZO_POSITION -> controller.moveLorenzo(Integer.parseInt(envelope.getPayload()));
+            case PLAYERS_POSITION -> {}
 
 
             default -> System.err.println("MessageID not recognised");

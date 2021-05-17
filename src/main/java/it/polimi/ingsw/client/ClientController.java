@@ -224,6 +224,7 @@ public abstract class ClientController {
     public abstract void updateMarket();
     public abstract void updateAvailableProductionCards();
     public abstract void updateOtherPlayer(NubPlayer pp);
+    public abstract void moveLorenzo(int currentPosition);
 
     public void updateAction(UpdateMessage msg){
         if(market==null){

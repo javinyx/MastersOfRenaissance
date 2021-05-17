@@ -55,7 +55,6 @@ public class Controller implements Observer<MessageID> {
 
         numPlayer = 1;
         game = new SinglePlayerGame(this);
-        initializationPhase = false;
         List<BiElement<String, Integer>> turnNumber = new ArrayList<>();
 
         game.createPlayer(nickName);
@@ -66,11 +65,11 @@ public class Controller implements Observer<MessageID> {
         remoteViews.get(0).update(envelope);
 
         //Leader choice
-        initializationPhase = true;
         envelope = new MessageEnvelope(MessageID.CHOOSE_LEADER_CARDS, String.valueOf(game.leaderDistribution()));
         remoteViews.get(0).update(envelope);
 
         game.start(game.getCurrPlayer());
+        initializationPhase = false;
     }
 
     public void createMultiplayerGame(List<String> players){
@@ -108,6 +107,7 @@ public class Controller implements Observer<MessageID> {
                 game.getCurrPlayer().moveOnBoard(1);
             }
             game.start(p);
+            initializationPhase = false;
         }
 
         // TODO: ogni giocatore va informato della situazione degli altri 3
@@ -142,12 +142,11 @@ public class Controller implements Observer<MessageID> {
         }
 
         mustChoosePlacements = true;
+
         update(MessageID.STORE_RESOURCES);
     }
 
     public void buyProdCardAction(BuyProductionMessage buyProd) {
-        UpdateMessage msg;
-
         try {
             ConcreteProductionCard card = null;
             List<LeaderCard> leaderCards = new ArrayList<>();
@@ -246,7 +245,7 @@ public class Controller implements Observer<MessageID> {
             switch (element.getSecondValue()){
                 case WAREHOUSE_SMALL -> {
                     if(game.getCurrPlayer().storeInWarehouse(element.getFirstValue(), 1)){
-                        addAddedResources(element);
+                        addResources(element);
                     }else{
                         addedResources.clear();
                         mustChoosePlacements = true;
@@ -256,7 +255,7 @@ public class Controller implements Observer<MessageID> {
                 }
                 case WAREHOUSE_MID -> {
                     if(game.getCurrPlayer().storeInWarehouse(element.getFirstValue(), 2)){
-                        addAddedResources(element);
+                        addResources(element);
                     }else{
                         addedResources.clear();
                         mustChoosePlacements = true;
@@ -266,7 +265,7 @@ public class Controller implements Observer<MessageID> {
                 }
                 case WAREHOUSE_LARGE -> {
                     if(game.getCurrPlayer().storeInWarehouse(element.getFirstValue(), 3)){
-                        addAddedResources(element);
+                        addResources(element);
                     }else{
                         addedResources.clear();
                         mustChoosePlacements = true;
@@ -276,7 +275,7 @@ public class Controller implements Observer<MessageID> {
                 }
                 case EXTRA1 -> {
                     if(game.getCurrPlayer().storeInExtraStorage(element.getFirstValue(), game.getCurrPlayer().getExtraStorage().get(0))){
-                        addAddedResources(element);
+                        addResources(element);
                     }else{
                         addedResources.clear();
                         mustChoosePlacements = true;
@@ -286,7 +285,7 @@ public class Controller implements Observer<MessageID> {
                 }
                 case EXTRA2 -> {
                     if (game.getCurrPlayer().storeInExtraStorage(element.getFirstValue(), game.getCurrPlayer().getExtraStorage().get(1))) {
-                        addAddedResources(element);
+                        addResources(element);
                     }else{
                         addedResources.clear();
                         mustChoosePlacements = true;
@@ -305,19 +304,28 @@ public class Controller implements Observer<MessageID> {
 
         mustChoosePlacements = false;
 
-        update(MessageID.CONFIRM_END_TURN);
-
-        generateUpdateMessage();
+        if(!initializationPhase) {
+            update(MessageID.CONFIRM_END_TURN);
+        }
+        update(MessageID.UPDATE);
 
     }
 
     /**If {@code element} is already contained in {@code addedResources}, then it increments its presence by 1.
      * Otherwise, it add the element to the map as a new occurrence with is value set at 1.*/
-    private void addAddedResources(BiElement<Resource,Storage> element){
+    private void addResources(BiElement<Resource,Storage> element){
         if(addedResources.containsKey(element)){
             addedResources.compute(element, (k,v) -> v++);
         }else{
             addedResources.put(element, 1);
+        }
+    }
+
+    private void removeResources(BiElement<Resource, Storage> element){
+        if(removedResources.containsKey(element)){
+            removedResources.compute(element, (k,v) -> v++);
+        }else{
+            removedResources.put(element,1);
         }
     }
 
@@ -355,6 +363,7 @@ public class Controller implements Observer<MessageID> {
         switch(messageID) {
 
             case ACK -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "True"));
+            case CONFIRM_END_TURN -> remoteViews.get(game.getCurrPlayer().getTurnID()-1).update(new MessageEnvelope(messageID, ""));
 
             //INITIALIZATION
 
@@ -389,6 +398,26 @@ public class Controller implements Observer<MessageID> {
                     for(Observer<MessageEnvelope> obs : remoteViews){
                         obs.updateFrom(envelope, previousPlayer.getNickname());
                     }
+                }
+            }
+
+            case LORENZO_POSITION -> {
+                MessageEnvelope env = new MessageEnvelope(MessageID.LORENZO_POSITION, String.valueOf(((SinglePlayerGame) game).getLorenzoPosition()));
+                remoteViews.get(game.getCurrPlayer().getTurnID()-1).update(env);
+            }
+            case PLAYERS_POSITION -> {
+                List<ProPlayer> players = ((MultiPlayerGame) game).getActivePlayers();
+                List<BiElement<Integer,Integer>> positions = new ArrayList<>();
+                for(ProPlayer pp : players){
+                    BiElement<Integer,Integer> pos = new BiElement<>(pp.getTurnID(), pp.getCurrentPosition());
+                    positions.add(pos);
+                }
+                PlayersPositionMessage msg = new PlayersPositionMessage(positions);
+                String payload = gson.toJson(msg, PlayersPositionMessage.class);
+                MessageEnvelope env = new MessageEnvelope(MessageID.PLAYERS_POSITION, payload);
+
+                for(Observer<MessageEnvelope> obs : remoteViews){
+                    obs.update(env);
                 }
             }
 

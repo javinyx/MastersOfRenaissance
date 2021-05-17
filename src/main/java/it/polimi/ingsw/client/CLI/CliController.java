@@ -7,7 +7,6 @@ import it.polimi.ingsw.client.MessageToServerHandler;
 import it.polimi.ingsw.client.model.NubPlayer;
 import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.concreteMessages.BuyMarketMessage;
-import it.polimi.ingsw.messages.concreteMessages.ChoosePlacementsInStorageMessage;
 import it.polimi.ingsw.messages.concreteMessages.StoreResourcesMessage;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
@@ -191,13 +190,13 @@ public class CliController extends ClientController {
         cli.showMessage("You are ready to play, wait until your turn");
         setRegistrationPhase(false);
 
-        if (getPlayer().getTurnNumber() == 0) {
+        if (getPlayer().getTurnNumber() == 1) {
             getPlayer().setMyTurn(true);
             startTurnPhase();
         }
         else
             for (NubPlayer p : getTotalPlayers()) {
-                if(p.getTurnNumber() == 0)
+                if(p.getTurnNumber() == 1)
                     showCurrentTurn(p.getNickname());
             }
 
@@ -307,7 +306,7 @@ public class CliController extends ClientController {
                                                                                                           .map(this::convertStringToResource)
                                                                                                           .collect(Collectors.toList());
 
-        cli.showMessage("Choose a storage for each of the following resources:");
+        cli.showMessage("Choose a storage for each of the following resources:" + res);
 
         StoreResourcesMessage msg = new StoreResourcesMessage(cli.storeResources(res));
 
@@ -331,6 +330,11 @@ public class CliController extends ClientController {
 
     @Override
     public void updateOtherPlayer(NubPlayer pp) {
+
+    }
+
+    @Override
+    public void moveLorenzo(int currentPosition) {
 
     }
 

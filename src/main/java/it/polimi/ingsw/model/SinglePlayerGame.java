@@ -89,6 +89,8 @@ public class SinglePlayerGame extends Game implements ModelObserver {
         return market;
     }
 
+    public int getLorenzoPosition(){return lorenzo.getCurrentPosition();}
+
     public Player getWinner(){
         return winner;
     }
@@ -147,6 +149,7 @@ public class SinglePlayerGame extends Game implements ModelObserver {
     /**By discarding 1 resource, Lorenzo will be gifted 1 faith point. */
     public void alertDiscardResource(Player player){
         lorenzo.moveOnBoard(1);
+        controller.update(MessageID.LORENZO_POSITION);
     }
 
     public void end(Player winner){}

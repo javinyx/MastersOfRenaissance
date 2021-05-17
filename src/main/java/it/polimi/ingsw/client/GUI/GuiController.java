@@ -2,7 +2,6 @@ package it.polimi.ingsw.client.GUI;
 
 import it.polimi.ingsw.client.ClientController;
 import it.polimi.ingsw.client.model.NubPlayer;
-import it.polimi.ingsw.messages.concreteMessages.ChoosePlacementsInStorageMessage;
 import it.polimi.ingsw.misc.BiElement;
 import javafx.stage.Stage;
 
@@ -78,6 +77,11 @@ public class GuiController extends ClientController {
 
     @Override
     public void updateOtherPlayer(NubPlayer pp) {
+
+    }
+
+    @Override
+    public void moveLorenzo(int currentPosition) {
 
     }
 

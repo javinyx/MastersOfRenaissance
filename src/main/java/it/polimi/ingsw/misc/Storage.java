@@ -5,6 +5,7 @@ public enum Storage {
     WAREHOUSE_SMALL,
     WAREHOUSE_MID,
     WAREHOUSE_LARGE,
+    WAREHOUSE,
 
     LOOTCHEST,
 

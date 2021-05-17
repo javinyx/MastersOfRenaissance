@@ -9,7 +9,9 @@ import it.polimi.ingsw.misc.Observer;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.MultiPlayerGame;
+import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.SinglePlayerGame;
+import it.polimi.ingsw.model.cards.leader.BoostAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
@@ -147,6 +149,9 @@ public class Controller implements Observer<MessageID> {
     }
 
     public void buyProdCardAction(BuyProductionMessage buyProd) {
+        addedResources.clear();
+        removedResources.clear();
+
         try {
             ConcreteProductionCard card = null;
             List<LeaderCard> leaderCards = new ArrayList<>();
@@ -169,25 +174,53 @@ public class Controller implements Observer<MessageID> {
 
             }
 
-            if (card != null)
+            if (card != null) {
                 boughtCard = Optional.of(new BiElement<>(card.getId(), buyProd.getStack()));
+                ResourcesWallet wallet = buyProd.getResourcesWallet();
+                BiElement<Resource, Storage> elem;
+                if(wallet.anyFromLootchestTray()){
+                    for(Resource r : wallet.getLootchestTray()){
+                        elem = new BiElement(r, Storage.LOOTCHEST);
+                        removeResources(elem);
+                    }
+                }
+                if(wallet.anyFromWarehouseTray()){
+                    for(Resource r : wallet.getWarehouseTray()){
+                        elem = new BiElement<>(r, Storage.WAREHOUSE);
+                        removeResources(elem);
+                    }
+                }
+                if(wallet.anyFromExtraStorage()) {
+                    for (int index = wallet.extraStorageSize() - 1; index >= 0; index--) {
+                        Storage extra = index==0 ? Storage.EXTRA1 : Storage.EXTRA2;
+                        for (Resource r : wallet.getExtraStorage(index)){
+                            elem = new BiElement<>(r, extra);
+                            removeResources(elem);
+                        }
+                    }
+                }
                 game.getCurrPlayer().buyProductionCard(card, buyProd.getStack(), leaderCards, buyProd.getResourcesWallet());
+            }
 
         }
         catch (BadStorageException e){
             //player has no resources
+            removedResources.clear();
             update(MessageID.BAD_PAYMENT_REQUEST);
         }
         catch (IllegalArgumentException e){
             //prodcard have no cards
+            removedResources.clear();
             update(MessageID.CARD_NOT_AVAILABLE);
         }
         catch(IndexOutOfBoundsException e){
             //stack < 1 || stack > 3
+            removedResources.clear();
             update(MessageID.WRONG_STACK_CHOICE);
         }
         catch (RuntimeException e){
             //prodcard has wrong level
+            removedResources.clear();
             update(MessageID.WRONG_LEVEL_REQUEST);
         }
 
@@ -198,6 +231,9 @@ public class Controller implements Observer<MessageID> {
     }
 
     public void activateProdAction(ProduceMessage produce) {
+        removedResources.clear();
+        addedResources.clear();
+
         Optional<Resource> basicOut;
         if(produce.getBasicOutput() == null){
             basicOut = Optional.empty();
@@ -206,13 +242,69 @@ public class Controller implements Observer<MessageID> {
             basicOut = Optional.of(produce.getBasicOutput());
         }
 
+        List<ConcreteProductionCard> cards = produce.getProductionCards();
+        List<BoostAbility> extraPowerProd = produce.getLeaderCards();
+        List<Resource> extraOutput = produce.getLeaderOutputs();
+        ResourcesWallet wallet = produce.getResourcesWallet();
+        BiElement<Resource, Storage> elem;
         try {
-            game.getCurrPlayer().startProduction(produce.getProductionCards(), produce.getResourcesWallet(), produce.getLeaderCards(), produce.getLeaderOutputs(), produce.isBasicProduction(), basicOut);
+            if(cards!=null && !cards.isEmpty() && wallet!=null) {
+                for(ConcreteProductionCard c : cards){
+                    for(Resource r : c.getProduction()){
+                        if(r.isValidForTrading()) {
+                            elem = new BiElement<>(r, Storage.LOOTCHEST);
+                            addResources(elem);
+                        }
+                    }
+                }
+                if(extraPowerProd!=null && !extraPowerProd.isEmpty() && extraOutput!=null && !extraOutput.isEmpty()) {
+                    if (extraPowerProd.size() == extraOutput.size()) {
+                        for (Resource r : extraOutput) {
+                            elem = new BiElement<>(r, Storage.LOOTCHEST);
+                            addResources(elem);
+                        }
+                    } else {
+                        throw new BadStorageException();
+                    }
+                }
+
+                if(produce.isBasicProduction() && basicOut.isPresent()){
+                    elem = new BiElement<>(basicOut.get(), Storage.LOOTCHEST);
+                    addResources(elem);
+                }
+                if(wallet.anyFromLootchestTray()){
+                    for(Resource r : wallet.getLootchestTray()){
+                        elem = new BiElement(r, Storage.LOOTCHEST);
+                        removeResources(elem);
+                    }
+                }
+                if(wallet.anyFromWarehouseTray()){
+                    for(Resource r : wallet.getWarehouseTray()){
+                        elem = new BiElement<>(r, Storage.WAREHOUSE);
+                        removeResources(elem);
+                    }
+                }
+                if(wallet.anyFromExtraStorage()) {
+                    for (int index = wallet.extraStorageSize() - 1; index >= 0; index--) {
+                        Storage extra = index==0 ? Storage.EXTRA1 : Storage.EXTRA2;
+                        for (Resource r : wallet.getExtraStorage(index)){
+                            elem = new BiElement<>(r, extra);
+                            removeResources(elem);
+                        }
+                    }
+                }
+
+                game.getCurrPlayer().startProduction(cards, wallet, extraPowerProd, extraOutput, produce.isBasicProduction(), basicOut);
+            }
         }catch(BadStorageException e1){
             //notify that there's something wrong with the player storage
+            addedResources.clear();
+            removedResources.clear();
             update(MessageID.BAD_PRODUCTION_REQUEST);
         }catch(RuntimeException e2){
             //notify that some cards in production cards chosen by the player for this task cannot produce
+            addedResources.clear();
+            removedResources.clear();
             update(MessageID.CARD_NOT_AVAILABLE);
         }
 

@@ -39,7 +39,6 @@ public class RemoteView extends View {
         this.controller = controller;
         this.clientConnection = clientConnection;
         clientConnection.registerObserver(new InputMessageHandler());
-        clientConnection.send(gson.toJson(new MessageEnvelope(MessageID.PLAYER_LIST, playerNames.toString())));
     }
 
     @Override

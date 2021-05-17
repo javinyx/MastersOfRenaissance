@@ -82,6 +82,11 @@ public class GuiController extends ClientController {
     }
 
     @Override
+    public void showCurrentTurn(String s) {
+
+    }
+
+    @Override
     public void buyFromMarket() {
 
     }

@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.concreteMessages.ChooseLeaderCardsMessage;
+import it.polimi.ingsw.messages.concreteMessages.TurnNumberMessage;
 import it.polimi.ingsw.messages.concreteMessages.UpdateMessage;
 import it.polimi.ingsw.model.market.Resource;
 
@@ -67,9 +68,7 @@ public class MessageReceiver implements Runnable{
             case PLAYER_NUM -> controller.askNumberOfPlayers();
             case CONFIRM_REGISTRATION -> controller.confirmRegistration(envelope.getPayload());
 
-            case PLAYER_LIST -> controller.setPlayerList();
-
-            case TURN_NUMBER -> controller.setTurnNumber(Integer.parseInt(envelope.getPayload()));
+            case TURN_NUMBER -> controller.setTotalPlayers(gson.fromJson(envelope.getPayload(), TurnNumberMessage.class));
 
             case CHOOSE_LEADER_CARDS -> controller.setLeaderAvailable(envelope.getPayload());
             case TOO_MANY_PLAYERS -> controller.displayMessage(envelope.getPayload());

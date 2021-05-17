@@ -1,5 +1,6 @@
 package it.polimi.ingsw.controller;
 
+import com.google.gson.Gson;
 import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.concreteMessages.*;
@@ -29,6 +30,7 @@ public class Controller implements Observer<MessageID> {
     private boolean initializationPhase;
     private char turnType;
     private List<Observer<MessageEnvelope>> remoteViews;
+    Gson gson = new Gson();
 
     public Controller() {
         initializationPhase = true;
@@ -48,14 +50,18 @@ public class Controller implements Observer<MessageID> {
         numPlayer = 1;
         game = new SinglePlayerGame(this);
         initializationPhase = false;
+        List<BiElement<String, Integer>> turnNumber = new ArrayList<>();
 
         game.createPlayer(nickName);
 
-        int curr = game.getCurrPlayer().getTurnID()-1;
+        turnNumber.add(new BiElement<>(nickName, 0));
+        TurnNumberMessage msg = new TurnNumberMessage(turnNumber);
+        envelope = new MessageEnvelope(MessageID.TURN_NUMBER, gson.toJson(msg, TurnNumberMessage.class));
+        remoteViews.get(0).update(envelope);
 
         //Leader choice
         envelope = new MessageEnvelope(MessageID.CHOOSE_LEADER_CARDS, String.valueOf(game.leaderDistribution()));
-        remoteViews.get(curr).update(envelope);
+        remoteViews.get(0).update(envelope);
 
         game.start(game.getCurrPlayer());
     }
@@ -64,18 +70,24 @@ public class Controller implements Observer<MessageID> {
 
         this.numPlayer = players.size();
         game = new MultiPlayerGame(this);
+        MessageEnvelope envelope;
+        List<BiElement<String, Integer>> turnNumber = new ArrayList<>();
 
         //Player Creation
         for (int i = 0; i < numPlayer; i++)
             game.createPlayer(players.get(i));
 
+        for (ProPlayer p : ((MultiPlayerGame)game).getActivePlayers())
+            turnNumber.add(new BiElement<>(p.getNickname(), p.getTurnID()));
+
+
         for (ProPlayer p : ((MultiPlayerGame)game).getActivePlayers()) {
 
-            MessageEnvelope envelope;
-            int curr = p.getTurnID()-1;
+            TurnNumberMessage msg = new TurnNumberMessage(turnNumber);
+            envelope = new MessageEnvelope(MessageID.TURN_NUMBER, gson.toJson(msg, TurnNumberMessage.class));
+            remoteViews.get(p.getTurnID()-1).update(envelope);
 
-            envelope = new MessageEnvelope(MessageID.TURN_NUMBER, String.valueOf(curr+1));
-            remoteViews.get(curr).update(envelope);
+            int curr = p.getTurnID()-1;
 
             //Leader choice
             envelope = new MessageEnvelope(MessageID.CHOOSE_LEADER_CARDS, String.valueOf(game.leaderDistribution()));
@@ -95,9 +107,6 @@ public class Controller implements Observer<MessageID> {
 
         //timer = new Timer(true);
         //timer.schedule(new TurnTimerTask(this, game.getCurrPlayer().getTurnType()),turnTime*1000);
-
-
-        System.out.println("Hey, sei qui, nel controller");
     }
 
     // END GAME INITIALIZATION -----------------------------------------------------------------------------------------

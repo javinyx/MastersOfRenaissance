@@ -12,7 +12,7 @@ import java.util.*;
 public class NubPlayer {
     private final String nickname;
     private int currPos;
-    private boolean isMyTurn = false;
+    private boolean myTurn = false;
     private List<Deque<ConcreteProductionCard>> productionStacks;
     private List<LeaderCard> leaders;
     private List<TriElement<Resource, Storage, Integer>> allResources;
@@ -34,14 +34,14 @@ public class NubPlayer {
 
     public String getNickname(){return nickname;}
     public int getCurrPos(){return currPos;}
-    public boolean isMyTurn(){return isMyTurn;}
+    public boolean isMyTurn(){return myTurn;}
     public List<Deque<ConcreteProductionCard>> getProductionStacks(){return productionStacks;}
     public List<LeaderCard> getLeaders(){return leaders;}
     public Deque<ConcreteProductionCard> getProductionStack(int index){
         return productionStacks.get(index);
     }
 
-    public void setMyTurn(boolean status){isMyTurn = status;}
+    public void setMyTurn(boolean status){myTurn = status;}
     public void setCurrPos(int pos){currPos = pos;}
 
     /**Clears all the resources owned by the player and add the new ones.*/

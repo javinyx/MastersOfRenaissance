@@ -192,9 +192,14 @@ public class CliController extends ClientController {
         setRegistrationPhase(false);
 
         if (getPlayer().getTurnNumber() == 0) {
-            setMyTurn(true);
+            getPlayer().setMyTurn(true);
             startTurnPhase();
         }
+        else
+            for (NubPlayer p : getTotalPlayers()) {
+                if(p.getTurnNumber() == 0)
+                    showCurrentTurn(p.getNickname());
+            }
 
     }
 
@@ -263,6 +268,7 @@ public class CliController extends ClientController {
 
         messageToServerHandler.generateEnvelope(MessageID.BUY_FROM_MARKET, gson.toJson(msg, BuyMarketMessage.class));
 
+
     }
 
     @Override
@@ -309,8 +315,13 @@ public class CliController extends ClientController {
     }
 
     @Override
+    public void showCurrentTurn(String s){
+        cli.showMessage(getPlayer().isMyTurn() ? "It is your turn!" : "It is " + getCurrPlayer().getNickname() + "'s turn");
+    }
+
+    @Override
     public void updateMarket(){
-        System.out.println("CIAO DAL MARKET");
+
     }
 
     @Override

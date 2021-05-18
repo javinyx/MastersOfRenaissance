@@ -91,6 +91,11 @@ public class GuiController extends ClientController {
     }
 
     @Override
+    protected void startTurnPhase() {
+
+    }
+
+    @Override
     public void buyFromMarket() {
 
     }

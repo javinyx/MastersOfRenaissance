@@ -59,20 +59,20 @@ public class MessageReceiver implements Runnable{
         controller.setLastRegistrationMessage(envelope.getMessageID());
 
         switch(envelope.getMessageID()){
-            case CONFIRM_END_TURN -> controller.endTurn();
             case ASK_NICK -> controller.askNickname();
             case PLAYER_NUM -> controller.askNumberOfPlayers();
             case CONFIRM_REGISTRATION -> controller.confirmRegistration(envelope.getPayload());
 
             case TURN_NUMBER -> controller.setTotalPlayers(gson.fromJson(envelope.getPayload(), TurnNumberMessage.class));
+            case CONFIRM_END_TURN -> controller.endTurn();
 
             case CHOOSE_LEADER_CARDS -> controller.setLeaderAvailable(envelope.getPayload());
             case TOO_MANY_PLAYERS -> controller.displayMessage(envelope.getPayload());
             case CHOOSE_RESOURCE -> controller.chooseResourceAction();
 
+            //TODO CONFIRM_END_TURN
             case UPDATE -> controller.updateAction(gson.fromJson(envelope.getPayload(), UpdateMessage.class));
-
-            default -> System.err.println("MessageID not recognised");
+            default -> System.err.println("MessageID not recognised Registration");
         }
 
 
@@ -81,7 +81,7 @@ public class MessageReceiver implements Runnable{
     public void readGameMessage(MessageEnvelope envelope) {
         controller.setLastGameMessage(envelope.getMessageID());
         switch(envelope.getMessageID()){
-            case CONFIRM_END_TURN -> controller.endTurn();
+
             case CARD_NOT_AVAILABLE -> controller.cardNotAvailable();
             case BAD_PRODUCTION_REQUEST -> controller.badProductionRequest();
             case BAD_PAYMENT_REQUEST -> controller.badPaymentRequest();
@@ -93,12 +93,13 @@ public class MessageReceiver implements Runnable{
             case STORE_RESOURCES -> controller.chooseStorageAction(envelope.getPayload());
 
             case UPDATE -> controller.updateAction(gson.fromJson(envelope.getPayload(), UpdateMessage.class));
+            case CONFIRM_END_TURN -> controller.endTurn();
 
             case LORENZO_POSITION -> controller.moveLorenzo(Integer.parseInt(envelope.getPayload()));
             case PLAYERS_POSITION -> {}
 
 
-            default -> System.err.println("MessageID not recognised");
+            default -> System.err.println("MessageID not recognised Game");
         }
 
     }

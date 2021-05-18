@@ -67,6 +67,7 @@ public enum MessageID {
     ACTIVATE_LEADER,    // ACTIVE LEADER CARD
 
     CHOOSE_RESOURCE,
+    TURN_SETUP,
 
 
     // BUY PRODUCTION CARD

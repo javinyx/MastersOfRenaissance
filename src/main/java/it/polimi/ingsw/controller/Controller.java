@@ -102,16 +102,21 @@ public class Controller implements Observer<MessageID> {
             remoteViews.get(curr).update(envelope);
 
             //Resource Choice
-            if (curr == 1)
-                update(MessageID.CHOOSE_RESOURCE);
+            if (curr == 1) {
+                envelope = new MessageEnvelope(MessageID.CHOOSE_RESOURCE, String.valueOf(curr));
+                remoteViews.get(curr).update(envelope);
+            }
             else if (curr == 2 || curr == 3){
-                update(MessageID.CHOOSE_RESOURCE);
+                envelope = new MessageEnvelope(MessageID.CHOOSE_RESOURCE, String.valueOf(curr));
+                remoteViews.get(curr).update(envelope);
                 game.getCurrPlayer().moveOnBoard(1);
             }
-            game.start(p);
-            initializationPhase = false;
-        }
 
+        }
+        for (ProPlayer p : ((MultiPlayerGame)game).getActivePlayers())
+            game.start(p);
+
+        initializationPhase = false;
         // TODO: ogni giocatore va informato della situazione degli altri 3
 
         //timer = new Timer(true);
@@ -395,11 +400,9 @@ public class Controller implements Observer<MessageID> {
         }
 
         mustChoosePlacements = false;
-
-        if(!initializationPhase) {
-            update(MessageID.CONFIRM_END_TURN);
-        }
+        update(MessageID.CONFIRM_END_TURN);
         update(MessageID.UPDATE);
+
 
     }
 
@@ -464,11 +467,6 @@ public class Controller implements Observer<MessageID> {
             case CHOOSE_RESOURCE -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, String.valueOf(game.getCurrPlayer().getTurnID())));
 
             //GAME PHASES
-            case CHOOSE_PLACEMENTS_IN_STORAGE -> {
-                ChoosePlacementsInStorageMessage msg = new ChoosePlacementsInStorageMessage(game.getCurrPlayer().getResAcquired());
-                String payload = gson.toJson(msg, ChoosePlacementsInStorageMessage.class);
-                remoteViews.get(game.getCurrPlayer().getTurnID()-1).update(new MessageEnvelope(messageID, payload));
-            }
 
             case CARD_NOT_AVAILABLE,
                  BAD_PRODUCTION_REQUEST,

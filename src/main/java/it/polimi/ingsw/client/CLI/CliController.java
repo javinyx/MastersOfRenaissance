@@ -192,12 +192,15 @@ public class CliController extends ClientController {
 
         if (getPlayer().getTurnNumber() == 1) {
             getPlayer().setMyTurn(true);
+            setCurrPlayer(getPlayer());
             startTurnPhase();
         }
         else
             for (NubPlayer p : getTotalPlayers()) {
-                if(p.getTurnNumber() == 1)
+                if(p.getTurnNumber() == 1) {
+                    setCurrPlayer(p);
                     showCurrentTurn(p.getNickname());
+                }
             }
 
     }

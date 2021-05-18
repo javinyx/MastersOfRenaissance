@@ -112,10 +112,6 @@ public abstract class ClientController {
         this.active = active;
     }
 
-    public void endTurn(){
-        player.setMyTurn(false);
-    }
-
     private void initAllCards(){
         Gson gson = new Gson();
         Reader reader;
@@ -273,11 +269,6 @@ public abstract class ClientController {
         else{
             currPlayer = totalPlayers.get(msg.getNextPlayerId()-1);
 
-            /*if(msg.getPlayerId() == totalPlayers.size())
-                currPlayer = totalPlayers.get(0);
-            else
-                currPlayer = totalPlayers.get(msg.getPlayerId()+1);
-            */
             if (currPlayer.getTurnNumber() == player.getTurnNumber())
                 player.setMyTurn(true);
 
@@ -296,6 +287,21 @@ public abstract class ClientController {
     public void setCurrPlayer(NubPlayer currPlayer) {
         this.currPlayer = currPlayer;
     }
+
+    public void endTurn(){
+
+        if (getPlayer().getTurnNumber() == currPlayer.getTurnNumber()) {
+            getPlayer().setMyTurn(true);
+            startTurnPhase();
+        }
+        else
+            for (NubPlayer p : getTotalPlayers()) {
+                if (p.getTurnNumber() == 1)
+                    showCurrentTurn(p.getNickname());
+            }            
+    }
+
+    protected abstract void startTurnPhase();
 
     public abstract void buyFromMarket();
     public abstract void activateLeader();

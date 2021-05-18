@@ -129,10 +129,11 @@ public class Cli /*extends ViewInterface*/ {
 
     // SETUP PHASE -----------------------------------------------------------------------------------------------------
 
-    public List<BiElement<Resource, Integer>> chooseResources(int quantity){
-        List<BiElement<Resource, Integer>> resources = new ArrayList<>();
+    public List<BiElement<Resource, Storage>> chooseResources(int quantity){
+        List<BiElement<Resource, Storage>> resources = new ArrayList<>();
         String res;
         int pos;
+        Storage stor = null;
 
         for (int i = 0; i < quantity; i++){
             do {
@@ -145,11 +146,17 @@ public class Cli /*extends ViewInterface*/ {
                 pos = scanner.nextInt();
             } while (pos != 1 && pos != 2 && pos != 3);
 
+            switch (pos){
+                case 1 -> stor = Storage.WAREHOUSE_SMALL;
+                case 2 -> stor = Storage.WAREHOUSE_MID;
+                case 3 -> stor = Storage.WAREHOUSE_LARGE;
+            }
+
             switch(res){
-                case "stone" -> resources.add(new BiElement<>(Resource.STONE, pos));
-                case "servant" -> resources.add(new BiElement<>(Resource.SERVANT, pos));
-                case "coin" -> resources.add(new BiElement<>(Resource.COIN, pos));
-                case "shield" -> resources.add(new BiElement<>(Resource.SHIELD, pos));
+                case "stone" -> resources.add(new BiElement<>(Resource.STONE, stor));
+                case "servant" -> resources.add(new BiElement<>(Resource.SERVANT, stor));
+                case "coin" -> resources.add(new BiElement<>(Resource.COIN, stor));
+                case "shield" -> resources.add(new BiElement<>(Resource.SHIELD, stor));
             }
         }
 

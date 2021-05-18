@@ -44,6 +44,8 @@ public abstract class ClientController {
     private boolean registrationPhase = true;
     private boolean gameOver = false;
 
+    protected boolean storeOk = true;
+
     private static final String prodPath = "/json/ProductionCards.json",
             leadDiscountPath = "/json/LeaderCards/DiscountAbilityCards.json",
             leadStoragePath = "/json/LeaderCards/StorageAbilityCards.json",
@@ -176,6 +178,8 @@ public abstract class ClientController {
             else
                 player.setTurnNumber(msg.getTurnAss().get(i).getSecondValue());
         }
+
+        //TODO ordinare la lista totalPlaers
     }
 
     public void setLeaderAvailable(String leaders){
@@ -207,6 +211,11 @@ public abstract class ClientController {
     }
     public void wrongLevelRequest(){
         displayMessage("The level of the card is wrong");
+    }
+
+    public void badStorageRequest(){
+        displayMessage("Wrong resources placement");
+        storeOk = false;
     }
 
     public abstract boolean ackConfirmed (String msg);

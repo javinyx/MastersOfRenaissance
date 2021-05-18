@@ -89,6 +89,7 @@ public class MessageReceiver implements Runnable{
             case BAD_DIMENSION_REQUEST -> controller.badDimensionRequest();
             case WRONG_STACK_CHOICE -> controller.wrongStackRequest();
             case WRONG_LEVEL_REQUEST -> controller.wrongLevelRequest();
+            case BAD_STORAGE_REQUEST -> controller.badStorageRequest();
 
             case CHOOSE_LEADER_CARDS -> controller.chooseLeadersAction();
             case STORE_RESOURCES -> controller.chooseStorageAction(envelope.getPayload());

@@ -9,6 +9,7 @@ import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.concreteMessages.BuyMarketMessage;
 import it.polimi.ingsw.messages.concreteMessages.StoreResourcesMessage;
 import it.polimi.ingsw.misc.BiElement;
+import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.MarbleAbility;
 import it.polimi.ingsw.model.market.Resource;
@@ -85,10 +86,10 @@ public class CliController extends ClientController {
             return false;
         }
         if (isRegistrationPhase()) return true;
-        /*if (!game.isMyTurn()) {
+        if (!getPlayer().isMyTurn()) {
             displayMessage("It is not your turn!");
             return false;
-        }*/
+        }
         return true;
     }
 
@@ -105,8 +106,10 @@ public class CliController extends ClientController {
             return;
         }
         if (!canPlay()) return;
-        if (isRegistrationPhase()) checkInputRegistrationPhase(input);
-        else checkInputGamePhase(input);
+        if (isRegistrationPhase())
+            checkInputRegistrationPhase(input);
+        else
+            checkInputGamePhase(input);
     }
     /**
      * Checks messages during registration phase, based on the current action, sends message to socket
@@ -166,12 +169,14 @@ public class CliController extends ClientController {
 
         getPlayer().setLeaders(convertIdToLeaderCard(lId));
 
+        messageToServerHandler.generateEnvelope(MessageID.CHOOSE_LEADER_CARDS, convertIdToLeaderCard(lId).toString());
+
     }
 
     @Override
     public void chooseResourceAction() {
         int quantity;
-        List<BiElement<Resource, Integer>> res;
+        List<BiElement<Resource, Storage>> res;
 
         if(getPlayer().getTurnNumber() == 2)
             quantity = 1;
@@ -183,7 +188,14 @@ public class CliController extends ClientController {
         cli.showMessage("You can choose no." + quantity + " resources");
         res = cli.chooseResources(quantity);
 
-        // TODO: set resources in the correct place;
+        StoreResourcesMessage msg = new StoreResourcesMessage(res);
+
+        messageToServerHandler.generateEnvelope(MessageID.STORE_RESOURCES, gson.toJson(msg, StoreResourcesMessage.class));
+
+        if (storeOk){
+            for (BiElement<Resource, Storage> elem : res)
+                getPlayer().addResources(elem, 1);
+        }
 
     }
 

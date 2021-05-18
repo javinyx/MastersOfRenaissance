@@ -88,7 +88,7 @@ public class Printer {
                            "2) Buy a Development Card\n" +
                            "3) Start production: you can produce Resources\n" +
                            "4) View your opponents status\n" +
-                           "5) Activete a Leader Card\n" +
+                           "5) Activate a Leader Card\n" +
                            "6) DiscardLeader Card");
     }
 

@@ -129,8 +129,9 @@ public class Cli /*extends ViewInterface*/ {
 
     // SETUP PHASE -----------------------------------------------------------------------------------------------------
 
-    public List<BiElement<Resource, Storage>> chooseResources(int quantity){
-        List<BiElement<Resource, Storage>> resources = new ArrayList<>();
+    public List<Resource> chooseResources(int quantity){
+        //List<BiElement<Resource, Storage>> resources = new ArrayList<>();
+        List<Resource> resources = new ArrayList<>();
         String res;
         int pos;
         Storage stor = null;
@@ -141,7 +142,7 @@ public class Cli /*extends ViewInterface*/ {
                 res = scanner.next().toLowerCase();
             }while (!res.equals("stone") && !res.equals("shield") && !res.equals("servant") && !res.equals("coin"));
 
-            do{
+            /*do{
                 System.out.println("Where do you want to store it in the warehouse? Small(1), Medium(2), Large(3)");
                 pos = scanner.nextInt();
             } while (pos != 1 && pos != 2 && pos != 3);
@@ -150,13 +151,13 @@ public class Cli /*extends ViewInterface*/ {
                 case 1 -> stor = Storage.WAREHOUSE_SMALL;
                 case 2 -> stor = Storage.WAREHOUSE_MID;
                 case 3 -> stor = Storage.WAREHOUSE_LARGE;
-            }
+            }*/
 
             switch(res){
-                case "stone" -> resources.add(new BiElement<>(Resource.STONE, stor));
-                case "servant" -> resources.add(new BiElement<>(Resource.SERVANT, stor));
-                case "coin" -> resources.add(new BiElement<>(Resource.COIN, stor));
-                case "shield" -> resources.add(new BiElement<>(Resource.SHIELD, stor));
+                case "stone" -> resources.add(Resource.STONE);
+                case "servant" -> resources.add(Resource.SERVANT);
+                case "coin" -> resources.add(Resource.COIN);
+                case "shield" -> resources.add(Resource.SHIELD);
             }
         }
 
@@ -219,6 +220,7 @@ public class Cli /*extends ViewInterface*/ {
             case 3 -> controller.startProduction();
             case 4 -> controller.viewOpponents();
             case 5 -> controller.activateLeader();
+            case 6 -> controller.discardLeader();
         }
 
     }
@@ -255,16 +257,24 @@ public class Cli /*extends ViewInterface*/ {
         List<BiElement<Resource, Storage>> pos = new ArrayList<>();
         for (int i = 0; i < res.size(); i++) {
             if(res.get(i) != null){
+                int var;
                 do {
+                    var = 0;
                     System.out.println("Where do you want to store " + res.get(i) + "? Small(1), Medium(2), Large(3). Press 0 if you want to discard it");
                     c = scanner.nextInt();
-                } while (c != 1 && c != 2 && c != 3);
+
+                    if (controller.isRegistrationPhase() && c == 0) {
+                        System.out.println("There's a time and place for everything, but not now!");
+                        var = 1;
+                    }
+
+                } while (c != 1 && c != 2 && c != 3 && c != 0 || var != 0);
 
                 switch(c){
                     case 1 -> s = Storage.WAREHOUSE_SMALL;
                     case 2 -> s = Storage.WAREHOUSE_MID;
                     case 3 -> s = Storage.WAREHOUSE_LARGE;
-                    case 0 -> {}
+                    case 0 -> s = Storage.DISCARD;
                 }
 
                 pos.add(new BiElement<>(res.get(i), s));

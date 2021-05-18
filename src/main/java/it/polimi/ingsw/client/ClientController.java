@@ -36,6 +36,7 @@ public abstract class ClientController {
     private Market market;
     private boolean active = true;
     private ClientGame game = new ClientGame();
+    protected List<BiElement<Resource, Storage>> storeRes;
 
     private MessageID lastRegistrationMessage;
     private MessageID lastGameMessage;
@@ -43,8 +44,6 @@ public abstract class ClientController {
     private boolean waitingServerUpdate = false;
     private boolean registrationPhase = true;
     private boolean gameOver = false;
-
-    protected boolean storeOk = true;
 
     private static final String prodPath = "/json/ProductionCards.json",
             leadDiscountPath = "/json/LeaderCards/DiscountAbilityCards.json",
@@ -179,11 +178,11 @@ public abstract class ClientController {
                 player.setTurnNumber(msg.getTurnAss().get(i).getSecondValue());
         }
 
-        System.out.println("Before sorting: " + totalPlayers.stream().map(NubPlayer::getTurnNumber).collect(Collectors.toList()));
+        //System.out.println("Before sorting: " + totalPlayers.stream().map(NubPlayer::getTurnNumber).collect(Collectors.toList()));
 
-        totalPlayers.stream().sorted(NubPlayer.getComparator());
+        totalPlayers.sort(NubPlayer.getComparator());
 
-        System.out.println("After sorting: " + totalPlayers.stream().map(NubPlayer::getTurnNumber).collect(Collectors.toList()));
+        //System.out.println("After sorting: " + totalPlayers.stream().map(NubPlayer::getTurnNumber).collect(Collectors.toList()));
     }
 
     public void setLeaderAvailable(String leaders){
@@ -219,7 +218,7 @@ public abstract class ClientController {
 
     public void badStorageRequest(){
         displayMessage("Wrong resources placement");
-        storeOk = false;
+        chooseStorageAction(new ArrayList<>(storeRes.stream().map(BiElement::getFirstValue).collect(Collectors.toList())));
     }
 
     public abstract boolean ackConfirmed (String msg);
@@ -227,8 +226,9 @@ public abstract class ClientController {
 
     //---------------------------------ACTIONS: behaviours caused by Messages--------------------------
 
+    public abstract void chooseStorageAfterMarketAction(String s);
     public abstract void chooseResourceAction();
-    public abstract void chooseStorageAction(String s);
+    public abstract void chooseStorageAction(List<Resource> s);
     public abstract void chooseLeadersAction();
 
     public abstract void updateMarket();
@@ -303,6 +303,11 @@ public abstract class ClientController {
     }
 
     public void endTurn(EndTurnMessage msg){
+
+        for (BiElement<Resource, Storage> elem : storeRes)
+            getPlayer().addResources(elem, 1);
+        storeRes.clear();
+
         this.currPlayer = totalPlayers.get(msg.getNextPlayerId()-1);
         this.availableProductionCard = convertIdToProductionCard(msg.getBuyableProdCardsIds());
 
@@ -310,11 +315,13 @@ public abstract class ClientController {
             getPlayer().setMyTurn(true);
             startTurnPhase();
         }
-        else
+        else {
             for (NubPlayer p : getTotalPlayers()) {
                 if (p.getTurnNumber() == 1)
                     showCurrentTurn(p.getNickname());
-            }            
+            }
+        }
+
     }
 
     protected abstract void startTurnPhase();

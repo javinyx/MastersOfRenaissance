@@ -3,9 +3,12 @@ package it.polimi.ingsw.client.GUI;
 import it.polimi.ingsw.client.ClientController;
 import it.polimi.ingsw.client.model.NubPlayer;
 import it.polimi.ingsw.misc.BiElement;
+import it.polimi.ingsw.model.market.Resource;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.lang.module.ResolutionException;
+import java.util.List;
 
 public class GuiController extends ClientController {
     private final Gui gui;
@@ -51,12 +54,17 @@ public class GuiController extends ClientController {
     }
 
     @Override
+    public void chooseStorageAfterMarketAction(String s) {
+
+    }
+
+    @Override
     public void chooseResourceAction() {
 
     }
 
     @Override
-    public void chooseStorageAction(String msg) {
+    public void chooseStorageAction(List<Resource> msg) {
 
     }
 

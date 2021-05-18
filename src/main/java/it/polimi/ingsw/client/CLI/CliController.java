@@ -176,7 +176,8 @@ public class CliController extends ClientController {
     @Override
     public void chooseResourceAction() {
         int quantity;
-        List<BiElement<Resource, Storage>> res;
+        //List<BiElement<Resource, Storage>> res;
+        List<Resource> res;
 
         if(getPlayer().getTurnNumber() == 2)
             quantity = 1;
@@ -188,14 +189,7 @@ public class CliController extends ClientController {
         cli.showMessage("You can choose no." + quantity + " resources");
         res = cli.chooseResources(quantity);
 
-        StoreResourcesMessage msg = new StoreResourcesMessage(res);
-
-        messageToServerHandler.generateEnvelope(MessageID.STORE_RESOURCES, gson.toJson(msg, StoreResourcesMessage.class));
-
-        if (storeOk){
-            for (BiElement<Resource, Storage> elem : res)
-                getPlayer().addResources(elem, 1);
-        }
+        chooseStorageAction(res);
 
     }
 
@@ -235,6 +229,8 @@ public class CliController extends ClientController {
     public void viewOpponents(){
 
     }
+
+    public void discardLeader(){}
 
     @Override
     public void buyFromMarket(){
@@ -318,16 +314,25 @@ public class CliController extends ClientController {
     }
 
     @Override
-    public void chooseStorageAction(String s){
+    public void chooseStorageAfterMarketAction(String s){
         List<Resource> res = (new ArrayList<>(Arrays.asList(s.substring(1, s.length()-1).split(", ")))).stream()
-                                                                                                          .map(this::convertStringToResource)
-                                                                                                          .collect(Collectors.toList());
+                                                                                                             .map(this::convertStringToResource)
+                                                                                                             .collect(Collectors.toList());
+
+        chooseStorageAction(res);
+    }
+
+    @Override
+    public void chooseStorageAction(List<Resource> res){
 
         cli.showMessage("Choose a storage for each of the following resources:" + res);
 
-        StoreResourcesMessage msg = new StoreResourcesMessage(cli.storeResources(res));
+        storeRes = cli.storeResources(res);
+
+        StoreResourcesMessage msg = new StoreResourcesMessage();
 
         messageToServerHandler.generateEnvelope(MessageID.STORE_RESOURCES, gson.toJson(msg, StoreResourcesMessage.class));
+
     }
 
     @Override

@@ -10,5 +10,7 @@ public enum Storage {
     LOOTCHEST,
 
     EXTRA1,
-    EXTRA2
+    EXTRA2,
+
+    DISCARD
 }

@@ -58,21 +58,23 @@ public class MessageReceiver implements Runnable{
 
     public void readRegistrationMessage(MessageEnvelope envelope){
         controller.setLastRegistrationMessage(envelope.getMessageID());
+
         System.out.println(envelope.getMessageID());
+
         switch(envelope.getMessageID()){
             case ASK_NICK -> controller.askNickname();
             case PLAYER_NUM -> controller.askNumberOfPlayers();
             case CONFIRM_REGISTRATION -> controller.confirmRegistration(envelope.getPayload());
 
             case TURN_NUMBER -> controller.setTotalPlayers(gson.fromJson(envelope.getPayload(), TurnNumberMessage.class));
-            case CONFIRM_END_TURN -> controller.endTurn(gson.fromJson(envelope.getPayload(), EndTurnMessage.class));
 
             case CHOOSE_LEADER_CARDS -> controller.setLeaderAvailable(envelope.getPayload());
             case TOO_MANY_PLAYERS -> controller.displayMessage(envelope.getPayload());
             case CHOOSE_RESOURCE -> controller.chooseResourceAction();
 
-            //TODO CONFIRM_END_TURN
             case UPDATE -> controller.updateAction(gson.fromJson(envelope.getPayload(), UpdateMessage.class));
+            case CONFIRM_END_TURN -> controller.endTurn(gson.fromJson(envelope.getPayload(), EndTurnMessage.class));
+
             default -> System.err.println("MessageID not recognised Registration");
         }
 
@@ -81,7 +83,9 @@ public class MessageReceiver implements Runnable{
 
     public void readGameMessage(MessageEnvelope envelope) {
         controller.setLastGameMessage(envelope.getMessageID());
+
         System.out.println(envelope.getMessageID());
+
         switch(envelope.getMessageID()){
 
             case CARD_NOT_AVAILABLE -> controller.cardNotAvailable();
@@ -93,7 +97,7 @@ public class MessageReceiver implements Runnable{
             case BAD_STORAGE_REQUEST -> controller.badStorageRequest();
 
             case CHOOSE_LEADER_CARDS -> controller.chooseLeadersAction();
-            case STORE_RESOURCES -> controller.chooseStorageAction(envelope.getPayload());
+            case STORE_RESOURCES -> controller.chooseStorageAfterMarketAction(envelope.getPayload());
 
             case UPDATE -> controller.updateAction(gson.fromJson(envelope.getPayload(), UpdateMessage.class));
             case CONFIRM_END_TURN -> {controller.endTurn(gson.fromJson(envelope.getPayload(), EndTurnMessage.class));}

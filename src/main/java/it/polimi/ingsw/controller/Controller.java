@@ -142,7 +142,7 @@ public class Controller implements Observer<MessageID> {
             update(MessageID.BAD_DIMENSION_REQUEST);
         }
         catch (IndexOutOfBoundsException e) {
-            update(MessageID.WRONG_STACK_CHOICE);
+            update(MessageID.BAD_DIMENSION_REQUEST);
         }
         catch(RuntimeException e){
             update(MessageID.CARD_NOT_AVAILABLE);
@@ -432,6 +432,7 @@ public class Controller implements Observer<MessageID> {
 
     // ENVELOPE CREATOR ------------------------------------------------------------------------------------------------
     private EndTurnMessage generateEndTurnMessage(){
+        mustChoosePlacements = false;
         previousPlayer = game.getCurrPlayer();
         game.updateEndTurn(previousPlayer);
 

@@ -245,10 +245,10 @@ public class CliController extends ClientController {
         dim = cli.marketDimChoose();
 
         if(dim.equals("c")){
-            upperBound = 3;
+            upperBound = 4;
             dimChar = 'c';
         }else{
-            upperBound = 4;
+            upperBound = 3;
             dimChar = 'r';
         }
 

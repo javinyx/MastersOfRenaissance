@@ -98,7 +98,7 @@ public class Market{
     }
 
     /**
-     * Pick the selected row from the market
+     * Pick the selected row from the market (0~2)
      * @return a list of Resource
      */
 
@@ -115,7 +115,7 @@ public class Market{
     }
 
     /**
-     * Pick the selected column from the market
+     * Pick the selected column from the market (0~3)
      * @return a list of Resource
      */
 

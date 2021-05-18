@@ -45,6 +45,9 @@ public abstract class ClientController {
     private boolean registrationPhase = true;
     private boolean gameOver = false;
 
+    protected boolean wantPlay;
+    protected boolean normalTurn;
+
     private static final String prodPath = "/json/ProductionCards.json",
             leadDiscountPath = "/json/LeaderCards/DiscountAbilityCards.json",
             leadStoragePath = "/json/LeaderCards/StorageAbilityCards.json",
@@ -161,6 +164,10 @@ public abstract class ClientController {
     public void setMarket(Resource[][] market, Resource extra){ this.market = new Market(market,extra);}
 
     public abstract boolean setup() throws IOException;
+
+    public void setWantPlay(boolean wantPlay) {
+        this.wantPlay = wantPlay;
+    }
     // SETUP MESSAGES -----------------------------------------------------------------------------------------
 
     public abstract void askNickname ();

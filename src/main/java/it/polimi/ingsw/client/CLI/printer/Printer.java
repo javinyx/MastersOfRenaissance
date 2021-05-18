@@ -89,7 +89,16 @@ public class Printer {
                            "3) Start production: you can produce Resources\n" +
                            "4) View your opponents status\n" +
                            "5) Activate a Leader Card\n" +
-                           "6) DiscardLeader Card");
+                           "6) DiscardLeader Card\n" +
+                           "7) End turn");
+    }
+
+    public void printLightTurnOptions(){
+        System.out.println("Now it's your turn, you can choose between these by typing the number:\n" +
+                            "1) View your opponents status\n" +
+                            "2) Activate a Leader Card\n" +
+                            "3) DiscardLeader Card\n" +
+                            "4) End turn");
     }
 
     public void printTable(){

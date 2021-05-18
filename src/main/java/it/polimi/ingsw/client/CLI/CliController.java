@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.CLI;
 
 import com.google.gson.Gson;
+import com.sun.media.jfxmediaimpl.MediaDisposer;
 import it.polimi.ingsw.client.ClientController;
 import it.polimi.ingsw.client.MessageReceiver;
 import it.polimi.ingsw.client.MessageToServerHandler;
@@ -215,8 +216,17 @@ public class CliController extends ClientController {
 
     // GAME PHASES -----------------------------------------------------------------------------------------------------
 
-    public void startTurnPhase(){
-        cli.displayTurnOption();
+    public synchronized void startTurnPhase(){
+        //FIXME: QUESTO ROMPE TUTTO
+        normalTurn = true;
+        wantPlay = true;
+
+        while (wantPlay){
+            if (normalTurn)
+                cli.displayTurnOption();
+            else
+                cli.displayLightTurnOption();
+        }
     }
 
     public void buyProductionCard(){
@@ -230,7 +240,34 @@ public class CliController extends ClientController {
 
     }
 
-    public void discardLeader(){}
+    public void discardLeader(){
+
+
+        if(!getPlayer().getLeaders().get(0).isActive() || !getPlayer().getLeaders().get(1).isActive()) {
+            List<LeaderCard> leaderCards = new ArrayList<>();
+            int c;
+
+            for (LeaderCard led : getPlayer().getLeaders())
+                if(!led.isActive())
+                    leaderCards.add(led);
+
+            c = cli.discardLeader(leaderCards);
+
+            getPlayer().getLeaders().removeIf(led -> led.getId() == c);
+
+            messageToServerHandler.generateEnvelope(MessageID.PLAYERS_POSITION, String.valueOf(c));
+
+            System.out.println("You have earn a Faith Point");
+            getPlayer().setCurrPos(getPlayer().getCurrPos()+1);
+
+        }
+        else
+            System.out.println("You don't have any leader to discard");
+
+
+
+
+    }
 
     @Override
     public void buyFromMarket(){
@@ -280,6 +317,7 @@ public class CliController extends ClientController {
 
         messageToServerHandler.generateEnvelope(MessageID.BUY_FROM_MARKET, gson.toJson(msg, BuyMarketMessage.class));
 
+        normalTurn = false;
 
     }
 

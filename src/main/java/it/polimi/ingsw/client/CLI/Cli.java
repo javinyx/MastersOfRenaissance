@@ -212,7 +212,7 @@ public class Cli /*extends ViewInterface*/ {
         do{
             System.out.println("Select a number:");
             choice = scanner.nextInt();
-        } while (choice < 1 || choice > 5);
+        } while (choice < 1 || choice > 7);
 
         switch(choice){
             case 1 -> controller.buyFromMarket();
@@ -221,10 +221,51 @@ public class Cli /*extends ViewInterface*/ {
             case 4 -> controller.viewOpponents();
             case 5 -> controller.activateLeader();
             case 6 -> controller.discardLeader();
+            case 7 -> controller.setWantPlay(false);
         }
 
     }
 
+    public void displayLightTurnOption(){
+
+        int choice;
+
+        OSPrinter.printLightTurnOptions();
+
+        do{
+            System.out.println("Select a number:");
+            choice = scanner.nextInt();
+        } while (choice < 1 || choice > 4);
+
+        switch(choice){
+            case 1 -> controller.viewOpponents();
+            case 2 -> controller.activateLeader();
+            case 3 -> controller.discardLeader();
+            case 4 -> controller.setWantPlay(false);
+        }
+
+    }
+
+    public int discardLeader(List<LeaderCard> led){
+
+        int c;
+
+        System.out.println("Select the leader you want to discard by typing its ID");
+
+        if (led.size() != 0){
+            for (LeaderCard leaderCard : led)
+                OSPrinter.printLeaders(leaderCard);
+            do{
+                System.out.println("Select leader:");
+                c = scanner.nextInt();
+            } while (c != led.get(0).getId() && c != led.get(1).getId());
+            return c;
+        }
+        else
+            System.out.println("You don't have any leader to discard");
+
+        return -1;
+    }
 
     public String marketDimChoose() {
         String dim;

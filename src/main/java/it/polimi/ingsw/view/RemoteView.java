@@ -65,6 +65,8 @@ public class RemoteView extends View {
 
                 case STORE_RESOURCES -> controller.organizeResourceAction(gson.fromJson(envelope.getPayload(), StoreResourcesMessage.class));
 
+                case PLAYERS_POSITION -> controller.faithTrackUpdate(envelope.getPayload());
+
                 //PING PONG
                 case PONG -> clientConnection.setStillConnected(true);
             }

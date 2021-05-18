@@ -334,6 +334,11 @@ public class Controller implements Observer<MessageID> {
         update(MessageID.CARD_NOT_AVAILABLE);
     }
 
+    public void faithTrackUpdate(String s){
+        game.getCurrPlayer().moveOnBoard(1);
+        game.getCurrPlayer().getLeaderCards().removeIf(led -> led.getId() == Integer.parseInt(s));
+    }
+
     public void organizeResourceAction(StoreResourcesMessage message){
         addedResources.clear();
         removedResources.clear();

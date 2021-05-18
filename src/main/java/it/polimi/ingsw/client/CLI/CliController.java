@@ -72,7 +72,8 @@ public class CliController extends ClientController {
     // Input Part ------------------------------------------------------------------------------------------------------
 
     /**
-    * @return {@code true} if current player can perform actions, based on whether is his turn or not, if match is over or if he's waiting for server updates
+    * @return {@code true} if current player can perform actions, based on whether is his turn or not,
+     * if match is over or if he's waiting for server updates
     */
     public boolean canPlay() {
         if(isGameOver()){
@@ -108,7 +109,8 @@ public class CliController extends ClientController {
         else checkInputGamePhase(input);
     }
     /**
-     * Checks messages during registration phase, based on the current action, sends message to socket if input is correct, else sets an error message
+     * Checks messages during registration phase, based on the current action, sends message to socket
+     * if input is correct, else sets an error message.
      * @param input cli input
      */
     private void checkInputRegistrationPhase(String input) {
@@ -147,7 +149,7 @@ public class CliController extends ClientController {
     public synchronized void askNickname (){ System.out.println("Hello, what's your Nickname?"); }
 
     @Override
-    public synchronized void askNumberOfPlayers() { System.out.println("How many players do you want to play with"); }
+    public synchronized void askNumberOfPlayers() { System.out.println("How many players do you want to play with?"); }
 
     public synchronized void confirmRegistration(String nickname) {
         super.confirmRegistration(nickname);
@@ -159,7 +161,7 @@ public class CliController extends ClientController {
 
     @Override
     public void chooseLeadersAction(){
-        cli.showMessage("Choose 2 of leaders among these:\n");
+        cli.showMessage("Choose 2 leaders among these:\n");
         List<Integer> lId = cli.chooseLeader(getPlayer().getLeaders());
 
         getPlayer().setLeaders(convertIdToLeaderCard(lId));
@@ -187,7 +189,7 @@ public class CliController extends ClientController {
 
     @Override
     public void startGame() {
-        cli.showMessage("You are ready to play, wait until your turn");
+        cli.showMessage("You are ready to play, wait until it's your turn");
         setRegistrationPhase(false);
 
         if (getPlayer().getTurnNumber() == 1) {

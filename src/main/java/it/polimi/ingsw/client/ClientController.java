@@ -7,6 +7,7 @@ import it.polimi.ingsw.client.model.ClientGame;
 import it.polimi.ingsw.client.model.Market;
 import it.polimi.ingsw.client.model.NubPlayer;
 import it.polimi.ingsw.messages.MessageID;
+import it.polimi.ingsw.messages.concreteMessages.EndTurnMessage;
 import it.polimi.ingsw.messages.concreteMessages.TurnNumberMessage;
 import it.polimi.ingsw.messages.concreteMessages.UpdateMessage;
 import it.polimi.ingsw.misc.BiElement;
@@ -288,7 +289,9 @@ public abstract class ClientController {
         this.currPlayer = currPlayer;
     }
 
-    public void endTurn(){
+    public void endTurn(EndTurnMessage msg){
+        this.currPlayer = totalPlayers.get(msg.getNextPlayerId()-1);
+        this.availableProductionCard = convertIdToProductionCard(msg.getBuyableProdCardsIds());
 
         if (getPlayer().getTurnNumber() == currPlayer.getTurnNumber()) {
             getPlayer().setMyTurn(true);

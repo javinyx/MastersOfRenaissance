@@ -431,9 +431,14 @@ public class Controller implements Observer<MessageID> {
     // END TURN UTILITIES ----------------------------------------------------------------------------------------------
 
     // ENVELOPE CREATOR ------------------------------------------------------------------------------------------------
+    private EndTurnMessage generateEndTurnMessage(){
+        previousPlayer = game.getCurrPlayer();
+        game.updateEndTurn(previousPlayer);
+
+        return new EndTurnMessage(game.getCurrPlayer().getTurnID(), game.getBuyableProductionID());
+    }
 
     private UpdateMessage generateUpdateMessage(){
-        previousPlayer = game.getCurrPlayer();
         List<Integer> thisPlayerActiveLeaders = new ArrayList<>();
 
         //production card bought set by: buyProductionCardAction
@@ -445,7 +450,6 @@ public class Controller implements Observer<MessageID> {
             }
         }
 
-        game.updateEndTurn(previousPlayer);
         UpdateMessage msg = new UpdateMessage(previousPlayer.getTurnID(), previousPlayer.getCurrentPosition(), game.getCurrPlayer().getTurnID(),
                 game.getMarket().getMarketBoard(), game.getMarket().getExtraMarble(), game.getBuyableProductionID(),
                 boughtCard.orElse(null), thisPlayerActiveLeaders, addedResources, removedResources);
@@ -458,7 +462,11 @@ public class Controller implements Observer<MessageID> {
         switch(messageID) {
 
             case ACK -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "True"));
-            case CONFIRM_END_TURN -> remoteViews.get(game.getCurrPlayer().getTurnID()-1).update(new MessageEnvelope(messageID, ""));
+            case CONFIRM_END_TURN -> {
+                EndTurnMessage msg = generateEndTurnMessage();
+                String payload = gson.toJson(msg, EndTurnMessage.class);
+                remoteViews.get(game.getCurrPlayer().getTurnID()-1).update(new MessageEnvelope(messageID, payload));
+            }
 
             //INITIALIZATION
 
@@ -481,7 +489,8 @@ public class Controller implements Observer<MessageID> {
                 if (initializationPhase) {
                     remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getUpdate()));
                 } else {
-                    //WARNING : generateUpdateMessage() is crucial because it generates the UpdateMessage AND set the end of the player turn
+                    /*WARNING : in order to generate correctly an UpdateMessage with generateUpdateMessage(), a CONFIRM_END_TURN must be
+                    *  sent because it causes a generateEndTurnMessage() that updates the previousPlayer and the currentPlayer */
                     UpdateMessage msg = generateUpdateMessage();
                     String payload = gson.toJson(msg, UpdateMessage.class);
                     MessageEnvelope envelope = new MessageEnvelope(MessageID.UPDATE, payload);

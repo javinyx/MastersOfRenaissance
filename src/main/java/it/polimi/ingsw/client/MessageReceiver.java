@@ -3,6 +3,7 @@ package it.polimi.ingsw.client;
 import com.google.gson.Gson;
 import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
+import it.polimi.ingsw.messages.concreteMessages.EndTurnMessage;
 import it.polimi.ingsw.messages.concreteMessages.TurnNumberMessage;
 import it.polimi.ingsw.messages.concreteMessages.UpdateMessage;
 
@@ -64,7 +65,7 @@ public class MessageReceiver implements Runnable{
             case CONFIRM_REGISTRATION -> controller.confirmRegistration(envelope.getPayload());
 
             case TURN_NUMBER -> controller.setTotalPlayers(gson.fromJson(envelope.getPayload(), TurnNumberMessage.class));
-            case CONFIRM_END_TURN -> controller.endTurn();
+            case CONFIRM_END_TURN -> controller.endTurn(gson.fromJson(envelope.getPayload(), EndTurnMessage.class));
 
             case CHOOSE_LEADER_CARDS -> controller.setLeaderAvailable(envelope.getPayload());
             case TOO_MANY_PLAYERS -> controller.displayMessage(envelope.getPayload());
@@ -93,7 +94,7 @@ public class MessageReceiver implements Runnable{
             case STORE_RESOURCES -> controller.chooseStorageAction(envelope.getPayload());
 
             case UPDATE -> controller.updateAction(gson.fromJson(envelope.getPayload(), UpdateMessage.class));
-            case CONFIRM_END_TURN -> controller.endTurn();
+            case CONFIRM_END_TURN -> {controller.endTurn(gson.fromJson(envelope.getPayload(), EndTurnMessage.class));}
 
             case LORENZO_POSITION -> controller.moveLorenzo(Integer.parseInt(envelope.getPayload()));
             case PLAYERS_POSITION -> {}

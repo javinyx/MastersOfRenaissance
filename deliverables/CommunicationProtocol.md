@@ -46,7 +46,7 @@ The connection phase is executed upon the players' insertion of their IP address
 <br/>
 The client app contains some logic for the correct game initialization. Players have to insert their nickname and choose the type of game they wish to play (_singleplayer mode_ or _multiplayer mode_) after the server checks if the player was already part of a game, otherwise the player is reconnected to that game. The initial registration is as follows:
 
-```json
+```
 // Message: client -> server
 {
 	"messageID" : "REGISTER_SINGLE",
@@ -73,7 +73,7 @@ For the MultiPlayer game, more choices have to be made:
 
 ### Case (A):
 
-```json
+```
 // Message: client -> server
 {
 	"messageID" : "REGISTER_MULTI",
@@ -87,7 +87,7 @@ Players will wait until the the lobby is full. The lobby creator will be the fir
 
 ### Case (B):
 
-```json
+```
 // Message: client -> server
 {
 	"messageID" : "REQUEST_LOBBY",
@@ -146,7 +146,7 @@ Once a lobby is full, the server sends a `SERVER_STATE` message to all clients w
 
 There are a few things to do upon game initiation:
 * Update each player's view with their initial position on the faith track based on their turn order, with messages like the following:
-```json
+```
 // Message: server -> client
 {
 	"messageID" : "PLAYER_POSITION",
@@ -158,7 +158,7 @@ There are a few things to do upon game initiation:
 ```
 
 * Request players' preferred resources based on their turn order, with messages like the following: 
-```json
+```
 // Message: server -> client
 {
 	"messageID" : "REQUEST_RESOURCE_CHOICE",
@@ -200,7 +200,7 @@ Every value and faithPoint assignment follows the ruleset in the table below:
 |   4th  |              2             |       1      |
 
 * Each player needs to choose 2 out of their 4 given LeaderCards, the messages will look as such:
-```json
+```
 // Message: server -> client
 {
 	"messageID" : "REQUEST_LEADER_CHOICE",
@@ -235,7 +235,7 @@ Every value and faithPoint assignment follows the ruleset in the table below:
 The following messages are sent to each player in the game, because everyone has to see the changes in the model caused by other players as well:
 
 #### Current player notification
-```json
+```
 {
 	"messageID" : “CURRENT_PLAYER",
 	"payload" : {
@@ -246,7 +246,7 @@ The following messages are sent to each player in the game, because everyone has
 This incapsulate the player's id that has to play.
 
 #### Progression onto the _Faith Track_
-```json
+```
 {
 	"messageID" : “PLAYER_POSITION",
 	"payload" : {
@@ -260,7 +260,7 @@ This incapsulate the player's id that has to play.
 * `boardCell` is the updated position on the player's board.
 
 #### Purchase from Market
-```json
+```
 {
 	"messageID" : "MARKET_UPDATE",
 	"payload" : {
@@ -275,7 +275,7 @@ This incapsulate the player's id that has to play.
 * new setup of market (only changes notification).
 
 #### Purchase of Production Cards
-```json
+```
 {
 	"messageID" : "AVAILABLE_PRODUCTION_CARDS",
 	"payload" : {
@@ -298,7 +298,7 @@ The payload displays all 12 decks containing the currently available production 
 * `cardID` is the ID of the card to show on that deck.
 
 #### End game
-```json
+```
 {
 	"messageID" : "END_GAME",
 	"payload" : {
@@ -310,7 +310,7 @@ In a singleplayer game, if Lorenzo wins, then `"winner" : 0`.
 
 ### 3.2 Requests for current player turn
 #### Production
-```json
+```
 {
 	"messageID" : "PRODUCTION_RESULT",
 	"payload" : {
@@ -323,7 +323,7 @@ In a singleplayer game, if Lorenzo wins, then `"winner" : 0`.
 * `outcome` is the actual production that will be put in the player's lootchest; if state is negative, then this will be empty.
 
 #### Resources placement
-```json
+```
 {
 	"messageID" : "RESOURCES_PLACEMENTS",
 	"payload" : {}
@@ -333,7 +333,7 @@ The server notifies the players that they have to place the resources that they 
 
 ## 4. Client to Server Messages
 ### Leader card activation
-```json
+```
 {
   "messageID" : "ACTIVATE_LEADER",
   "payload" : {
@@ -342,7 +342,7 @@ The server notifies the players that they have to place the resources that they 
 }
 ```
 ### Production
-```json
+```
 {
 	"messageID" : "PRODUCTION",
 	"payload" : {
@@ -368,7 +368,7 @@ The server notifies the players that they have to place the resources that they 
 * `outputBasic` indicates the type of Resource the user wants to receive from basicProduction.
 
 ### Buy from Market
-```json
+```
 {
 	"messageID" : "BUY_MARKET",
 	"payload" : {
@@ -395,7 +395,7 @@ which the player would like to use upon the specified quantity of
 blank marbles collected from the market.
 
 ### Buy Production Cards
-```json
+```
 {
 	"messageID" : "BUY_PRODUCTION",
 	"payload" : {

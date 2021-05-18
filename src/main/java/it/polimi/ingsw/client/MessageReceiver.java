@@ -58,7 +58,7 @@ public class MessageReceiver implements Runnable{
 
     public void readRegistrationMessage(MessageEnvelope envelope){
         controller.setLastRegistrationMessage(envelope.getMessageID());
-
+        System.out.println(envelope.getMessageID());
         switch(envelope.getMessageID()){
             case ASK_NICK -> controller.askNickname();
             case PLAYER_NUM -> controller.askNumberOfPlayers();
@@ -81,6 +81,7 @@ public class MessageReceiver implements Runnable{
 
     public void readGameMessage(MessageEnvelope envelope) {
         controller.setLastGameMessage(envelope.getMessageID());
+        System.out.println(envelope.getMessageID());
         switch(envelope.getMessageID()){
 
             case CARD_NOT_AVAILABLE -> controller.cardNotAvailable();

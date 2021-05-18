@@ -6,12 +6,9 @@ import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
 
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class NubPlayer {
+public class NubPlayer implements Comparator<NubPlayer> {
     private final String nickname;
     private int currPos;
     private boolean myTurn = false;
@@ -85,6 +82,33 @@ public class NubPlayer {
 
     public void setLeaders(List<LeaderCard> leaders){
         this.leaders = leaders;
+    }
+
+    //---------------------COMPARATOR---------------
+    @Override
+    public int compare(NubPlayer o1, NubPlayer o2) {
+        if(o1.getTurnNumber() < o2.getTurnNumber()){
+            return -1;
+        }else if(o1.getTurnNumber() == o2.getTurnNumber()){
+            return 0;
+        }else{
+            return 1;
+        }
+    }
+
+    public static Comparator<NubPlayer> getComparator(){
+        return new Comparator<NubPlayer>() {
+            @Override
+            public int compare(NubPlayer o1, NubPlayer o2) {
+                if(o1.getTurnNumber() < o2.getTurnNumber()){
+                    return -1;
+                }else if(o1.getTurnNumber() == o2.getTurnNumber()){
+                    return 0;
+                }else{
+                    return 1;
+                }
+            }
+        };
     }
 
 }

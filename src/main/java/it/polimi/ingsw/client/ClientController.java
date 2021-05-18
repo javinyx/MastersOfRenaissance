@@ -179,7 +179,11 @@ public abstract class ClientController {
                 player.setTurnNumber(msg.getTurnAss().get(i).getSecondValue());
         }
 
-        //TODO ordinare la lista totalPlaers
+        System.out.println("Before sorting: " + totalPlayers.stream().map(NubPlayer::getTurnNumber).collect(Collectors.toList()));
+
+        totalPlayers.stream().sorted(NubPlayer.getComparator());
+
+        System.out.println("After sorting: " + totalPlayers.stream().map(NubPlayer::getTurnNumber).collect(Collectors.toList()));
     }
 
     public void setLeaderAvailable(String leaders){

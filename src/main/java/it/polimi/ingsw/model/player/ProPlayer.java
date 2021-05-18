@@ -284,7 +284,6 @@ public class ProPlayer extends Player{
         if(dim!='c' && dim!='r'){
             throw new IllegalArgumentException("Chosen dimension must be either 'c' (column) or 'r' (row), instead it's "+dim);
         }
-        System.out.println(dim + "" + index);
         resAcquired.clear();
         Market market = game.getMarket();
         index--;

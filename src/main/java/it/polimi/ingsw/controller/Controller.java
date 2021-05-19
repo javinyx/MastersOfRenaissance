@@ -126,7 +126,10 @@ public class Controller implements Observer<MessageID> {
     }
 
     // END GAME INITIALIZATION -----------------------------------------------------------------------------------------
-    public void endTurn(){
+    /**If the player still has to choose where to put some resources, send back in info message beacuse the turn cannot be
+     * ended right now. Otherwise send an end confirmation message (that causes the next player to become current) and
+     * send all the updates of the things that has been done during the turn.*/
+    public synchronized void endTurn(){
         basicActionDone = false;
         if(mustChoosePlacements){
             update(MessageID.INFO);
@@ -362,12 +365,21 @@ public class Controller implements Observer<MessageID> {
         update(MessageID.CARD_NOT_AVAILABLE);
     }
 
+    /**Let the player discard a leader.*/
     public void discardLeader(String s){
-        game.getCurrPlayer().moveOnBoard(1);
-        game.getCurrPlayer().getLeaderCards().removeIf(led -> led.getId() == Integer.parseInt(s));
+        boolean found = false;
+        List<LeaderCard> leaders = game.getCurrPlayer().getLeaderCards();
+        for(LeaderCard card : leaders){
+            if(card.getId() == Integer.parseInt(s)){
+                if(game.getCurrPlayer().discardLeaderCard(card)){
+                    update(MessageID.PLAYERS_POSITION);
+                    update(MessageID.ACK);
+                    break;
+                }
 
-        update(MessageID.PLAYERS_POSITION);
-        update(MessageID.ACK);
+            }
+        }
+        update(MessageID.CARD_NOT_AVAILABLE);
     }
 
     public void organizeResourceAction(StoreResourcesMessage message){
@@ -703,8 +715,6 @@ public class Controller implements Observer<MessageID> {
         prodCards.addAll(player.getProdCards2().stream().map(x -> new BiElement<>(x.getId(), 2)).collect(Collectors.toList()));
         prodCards.addAll(player.getProdCards3().stream().map(x -> new BiElement<>(x.getId(), 3)).collect(Collectors.toList()));
 
-        //TODO: sistemareeeeeee
-        List<BiElement<Integer, Boolean>> leadersIds = null;/* = new ArrayList<BiElement<Integer, Boolean>>(player.getLeaderCards().stream().map(x -> {new BiElement<>(x.getId(), x.isActive())})).collect(Collectors.toList()))*/;
         if(!mustChoosePlacements) {
             addedResources.clear();
         }
@@ -724,15 +734,18 @@ public class Controller implements Observer<MessageID> {
         addResources(new BiElement<>(Resource.SHIELD, Storage.LOOTCHEST), inventory.get(Resource.SHIELD));
         addResources(new BiElement<>(Resource.STONE, Storage.LOOTCHEST), inventory.get(Resource.STONE));
 
+
         List<LeaderCard> leaders = player.getLeaderCards();
+        List<BiElement<Integer, Boolean>> leadersIds = new ArrayList<>();
         int qty = 0, size;
+
         for(LeaderCard l : leaders){
+            leadersIds.add(new BiElement<>(l.getId(), l.isActive()));
             qty++;
             if(l.isActive() && (l instanceof StorageAbility) && (size=((StorageAbility)l).size())>0){
                 addResources(new BiElement<>(((StorageAbility) l).getStorageType(), qty==1 ? Storage.EXTRA1 : Storage.EXTRA2), size);
             }
         }
-
 
         UpdateMessage msg = new UpdateMessage(turnId, player.getCurrentPosition(), getCurrPlayerTurnID(),
                 game.getMarket().getMarketBoard(), game.getMarket().getExtraMarble(), game.getBuyableProductionID(),

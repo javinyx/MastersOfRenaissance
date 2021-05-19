@@ -218,16 +218,12 @@ public class CliController extends ClientController {
     // GAME PHASES -----------------------------------------------------------------------------------------------------
 
     public synchronized void startTurnPhase(){
-        //FIXME: QUESTO ROMPE TUTTO
-        normalTurn = true;
-        wantPlay = true;
 
-        while (wantPlay){
-            if (normalTurn)
-                cli.displayTurnOption();
-            else
-                cli.displayLightTurnOption();
-        }
+        if (normalTurn)
+            cli.displayTurnOption();
+        else
+            cli.displayLightTurnOption();
+
     }
 
     public void buyProductionCard(){

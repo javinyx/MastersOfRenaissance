@@ -45,7 +45,6 @@ public abstract class ClientController {
     private boolean registrationPhase = true;
     private boolean gameOver = false;
 
-    protected boolean wantPlay;
     protected boolean normalTurn;
 
     private static final String prodPath = "/json/ProductionCards.json",
@@ -165,9 +164,6 @@ public abstract class ClientController {
 
     public abstract boolean setup() throws IOException;
 
-    public void setWantPlay(boolean wantPlay) {
-        this.wantPlay = wantPlay;
-    }
     // SETUP MESSAGES -----------------------------------------------------------------------------------------
 
     public abstract void askNickname ();
@@ -320,6 +316,7 @@ public abstract class ClientController {
 
         if (getPlayer().getTurnNumber() == currPlayer.getTurnNumber()) {
             getPlayer().setMyTurn(true);
+            normalTurn = true;
             startTurnPhase();
         }
         else {

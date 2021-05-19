@@ -334,6 +334,12 @@ public class ProPlayer extends Player{
         }
     }
 
+    public void discardResources(int qty){
+        for(int i=0; i<qty; i++){
+            observer.alertDiscardResource(this);
+        }
+    }
+
 
     /**Place the resource in the specified warehouse tier.
      * @param resource resource the player wants to store

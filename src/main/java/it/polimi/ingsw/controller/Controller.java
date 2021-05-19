@@ -30,7 +30,6 @@ public class Controller implements Observer<MessageID> {
     private boolean gameOver;
     private int numPlayer;
     private boolean initializationPhase;
-    private char turnType;
     private List<Observer<MessageEnvelope>> remoteViews;
     Gson gson = new Gson();
 
@@ -38,6 +37,7 @@ public class Controller implements Observer<MessageID> {
     Map<BiElement<Resource, Storage>, Integer> addedResources = new HashMap<>();
     Map<BiElement<Resource, Storage>, Integer> removedResources = new HashMap<>();
     boolean mustChoosePlacements = false;
+    boolean basicActionDone = false;
     Optional<List<BiElement<Integer, Integer>>> boughtCard = Optional.empty();
 
     ProPlayer previousPlayer;
@@ -126,6 +126,18 @@ public class Controller implements Observer<MessageID> {
     }
 
     // END GAME INITIALIZATION -----------------------------------------------------------------------------------------
+    /**If the player still has to choose where to put some resources, send back in info message beacuse the turn cannot be
+     * ended right now. Otherwise send an end confirmation message (that causes the next player to become current) and
+     * send all the updates of the things that has been done during the turn.*/
+    public synchronized void endTurn(){
+        basicActionDone = false;
+        if(mustChoosePlacements){
+            update(MessageID.INFO);
+            return;
+        }
+        update(MessageID.CONFIRM_END_TURN);
+        update(MessageID.UPDATE);
+    }
 
     // TURN STRUCTURE --------------------------------------------------------------------------------------------------
 
@@ -136,7 +148,7 @@ public class Controller implements Observer<MessageID> {
      * and ask the player where to store the resources bought, otherwise generate various error messages.</p>
     */
     public synchronized void buyFromMarAction(BuyMarketMessage buyMark) {
-        if(mustChoosePlacements){
+        if(mustChoosePlacements || basicActionDone){
             update(MessageID.INFO);
             return;
         }
@@ -151,12 +163,13 @@ public class Controller implements Observer<MessageID> {
         }
 
         mustChoosePlacements = true;
+        basicActionDone = true;
 
         update(MessageID.STORE_RESOURCES);
     }
 
     public void buyProdCardAction(BuyProductionMessage buyProd) {
-        if(mustChoosePlacements){
+        if(mustChoosePlacements || basicActionDone){
             update(MessageID.INFO);
             return;
         }
@@ -237,13 +250,13 @@ public class Controller implements Observer<MessageID> {
             update(MessageID.WRONG_LEVEL_REQUEST);
         }
 
-        update(MessageID.CONFIRM_END_TURN);
+        basicActionDone = true;
+        update(MessageID.ACK);
 
-        update(MessageID.UPDATE);
     }
 
     public void activateProdAction(ProduceMessage produce) {
-        if(mustChoosePlacements){
+        if(mustChoosePlacements || basicActionDone){
             update(MessageID.INFO);
             return;
         }
@@ -324,9 +337,8 @@ public class Controller implements Observer<MessageID> {
             update(MessageID.CARD_NOT_AVAILABLE);
         }
 
-        update(MessageID.CONFIRM_END_TURN);
-
-        update(MessageID.UPDATE);
+        basicActionDone = true;
+        update(MessageID.ACK);
     }
 
     // END TURN STRUCTURE ----------------------------------------------------------------------------------------------
@@ -341,17 +353,33 @@ public class Controller implements Observer<MessageID> {
 
         for (int i = 0; i < ProPlayer.getMaxNumExtraStorage(); i++) {
             if(game.getCurrPlayer().getLeaderCards().get(i).equals(leaderCard)) {
-                game.getCurrPlayer().activateLeaderCard(leaderCard);
-                break;
+                if(game.getCurrPlayer().activateLeaderCard(leaderCard)) {
+                    update(MessageID.ACK);
+                    return;
+                }else{
+                    update(MessageID.CARD_NOT_AVAILABLE);
+                    return;
+                }
             }
         }
-
         update(MessageID.CARD_NOT_AVAILABLE);
     }
 
+    /**Let the player discard a leader.*/
     public void discardLeader(String s){
-        game.getCurrPlayer().moveOnBoard(1);
-        game.getCurrPlayer().getLeaderCards().removeIf(led -> led.getId() == Integer.parseInt(s));
+        boolean found = false;
+        List<LeaderCard> leaders = game.getCurrPlayer().getLeaderCards();
+        for(LeaderCard card : leaders){
+            if(card.getId() == Integer.parseInt(s)){
+                if(game.getCurrPlayer().discardLeaderCard(card)){
+                    update(MessageID.PLAYERS_POSITION);
+                    update(MessageID.ACK);
+                    break;
+                }
+
+            }
+        }
+        update(MessageID.CARD_NOT_AVAILABLE);
     }
 
     public void organizeResourceAction(StoreResourcesMessage message){
@@ -435,9 +463,7 @@ public class Controller implements Observer<MessageID> {
         }
 
         mustChoosePlacements = false;
-        update(MessageID.CONFIRM_END_TURN);
-        update(MessageID.UPDATE);
-
+        update(MessageID.ACK);
 
     }
 
@@ -518,11 +544,11 @@ public class Controller implements Observer<MessageID> {
     public void update(MessageID messageID){
         switch(messageID) {
 
-            case ACK -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "True"));
+            case ACK -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, String.valueOf(basicActionDone)));
             case CONFIRM_END_TURN -> {
                 EndTurnMessage msg = generateEndTurnMessage();
                 String payload = gson.toJson(msg, EndTurnMessage.class);
-                remoteViews.get(game.getCurrPlayer().getTurnID()-1).update(new MessageEnvelope(messageID, payload));
+                remoteViews.get(previousPlayer.getTurnID()-1).update(new MessageEnvelope(messageID, payload));
             }
 
             //INITIALIZATION
@@ -689,8 +715,6 @@ public class Controller implements Observer<MessageID> {
         prodCards.addAll(player.getProdCards2().stream().map(x -> new BiElement<>(x.getId(), 2)).collect(Collectors.toList()));
         prodCards.addAll(player.getProdCards3().stream().map(x -> new BiElement<>(x.getId(), 3)).collect(Collectors.toList()));
 
-        //TODO: sistemareeeeeee
-        List<BiElement<Integer, Boolean>> leadersIds = null;/* = new ArrayList<BiElement<Integer, Boolean>>(player.getLeaderCards().stream().map(x -> {new BiElement<>(x.getId(), x.isActive())})).collect(Collectors.toList()))*/;
         if(!mustChoosePlacements) {
             addedResources.clear();
         }
@@ -710,15 +734,18 @@ public class Controller implements Observer<MessageID> {
         addResources(new BiElement<>(Resource.SHIELD, Storage.LOOTCHEST), inventory.get(Resource.SHIELD));
         addResources(new BiElement<>(Resource.STONE, Storage.LOOTCHEST), inventory.get(Resource.STONE));
 
+
         List<LeaderCard> leaders = player.getLeaderCards();
+        List<BiElement<Integer, Boolean>> leadersIds = new ArrayList<>();
         int qty = 0, size;
+
         for(LeaderCard l : leaders){
+            leadersIds.add(new BiElement<>(l.getId(), l.isActive()));
             qty++;
             if(l.isActive() && (l instanceof StorageAbility) && (size=((StorageAbility)l).size())>0){
                 addResources(new BiElement<>(((StorageAbility) l).getStorageType(), qty==1 ? Storage.EXTRA1 : Storage.EXTRA2), size);
             }
         }
-
 
         UpdateMessage msg = new UpdateMessage(turnId, player.getCurrentPosition(), getCurrPlayerTurnID(),
                 game.getMarket().getMarketBoard(), game.getMarket().getExtraMarble(), game.getBuyableProductionID(),

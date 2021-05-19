@@ -54,6 +54,7 @@ public class RemoteView extends View {
 
 
                 // GAME PHASES
+                case END_TURN -> controller.endTurn();
 
                 case BUY_FROM_MARKET -> controller.buyFromMarAction(gson.fromJson(envelope.getPayload(), BuyMarketMessage.class));
 

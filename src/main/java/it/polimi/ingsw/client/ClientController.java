@@ -305,6 +305,12 @@ public abstract class ClientController {
         this.currPlayer = currPlayer;
     }
 
+    public void continueTurn(Boolean basicActionDone){
+        System.out.println(basicActionDone);
+        normalTurn = !basicActionDone;
+        startTurnPhase();
+    }
+
     public void endTurn(EndTurnMessage msg){
 
         for (BiElement<Resource, Storage> elem : storeRes)

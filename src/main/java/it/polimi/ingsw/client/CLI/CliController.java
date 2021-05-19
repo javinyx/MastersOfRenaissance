@@ -1,21 +1,16 @@
 package it.polimi.ingsw.client.CLI;
 
 import com.google.gson.Gson;
-import com.sun.media.jfxmediaimpl.MediaDisposer;
 import it.polimi.ingsw.client.ClientController;
 import it.polimi.ingsw.client.MessageReceiver;
 import it.polimi.ingsw.client.MessageToServerHandler;
 import it.polimi.ingsw.client.model.NubPlayer;
 import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.concreteMessages.BuyMarketMessage;
-import it.polimi.ingsw.messages.concreteMessages.ProduceMessage;
 import it.polimi.ingsw.messages.concreteMessages.StoreResourcesMessage;
 import it.polimi.ingsw.misc.BiElement;
-import it.polimi.ingsw.misc.Storage;
-import it.polimi.ingsw.model.cards.leader.BoostAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.MarbleAbility;
-import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
 
 import java.io.IOException;
@@ -206,6 +201,7 @@ public class CliController extends ClientController {
         if (getPlayer().getTurnNumber() == 1) {
             getPlayer().setMyTurn(true);
             setCurrPlayer(getPlayer());
+            normalTurn = true;
             startTurnPhase();
         }
         else
@@ -221,7 +217,6 @@ public class CliController extends ClientController {
     // GAME PHASES -----------------------------------------------------------------------------------------------------
 
     public synchronized void startTurnPhase(){
-
         if (normalTurn)
             cli.displayTurnOption();
         else
@@ -234,35 +229,6 @@ public class CliController extends ClientController {
     }
 
     public void startProduction(){
-
-        List<ConcreteProductionCard> prodCard;
-        List<LeaderCard> leadCard = null;
-        List<Resource> basicIn, leadOut = null;
-        Resource basicOut = null;
-        boolean basic = false;
-
-        System.out.println("Select the Development Card you want to use");
-
-        prodCard = cli.selectProdCard();
-
-        if(cli.wantPlayLeader())
-            for (LeaderCard led : getPlayer().getLeaders())
-                if (led instanceof BoostAbility && led.isActive()) {
-                    System.out.println("Select the leader you want to produce:");
-                    leadCard = convertIdToLeaderCard(cli.chooseLeader(getPlayer().getLeaders()));
-                    leadOut = cli.chooseLeaderOut(leadCard);
-                }
-
-        basicIn = cli.doBasicProd1();
-        if(basicIn != null) {
-            basic = true;
-            basicOut = cli.doBasicProd2();
-        }
-
-        ProduceMessage msg = new ProduceMessage(prodCard, null, leadCard, leadOut, basic, basicOut, basicIn);
-
-        messageToServerHandler.generateEnvelope(MessageID.PRODUCE, gson.toJson(msg));
-
 
     }
     public void viewOpponents(){

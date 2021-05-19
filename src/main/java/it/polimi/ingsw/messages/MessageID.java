@@ -16,6 +16,7 @@ public enum MessageID {
 
     //GENERIC ACKNOWLEDGMENT
     ACK,
+    END_TURN,
     CONFIRM_END_TURN,
     CONFIRM_REGISTRATION,
 
@@ -57,7 +58,7 @@ public enum MessageID {
 
     CHOOSE_RESOURCE,
     TURN_SETUP,
-    END_TURN,
+
 
 
     // BUY PRODUCTION CARD

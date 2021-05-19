@@ -511,17 +511,19 @@ public class ProPlayer extends Player{
     }
 
     /**Discard a leaderCard and give a Faith Point to the player.
-     * @param leaderCard card that the player wants to remove. */
-    public void discardLeaderCard(LeaderCard leaderCard){
+     * @param leaderCard card that the player wants to remove.
+     * @return true if it has removed the leader, false otherwise.*/
+    public boolean discardLeaderCard(LeaderCard leaderCard){
         if(leaderCard!=null) {
             if (leaderCard.isActive()) {
-                throw new RuntimeException("Cannot discard an active leader");
+                return false;
             }
-            if (leaderCards.contains(leaderCard)) {
-                leaderCards.remove(leaderCard);
+            if (leaderCards.remove(leaderCard)) {
                 addFaithPoints(1);
+                return true;
             }
         }
+        return false;
     }
 
 //--------------------------------------BOARD---------------------------------------

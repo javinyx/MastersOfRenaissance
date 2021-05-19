@@ -8,17 +8,13 @@ import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.MarbleAbility;
 import it.polimi.ingsw.model.market.Resource;
-import it.polimi.ingsw.model.player.Warehouse;
 
-import java.awt.*;
-import java.awt.geom.RectangularShape;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Scanner;
 
 public class Cli /*extends ViewInterface*/ {
@@ -227,7 +223,6 @@ public class Cli /*extends ViewInterface*/ {
     }
 
     public void displayLightTurnOption(){
-
         int choice;
 
         OSPrinter.printLightTurnOptions();
@@ -247,7 +242,6 @@ public class Cli /*extends ViewInterface*/ {
     }
 
     public int discardLeader(List<LeaderCard> led){
-
         int c;
 
         System.out.println("Select the leader you want to discard by typing its ID");

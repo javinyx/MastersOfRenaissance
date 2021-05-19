@@ -87,7 +87,7 @@ public class MessageReceiver implements Runnable{
         System.out.println(envelope.getMessageID());
 
         switch(envelope.getMessageID()){
-
+            case ACK -> controller.continueTurn(Boolean.parseBoolean(envelope.getPayload()));
             case CARD_NOT_AVAILABLE -> controller.cardNotAvailable();
             case BAD_PRODUCTION_REQUEST -> controller.badProductionRequest();
             case BAD_PAYMENT_REQUEST -> controller.badPaymentRequest();

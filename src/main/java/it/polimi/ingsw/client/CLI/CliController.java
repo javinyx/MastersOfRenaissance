@@ -1,7 +1,6 @@
 package it.polimi.ingsw.client.CLI;
 
 import com.google.gson.Gson;
-import com.sun.media.jfxmediaimpl.MediaDisposer;
 import it.polimi.ingsw.client.ClientController;
 import it.polimi.ingsw.client.MessageReceiver;
 import it.polimi.ingsw.client.MessageToServerHandler;
@@ -10,7 +9,6 @@ import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.concreteMessages.BuyMarketMessage;
 import it.polimi.ingsw.messages.concreteMessages.StoreResourcesMessage;
 import it.polimi.ingsw.misc.BiElement;
-import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.MarbleAbility;
 import it.polimi.ingsw.model.market.Resource;
@@ -203,6 +201,7 @@ public class CliController extends ClientController {
         if (getPlayer().getTurnNumber() == 1) {
             getPlayer().setMyTurn(true);
             setCurrPlayer(getPlayer());
+            normalTurn = true;
             startTurnPhase();
         }
         else
@@ -218,7 +217,6 @@ public class CliController extends ClientController {
     // GAME PHASES -----------------------------------------------------------------------------------------------------
 
     public synchronized void startTurnPhase(){
-
         if (normalTurn)
             cli.displayTurnOption();
         else

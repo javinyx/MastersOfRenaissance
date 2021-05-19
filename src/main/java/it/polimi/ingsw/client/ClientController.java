@@ -455,4 +455,8 @@ public abstract class ClientController {
         totalPlayers.add(player);
         initAllCards();
     }
+
+    public void passTurn(){
+        messageToServerHandler.generateEnvelope(MessageID.END_TURN, "");
+    };
 }

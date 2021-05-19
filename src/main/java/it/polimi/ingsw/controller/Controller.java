@@ -349,7 +349,7 @@ public class Controller implements Observer<MessageID> {
         update(MessageID.CARD_NOT_AVAILABLE);
     }
 
-    public void faithTrackUpdate(String s){
+    public void discardLeader(String s){
         game.getCurrPlayer().moveOnBoard(1);
         game.getCurrPlayer().getLeaderCards().removeIf(led -> led.getId() == Integer.parseInt(s));
     }

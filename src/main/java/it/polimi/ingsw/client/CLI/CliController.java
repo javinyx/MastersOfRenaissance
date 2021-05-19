@@ -161,6 +161,7 @@ public class CliController extends ClientController {
         cli.showMessage("Hello " + nickname + "! Registration has been completed successfully.");
     }
 
+
     // SETUP PHASE -----------------------------------------------------------------------------------------------------
 
     @Override
@@ -255,7 +256,7 @@ public class CliController extends ClientController {
 
             getPlayer().getLeaders().removeIf(led -> led.getId() == c);
 
-            messageToServerHandler.generateEnvelope(MessageID.PLAYERS_POSITION, String.valueOf(c));
+            messageToServerHandler.generateEnvelope(MessageID.DISCARD_LEADER, String.valueOf(c));
 
             System.out.println("You have earn a Faith Point");
             getPlayer().setCurrPos(getPlayer().getCurrPos()+1);
@@ -263,9 +264,6 @@ public class CliController extends ClientController {
         }
         else
             System.out.println("You don't have any leader to discard");
-
-
-
 
     }
 

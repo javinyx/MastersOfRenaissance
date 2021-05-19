@@ -221,7 +221,7 @@ public class Cli /*extends ViewInterface*/ {
             case 4 -> controller.viewOpponents();
             case 5 -> controller.activateLeader();
             case 6 -> controller.discardLeader();
-            case 7 -> controller.setWantPlay(false);
+            case 7 -> controller.passTurn();
         }
 
     }
@@ -241,7 +241,7 @@ public class Cli /*extends ViewInterface*/ {
             case 1 -> controller.viewOpponents();
             case 2 -> controller.activateLeader();
             case 3 -> controller.discardLeader();
-            case 4 -> controller.setWantPlay(false);
+            case 4 -> controller.passTurn();
         }
 
     }

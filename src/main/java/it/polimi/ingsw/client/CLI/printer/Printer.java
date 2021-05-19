@@ -105,6 +105,21 @@ public class Printer {
 
     }
 
+    public void printProductionCard(ConcreteProductionCard card){
+
+        String lines = "-".repeat(160);
+
+        System.out.println(lines);
+        System.out.println("Develop Card with ID: " + card.getId());
+        System.out.println("Victory Points: " + card.getVictoryPoints());
+        System.out.println("Cost: " + card.getCost().toString().substring(1, card.getCost().size()-1));
+        System.out.println("Level: " + card.getLevel());
+        System.out.println("Input resources: " + card.getRequiredResources().toString().substring(1, card.getRequiredResources().size()-1) );
+        System.out.println("Output resources:  " + card.getProduction().toString().substring(1, card.getProduction().size()-1 ));
+        System.out.println(lines);
+
+    }
+
 
 
 

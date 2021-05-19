@@ -7,6 +7,7 @@ import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.MarbleAbility;
+import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.player.Warehouse;
 
@@ -153,12 +154,7 @@ public class Cli /*extends ViewInterface*/ {
                 case 3 -> stor = Storage.WAREHOUSE_LARGE;
             }*/
 
-            switch(res){
-                case "stone" -> resources.add(Resource.STONE);
-                case "servant" -> resources.add(Resource.SERVANT);
-                case "coin" -> resources.add(Resource.COIN);
-                case "shield" -> resources.add(Resource.SHIELD);
-            }
+            resources.add(convertStringToResource(res));
         }
 
         return resources;
@@ -267,6 +263,105 @@ public class Cli /*extends ViewInterface*/ {
         return -1;
     }
 
+    public List<ConcreteProductionCard> selectProdCard(){
+
+        List<ConcreteProductionCard> card = new ArrayList<>();
+        List<ConcreteProductionCard> retCard = new ArrayList<>();
+        int c = -1;
+
+        for (int i = 0; i < 3; i++) {
+            if (controller.getPlayer().getProductionStacks().get(i) != null) {
+                card.add(controller.getPlayer().getProductionStacks().get(i).peekFirst());
+                OSPrinter.printProductionCard(card.get(i));
+            }
+        }
+
+        while (c != 0) {
+            do {
+                System.out.println("Select the Development Card you want to use, press 0 to exit selection");
+                c = scanner.nextInt();
+            } while (c != card.get(0).getId() && c != card.get(1).getId() && c != card.get(2).getId());
+
+            for(ConcreteProductionCard pc : card)
+                if(pc.getId()==c)
+                    retCard.add(pc);
+        }
+        return retCard;
+    }
+
+    public List<Resource> doBasicProd1() {
+
+        String c, res;
+        List<Resource> in = new ArrayList<>();
+
+        System.out.println("Do you want to use basic production?");
+        do {
+            System.out.println("(y)es or (n)o");
+            c = scanner.next().toLowerCase();
+        } while (!c.equals("y") && !c.equals("n"));
+
+        if (c.equals("y") && controller.getPlayer().getAllResources().size() > 1) {
+            System.out.println("Select the 2 resources you want to use");
+            for (int i = 0; i < 2; i++) {
+                do {
+                    System.out.print("Resource " + i + " :");
+                    res = scanner.next().toLowerCase();
+                } while (!res.equals("stone") && !res.equals("servant") && !res.equals("shield") && !res.equals("coin"));
+
+                in.add(convertStringToResource(res));
+            }
+
+            return in;
+        }
+
+        else
+            return null;
+    }
+
+    public Resource doBasicProd2(){
+
+        String res;
+
+        System.out.println("Select the resources you want to produce");
+        do {
+            System.out.print("Resource:");
+            res = scanner.next().toLowerCase();
+        } while (!res.equals("stone") && !res.equals("servant") && !res.equals("shield") && !res.equals("coin"));
+
+        return convertStringToResource(res);
+
+    }
+
+    public List<Resource> chooseLeaderOut(List<LeaderCard> leaderCards){
+        List<Resource> resRet = new ArrayList<>();
+        String res;
+
+        System.out.println("Witch type of resource do you want to produce with your leader? 'Stone', 'Servant', 'Shield' or 'Coin'.");
+        for (int i = 0; i < leaderCards.size(); i++) {
+            do {
+                System.out.print("Resource from leader number " + i + " :");
+                res = scanner.next().toLowerCase();
+            } while (!res.equals("stone") && !res.equals("servant") && !res.equals("shield") && !res.equals("coin"));
+
+            resRet.add(convertStringToResource(res));
+        }
+
+        return resRet;
+    }
+
+    public boolean wantPlayLeader(){
+        String c;
+
+        System.out.println("Do you want to play some leader?");
+        do {
+            System.out.println("(y)es or (n)o");
+            c = scanner.next().toLowerCase();
+        } while (!c.equals("y") && !c.equals("n"));
+
+        return c.equals("y");
+
+    }
+
     public String marketDimChoose() {
         String dim;
         do {
@@ -346,6 +441,15 @@ public class Cli /*extends ViewInterface*/ {
         System.out.println(str);
     }
 
+    private Resource convertStringToResource(String res){
+        return switch (res) {
+            case "stone" -> Resource.STONE;
+            case "servant" -> Resource.SERVANT;
+            case "coin" -> Resource.COIN;
+            case "shield" -> Resource.SHIELD;
+            default -> null;
+        };
+    }
 
 
 

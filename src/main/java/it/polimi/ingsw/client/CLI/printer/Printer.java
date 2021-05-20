@@ -90,7 +90,8 @@ public class Printer {
                            "4) View your opponents status\n" +
                            "5) Activate a Leader Card\n" +
                            "6) DiscardLeader Card\n" +
-                           "7) End turn");
+                           "7) View Develop Card that you can buy\n" +
+                           "8) End turn");
     }
 
     public void printLightTurnOptions(){
@@ -98,7 +99,8 @@ public class Printer {
                             "1) View your opponents status\n" +
                             "2) Activate a Leader Card\n" +
                             "3) DiscardLeader Card\n" +
-                            "4) End turn");
+                            "4) View Develop Card that you can buy\n" +
+                            "5) End turn");
     }
 
     public void printTable(){

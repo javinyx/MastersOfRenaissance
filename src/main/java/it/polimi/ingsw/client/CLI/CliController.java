@@ -10,6 +10,7 @@ import it.polimi.ingsw.messages.concreteMessages.BuyMarketMessage;
 import it.polimi.ingsw.messages.concreteMessages.ProduceMessage;
 import it.polimi.ingsw.messages.concreteMessages.StoreResourcesMessage;
 import it.polimi.ingsw.misc.BiElement;
+import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.cards.leader.BoostAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.MarbleAbility;
@@ -237,7 +238,13 @@ public class CliController extends ClientController {
 
     }
 
+    public void viewProductionCard(){
+
+    }
+
     public void buyProductionCard(){
+
+
 
     }
 
@@ -245,29 +252,40 @@ public class CliController extends ClientController {
 
         List<ConcreteProductionCard> prodCard;
         List<LeaderCard> leadCard = null;
+        List<BoostAbility> betterLeaderCard = null;
         List<Resource> basicIn, leadOut = null;
+        List<Resource> fromWare = new ArrayList<>();
+        List<Resource> fromLoot = new ArrayList<>();
+        List<Resource> fromLeader = new ArrayList<>();
         Resource basicOut = null;
         boolean basic = false;
+        ResourcesWallet resWallet;
+        String s;
 
         System.out.println("Select the Development Card you want to use");
-
         prodCard = cli.selectProdCard();
+
+        System.out.println("Select the resources you want to use for the Development Card");
+        cli.selectResWalletProd(prodCard, fromWare, fromLoot, fromLeader);
 
         if(cli.wantPlayLeader())
             for (LeaderCard led : getPlayer().getLeaders())
                 if (led instanceof BoostAbility && led.isActive()) {
                     System.out.println("Select the leader you want to produce");
                     leadCard = convertIdToLeaderCard(cli.chooseLeader(getPlayer().getLeaders()));
+                    betterLeaderCard = leadCard.stream().map(x -> (BoostAbility)x).collect(Collectors.toList());
                     leadOut = cli.chooseLeaderOut(leadCard);
+                    System.out.println("Select the resources you want to use for the Leader Card");
+                    cli.selectLeadWalletProd((BoostAbility)led, fromWare, fromLoot, fromLeader);
                 }
 
-        basicIn = cli.doBasicProd1();
+        basicIn = cli.doBasicProd1(fromWare, fromLoot, fromLeader);
         if(basicIn != null) {
             basic = true;
             basicOut = cli.doBasicProd2();
         }
 
-        ProduceMessage msg = new ProduceMessage(prodCard, null, leadCard, leadOut, basic, basicOut, basicIn);
+        ProduceMessage msg = new ProduceMessage(prodCard, null, betterLeaderCard, leadOut, basic, basicOut, basicIn);
 
         messageToServerHandler.generateEnvelope(MessageID.PRODUCE, gson.toJson(msg));
 
@@ -356,7 +374,7 @@ public class CliController extends ClientController {
 
     @Override
     public void activateLeader() {
-        List<LeaderCard> leaders = getLeaders();
+        List<LeaderCard> leaders = getPlayer().getLeaders();
         List<LeaderCard> activable = new ArrayList<>();
         for(LeaderCard leader : leaders){
             if(!leader.isActive()){

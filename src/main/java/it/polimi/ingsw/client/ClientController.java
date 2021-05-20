@@ -26,7 +26,6 @@ public abstract class ClientController {
     private ViewInterface view;
     private List<ConcreteProductionCard> allProductionCards;
     private List<LeaderCard> allLeaders = new ArrayList<>();
-    private List<LeaderCard> leaders = new ArrayList<>();
     private List<ConcreteProductionCard> availableProductionCard = new ArrayList<>();
     private List<NubPlayer> otherPlayers = new ArrayList<>();
     private List<NubPlayer> totalPlayers = new ArrayList<>();
@@ -138,9 +137,6 @@ public abstract class ClientController {
         allLeaders.addAll(gson.fromJson(reader, new TypeToken<List<BoostAbility>>(){}.getType()));
     }
 
-    public List<LeaderCard> getLeaders(){return leaders;}
-    public void addLeaders(LeaderCard leader){leaders.add(leader);}
-    public void removeLeader(LeaderCard leader){leaders.remove(leader);}
     public void addPlayers(NubPlayer player){this.otherPlayers.add(player);}
     public List<NubPlayer> getOtherPlayers(){return otherPlayers;}
 

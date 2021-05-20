@@ -5,6 +5,8 @@ import it.polimi.ingsw.client.CLI.printer.UnixPrinter;
 import it.polimi.ingsw.client.CLI.printer.WindowsPrinter;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
+import it.polimi.ingsw.model.ResourcesWallet;
+import it.polimi.ingsw.model.cards.leader.BoostAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.MarbleAbility;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
@@ -16,6 +18,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class Cli /*extends ViewInterface*/ {
@@ -204,7 +207,7 @@ public class Cli /*extends ViewInterface*/ {
         do{
             System.out.println("Select a number:");
             choice = scanner.nextInt();
-        } while (choice < 1 || choice > 7);
+        } while (choice < 1 || choice > 8);
 
         switch(choice){
             case 1 -> controller.buyFromMarket();
@@ -213,7 +216,8 @@ public class Cli /*extends ViewInterface*/ {
             case 4 -> controller.viewOpponents();
             case 5 -> controller.activateLeader();
             case 6 -> controller.discardLeader();
-            case 7 -> controller.passTurn();
+            case 7 -> controller.viewProductionCard();
+            case 8 -> controller.passTurn();
         }
 
     }
@@ -226,13 +230,14 @@ public class Cli /*extends ViewInterface*/ {
         do{
             System.out.println("Select a number:");
             choice = scanner.nextInt();
-        } while (choice < 1 || choice > 4);
+        } while (choice < 1 || choice > 5);
 
         switch(choice){
             case 1 -> controller.viewOpponents();
             case 2 -> controller.activateLeader();
             case 3 -> controller.discardLeader();
-            case 4 -> controller.passTurn();
+            case 4 -> controller.viewProductionCard();
+            case 5 -> controller.passTurn();
         }
 
     }
@@ -283,9 +288,70 @@ public class Cli /*extends ViewInterface*/ {
         return retCard;
     }
 
-    public List<Resource> doBasicProd1() {
+    public void selectResWalletProd(List<ConcreteProductionCard> prodCard, List<Resource> fromWare, List<Resource> fromLoot, List<Resource> fromLeader){
+        int c;
+
+        for (ConcreteProductionCard pc : prodCard) {
+            System.out.print("From where do you want to take the resource from the Development Card with ID number " + pc.getId() + "?\n (1) Warehouse\n (2) StrongBox\n (3) Leader Extra storage");
+
+            do {
+                System.out.print("Choice:");
+                c = scanner.nextInt();
+            } while (c != 1 && c != 2 && c != 3);
+
+            switch(c){
+                case 1 -> fromWare.addAll(selectProdRes(pc));
+                case 2 -> fromLoot.addAll(selectProdRes(pc));
+                case 3 -> fromLeader.addAll(selectProdRes(pc));
+            }
+        }
+    }
+
+    private List<Resource> selectProdRes(ConcreteProductionCard pc){
+        String res;
+        List<Resource> retRes = new ArrayList<>();
+        for (int i = 0; i < pc.getRequiredResources().size(); i++) {
+            do {
+                System.out.print("Resource " + i + ": ");
+                res = scanner.next().toLowerCase();
+            } while (!res.equals("stone") && !res.equals("servant") && !res.equals("shield") && !res.equals("coin") && !res.equals("0"));
+
+            retRes.add(convertStringToResource(res));
+        }
+        return retRes;
+    }
+
+    public void selectLeadWalletProd(BoostAbility card, List<Resource> fromWare, List<Resource> fromLoot, List<Resource> fromLeader){
+        int c;
+
+        System.out.print("From where do you want to take the resource for the Leader Card with ID number " + card.getId() + "?\n (1) Warehouse\n (2) StrongBox\n (3) Leader Extra storage");
+        do {
+            System.out.print("Choice:");
+            c = scanner.nextInt();
+        } while (c != 1 && c != 2 && c != 3);
+
+        switch(c){
+            case 1 -> fromWare.add(selectProdResLead(card));
+            case 2 -> fromLoot.add(selectProdResLead(card));
+            case 3 -> fromLeader.add(selectProdResLead(card));
+        }
+    }
+
+    private Resource selectProdResLead(BoostAbility lc){
+        String res;
+        do {
+            System.out.print("Resource: ");
+            res = scanner.next().toLowerCase();
+        } while (!res.equals("stone") && !res.equals("servant") && !res.equals("shield") && !res.equals("coin") && !res.equals("0"));
+
+        return (convertStringToResource(res));
+    }
+
+
+    public List<Resource> doBasicProd1(List<Resource> fromWare, List<Resource> fromLoot, List<Resource> fromLeader) {
 
         String c, res;
+        int c1;
         List<Resource> in = new ArrayList<>();
 
         System.out.println("Do you want to use basic production?");
@@ -297,12 +363,19 @@ public class Cli /*extends ViewInterface*/ {
         if (c.equals("y") && controller.getPlayer().getAllResources().size() > 1) {
             System.out.println("Select the 2 resources you want to use");
             for (int i = 0; i < 2; i++) {
-                do {
-                    System.out.print("Resource " + i + " :");
-                    res = scanner.next().toLowerCase();
-                } while (!res.equals("stone") && !res.equals("servant") && !res.equals("shield") && !res.equals("coin"));
 
-                in.add(convertStringToResource(res));
+                System.out.print("From where do you want to take the resource for theBasic Production?\n (1) Warehouse\n (2) StrongBox\n (3) Leader Extra storage");
+
+                do {
+                    System.out.print("Choice:");
+                    c1 = scanner.nextInt();
+                } while (c1 != 1 && c1 != 2 && c1 != 3);
+
+                switch(c1){
+                    case 1 -> fromWare.add(selectProdResBasic());
+                    case 2 -> fromLoot.add(selectProdResBasic());
+                    case 3 -> fromLeader.add(selectProdResBasic());
+                }
             }
 
             return in;
@@ -311,6 +384,16 @@ public class Cli /*extends ViewInterface*/ {
         else
             return null;
     }
+    private Resource selectProdResBasic(){
+        String res;
+            do {
+                System.out.print("Resource: ");
+                res = scanner.next().toLowerCase();
+            } while (!res.equals("stone") && !res.equals("servant") && !res.equals("shield") && !res.equals("coin") && !res.equals("0"));
+
+            return convertStringToResource(res);
+    }
+
 
     public Resource doBasicProd2(){
 

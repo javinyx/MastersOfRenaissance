@@ -12,13 +12,13 @@ import java.util.List;
 public class ProduceMessage extends SimpleMessage {
     private final List<ConcreteProductionCard> productionCards;
     private final ResourcesWallet resourcesWallet;
-    private final List<LeaderCard> leaderCards;
+    private final List<BoostAbility> leaderCards;
     private final List<Resource> leaderOutputs;
     private final boolean basicProduction;
     private final Resource basicOutput;
     private final List<Resource> basicIn;
 
-    public ProduceMessage(List<ConcreteProductionCard> productionCards, ResourcesWallet wallet, List<LeaderCard> leaderCards
+    public ProduceMessage(List<ConcreteProductionCard> productionCards, ResourcesWallet wallet, List<BoostAbility> leaderCards
             , List<Resource> leaderOutputs, boolean basicProduction, Resource basicOutput, List<Resource> basicIn){
         this.productionCards = productionCards;
         this.resourcesWallet = wallet;
@@ -37,7 +37,7 @@ public class ProduceMessage extends SimpleMessage {
         return resourcesWallet;
     }
 
-    public List<LeaderCard> getLeaderCards() {
+    public List<BoostAbility> getLeaderCards() {
         return leaderCards;
     }
 

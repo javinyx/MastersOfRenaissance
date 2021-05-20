@@ -22,6 +22,8 @@ import it.polimi.ingsw.model.player.ProPlayer;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static it.polimi.ingsw.messages.MessageID.LORENZO_POSITION;
+
 public class Controller implements Observer<MessageID> {
 
     //private int turnTime = 300; // max turn time in seconds
@@ -30,6 +32,8 @@ public class Controller implements Observer<MessageID> {
     private boolean gameOver;
     private int numPlayer;
     private boolean initializationPhase;
+    private List<LeaderCard> allLeaders = new ArrayList<>(); /*NIUBBI*/
+    private List<ConcreteProductionCard> allProductionCards = new ArrayList<>();
     private List<Observer<MessageEnvelope>> remoteViews;
     Gson gson = new Gson();
 
@@ -91,13 +95,11 @@ public class Controller implements Observer<MessageID> {
             turnNumber.add(new BiElement<>(p.getNickname(), p.getTurnID()));
 
 
-        for (ProPlayer p : ((MultiPlayerGame)game).getActivePlayers()) {
-
+        for (ProPlayer p : ((MultiPlayerGame) game).getActivePlayers()) {
             TurnNumberMessage msg = new TurnNumberMessage(turnNumber);
             envelope = new MessageEnvelope(MessageID.TURN_NUMBER, gson.toJson(msg, TurnNumberMessage.class));
-            remoteViews.get(p.getTurnID()-1).update(envelope);
-
-            int curr = p.getTurnID()-1;
+            int curr = p.getTurnID() - 1;
+            remoteViews.get(curr).update(envelope);
 
             //Leader choice
             envelope = new MessageEnvelope(MessageID.CHOOSE_LEADER_CARDS, String.valueOf(game.leaderDistribution()));
@@ -123,6 +125,22 @@ public class Controller implements Observer<MessageID> {
 
         //timer = new Timer(true);
         //timer.schedule(new TurnTimerTask(this, game.getCurrPlayer().getTurnType()),turnTime*1000);
+    }
+
+    public synchronized void chooseLeaderCards(String ids, String nick) {
+        /*List<Integer> leadersIds = convertStringToListInteger(ids);
+        List<LeaderCard> leaders = convertIdToLeaderCard(leadersIds);
+        List<ProPlayer> allP = new ArrayList<>();
+        ProPlayer pp;
+        if(game instanceof MultiPlayerGame){
+            allP = ((MultiPlayerGame)game).getPlayers();
+        }
+        for(ProPlayer p : allP){
+            if(p.getNickname().equals(nick)){
+                p.chooseLeaders(leaders);
+                return;
+            }
+        }*/
     }
 
     // END GAME INITIALIZATION -----------------------------------------------------------------------------------------
@@ -204,9 +222,9 @@ public class Controller implements Observer<MessageID> {
                 boughtCard = Optional.of(cards);
                 ResourcesWallet wallet = buyProd.getResourcesWallet();
                 BiElement<Resource, Storage> elem;
-                if(wallet.anyFromLootchestTray()){
-                    for(Resource r : wallet.getLootchestTray()){
-                        elem = new BiElement(r, Storage.LOOTCHEST);
+                if (wallet.anyFromLootchestTray()) {
+                    for (Resource r : wallet.getLootchestTray()) {
+                        elem = new BiElement<>(r, Storage.LOOTCHEST);
                         removeResources(elem);
                     }
                 }
@@ -301,9 +319,9 @@ public class Controller implements Observer<MessageID> {
                     elem = new BiElement<>(basicOut.get(), Storage.LOOTCHEST);
                     addResources(elem);
                 }
-                if(wallet.anyFromLootchestTray()){
-                    for(Resource r : wallet.getLootchestTray()){
-                        elem = new BiElement(r, Storage.LOOTCHEST);
+                if (wallet.anyFromLootchestTray()) {
+                    for (Resource r : wallet.getLootchestTray()) {
+                        elem = new BiElement<>(r, Storage.LOOTCHEST);
                         removeResources(elem);
                     }
                 }
@@ -569,9 +587,9 @@ public class Controller implements Observer<MessageID> {
             case STORE_RESOURCES -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
 
             case UPDATE -> {
-                if (initializationPhase) {
+                /*if (initializationPhase) {
                     remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getUpdate()));
-                } else {
+                } else {*/
                     /*WARNING : in order to generate correctly an UpdateMessage with generateUpdateMessage(), a CONFIRM_END_TURN must be
                     *  sent because it causes a generateEndTurnMessage() that updates the previousPlayer and the currentPlayer */
                     UpdateMessage msg = generateUpdateMessage();
@@ -580,7 +598,7 @@ public class Controller implements Observer<MessageID> {
                     for(Observer<MessageEnvelope> obs : remoteViews){
                         obs.updateFrom(envelope, previousPlayer.getNickname());
                     }
-                }
+               // }
             }
 
             case LORENZO_POSITION -> {
@@ -613,6 +631,34 @@ public class Controller implements Observer<MessageID> {
     public void updateFrom(MessageID messageID, String nickname){
         //nothing
     }
+
+    protected List<Integer> convertStringToListInteger(String s) {
+        return (new ArrayList<>(Arrays.asList(s.substring(1, s.length() - 1).split(", ")))).stream()
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+    }
+
+    protected List<LeaderCard> convertIdToLeaderCard(List<Integer> ids) {
+
+        List<LeaderCard> leaders = (allLeaders.stream().filter(x -> ids.contains(x.getId()))
+                .collect(Collectors.toList()));
+
+        return leaders;
+
+    }
+
+    protected List<ConcreteProductionCard> convertIdToProductionCard(List<Integer> ids) {
+        return allProductionCards.stream().filter(x -> ids.contains(x.getId())).collect(Collectors.toList());
+    }
+
+    protected ConcreteProductionCard convertIdToProductionCard(int id) {
+        for (ConcreteProductionCard pc : allProductionCards) {
+            if (pc.getId() == id)
+                return pc;
+        }
+        return null;
+    }
+
 
     // END ENVELOPE CREATOR --------------------------------------------------------------------------------------------
 
@@ -750,6 +796,8 @@ public class Controller implements Observer<MessageID> {
         UpdateMessage msg = new UpdateMessage(turnId, player.getCurrentPosition(), getCurrPlayerTurnID(),
                 game.getMarket().getMarketBoard(), game.getMarket().getExtraMarble(), game.getBuyableProductionID(),
                 prodCards, leadersIds, addedResources, removedResources);
+
+        //TODO: ha creato il messaggio di update ma come glielo mandiamo?
     }
 
     public void rejoin(SinglePlayerGame game, String nickname){

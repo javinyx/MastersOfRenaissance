@@ -55,6 +55,7 @@ public class RemoteView extends View {
 
                 // GAME PHASES
                 case END_TURN -> controller.endTurn();
+                case CHOOSE_LEADER_CARDS -> controller.chooseLeaderCards(envelope.getPayload(), getNickname());
 
                 case BUY_FROM_MARKET -> controller.buyFromMarAction(gson.fromJson(envelope.getPayload(), BuyMarketMessage.class));
 
@@ -71,6 +72,7 @@ public class RemoteView extends View {
 
                 //PING PONG
                 case PONG -> clientConnection.setStillConnected(true);
+                default -> System.out.println("why??");
             }
         /*}
 

@@ -31,7 +31,7 @@ public abstract class ClientController {
     private List<NubPlayer> otherPlayers = new ArrayList<>();
     private List<NubPlayer> totalPlayers = new ArrayList<>();
     private List<String> playersNames;
-    private NubPlayer player;
+    protected NubPlayer player;
     private NubPlayer currPlayer;
     private Market market;
     private boolean active = true;
@@ -44,6 +44,8 @@ public abstract class ClientController {
     private boolean waitingServerUpdate = false;
     private boolean registrationPhase = true;
     private boolean gameOver = false;
+
+    protected final Object currPlayerChange = new Object();
 
     protected boolean normalTurn;
 
@@ -236,10 +238,16 @@ public abstract class ClientController {
 
     public abstract void updateMarket();
     public abstract void updateAvailableProductionCards();
-    public abstract void updateOtherPlayer(NubPlayer pp);
+
+    /**Show other players what the last player has done in his/her turn once it has been set on the corresponding
+     * {@link NubPlayer} object.
+     * @param player the player who played last turn*/
+    public abstract void updateOtherPlayer(NubPlayer player);
+
+    /**Move Lorenzo on the faith track*/
     public abstract void moveLorenzo(int currentPosition);
 
-    public void updateAction(UpdateMessage msg){
+    public synchronized void updateAction(UpdateMessage msg){
         if(market==null){
             market = new Market(msg.getMarketBoard(), msg.getExtraMarble());
         }else {
@@ -250,15 +258,19 @@ public abstract class ClientController {
         if(msg.getAvailableProductionCards() != null || !msg.getAvailableProductionCards().isEmpty())
             availableProductionCard = convertIdToProductionCard(msg.getAvailableProductionCards());
 
+
         if(!isRegistrationPhase()) {
             ConcreteProductionCard boughtProductionCard = null;
             if(msg.getProductionCardId() != null)
                 boughtProductionCard = convertIdToProductionCard(msg.getProductionCardId().getFirstValue());
+
             for (NubPlayer pp : otherPlayers) {
+                //update last player state for this client
                 if (pp.getTurnNumber() == msg.getPlayerId()) {
                     pp.setCurrPos(msg.getPlayerPos());
                     if (boughtProductionCard != null)
                         pp.addProductionCard(boughtProductionCard, msg.getProductionCardId().getSecondValue() - 1);
+
                     if (msg.getLeadersId() != null || !msg.getLeadersId().isEmpty())
                         pp.setLeaders(convertIdToLeaderCard(msg.getLeadersId()));
 
@@ -277,22 +289,27 @@ public abstract class ClientController {
                 }
             }
 
+        }else{
+            //update message iniziale
         }
         updateMarket();
         updateAvailableProductionCards();
 
-        if (isRegistrationPhase())
-            startGame();
-        else{
-            currPlayer = totalPlayers.get(msg.getNextPlayerId()-1);
-
-            if (currPlayer.getTurnNumber() == player.getTurnNumber())
-                player.setMyTurn(true);
-
-            showCurrentTurn(currPlayer.getNickname());
+        for(NubPlayer p : totalPlayers){
+            if(p.getTurnNumber() == msg.getNextPlayerId()){
+                currPlayer = p;
+                synchronized (currPlayerChange) {
+                    currPlayerChange.notifyAll();
+                }
+            }
         }
 
+        startGame();
 
+        if (registrationPhase) {
+            registrationPhase = false;
+            //startGame();
+        }
     }
 
     public abstract void showCurrentTurn(String s);
@@ -311,22 +328,22 @@ public abstract class ClientController {
         startTurnPhase();
     }
 
-    public void endTurn(EndTurnMessage msg){
+    public synchronized void endTurn(EndTurnMessage msg){
 
         for (BiElement<Resource, Storage> elem : storeRes)
-            getPlayer().addResources(elem, 1);
+            player.addResources(elem, 1);
         storeRes.clear();
 
         this.currPlayer = totalPlayers.get(msg.getNextPlayerId()-1);
         this.availableProductionCard = convertIdToProductionCard(msg.getBuyableProdCardsIds());
 
-        if (getPlayer().getTurnNumber() == currPlayer.getTurnNumber()) {
+
+        if (player.getTurnNumber() == currPlayer.getTurnNumber()) {
             getPlayer().setMyTurn(true);
             normalTurn = true;
             startTurnPhase();
-        }
-        else {
-            for (NubPlayer p : getTotalPlayers()) {
+        } else {
+            for (NubPlayer p : totalPlayers) {
                 if (p.getTurnNumber() == 1)
                     showCurrentTurn(p.getNickname());
             }
@@ -339,80 +356,6 @@ public abstract class ClientController {
     public abstract void buyFromMarket();
     public abstract void activateLeader();
 
-    /*public void buyFromMarket(){
-        String dim;
-        char dimChar;
-        int index, lowerBound = 1, upperBound;
-        do {
-            System.out.println("Choose a row or a column from the market by typing R or C");
-            dim = scanner.nextLine();
-            dim = dim.toLowerCase();
-        }while(!dim.equals("c") && !dim.equals("r"));
-        if(dim.equals("c")){
-            upperBound = 3;
-            dimChar = 'c';
-        }else{
-            upperBound = 4;
-            dimChar = 'r';
-        }
-        do{
-            System.out.println("Choose the index - must be between " + lowerBound + " and " + upperBound);
-            index = scanner.nextInt();
-        }while(index<lowerBound || index>upperBound);
-
-        //if players has marble leader active, ask if he/she wants to use it and for how many times
-        List<LeaderCard> leaders = controller.getLeaders();
-        List<MarbleAbility> marbleAbilities = new ArrayList<>();
-        int tot = 0;
-        if(!leaders.isEmpty()){
-            for(LeaderCard card : leaders){
-                if(card.isActive() && card instanceof MarbleAbility){
-                    tot++;
-                    marbleAbilities.add((MarbleAbility) card);
-                }
-            }
-        }
-
-        List<BiElement<MarbleAbility, Integer>> leaderUsage = new ArrayList<>();
-        if(tot>0){
-            System.out.println("You have " + tot + " MarbleAbility Leaders that can be used now.\n" +
-                    "For each card, type how many marble exchanges you want to perform with them. 0 if no exchange.");
-            for(MarbleAbility card : marbleAbilities){
-                System.out.println("How many for this card?\n" + card);
-                int j = scanner.nextInt();
-                if(j>0){
-                    leaderUsage.add(new BiElement<>(card, j));
-                }
-            }
-        }
-
-        BuyMarketCommand buyMarketCommand = new BuyMarketCommand(controller);
-        BuyMarketMessage message = new BuyMarketMessage(dimChar, index, leaderUsage);
-        buyMarketCommand.generateEnvelope(message);
-    }
-
-    public void activateLeader() {
-        int leaderId;
-        List<LeaderCard> leaders = contrgetLeaders();
-        List<LeaderCard> activable = new ArrayList<>();
-        for(LeaderCard leader : leaders){
-            if(!leader.isActive()){
-                activable.add(leader);
-            }
-        }
-        if(leaders.size()==0){
-            System.out.println("You don't have any leader.");
-            return;
-        }
-        if(activable.size()==0){
-            System.out.println("All your leaders are already active.");
-            return;
-        }
-        System.out.println("You can activate " + activable.size() + " leaders. Which one do you want to activate?" +
-                "Insert its id.\n" + activable);
-        leaderId = scanner.nextInt();
-        MessageHandler.generateEnvelope(MessageID.ACTIVATE_LEADER, gson.toJson(leaderId, Integer.class));
-    }*/
 
     //---------------------------CONVERTERS---------------------------------
     protected List<ConcreteProductionCard> convertIdToProductionCard(List<Integer> ids){

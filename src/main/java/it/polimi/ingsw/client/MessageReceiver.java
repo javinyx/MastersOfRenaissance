@@ -40,7 +40,11 @@ public class MessageReceiver implements Runnable{
                 MessageEnvelope envelope = gson.fromJson(inputObject, MessageEnvelope.class);
                 if(envelope.getMessageID().equals(MessageID.PING)){
                     synchronized (pongLock){
-                        pongLock.notifyAll();
+                        try {
+                            pongLock.notifyAll();
+                        }catch(Exception e){
+                            System.out.println("qui");
+                        }
                     }
                 }else {
                     controller.setWaitingServerUpdate(false);
@@ -62,6 +66,7 @@ public class MessageReceiver implements Runnable{
         System.out.println(envelope.getMessageID());
 
         switch(envelope.getMessageID()){
+            case ACK -> controller.continueTurn(Boolean.parseBoolean(envelope.getPayload()));
             case ASK_NICK -> controller.askNickname();
             case PLAYER_NUM -> controller.askNumberOfPlayers();
             case CONFIRM_REGISTRATION -> controller.confirmRegistration(envelope.getPayload());

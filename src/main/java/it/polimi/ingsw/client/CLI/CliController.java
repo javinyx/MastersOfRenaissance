@@ -194,24 +194,34 @@ public class CliController extends ClientController {
     }
 
     @Override
-    public void startGame() {
-        cli.showMessage("You are ready to play, wait until it's your turn");
-        setRegistrationPhase(false);
-
-        if (getPlayer().getTurnNumber() == 1) {
-            getPlayer().setMyTurn(true);
-            setCurrPlayer(getPlayer());
-            normalTurn = true;
-            startTurnPhase();
+    public synchronized void startGame() {
+        if(isRegistrationPhase()) {
+            cli.showMessage("You are ready to play, wait until it's your turn");
         }
-        else
-            for (NubPlayer p : getTotalPlayers()) {
-                if(p.getTurnNumber() == 1) {
-                    setCurrPlayer(p);
-                    showCurrentTurn(p.getNickname());
+
+        /*while(!getCurrPlayer().equals(player)){
+            player.setMyTurn(false);
+            showCurrentTurn(getCurrPlayer().getNickname());
+            //qui si potrebbe potenzialmente inserire un metodo che stampi a video alcune opzione mentri si aspetta
+            //ma potrebbe essere un po' complicato
+            synchronized (currPlayerChange) {
+                try {
+                    currPlayerChange.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
-
+        }*/
+        //se siamo qui allora è il mio turno e posso ritornare nel client controller
+        if(getCurrPlayer().equals(player)) {
+            player.setMyTurn(true);
+            setCurrPlayer(player);
+            normalTurn = true;
+            startTurnPhase();
+        }else{
+            player.setMyTurn(false);
+            showCurrentTurn(getCurrPlayer().getNickname());
+        }
     }
 
     // GAME PHASES -----------------------------------------------------------------------------------------------------

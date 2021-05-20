@@ -24,7 +24,7 @@ public class MessageToServerHandler {
         sendMessageToServer(gson.toJson(envelope));
     }
 
-    public void sendMessageToServer(String message){
+    public synchronized void sendMessageToServer(String message){
         try{
             controller.setWaitingServerUpdate(true);
             toServer.println(message);

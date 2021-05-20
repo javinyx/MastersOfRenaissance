@@ -68,7 +68,8 @@ public class MultiPlayerGame extends Game implements ModelObserver {
                 null, null, null, null);
 
         getCurrPlayer().setUpdate(msg);
-        controller.update(MessageID.UPDATE);
+        //controller.update(MessageID.UPDATE);
+
     }
 
     public List<ProPlayer> getPlayers() {

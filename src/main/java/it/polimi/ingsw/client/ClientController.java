@@ -244,6 +244,10 @@ public abstract class ClientController {
     public abstract void moveLorenzo(int currentPosition);
 
     public synchronized void updateAction(UpdateMessage msg){
+
+        System.out.println(msg.getPlayerId());
+        System.out.println(msg.getNextPlayerId());
+
         if(market==null){
             market = new Market(msg.getMarketBoard(), msg.getExtraMarble());
         }else {

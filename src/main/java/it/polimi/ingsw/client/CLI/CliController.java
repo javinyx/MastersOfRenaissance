@@ -32,8 +32,6 @@ public class CliController extends ClientController {
     private final Cli cli;
     private Gson gson = new Gson();
 
-
-
     public CliController() {
         this.cli = new Cli(this);
     }
@@ -100,7 +98,7 @@ public class CliController extends ClientController {
         if(!isActive())
             return;
         if(input.equals("/ff") || input.equals("/surrender")){
-            /*if (game.getPlayersInGame().size()==0){
+            /*if(game.getPlayersInGame().size()==0){
                 cli.showMessage("It's too early to surrender!");
                 return;
             }*/

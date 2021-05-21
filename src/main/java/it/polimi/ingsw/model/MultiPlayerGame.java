@@ -67,7 +67,7 @@ public class MultiPlayerGame extends Game implements ModelObserver {
                 getMarket().getMarketBoard(), getMarket().getExtraMarble(), getBuyableProductionID(),
                 null, null, null, null);
 
-        getCurrPlayer().setUpdate(msg);
+        p.setUpdate(msg);
         //controller.update(MessageID.UPDATE);
 
     }

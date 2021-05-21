@@ -123,6 +123,7 @@ public class Controller implements Observer<MessageID> {
 
         }
         for (ProPlayer p : ((MultiPlayerGame) game).getActivePlayers()){
+            System.out.println("WEE START PIZZA?");
             game.start(p);
             envelope = new MessageEnvelope(MessageID.UPDATE, p.getUpdate());
             remoteViews.get(p.getTurnID()-1).update(envelope);

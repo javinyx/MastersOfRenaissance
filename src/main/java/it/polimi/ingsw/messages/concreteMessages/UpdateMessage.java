@@ -61,14 +61,16 @@ public class UpdateMessage extends SimpleMessage {
     /**@return the production card's id bought (param T in {@link it.polimi.ingsw.misc.BiElement}) and the
      * stack in where it's been put (param V in {@link it.polimi.ingsw.misc.BiElement})*/
     public BiElement<Integer, Integer> getProductionCardId() {
-        return productionCardsId.get(0);
+        if(productionCardsId != null)
+            return productionCardsId.get(0);
+        return null;
     }
 
     /**For rejoining purpose: ask Coco*/
     public List<BiElement<Integer, Integer>> getAllProductionCardsIds(){return productionCardsId;}
 
     public List<Integer> getLeadersId() {
-        return leadersId.stream().map(x -> x.getFirstValue()).collect(Collectors.toList());
+        return leadersId.stream().map(BiElement::getFirstValue).collect(Collectors.toList());
     }
 
     /**For rejoining purpose: ask Coco*/

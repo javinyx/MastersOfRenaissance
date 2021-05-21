@@ -26,6 +26,15 @@ import java.util.stream.Collectors;
 
 
 public class ProPlayer extends Player{
+    public boolean isInitializationPhase() {
+        return initializationPhase;
+    }
+
+    public void setInitializationPhase(boolean initializationPhase) {
+        this.initializationPhase = initializationPhase;
+    }
+    private boolean initializationPhase = true;
+
     protected Warehouse warehouse;
     protected LootChest lootChest;
     protected Deque<ConcreteProductionCard> prodCards1, prodCards2, prodCards3;

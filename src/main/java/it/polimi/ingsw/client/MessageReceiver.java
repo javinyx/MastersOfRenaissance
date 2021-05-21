@@ -57,6 +57,7 @@ public class MessageReceiver implements Runnable{
         } catch (Exception e){
             controller.connectionError();
         }
+
     }
 
 
@@ -105,7 +106,7 @@ public class MessageReceiver implements Runnable{
             case STORE_RESOURCES -> controller.chooseStorageAfterMarketAction(envelope.getPayload());
 
             case UPDATE -> controller.updateAction(gson.fromJson(envelope.getPayload(), UpdateMessage.class));
-            case CONFIRM_END_TURN -> {controller.endTurn(gson.fromJson(envelope.getPayload(), EndTurnMessage.class));}
+            case CONFIRM_END_TURN -> controller.endTurn(gson.fromJson(envelope.getPayload(), EndTurnMessage.class));
 
             case LORENZO_POSITION -> controller.moveLorenzo(Integer.parseInt(envelope.getPayload()));
             case PLAYERS_POSITION -> {}

@@ -274,14 +274,16 @@ public abstract class ClientController {
                     if (msg.getLeadersId() != null || !msg.getLeadersId().isEmpty())
                         pp.setLeaders(convertIdToLeaderCard(msg.getLeadersId()));
 
-                    Map<BiElement<Resource, Storage>, Integer> resources = msg.getAddedResources();
-                    if(resources.size()>0) {
-                        resources.forEach(pp::addResources);
-                    }
+                    if (msg.getAddedResources() != null) {
+                        Map<BiElement<Resource, Storage>, Integer> resources = msg.getAddedResources();
+                        if (resources.size() > 0) {
+                            resources.forEach(pp::addResources);
+                        }
 
-                    resources = msg.getRemovedResources();
-                    if(resources.size()>0){
-                        resources.forEach(pp::removeResources);
+                        resources = msg.getRemovedResources();
+                        if (resources.size() > 0) {
+                            resources.forEach(pp::removeResources);
+                        }
                     }
 
                     updateOtherPlayer(pp);
@@ -296,12 +298,8 @@ public abstract class ClientController {
         updateAvailableProductionCards();
 
         for(NubPlayer p : totalPlayers){
-            if(p.getTurnNumber() == msg.getNextPlayerId()){
+            if(p.getTurnNumber() == msg.getNextPlayerId())
                 currPlayer = p;
-                synchronized (currPlayerChange) {
-                    currPlayerChange.notifyAll();
-                }
-            }
         }
 
         startGame();
@@ -323,9 +321,11 @@ public abstract class ClientController {
     }
 
     public void continueTurn(Boolean basicActionDone){
-        System.out.println(basicActionDone);
-        normalTurn = !basicActionDone;
-        startTurnPhase();
+        if (!registrationPhase){
+            System.out.println(basicActionDone);
+            normalTurn = !basicActionDone;
+            startTurnPhase();
+        }
     }
 
     public synchronized void endTurn(EndTurnMessage msg){
@@ -333,6 +333,8 @@ public abstract class ClientController {
         for (BiElement<Resource, Storage> elem : storeRes)
             player.addResources(elem, 1);
         storeRes.clear();
+
+        player.setMyTurn(false);
 
         this.currPlayer = totalPlayers.get(msg.getNextPlayerId()-1);
         this.availableProductionCard = convertIdToProductionCard(msg.getBuyableProdCardsIds());

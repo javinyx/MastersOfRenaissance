@@ -166,7 +166,7 @@ public class CliController extends ClientController {
 
     @Override
     public void chooseLeadersAction(){
-        cli.showMessage("Choose 2 leaders among these:\n");
+        cli.showMessage("Choose 2 leaders among these:");
         List<Integer> lId = cli.chooseLeader(getPlayer().getLeaders());
 
         getPlayer().setLeaders(convertIdToLeaderCard(lId));
@@ -416,7 +416,7 @@ public class CliController extends ClientController {
 
         storeRes = cli.storeResources(res);
 
-        StoreResourcesMessage msg = new StoreResourcesMessage(storeRes);
+        StoreResourcesMessage msg = new StoreResourcesMessage(storeRes, getPlayer().getTurnNumber());
 
         messageToServerHandler.generateEnvelope(MessageID.STORE_RESOURCES, gson.toJson(msg, StoreResourcesMessage.class));
 

@@ -11,13 +11,15 @@ import java.util.List;
 /**Players inform the server of how they wish to place the resources into the different types of storage.*/
 public class StoreResourcesMessage extends SimpleMessage {
     List<BiElement<Resource, Storage>> placements;
+    int turnID;
 
     public StoreResourcesMessage(){
         placements = new ArrayList<>();
     }
 
-    public StoreResourcesMessage(List<BiElement<Resource, Storage>> placements){
+    public StoreResourcesMessage(List<BiElement<Resource, Storage>> placements, int turnID){
         this.placements = placements;
+        this.turnID = turnID;
     }
 
 
@@ -48,4 +50,11 @@ public class StoreResourcesMessage extends SimpleMessage {
         return placements.isEmpty();
     }
 
+    public int getTurnID() {
+        return turnID;
+    }
+
+    public void setTurnID(int turnID) {
+        this.turnID = turnID;
+    }
 }

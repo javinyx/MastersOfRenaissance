@@ -418,7 +418,7 @@ public class CliController extends ClientController {
 
         storeRes = cli.storeResources(res);
 
-        StoreResourcesMessage msg = new StoreResourcesMessage();
+        StoreResourcesMessage msg = new StoreResourcesMessage(storeRes);
 
         messageToServerHandler.generateEnvelope(MessageID.STORE_RESOURCES, gson.toJson(msg, StoreResourcesMessage.class));
 

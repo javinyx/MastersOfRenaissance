@@ -80,6 +80,9 @@ public class Controller implements Observer<MessageID> {
         remoteViews.get(0).update(envelope);
 
         game.start(game.getCurrPlayer());
+        envelope = new MessageEnvelope(MessageID.UPDATE, game.getCurrPlayer().getUpdate());
+        remoteViews.get(game.getCurrPlayer().getTurnID()-1).update(envelope);
+
         initializationPhase = false;
     }
 

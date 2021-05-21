@@ -288,12 +288,12 @@ public class ProPlayer extends Player{
         Market market = game.getMarket();
         index--;
         if(dim == 'c'){
-            if(index<1 || index>4){
+            if(index<0 || index>3){
                 throw new IndexOutOfBoundsException("Index must be between 1 and 4, but it's " + index);
             }
             resAcquired = market.chooseColumn(index);
         }else if(dim == 'r'){
-            if(index<1 || index>3){
+            if(index<0 || index>2){
                 throw new IndexOutOfBoundsException("Index must be between 1 and 3, but it's " + index);
             }
             resAcquired = market.chooseRow(index);

@@ -61,7 +61,7 @@ public class SinglePlayerGame extends Game implements ModelObserver {
 
         getCurrPlayer().setUpdate(msg);
 
-        controller.update(MessageID.UPDATE);
+        //controller.update(MessageID.UPDATE);
     }
     /**
      * Create the player

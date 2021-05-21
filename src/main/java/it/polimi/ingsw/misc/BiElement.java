@@ -16,4 +16,9 @@ public class BiElement<T, V> {
     public V getSecondValue(){
         return v;
     }
+
+    @Override
+    public String toString() {
+        return "[ " + t + ", " + v + " ]";
+    }
 }

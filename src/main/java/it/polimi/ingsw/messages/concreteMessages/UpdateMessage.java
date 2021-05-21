@@ -1,10 +1,15 @@
 package it.polimi.ingsw.messages.concreteMessages;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import it.polimi.ingsw.messages.SimpleMessage;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.market.Resource;
 
+import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -18,6 +23,10 @@ public class UpdateMessage extends SimpleMessage {
     private final List<BiElement<Integer,Integer>> productionCardsId;
     private final List<BiElement<Integer, Boolean>> leadersId;
     private final Map<BiElement<Resource, Storage>, Integer> addedResources, removedResources;
+
+    private String serializedAddedResources, serializedRemovedResources;
+    private Type type;
+
 
     /**@param playerId is the player that has caused changes in the model
      * @param playerPos how far the player that caused this update message is gone on the faith track
@@ -84,6 +93,16 @@ public class UpdateMessage extends SimpleMessage {
     /**@return all the resources removed from the player's storages*/
     public Map<BiElement<Resource, Storage>,Integer> getRemovedResources() {
         return removedResources;
+    }
+
+    public void setSerializedResources(){
+        GsonBuilder builder = new GsonBuilder();
+
+        Gson gson = builder.enableComplexMapKeySerialization().setPrettyPrinting().create();
+        Type type = new TypeToken<HashMap<BiElement<Resource, Storage>, Integer>>(){}.getType();
+
+        serializedAddedResources = gson.toJson(addedResources, type);
+        serializedRemovedResources = gson.toJson(removedResources, type);
     }
 
 }

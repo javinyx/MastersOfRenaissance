@@ -583,7 +583,9 @@ public class Controller implements Observer<MessageID> {
 
         UpdateMessage msg = new UpdateMessage(previousPlayer.getTurnID(), previousPlayer.getCurrentPosition(), game.getCurrPlayer().getTurnID(),
                 game.getMarket().getMarketBoard(), game.getMarket().getExtraMarble(), game.getBuyableProductionID(),
-                boughtCard.orElse(null), thisPlayerActiveLeaders, null, null);
+                boughtCard.orElse(null), thisPlayerActiveLeaders, addedResources, removedResources);
+
+        msg.setSerializedResources();
 
         return msg;
     }

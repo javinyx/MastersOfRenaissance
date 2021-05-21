@@ -78,7 +78,7 @@ public class MessageReceiver implements Runnable{
             case TOO_MANY_PLAYERS -> controller.displayMessage(envelope.getPayload());
             case CHOOSE_RESOURCE -> controller.chooseResourceAction();
 
-            case UPDATE -> controller.updateAction(gson.fromJson(envelope.getPayload(), UpdateMessage.class));
+            case UPDATE -> controller.updateAction(envelope.deserializeUpdateMessage());
             case CONFIRM_END_TURN -> controller.endTurn(gson.fromJson(envelope.getPayload(), EndTurnMessage.class));
 
             default -> System.err.println("MessageID not recognised Registration");
@@ -105,7 +105,7 @@ public class MessageReceiver implements Runnable{
             case CHOOSE_LEADER_CARDS -> controller.chooseLeadersAction();
             case STORE_RESOURCES -> controller.chooseStorageAfterMarketAction(envelope.getPayload());
 
-            case UPDATE -> controller.updateAction(gson.fromJson(envelope.getPayload(), UpdateMessage.class));
+            case UPDATE -> controller.updateAction(envelope.deserializeUpdateMessage());
             case CONFIRM_END_TURN -> controller.endTurn(gson.fromJson(envelope.getPayload(), EndTurnMessage.class));
 
             case LORENZO_POSITION -> controller.moveLorenzo(Integer.parseInt(envelope.getPayload()));

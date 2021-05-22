@@ -16,10 +16,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Cli /*extends ViewInterface*/ {
     private final Scanner scanner = new Scanner(System.in);
@@ -292,7 +290,7 @@ public class Cli /*extends ViewInterface*/ {
         int c;
 
         for (ConcreteProductionCard pc : prodCard) {
-            System.out.print("From where do you want to take the resource from the Development Card with ID number " + pc.getId() + "?\n (1) Warehouse\n (2) StrongBox\n (3) Leader Extra storage");
+            System.out.print("From where do you want to take the resource from the Development Card with ID number " + pc.getId() + "?\n (1) Warehouse\n (2) StrongBox\n (3) Leader Extra storage\n");
 
             do {
                 System.out.print("Choice:");
@@ -508,9 +506,40 @@ public class Cli /*extends ViewInterface*/ {
     }
 
 
+    public void showProductionCardInTheStore(List<ConcreteProductionCard> prodCard){
+        System.out.println("You can buy one of these card");
+        for (ConcreteProductionCard p :prodCard)
+            OSPrinter.printProductionCard(p);
+        OSPrinter.printProductionStoreGrid(prodCard);
+    }
 
+    public int chooseProdCard(List<ConcreteProductionCard> prodCard){
 
+        int c = 0;
+        boolean lock = true;
 
+        System.out.println("Choose the card you want to buy by typing its ID");
+        while(lock) {
+            System.out.print("ID: ");
+            c = scanner.nextInt();
+
+            for (int i = 0; i < prodCard.size(); i++) {
+                if (prodCard.get(i).getId() == c)
+                    lock = false;
+                break;
+            }
+        }
+        return c;
+    }
+
+    public int chooseProdStack(){
+        int c = 0;
+        do {
+            System.out.print("Choose the stack where you want to put the Development Card: 1, 2 or 3:");
+            c = scanner.nextInt();
+        } while (c != 1 && c != 2 && c != 3);
+        return c;
+    }
 
     //--------------------------------------------------------------------------------------------------------------------
 

@@ -12,6 +12,7 @@ import it.polimi.ingsw.messages.concreteMessages.StoreResourcesMessage;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.cards.leader.BoostAbility;
+import it.polimi.ingsw.model.cards.leader.DiscountAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.MarbleAbility;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
@@ -242,6 +243,28 @@ public class CliController extends ClientController {
 
     public void buyProductionCard(){
 
+        int prodId, stack;
+        List<Integer> leadCard;
+        List<Resource> fromWare = new ArrayList<>();
+        List<Resource> fromLoot = new ArrayList<>();
+        List<Resource> fromLeader = new ArrayList<>();
+
+        cli.showProductionCardInTheStore(availableProductionCard);
+        prodId = cli.chooseProdCard(availableProductionCard);
+        stack = cli.chooseProdStack();
+
+        if(cli.wantPlayLeader()) {
+            for (LeaderCard led : getPlayer().getLeaders())
+                if (led instanceof DiscountAbility && led.isActive()) {
+                    System.out.println("Select the leader you want to get the discount");
+                    leadCard = cli.chooseLeader(getPlayer().getLeaders());
+                }
+        }
+
+        System.out.println("Select the resources you want to use for the Development Card");
+        List<ConcreteProductionCard> prod = new ArrayList<>();
+        prod.add(convertIdToProductionCard(prodId));
+        cli.selectResWalletProd(prod, fromWare, fromLoot, fromLeader);
 
 
     }
@@ -266,16 +289,17 @@ public class CliController extends ClientController {
         System.out.println("Select the resources you want to use for the Development Card");
         cli.selectResWalletProd(prodCard, fromWare, fromLoot, fromLeader);
 
-        if(cli.wantPlayLeader())
+        if(cli.wantPlayLeader()) {
             for (LeaderCard led : getPlayer().getLeaders())
                 if (led instanceof BoostAbility && led.isActive()) {
                     System.out.println("Select the leader you want to produce");
                     leadCard = convertIdToLeaderCard(cli.chooseLeader(getPlayer().getLeaders()));
-                    betterLeaderCard = leadCard.stream().map(x -> (BoostAbility)x).collect(Collectors.toList());
+                    betterLeaderCard = leadCard.stream().map(x -> (BoostAbility) x).collect(Collectors.toList());
                     leadOut = cli.chooseLeaderOut(leadCard);
                     System.out.println("Select the resources you want to use for the Leader Card");
-                    cli.selectLeadWalletProd((BoostAbility)led, fromWare, fromLoot, fromLeader);
+                    cli.selectLeadWalletProd((BoostAbility) led, fromWare, fromLoot, fromLeader);
                 }
+        }
 
         basicIn = cli.doBasicProd1(fromWare, fromLoot, fromLeader);
         if(basicIn != null) {

@@ -26,7 +26,7 @@ public abstract class ClientController {
     private ViewInterface view;
     private List<ConcreteProductionCard> allProductionCards;
     private List<LeaderCard> allLeaders = new ArrayList<>();
-    private List<ConcreteProductionCard> availableProductionCard = new ArrayList<>();
+    protected List<ConcreteProductionCard> availableProductionCard = new ArrayList<>();
     private List<NubPlayer> otherPlayers = new ArrayList<>();
     private List<NubPlayer> totalPlayers = new ArrayList<>();
     private List<String> playersNames;
@@ -274,18 +274,19 @@ public abstract class ClientController {
                     if (msg.getLeadersId() != null || !msg.getLeadersId().isEmpty())
                         pp.setLeaders(convertIdToLeaderCard(msg.getLeadersId()));
 
+                    Map<BiElement<Resource, Storage>, Integer> resources = msg.getAddedResources();
+
                     if (msg.getAddedResources() != null) {
-                        Map<BiElement<Resource, Storage>, Integer> resources = msg.getAddedResources();
                         if (resources.size() > 0) {
                             resources.forEach(pp::addResources);
                         }
-
+                    }
+                    if (msg.getRemovedResources() != null) {
                         resources = msg.getRemovedResources();
                         if (resources.size() > 0) {
                             resources.forEach(pp::removeResources);
                         }
                     }
-
                     updateOtherPlayer(pp);
                     break;
                 }

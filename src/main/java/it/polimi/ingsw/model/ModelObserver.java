@@ -10,4 +10,5 @@ public interface ModelObserver {
     void updatePosition(Player player);
     void alertVaticanReport(Player player, int vaticanReport);
     void alertDiscardResource(Player player);
+    void alertDiscardResource(Player player, int quantity);
 }

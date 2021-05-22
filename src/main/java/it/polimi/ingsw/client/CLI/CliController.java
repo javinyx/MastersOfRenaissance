@@ -7,6 +7,7 @@ import it.polimi.ingsw.client.MessageToServerHandler;
 import it.polimi.ingsw.client.model.NubPlayer;
 import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.concreteMessages.BuyMarketMessage;
+import it.polimi.ingsw.messages.concreteMessages.PlayersPositionMessage;
 import it.polimi.ingsw.messages.concreteMessages.ProduceMessage;
 import it.polimi.ingsw.messages.concreteMessages.StoreResourcesMessage;
 import it.polimi.ingsw.misc.BiElement;
@@ -468,7 +469,31 @@ public class CliController extends ClientController {
 
     @Override
     public void moveLorenzo(int currentPosition) {
+        if(currentPosition==24){
+            cli.showMessage("Lorenzo completed the faith track. \nAH. You lose! :)");
+        }
+        cli.showMessage("Lorenzo moved. Now he is cell " + currentPosition);
+    }
 
+    @Override
+    public void updatePositionAction(PlayersPositionMessage msg){
+        List<NubPlayer> allPlayers = getTotalPlayers();
+
+        for(BiElement<Integer, Integer> pos : msg.getNewPlayersPosition()){
+            if(pos.getFirstValue()==0){
+                System.out.println("Lorenzo is at cell " + pos.getSecondValue());
+            }else{
+                for(NubPlayer p : allPlayers){
+                    if(p.getTurnNumber()== pos.getFirstValue() && p.getCurrPos()!=pos.getSecondValue()){
+                        System.out.println(p.getNickname() + "moved. Now is at cell " + pos.getSecondValue());
+                        break;
+                    }else if(p.getTurnNumber()==pos.getFirstValue() && p.equals(getPlayer())){
+                        System.out.println("You're in cell " + pos.getSecondValue() +" on the faith track.");
+                        break;
+                    }
+                }
+            }
+        }
     }
 
 }

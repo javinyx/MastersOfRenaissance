@@ -90,6 +90,7 @@ public class ProPlayer extends Player{
     public List<PopePass> getPopePasses(){
         return passes;
     }
+    public boolean getPopePassStatus(int reportIndex){return passes.get(reportIndex-1).isActive();}
 
     public Deque<ConcreteProductionCard> getProdCards1(){return prodCards1;}
     public Deque<ConcreteProductionCard> getProdCards2(){return prodCards2;}
@@ -343,10 +344,12 @@ public class ProPlayer extends Player{
         }
     }
 
+    /**
+     * Discard many resources as stated by by parameter {@code qty}
+     * @param qty quantity of resources to discard
+     */
     public void discardResources(int qty){
-        for(int i=0; i<qty; i++){
-            observer.alertDiscardResource(this);
-        }
+        observer.alertDiscardResource(this, qty);
     }
 
 

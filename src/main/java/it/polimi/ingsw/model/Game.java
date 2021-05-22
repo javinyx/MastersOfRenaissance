@@ -22,6 +22,8 @@ public abstract class Game implements ModelObserver {
     protected int totalPlayers;
     protected ProPlayer currPlayer;
     protected Controller controller;
+    protected Player triggerPlayerReport;
+    protected int reportTriggered;
 
     // SETUP PHASE ----------------------------------------------
 
@@ -119,8 +121,20 @@ public abstract class Game implements ModelObserver {
         return totalPlayers;
     }
 
+    public abstract List<ProPlayer> getPlayers();
+
     public ProPlayer getCurrPlayer() {
         return currPlayer;
     }
+
+    /**
+     * @return the player who caused the Vatican Report
+     */
+    public Player getTriggerPlayerForReport(){return triggerPlayerReport;}
+
+    /**
+     * @return the last Vatican Report id (1~3) triggered
+     */
+    public int getReportTriggered(){return reportTriggered;}
 
 }

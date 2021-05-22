@@ -25,6 +25,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static it.polimi.ingsw.messages.MessageID.LORENZO_POSITION;
+import static it.polimi.ingsw.messages.MessageID.VATICAN_REPORT;
 
 public class Controller implements Observer<MessageID> {
 
@@ -200,7 +201,7 @@ public class Controller implements Observer<MessageID> {
         update(MessageID.STORE_RESOURCES);
     }
 
-    public void buyProdCardAction(BuyProductionMessage buyProd) {
+    public synchronized void buyProdCardAction(BuyProductionMessage buyProd) {
         /*if (mustChoosePlacements || basicActionDone) {
             update(MessageID.INFO);
             return;
@@ -283,7 +284,7 @@ public class Controller implements Observer<MessageID> {
 
     }
 
-    public void activateProdAction(ProduceMessage produce) {
+    public synchronized void activateProdAction(ProduceMessage produce) {
         /*if (mustChoosePlacements || basicActionDone) {
             update(MessageID.INFO);
             return;
@@ -372,7 +373,7 @@ public class Controller implements Observer<MessageID> {
 
     // TURN UTILITIES --------------------------------------------------------------------------------------------------
 
-    public void activateLeader(LeaderCard leaderCard) {
+    public synchronized void activateLeader(LeaderCard leaderCard) {
         /*if (mustChoosePlacements) {
             update(MessageID.INFO);
             return;
@@ -395,12 +396,13 @@ public class Controller implements Observer<MessageID> {
     /**
      * Let the player discard a leader.
      */
-    public void discardLeader(String s) {
-        boolean found = false;
+    public synchronized void discardLeader(String s) {
+        //boolean found = false;
         List<LeaderCard> leaders = game.getCurrPlayer().getLeaderCards();
         for (LeaderCard card : leaders) {
             if (card.getId() == Integer.parseInt(s)) {
                 if (game.getCurrPlayer().discardLeaderCard(card)) {
+                    //found = true;
                     update(MessageID.PLAYERS_POSITION);
                     update(MessageID.ACK);
                     break;
@@ -463,7 +465,7 @@ public class Controller implements Observer<MessageID> {
                     }
                 }
                 case EXTRA1 -> {
-                    if (playerForOrganizeRes.storeInExtraStorage(element.getFirstValue(), game.getCurrPlayer().getExtraStorage().get(0))) {
+                    if (playerForOrganizeRes.storeInExtraStorage(element.getFirstValue(), playerForOrganizeRes.getExtraStorage().get(0))) {
                         addResources(element);
                     } else {
                         addedResources.clear();
@@ -473,7 +475,7 @@ public class Controller implements Observer<MessageID> {
                     }
                 }
                 case EXTRA2 -> {
-                    if (playerForOrganizeRes.storeInExtraStorage(element.getFirstValue(), game.getCurrPlayer().getExtraStorage().get(1))) {
+                    if (playerForOrganizeRes.storeInExtraStorage(element.getFirstValue(), playerForOrganizeRes.getExtraStorage().get(1))) {
                         addResources(element);
                     } else {
                         addedResources.clear();
@@ -496,7 +498,6 @@ public class Controller implements Observer<MessageID> {
 
         if (discarding > 0) {
             playerForOrganizeRes.discardResources(discarding);
-            update(MessageID.PLAYERS_POSITION);
         }
 
         mustChoosePlacements = false;
@@ -511,7 +512,7 @@ public class Controller implements Observer<MessageID> {
      * If {@code element} is already contained in {@code addedResources}, then it increments its presence by 1.
      * Otherwise, it add the element to the map as a new occurrence with is value set at 1.
      */
-    private void addResources(BiElement<Resource, Storage> element) {
+    private synchronized void addResources(BiElement<Resource, Storage> element) {
         if (addedResources.containsKey(element)) {
             addedResources.compute(element, (k, v) -> v++);
         } else {
@@ -519,7 +520,7 @@ public class Controller implements Observer<MessageID> {
         }
     }
 
-    private void addResources(BiElement<Resource, Storage> element, Integer qty) {
+    private synchronized void addResources(BiElement<Resource, Storage> element, Integer qty) {
         if (qty == 0) {
             return;
         }
@@ -535,7 +536,7 @@ public class Controller implements Observer<MessageID> {
      * In order to do this, it increments the presence in {@code removedResources} map which is specific for this
      * purpose. Otherwise, it add the element to the map as a new occurrence with is value set at 1.
      */
-    private void removeResources(BiElement<Resource, Storage> element) {
+    private synchronized void removeResources(BiElement<Resource, Storage> element) {
         if (removedResources.containsKey(element)) {
             removedResources.compute(element, (k, v) -> v++);
         } else {
@@ -569,7 +570,7 @@ public class Controller implements Observer<MessageID> {
      * Generate an {@link UpdateMessage} by filling its attributes using {@code previousPlayer} set by {@code generateEndTurn()},
      * the (new) currentPlayer, some information retrieved from model, {@code addedResources} and {@code removedResources}.
      */
-    private UpdateMessage generateUpdateMessage() {
+    private synchronized UpdateMessage generateUpdateMessage() {
         List<BiElement<Integer, Boolean>> thisPlayerActiveLeaders = new ArrayList<>();
 
         //production card bought set by: buyProductionCardAction
@@ -640,11 +641,14 @@ public class Controller implements Observer<MessageID> {
                 remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(env);
             }
             case PLAYERS_POSITION -> {
-                List<ProPlayer> players = ((MultiPlayerGame) game).getActivePlayers();
+                List<ProPlayer> players = game.getPlayers();
                 List<BiElement<Integer, Integer>> positions = new ArrayList<>();
                 for (ProPlayer pp : players) {
                     BiElement<Integer, Integer> pos = new BiElement<>(pp.getTurnID(), pp.getCurrentPosition());
                     positions.add(pos);
+                }
+                if(game instanceof SinglePlayerGame){
+                    positions.add(new BiElement<>(0, ((SinglePlayerGame) game).getLorenzoPosition()));
                 }
                 PlayersPositionMessage msg = new PlayersPositionMessage(positions);
                 String payload = gson.toJson(msg, PlayersPositionMessage.class);
@@ -652,6 +656,21 @@ public class Controller implements Observer<MessageID> {
 
                 for (Observer<MessageEnvelope> obs : remoteViews) {
                     obs.update(env);
+                }
+            }
+
+            case VATICAN_REPORT -> {
+                List<BiElement<Integer,Boolean>> vaticanReportStatus = new ArrayList<>();
+                int numReport = game.getReportTriggered();
+                for(ProPlayer p : game.getPlayers()){
+                    vaticanReportStatus.add(new BiElement<>(p.getTurnID(), p.getPopePassStatus(numReport)));
+                }
+                VaticanReportMessage msg = new VaticanReportMessage(game.getTriggerPlayerForReport().getNickname(),
+                        numReport, vaticanReportStatus);
+                String paylaod = gson.toJson(msg, VaticanReportMessage.class);
+                MessageEnvelope envelope = new MessageEnvelope(VATICAN_REPORT, paylaod);
+                for(Observer<MessageEnvelope> obs : remoteViews){
+                    obs.update(envelope);
                 }
             }
             case INFO -> remoteViews.get(getCurrPlayerTurnID() - 1).update(new MessageEnvelope(messageID, "Invalid operation now"));

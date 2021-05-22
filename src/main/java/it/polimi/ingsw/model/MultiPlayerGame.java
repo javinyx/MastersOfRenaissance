@@ -154,7 +154,7 @@ public class MultiPlayerGame extends Game implements ModelObserver {
         }
     }
     public void updatePosition(Player player){
-        //call controller to show the change on the view
+        controller.update(MessageID.PLAYERS_POSITION);
     }
 
     /**Everytime a player triggers a Vatican Report by moving on the personal faith track, this method will inform the game
@@ -168,6 +168,8 @@ public class MultiPlayerGame extends Game implements ModelObserver {
      * @param player player who triggered Vatican Report
      * @param vaticanReport number in range 1-3 that specifies which vatican report is triggered*/
     public void alertVaticanReport(Player player, int vaticanReport){
+        triggerPlayerReport = player;
+        reportTriggered = vaticanReport;
         //check every player position (even inactive ones in case they rejoin)
         for(ProPlayer p : players){
             List<PopePass> passes = p.getPopePasses();
@@ -177,6 +179,7 @@ public class MultiPlayerGame extends Game implements ModelObserver {
                 passes.get(vaticanReport-1).disable();
             }
         }
+        controller.update(MessageID.VATICAN_REPORT);
     }
 
     /**Add 1 faith point to each active player (except the discarding one).
@@ -185,6 +188,15 @@ public class MultiPlayerGame extends Game implements ModelObserver {
         for(ProPlayer p : activePlayers){
             if(!p.equals(player)){
                 p.addFaithPoints(1);
+                controller.update(MessageID.PLAYERS_POSITION);
+            }
+        }
+    }
+
+    public void alertDiscardResource(Player player, int quantity){
+        for(ProPlayer p : activePlayers){
+            if(!p.equals(player)){
+                p.addFaithPoints(quantity);
                 controller.update(MessageID.PLAYERS_POSITION);
             }
         }

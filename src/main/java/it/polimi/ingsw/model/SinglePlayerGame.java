@@ -65,7 +65,6 @@ public class SinglePlayerGame extends Game implements ModelObserver {
     }
     /**
      * Create the player
-     *
      * @param nickname the nickname of the player
      */
 
@@ -109,20 +108,30 @@ public class SinglePlayerGame extends Game implements ModelObserver {
         end(winner);
     }
     public void updatePosition(Player player){
-        //controller
+        //controller.update(MessageID.PLAYERS_POSITION);
     }
     public void updateEndTurn(ProPlayer player){} //do nothing?
     /**Alert the observer that {@code player} has triggered the {@code vaticanReport}.
      * @param vaticanReport must be between 1 and 3. */
     public void alertVaticanReport(Player player, int vaticanReport){
-        if(player.equals(lorenzo)){
-            List<PopePass> passes = this.player.getPopePasses();
-            if(this.player.isInVaticanReportRange(vaticanReport)){
-                passes.get(vaticanReport-1).activate();
-            }else{
-                passes.get(vaticanReport-1).disable();
+        triggerPlayerReport = player;
+        reportTriggered = vaticanReport;
+        List<PopePass> passes = this.player.getPopePasses();
+        if(player.equals(lorenzo)) {
+            if (!this.player.isInVaticanReportRange(vaticanReport)) {
+                passes.get(vaticanReport - 1).disable();
+                return;
             }
         }
+        passes.get(vaticanReport - 1).activate();
+
+        controller.update(MessageID.VATICAN_REPORT);
+    }
+
+    public List<ProPlayer> getPlayers(){
+        List<ProPlayer> players = new ArrayList<>();
+        players.add(player);
+        return players;
     }
 //---------------------------------------------------------------------------------------------------------
     public Deck getTokenDeck() {
@@ -149,7 +158,12 @@ public class SinglePlayerGame extends Game implements ModelObserver {
     /**By discarding 1 resource, Lorenzo will be gifted 1 faith point. */
     public void alertDiscardResource(Player player){
         lorenzo.moveOnBoard(1);
-        controller.update(MessageID.LORENZO_POSITION);
+        controller.update(MessageID.PLAYERS_POSITION);
+    }
+
+    public void alertDiscardResource(Player player, int quantity){
+        lorenzo.moveOnBoard(quantity);
+        controller.update(MessageID.PLAYERS_POSITION);
     }
 
     public void end(Player winner){}

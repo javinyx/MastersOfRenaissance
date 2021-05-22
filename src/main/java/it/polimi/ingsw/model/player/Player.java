@@ -33,8 +33,11 @@ public class Player implements Observable {
      * <p>If the movement causes a Vatican Report or the end of the match, the Game will be notified.</p>
      * @param quantity number of cells the player gains.*/
     public void moveOnBoard(int quantity){
-        if(quantity<=0 || currPos==24){
+        if(quantity<0 || currPos==24){
             throw new IndexOutOfBoundsException("Cannot go backward neither go over 24th cell");
+        }
+        if(quantity==0){
+            return;
         }
         int newPos = currPos + quantity;
         int report = 0;

@@ -7,9 +7,7 @@ import it.polimi.ingsw.client.model.ClientGame;
 import it.polimi.ingsw.client.model.Market;
 import it.polimi.ingsw.client.model.NubPlayer;
 import it.polimi.ingsw.messages.MessageID;
-import it.polimi.ingsw.messages.concreteMessages.EndTurnMessage;
-import it.polimi.ingsw.messages.concreteMessages.TurnNumberMessage;
-import it.polimi.ingsw.messages.concreteMessages.UpdateMessage;
+import it.polimi.ingsw.messages.concreteMessages.*;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.cards.leader.*;
@@ -359,6 +357,21 @@ public abstract class ClientController {
     public abstract void buyFromMarket();
     public abstract void activateLeader();
 
+    public void infoVaticanReport(VaticanReportMessage msg){
+        int reportId = msg.getReportId();
+        List<BiElement<Integer, Boolean>> playersPopeStatus = msg.getAllPlayerPopeFavorStatus();
+        for(BiElement<Integer,Boolean> bi : playersPopeStatus){
+            for(NubPlayer p : totalPlayers){
+                if(p.getTurnNumber()== bi.getFirstValue() && bi.getSecondValue()){
+                    p.activatePopePass(reportId);
+                    break;
+                }
+            }
+        }
+        //TODO: show on UI who caused the vatican report and the player (client owner) his/her status
+    }
+
+    public abstract void updatePositionAction(PlayersPositionMessage msg);
 
     //---------------------------CONVERTERS---------------------------------
     protected List<ConcreteProductionCard> convertIdToProductionCard(List<Integer> ids){

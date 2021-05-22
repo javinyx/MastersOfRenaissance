@@ -12,5 +12,9 @@ public class PlayersPositionMessage extends SimpleMessage {
         this.newPlayersPosition = newPlayersPosition;
     }
 
+    /**
+     * @return list of players' ids associated with their current position. Note that id number 0 refers to Lorenzo for
+     * single player mode.
+     */
     public List<BiElement<Integer,Integer>> getNewPlayersPosition(){return newPlayersPosition;}
 }

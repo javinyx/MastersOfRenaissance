@@ -16,10 +16,15 @@ public class NubPlayer implements Comparator<NubPlayer> {
     private List<LeaderCard> leaders;
     private Map<BiElement<Resource, Storage>, Integer> allResources;
     private int turnNumber;
+    private Boolean[] popePasses;
 
     public NubPlayer(String nickname){
         this.nickname = nickname;
         this.allResources = new HashMap<>();
+        popePasses = new Boolean[3];
+        for(int i=0; i<3; i++){
+            popePasses[i] = false;
+        }
     }
 
     public void setTurnNumber(int turnNumber) {
@@ -28,6 +33,16 @@ public class NubPlayer implements Comparator<NubPlayer> {
 
     public int getTurnNumber() {
         return turnNumber;
+    }
+
+    public Boolean[] getPopePasses(){return popePasses;}
+
+    /**
+     * @param tileIndex is the vaticanReport id that has to be activated, must be between 1 and 3
+     */
+    public boolean activatePopePass(int tileIndex){
+        if(tileIndex<1 || tileIndex>3) return false;
+        return popePasses[tileIndex-1] = true;
     }
 
     public String getNickname(){return nickname;}

@@ -4,8 +4,9 @@ import com.google.gson.Gson;
 import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.concreteMessages.EndTurnMessage;
+import it.polimi.ingsw.messages.concreteMessages.PlayersPositionMessage;
 import it.polimi.ingsw.messages.concreteMessages.TurnNumberMessage;
-import it.polimi.ingsw.messages.concreteMessages.UpdateMessage;
+import it.polimi.ingsw.messages.concreteMessages.VaticanReportMessage;
 
 import java.io.ObjectInputStream;
 
@@ -108,8 +109,9 @@ public class MessageReceiver implements Runnable{
             case UPDATE -> controller.updateAction(envelope.deserializeUpdateMessage());
             case CONFIRM_END_TURN -> controller.endTurn(gson.fromJson(envelope.getPayload(), EndTurnMessage.class));
 
-            case LORENZO_POSITION -> controller.moveLorenzo(Integer.parseInt(envelope.getPayload()));
-            case PLAYERS_POSITION -> {}
+            case LORENZO_POSITION -> System.err.println("This message shouldn't have arrived");
+            case VATICAN_REPORT -> controller.infoVaticanReport(gson.fromJson(envelope.getPayload(), VaticanReportMessage.class));
+            case PLAYERS_POSITION -> controller.updatePositionAction(gson.fromJson(envelope.getPayload(), PlayersPositionMessage.class));
 
 
             default -> System.err.println("MessageID not recognised Game");

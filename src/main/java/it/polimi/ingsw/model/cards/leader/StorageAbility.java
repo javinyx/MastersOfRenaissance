@@ -146,6 +146,17 @@ public class StorageAbility implements LeaderCard {
         }
 
 
+        public String get0(){
+            if (resources[0] != null )
+                return resources[1].toString();
+            return null;
+        }
+    public String get1(){
+        if (resources[1] != null )
+            return resources[1].toString();
+        return null;
+    }
+
     public String getNameNew(){
         return "StorageAbility";
     }

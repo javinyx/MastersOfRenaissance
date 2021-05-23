@@ -5,10 +5,10 @@ import it.polimi.ingsw.client.CLI.printer.UnixPrinter;
 import it.polimi.ingsw.client.CLI.printer.WindowsPrinter;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
-import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.cards.leader.BoostAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.MarbleAbility;
+import it.polimi.ingsw.model.cards.leader.StorageAbility;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
 
@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Cli /*extends ViewInterface*/ {
     private final Scanner scanner = new Scanner(System.in);
@@ -221,21 +220,22 @@ public class Cli /*extends ViewInterface*/ {
     }
 
     public void displayLightTurnOption(){
-        int choice;
+        int choice = 0;
 
         OSPrinter.printLightTurnOptions();
+        while (choice != 5) {
+            do {
+                System.out.println("Select a number:");
+                choice = scanner.nextInt();
+            } while (choice < 1 || choice > 5);
 
-        do{
-            System.out.println("Select a number:");
-            choice = scanner.nextInt();
-        } while (choice < 1 || choice > 5);
-
-        switch(choice){
-            case 1 -> controller.viewOpponents();
-            case 2 -> controller.activateLeader();
-            case 3 -> controller.discardLeader();
-            case 4 -> controller.viewProductionCard();
-            case 5 -> controller.passTurn();
+            switch (choice) {
+                case 1 -> controller.viewOpponents();
+                case 2 -> controller.activateLeader();
+                case 3 -> controller.discardLeader();
+                case 4 -> controller.viewProductionCard();
+                case 5 -> controller.passTurn();
+            }
         }
 
     }
@@ -277,80 +277,134 @@ public class Cli /*extends ViewInterface*/ {
             do {
                 System.out.println("Select the Development Card you want to use, press 0 to exit selection");
                 c = scanner.nextInt();
-            } while (c != card.get(0).getId() && c != card.get(1).getId() && c != card.get(2).getId());
+            } while (c != card.get(0).getId() && c != card.get(1).getId() && c != card.get(2).getId() && c != 0);
 
             for(ConcreteProductionCard pc : card)
-                if(pc.getId()==c)
+                if(c != 0 && pc.getId() == c)
                     retCard.add(pc);
         }
         return retCard;
     }
 
-    public void selectResWalletProd(List<ConcreteProductionCard> prodCard, List<Resource> fromWare, List<Resource> fromLoot, List<Resource> fromLeader){
-        int c;
+    public void selectResWalletProd(List<ConcreteProductionCard> prodCard, List<Resource> fromWare, List<Resource> fromLoot, List<Resource> fromLeader1, List<Resource> fromLeader2){
+        int c, numLeader = -1, lock;
+        List<StorageAbility> storeLead = new ArrayList<>();
 
         for (ConcreteProductionCard pc : prodCard) {
-            System.out.print("From where do you want to take the resource from the Development Card with ID number " + pc.getId() + "?\n (1) Warehouse\n (2) StrongBox\n (3) Leader Extra storage\n");
+            int count = 1;
+            for(Resource res : pc.getCost()) {
+                System.out.print("From where do you want to take the resource number "+ count + " ("+res+") for the Development Card with ID number " + pc.getId() + "?\n (1) Warehouse\n (2) StrongBox\n (3) Leader Extra storage\n");
+                do {
+                    lock = 1;
+                    System.out.print("Choice: ");
+                    c = scanner.nextInt();
+                    if (c == 3){
+                        for (LeaderCard led : controller.getPlayer().getLeaders()) {
+                            if (led instanceof StorageAbility && led.isActive())
+                                storeLead.add((StorageAbility) led);
+                        }
+                        if (storeLead.size() == 0)
+                            System.out.println("You haven't any eligible leader");
+                        lock =  0;
+                    }
+                } while (c != 1 && c != 2 && c != 3 || lock != 1);
 
-            do {
-                System.out.print("Choice:");
-                c = scanner.nextInt();
-            } while (c != 1 && c != 2 && c != 3);
+                switch (c) {
+                    case 1 -> fromWare.add(selectProdRes());
+                    case 2 -> fromLoot.add(selectProdRes());
+                    case 3 -> {
+                        BiElement<Resource, Integer> bi = selectProdResLeader(storeLead);
+                        numLeader = bi.getSecondValue();
+                        if (numLeader == 0)
+                            fromLeader1.add(bi.getFirstValue());
+                        else
+                            fromLeader2.add(bi.getFirstValue());
+                    }
+                }
 
-            switch(c){
-                case 1 -> fromWare.addAll(selectProdRes(pc));
-                case 2 -> fromLoot.addAll(selectProdRes(pc));
-                case 3 -> fromLeader.addAll(selectProdRes(pc));
+                count++;
             }
         }
     }
 
-    private List<Resource> selectProdRes(ConcreteProductionCard pc){
+    private Resource selectProdRes(){
         String res;
-        List<Resource> retRes = new ArrayList<>();
-        for (int i = 0; i < pc.getRequiredResources().size(); i++) {
             do {
-                System.out.print("Resource " + i + ": ");
+                System.out.print("Resource: ");
                 res = scanner.next().toLowerCase();
             } while (!res.equals("stone") && !res.equals("servant") && !res.equals("shield") && !res.equals("coin") && !res.equals("0"));
 
-            retRes.add(convertStringToResource(res));
-        }
-        return retRes;
+        return convertStringToResource(res);
     }
 
-    public void selectLeadWalletProd(BoostAbility card, List<Resource> fromWare, List<Resource> fromLoot, List<Resource> fromLeader){
+    private BiElement<Resource, Integer> selectProdResLeader(List<StorageAbility> leadCard){
+        String res;
         int c;
 
-        System.out.print("From where do you want to take the resource for the Leader Card with ID number " + card.getId() + "?\n (1) Warehouse\n (2) StrongBox\n (3) Leader Extra storage");
-        do {
-            System.out.print("Choice:");
-            c = scanner.nextInt();
-        } while (c != 1 && c != 2 && c != 3);
-
-        switch(c){
-            case 1 -> fromWare.add(selectProdResLead(card));
-            case 2 -> fromLoot.add(selectProdResLead(card));
-            case 3 -> fromLeader.add(selectProdResLead(card));
+        System.out.println("Which leader do you want to select");
+        for (int i = 0; i < 2; i++) {
+           OSPrinter.printLeaders((LeaderCard)leadCard);
+           System.out.println("Resource contained: " + leadCard.get(i).get0());
+           System.out.println("Resource contained: " + leadCard.get(i).get1());
         }
-    }
-
-    private Resource selectProdResLead(BoostAbility lc){
-        String res;
+        do {
+            System.out.print("ID: ");
+            c = scanner.nextInt();
+        } while (leadCard.get(0).getId() != c && leadCard.get(1).getId() != c);
         do {
             System.out.print("Resource: ");
             res = scanner.next().toLowerCase();
         } while (!res.equals("stone") && !res.equals("servant") && !res.equals("shield") && !res.equals("coin") && !res.equals("0"));
 
-        return (convertStringToResource(res));
+        if(c == leadCard.get(0).getId())
+            c = 0;
+        else
+            c = 1;
+
+        return new BiElement<>(convertStringToResource(res), c);
+    }
+
+    public void selectLeadWalletProd(BoostAbility card, List<Resource> fromWare, List<Resource> fromLoot, List<Resource> fromLeader1, List<Resource> fromLeader2){
+        int c, numLeader = -1, lock;
+        List<StorageAbility> storeLead = new ArrayList<>();
+
+        System.out.print("From where do you want to take the resource for the Leader Card with ID number " + card.getId() + "?\n (1) Warehouse\n (2) StrongBox\n (3) Leader Extra storage");
+        do {
+            lock = 1;
+            System.out.print("Choice: ");
+            c = scanner.nextInt();
+            if (c == 3){
+                for (LeaderCard led : controller.getPlayer().getLeaders()) {
+                    if (led instanceof StorageAbility && led.isActive())
+                        storeLead.add((StorageAbility) led);
+                }
+                if (storeLead.size() == 0)
+                    System.out.println("You haven't any eligible leader");
+                lock =  0;
+            }
+        } while (c != 1 && c != 2 && c != 3 || lock != 1);
+
+        switch(c){
+            case 1 -> fromWare.add(selectProdRes());
+            case 2 -> fromLoot.add(selectProdRes());
+            case 3 -> {
+                BiElement<Resource, Integer> bi = selectProdResLeader(storeLead);
+                numLeader = bi.getSecondValue();
+                if (numLeader == 0)
+                    fromLeader1.add(bi.getFirstValue());
+                else
+                    fromLeader2.add(bi.getFirstValue());
+            }
+        }
     }
 
 
-    public List<Resource> doBasicProd1(List<Resource> fromWare, List<Resource> fromLoot, List<Resource> fromLeader) {
+    public List<Resource> doBasicProd1(List<Resource> fromWare, List<Resource> fromLoot, List<Resource> fromLeader1, List<Resource> fromLeader2) {
 
         String c, res;
-        int c1;
+        int c1, numLeader = -1, lock;
         List<Resource> in = new ArrayList<>();
+        List<StorageAbility> storeLead = new ArrayList<>();
 
         System.out.println("Do you want to use basic production?");
         do {
@@ -360,19 +414,37 @@ public class Cli /*extends ViewInterface*/ {
 
         if (c.equals("y") && controller.getPlayer().getAllResources().size() > 1) {
             System.out.println("Select the 2 resources you want to use");
-            for (int i = 0; i < 2; i++) {
+            for (int i = 1; i < 3; i++) {
 
-                System.out.print("From where do you want to take the resource for theBasic Production?\n (1) Warehouse\n (2) StrongBox\n (3) Leader Extra storage");
+                System.out.print("From where do you want to take the resource number "+i+" for the Basic Production?\n (1) Warehouse\n (2) StrongBox\n (3) Leader Extra storage");
 
                 do {
-                    System.out.print("Choice:");
+                    lock = 1;
+                    System.out.print("Choice: ");
                     c1 = scanner.nextInt();
-                } while (c1 != 1 && c1 != 2 && c1 != 3);
+                    if (c1 == 3){
+                        for (LeaderCard led : controller.getPlayer().getLeaders()) {
+                            if (led instanceof StorageAbility && led.isActive())
+                                storeLead.add((StorageAbility) led);
+                        }
+                        if (storeLead.size() == 0)
+                            System.out.println("You haven't any eligible leader");
+                        lock =  0;
+                    }
+                } while (c1 != 1 && c1 != 2 && c1 != 3 || lock != 1);
 
                 switch(c1){
-                    case 1 -> fromWare.add(selectProdResBasic());
-                    case 2 -> fromLoot.add(selectProdResBasic());
-                    case 3 -> fromLeader.add(selectProdResBasic());
+                    case 1 -> fromWare.add(selectProdRes());
+                    case 2 -> fromLoot.add(selectProdRes());
+                    case 3 -> {
+
+                        BiElement<Resource, Integer> bi = selectProdResLeader(storeLead);
+                        numLeader = bi.getSecondValue();
+                        if (numLeader == 0)
+                            fromLeader1.add(bi.getFirstValue());
+                        else
+                            fromLeader2.add(bi.getFirstValue());
+                    }
                 }
             }
 
@@ -381,15 +453,6 @@ public class Cli /*extends ViewInterface*/ {
 
         else
             return null;
-    }
-    private Resource selectProdResBasic(){
-        String res;
-            do {
-                System.out.print("Resource: ");
-                res = scanner.next().toLowerCase();
-            } while (!res.equals("stone") && !res.equals("servant") && !res.equals("shield") && !res.equals("coin") && !res.equals("0"));
-
-            return convertStringToResource(res);
     }
 
 
@@ -523,10 +586,11 @@ public class Cli /*extends ViewInterface*/ {
             System.out.print("ID: ");
             c = scanner.nextInt();
 
-            for (int i = 0; i < prodCard.size(); i++) {
-                if (prodCard.get(i).getId() == c)
+            for (ConcreteProductionCard concreteProductionCard : prodCard) {
+                if (concreteProductionCard.getId() == c) {
                     lock = false;
-                break;
+                    break;
+                }
             }
         }
         return c;
@@ -535,7 +599,7 @@ public class Cli /*extends ViewInterface*/ {
     public int chooseProdStack(){
         int c = 0;
         do {
-            System.out.print("Choose the stack where you want to put the Development Card: 1, 2 or 3:");
+            System.out.print("Choose the stack where you want to put the Development Card: 1, 2 or 3: ");
             c = scanner.nextInt();
         } while (c != 1 && c != 2 && c != 3);
         return c;

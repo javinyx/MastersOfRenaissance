@@ -6,10 +6,7 @@ import it.polimi.ingsw.client.MessageReceiver;
 import it.polimi.ingsw.client.MessageToServerHandler;
 import it.polimi.ingsw.client.model.NubPlayer;
 import it.polimi.ingsw.messages.MessageID;
-import it.polimi.ingsw.messages.concreteMessages.BuyMarketMessage;
-import it.polimi.ingsw.messages.concreteMessages.PlayersPositionMessage;
-import it.polimi.ingsw.messages.concreteMessages.ProduceMessage;
-import it.polimi.ingsw.messages.concreteMessages.StoreResourcesMessage;
+import it.polimi.ingsw.messages.concreteMessages.*;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.cards.leader.BoostAbility;
@@ -239,16 +236,18 @@ public class CliController extends ClientController {
     }
 
     public void viewProductionCard(){
-
+        cli.showProductionCardInTheStore(availableProductionCard);
     }
 
     public void buyProductionCard(){
 
         int prodId, stack;
-        List<Integer> leadCard;
+        List<Integer> leadCard = new ArrayList<>();
         List<Resource> fromWare = new ArrayList<>();
         List<Resource> fromLoot = new ArrayList<>();
-        List<Resource> fromLeader = new ArrayList<>();
+        List<Resource> fromLeader1 = new ArrayList<>();
+        List<Resource> fromLeader2 = new ArrayList<>();
+        ResourcesWallet resWal = new ResourcesWallet();
 
         cli.showProductionCardInTheStore(availableProductionCard);
         prodId = cli.chooseProdCard(availableProductionCard);
@@ -261,13 +260,21 @@ public class CliController extends ClientController {
                     leadCard = cli.chooseLeader(getPlayer().getLeaders());
                 }
         }
+        System.out.println("You have to spend these resources: "+ convertIdToProductionCard(prodId).getCost());
 
         System.out.println("Select the resources you want to use for the Development Card");
+
         List<ConcreteProductionCard> prod = new ArrayList<>();
         prod.add(convertIdToProductionCard(prodId));
-        cli.selectResWalletProd(prod, fromWare, fromLoot, fromLeader);
+        cli.selectResWalletProd(prod, fromWare, fromLoot, fromLeader1, fromLeader2);
 
+        resWal.setWarehouseTray(fromWare);
+        resWal.setLootchestTray(fromLoot);
+        resWal.setExtraStorage(fromLeader1, 0);
+        resWal.setExtraStorage(fromLeader2, 1);
 
+        BuyProductionMessage msg = new BuyProductionMessage(prodId, stack, leadCard, resWal);
+        messageToServerHandler.generateEnvelope(MessageID.BUY_PRODUCTION_CARD, gson.toJson(msg));
     }
 
     public void startProduction(){
@@ -278,17 +285,17 @@ public class CliController extends ClientController {
         List<Resource> basicIn, leadOut = null;
         List<Resource> fromWare = new ArrayList<>();
         List<Resource> fromLoot = new ArrayList<>();
-        List<Resource> fromLeader = new ArrayList<>();
+        List<Resource> fromLeader1 = new ArrayList<>();
+        List<Resource> fromLeader2 = new ArrayList<>();
         Resource basicOut = null;
         boolean basic = false;
-        ResourcesWallet resWallet;
-        String s;
+        ResourcesWallet resWal = new ResourcesWallet();
 
         System.out.println("Select the Development Card you want to use");
         prodCard = cli.selectProdCard();
 
         System.out.println("Select the resources you want to use for the Development Card");
-        cli.selectResWalletProd(prodCard, fromWare, fromLoot, fromLeader);
+        cli.selectResWalletProd(prodCard, fromWare, fromLoot, fromLeader1, fromLeader2);
 
         if(cli.wantPlayLeader()) {
             for (LeaderCard led : getPlayer().getLeaders())
@@ -298,17 +305,22 @@ public class CliController extends ClientController {
                     betterLeaderCard = leadCard.stream().map(x -> (BoostAbility) x).collect(Collectors.toList());
                     leadOut = cli.chooseLeaderOut(leadCard);
                     System.out.println("Select the resources you want to use for the Leader Card");
-                    cli.selectLeadWalletProd((BoostAbility) led, fromWare, fromLoot, fromLeader);
+                    cli.selectLeadWalletProd((BoostAbility) led, fromWare, fromLoot, fromLeader1, fromLeader2);
                 }
         }
 
-        basicIn = cli.doBasicProd1(fromWare, fromLoot, fromLeader);
+        basicIn = cli.doBasicProd1(fromWare, fromLoot, fromLeader1, fromLeader2);
         if(basicIn != null) {
             basic = true;
             basicOut = cli.doBasicProd2();
         }
 
-        ProduceMessage msg = new ProduceMessage(prodCard, null, betterLeaderCard, leadOut, basic, basicOut, basicIn);
+        resWal.setWarehouseTray(fromWare);
+        resWal.setLootchestTray(fromLoot);
+        resWal.setExtraStorage(fromLeader1, 0);
+        resWal.setExtraStorage(fromLeader2, 1);
+
+        ProduceMessage msg = new ProduceMessage(prodCard, resWal, betterLeaderCard, leadOut, basic, basicOut, basicIn);
 
         messageToServerHandler.generateEnvelope(MessageID.PRODUCE, gson.toJson(msg));
 

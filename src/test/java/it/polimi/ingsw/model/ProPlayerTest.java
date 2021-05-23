@@ -7,7 +7,7 @@ import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.cards.production.ProductionCard;
 import it.polimi.ingsw.model.market.Buyable;
 import it.polimi.ingsw.model.market.Resource;
-import it.polimi.ingsw.model.player.BadStorageException;
+import it.polimi.ingsw.exception.BadStorageException;
 import it.polimi.ingsw.model.player.ProPlayer;
 import it.polimi.ingsw.model.stub.MultiPlayerGameStub;
 import it.polimi.ingsw.model.stub.ProPlayerStub;

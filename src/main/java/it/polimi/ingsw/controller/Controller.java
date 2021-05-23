@@ -16,7 +16,7 @@ import it.polimi.ingsw.model.SinglePlayerGame;
 import it.polimi.ingsw.model.cards.leader.*;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
-import it.polimi.ingsw.model.player.BadStorageException;
+import it.polimi.ingsw.exception.BadStorageException;
 import it.polimi.ingsw.model.player.ProPlayer;
 
 import java.io.InputStreamReader;

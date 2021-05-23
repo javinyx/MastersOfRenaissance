@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.player;
 
 import com.google.gson.Gson;
 import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.exception.BadStorageException;
 import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.concreteMessages.UpdateMessage;
 import it.polimi.ingsw.misc.BiElement;
@@ -183,7 +184,7 @@ public class ProPlayer extends Player{
      * @param leaders LeaderCards: just DiscountAbility might have an effect here
      * @param resourcesWallet resources distributed among different types of storage as the player wish to spend them*/
     public void buyProductionCard(ConcreteProductionCard card, int stack, List<LeaderCard> leaders, ResourcesWallet resourcesWallet)
-            throws BadStorageException{
+            throws BadStorageException {
 
         List<ConcreteProductionCard> availableProdCards = game.getBuyableProductionCards();
         Warehouse warBackup = new Warehouse(warehouse);

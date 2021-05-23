@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.market.Resource;
-import it.polimi.ingsw.model.player.BadStorageException;
+import it.polimi.ingsw.exception.BadStorageException;
 import it.polimi.ingsw.model.player.ProPlayer;
 
 import java.util.ArrayList;

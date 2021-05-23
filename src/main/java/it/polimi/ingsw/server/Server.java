@@ -355,7 +355,7 @@ public class Server {
      * @param connection player's connection (see {@link ClientConnection})
      * @param name player's nickname
      * @param gameSize game size in which the player was participating (1, 2, 3, 4)
-     * @return true if it can set the player aas inactive, false otherwise.*/
+     * @return true if it can set the player as inactive, false otherwise.*/
     public boolean playerCrashed(ClientConnection connection, String name, int gameSize){
         switch (gameSize) {
             case 1 -> {if(!singlePlayerPlay.equals(connection)) {
@@ -368,12 +368,12 @@ public class Server {
             }else{
                 twoPlayerRejoiningRoom.put(name, (MultiPlayerGame) controller.getGame());
             }}
-            case 3 -> { if(!threePlayerWait.containsKey(name)) {
+            case 3 -> { if(!threePlayerPlay.containsKey(connection)) {
                 return false;
             }else{
                 threePlayerRejoiningRoom.put(name, (MultiPlayerGame) controller.getGame());
             }}
-            case 4 -> {if(!fourPlayerWait.containsKey(name)) {
+            case 4 -> {if(!fourPlayerPlay.containsKey(connection)) {
                 return false;
             }else{
                 fourPlayerRejoiningRoom.put(name, (MultiPlayerGame) controller.getGame());

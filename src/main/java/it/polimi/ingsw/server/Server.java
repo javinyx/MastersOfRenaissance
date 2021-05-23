@@ -28,7 +28,7 @@ public class Server {
     private Map<ClientConnection, List<ClientConnection>> threePlayerPlay = new HashMap<>();
     private Map<ClientConnection, List<ClientConnection>> fourPlayerPlay = new HashMap<>();
 
-    private Map<String, SinglePlayerGame> onePlayerRejoiningRoom = new HashMap<>(1);
+    private Map<String, SinglePlayerGame> singlePlayerRejoiningRoom = new HashMap<>(1);
     private Map<String, MultiPlayerGame> twoPlayerRejoiningRoom = new HashMap<>();
     private Map<String, MultiPlayerGame> threePlayerRejoiningRoom = new HashMap<>();
     private Map<String, MultiPlayerGame> fourPlayerRejoiningRoom = new HashMap<>();
@@ -152,13 +152,12 @@ public class Server {
      */
     public synchronized void lobby(ClientConnection c, String name, int playerNum) {
         try {
-            System.out.println("sono qui");
             switch(playerNum) {
                 case 1 -> {
-                    if(onePlayerRejoiningRoom.containsKey(name)){
-                        SinglePlayerGame rejoinGame = onePlayerRejoiningRoom.get(name);
+                    if(singlePlayerRejoiningRoom.containsKey(name)){
+                        SinglePlayerGame rejoinGame = singlePlayerRejoiningRoom.get(name);
                         controller.rejoin(rejoinGame, name);
-                        onePlayerRejoiningRoom.remove(name);
+                        singlePlayerRejoiningRoom.remove(name);
                         break;
                     }
                     singlePlayerWait.put(name, c);
@@ -283,7 +282,6 @@ public class Server {
      * @param playerNames the list containing the nicknames of all the players
      */
     public void createGame(List<ClientConnection> connectionList, List<String> playerNames) {
-        //qui ci arriva
         controller = new Controller();
         for (int i = 0; i < connectionList.size(); i++){
             View v = new RemoteView(playerNames.get(i), playerNames, connectionList.get(i), controller);
@@ -363,7 +361,7 @@ public class Server {
             case 1 -> {if(!singlePlayerPlay.equals(connection)) {
                 return false;
             }else{
-                onePlayerRejoiningRoom.put(name, (SinglePlayerGame) controller.getGame());
+                singlePlayerRejoiningRoom.put(name, (SinglePlayerGame) controller.getGame());
             }}
             case 2 -> {if(!twoPlayerPlay.containsKey(connection)) {
                 return false;

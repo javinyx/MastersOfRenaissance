@@ -54,6 +54,7 @@ public class UpdateMessage extends SimpleMessage {
         this.leadersId = leadersId;
         this.addedResources = addedResources;
         this.removedResources = removedResources;
+        setSerializedResources();
     }
 
     public Resource[][] getMarketBoard(){
@@ -95,7 +96,7 @@ public class UpdateMessage extends SimpleMessage {
         return removedResources;
     }
 
-    public void setSerializedResources(){
+    private void setSerializedResources(){
         GsonBuilder builder = new GsonBuilder();
 
         Gson gson = builder.enableComplexMapKeySerialization().setPrettyPrinting().create();

@@ -586,8 +586,6 @@ public class Controller implements Observer<MessageID> {
                 game.getMarket().getMarketBoard(), game.getMarket().getExtraMarble(), game.getBuyableProductionID(),
                 boughtCard.orElse(null), thisPlayerActiveLeaders, addedResources, removedResources);
 
-        msg.setSerializedResources();
-
         return msg;
     }
 

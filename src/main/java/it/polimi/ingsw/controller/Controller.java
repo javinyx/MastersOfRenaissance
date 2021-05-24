@@ -195,6 +195,7 @@ public class Controller implements Observer<MessageID> {
             update(MessageID.INFO);
             return;
         }*/
+        playerForOrganizeRes = game.getCurrPlayer();
         try {
             game.getCurrPlayer().buyFromMarket(buyMark.getDimension(), buyMark.getIndex(), buyMark.getMarbleUsage());
         } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
@@ -438,8 +439,13 @@ public class Controller implements Observer<MessageID> {
             update(MessageID.INFO);
             return;
         }*/
-
-        playerForOrganizeRes = game.getCurrPlayer();
+        int playerID = message.getTurnID();
+        for(ProPlayer p : game.getPlayers()){
+            if(p.getTurnID() == playerID){
+                playerForOrganizeRes = p;
+            }
+        }
+        //playerForOrganizeRes = game.getCurrPlayer();
 
         if (game instanceof MultiPlayerGame)
             for(ProPlayer p : ((MultiPlayerGame) game).getActivePlayers())

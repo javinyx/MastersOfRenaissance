@@ -175,15 +175,10 @@ public class CliController extends ClientController {
     }
 
     @Override
-    public void chooseResourceAction() {
-        int quantity;
-        //List<BiElement<Resource, Storage>> res;
+    public void chooseResourceAction(int quantity) {
         List<Resource> res;
 
-        if(getPlayer().getTurnNumber() == 2)
-            quantity = 1;
-        else {
-            quantity = 2;
+        if(getPlayer().getTurnNumber() == 3 || getPlayer().getTurnNumber()==4){
             System.out.println("You earned one faith point");
         }
 
@@ -191,7 +186,6 @@ public class CliController extends ClientController {
         res = cli.chooseResources(quantity);
 
         chooseStorageAction(res);
-
     }
 
     @Override
@@ -497,7 +491,7 @@ public class CliController extends ClientController {
             }else{
                 for(NubPlayer p : allPlayers){
                     if(p.getTurnNumber()== pos.getFirstValue() && p.getCurrPos()!=pos.getSecondValue()){
-                        System.out.println(p.getNickname() + "moved. Now is at cell " + pos.getSecondValue());
+                        System.out.println(p.getNickname() + " moved. Now is at cell " + pos.getSecondValue());
                         break;
                     }else if(p.getTurnNumber()==pos.getFirstValue() && p.equals(getPlayer())){
                         System.out.println("You're in cell " + pos.getSecondValue() +" on the faith track.");

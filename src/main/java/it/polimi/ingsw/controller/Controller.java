@@ -103,13 +103,15 @@ public class Controller implements Observer<MessageID> {
         for (ProPlayer p : ((MultiPlayerGame) game).getActivePlayers())
             turnNumber.add(new BiElement<>(p.getNickname(), p.getTurnID()));
 
-
+        int curr;
         for (ProPlayer p : ((MultiPlayerGame) game).getActivePlayers()) {
             if(p.getTurnID() == 1)
                 p.setInitializationPhase(false);
+            else
+                p.setInitializationPhase(true);
             TurnNumberMessage msg = new TurnNumberMessage(turnNumber);
             envelope = new MessageEnvelope(MessageID.TURN_NUMBER, gson.toJson(msg, TurnNumberMessage.class));
-            int curr = p.getTurnID() - 1;
+            curr = p.getTurnID() - 1;
             remoteViews.get(curr).update(envelope);
 
             //Leader choice
@@ -117,23 +119,29 @@ public class Controller implements Observer<MessageID> {
             remoteViews.get(curr).update(envelope);
 
             //Resource Choice
-            if (curr == 1) {
-                envelope = new MessageEnvelope(MessageID.CHOOSE_RESOURCE, String.valueOf(curr));
+            if (curr == 1 || curr == 2) {
+                envelope = new MessageEnvelope(MessageID.CHOOSE_RESOURCE, String.valueOf(1));
                 remoteViews.get(curr).update(envelope);
-            } else if (curr == 2 || curr == 3) {
-                envelope = new MessageEnvelope(MessageID.CHOOSE_RESOURCE, String.valueOf(curr));
+            } else if (curr == 3) {
+                envelope = new MessageEnvelope(MessageID.CHOOSE_RESOURCE, String.valueOf(2));
                 remoteViews.get(curr).update(envelope);
-                game.getCurrPlayer().moveOnBoard(1);
+            }
+            if(curr==2 || curr==3){
+                p.moveOnBoard(1);
+            }
+            if(curr==0){
+                game.start(p);
+                envelope = new MessageEnvelope(MessageID.UPDATE, p.getUpdate());
+                remoteViews.get(curr).update(envelope);
             }
 
         }
-        for (ProPlayer p : ((MultiPlayerGame) game).getActivePlayers()){
+        /*for (ProPlayer p : ((MultiPlayerGame) game).getActivePlayers()){
             game.start(p);
             envelope = new MessageEnvelope(MessageID.UPDATE, p.getUpdate());
             remoteViews.get(p.getTurnID()-1).update(envelope);
-        }
+        }*/
 
-        initializationPhase = false;
         // TODO: ogni giocatore va informato della situazione degli altri 3
 
         //timer = new Timer(true);
@@ -284,6 +292,9 @@ public class Controller implements Observer<MessageID> {
 
     }
 
+    /**
+     * Let the player play the produce phase accordingly to the {@code produce} message's content (see {@link ProduceMessage}).
+     */
     public synchronized void activateProdAction(ProduceMessage produce) {
         /*if (mustChoosePlacements || basicActionDone) {
             update(MessageID.INFO);
@@ -373,6 +384,9 @@ public class Controller implements Observer<MessageID> {
 
     // TURN UTILITIES --------------------------------------------------------------------------------------------------
 
+    /**
+     * @param leaderCard the card to be activated.
+     */
     public synchronized void activateLeader(LeaderCard leaderCard) {
         /*if (mustChoosePlacements) {
             update(MessageID.INFO);
@@ -413,6 +427,11 @@ public class Controller implements Observer<MessageID> {
         update(MessageID.CARD_NOT_AVAILABLE);
     }
 
+    /**
+     * Let the player choose where to store the resources or even discard them accordingly to the {@code message}'s
+     * content (see {@link StoreResourcesMessage}).
+     * @param message
+     */
     public synchronized void organizeResourceAction(StoreResourcesMessage message) {
         /*if (!mustChoosePlacements) {
             //it doesn't have to store anything
@@ -503,8 +522,12 @@ public class Controller implements Observer<MessageID> {
         mustChoosePlacements = false;
         if(!playerForOrganizeRes.isInitializationPhase())
             update(MessageID.ACK);
-
-        playerForOrganizeRes.setInitializationPhase(false);
+        else{
+            game.start(playerForOrganizeRes);
+            MessageEnvelope envelope = new MessageEnvelope(MessageID.UPDATE, playerForOrganizeRes.getUpdate());
+            remoteViews.get(playerForOrganizeRes.getTurnID()-1).update(envelope);
+            playerForOrganizeRes.setInitializationPhase(false);
+        }
 
     }
 
@@ -620,7 +643,7 @@ public class Controller implements Observer<MessageID> {
                     WRONG_STACK_CHOICE,
                     WRONG_LEVEL_REQUEST -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, ""));
 
-            case STORE_RESOURCES -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
+            case STORE_RESOURCES -> remoteViews.get(playerForOrganizeRes.getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
 
             case UPDATE -> {
                 /*if (initializationPhase) {

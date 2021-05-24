@@ -59,7 +59,7 @@ public class GuiController extends ClientController {
     }
 
     @Override
-    public void chooseResourceAction() {
+    public void chooseResourceAction(int quantity) {
 
     }
 

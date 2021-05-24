@@ -77,10 +77,11 @@ public class MessageReceiver implements Runnable{
 
             case CHOOSE_LEADER_CARDS -> controller.setLeaderAvailable(envelope.getPayload());
             case TOO_MANY_PLAYERS -> controller.displayMessage(envelope.getPayload());
-            case CHOOSE_RESOURCE -> controller.chooseResourceAction();
+            case CHOOSE_RESOURCE -> controller.chooseResourceAction(Integer.parseInt(envelope.getPayload()));
 
             case UPDATE -> controller.updateAction(envelope.deserializeUpdateMessage());
             case CONFIRM_END_TURN -> controller.endTurn(gson.fromJson(envelope.getPayload(), EndTurnMessage.class));
+            case PLAYERS_POSITION -> controller.updatePositionAction(gson.fromJson(envelope.getPayload(), PlayersPositionMessage.class));
 
             default -> System.err.println("MessageID not recognised Registration");
         }

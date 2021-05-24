@@ -226,7 +226,7 @@ public abstract class ClientController {
     //---------------------------------ACTIONS: behaviours caused by Messages--------------------------
 
     public abstract void chooseStorageAfterMarketAction(String s);
-    public abstract void chooseResourceAction();
+    public abstract void chooseResourceAction(int quantity);
     public abstract void chooseStorageAction(List<Resource> s);
     public abstract void chooseLeadersAction();
 

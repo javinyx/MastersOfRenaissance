@@ -5,14 +5,14 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<Pane id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <ImageView fitHeight="166.0" fitWidth="347.0" layoutX="152.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView id="logo" fitHeight="166.0" fitWidth="347.0" layoutX="152.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../img/logo.png" />
          </image>
       </ImageView>
-      <Button layoutX="126.0" layoutY="257.0" mnemonicParsing="false" text="Play" />
-      <Button layoutX="393.0" layoutY="257.0" mnemonicParsing="false" text="Quit" />
+      <Button id="playBtn" layoutX="126.0" layoutY="257.0" mnemonicParsing="false" styleClass="btn" text="Play" />
+      <Button id="quitBtn" layoutX="393.0" layoutY="257.0" mnemonicParsing="false" styleClass="btn" text="Quit" />
    </children>
 </Pane>

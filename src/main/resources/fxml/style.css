@@ -3,3 +3,12 @@
     -fx-background-repeat: stretch;
     -fx-background-position: center center;
 }
+#logo{
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+}
+.btn{
+    -fx-background-image: url("/img/btn.png");
+    -fx-background-size: stretch;
+    -fx-font-size: 24px;
+    -fx-text-fill: #ffffff;
+}

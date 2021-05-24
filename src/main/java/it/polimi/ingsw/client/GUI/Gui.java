@@ -7,6 +7,7 @@ import it.polimi.ingsw.misc.BiElement;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -20,6 +21,7 @@ import java.io.IOException;
 
 
 public class Gui extends Application implements ViewInterface {
+    private static final String INDEX = "index.fxml";
     private GuiController controller;
     private Stage stage;
     private Scene scene;
@@ -39,49 +41,14 @@ public class Gui extends Application implements ViewInterface {
         this.stage = stage;
         controller = new GuiController(stage, this);
 
-        //TODO: definire schermata iniziale
-        stage.setTitle("Maestri del Rinascimento");
-        GridPane rootNode = new GridPane();
-        rootNode.getColumnConstraints().add(new ColumnConstraints(200));
-        rootNode.getRowConstraints().add(new RowConstraints(200));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + INDEX));
+        Scene scene = new Scene(loader.load());
+        scene.getStylesheets().addAll(this.getClass().getResource("/fxml/style.css").toExternalForm());
 
-        Image leo = new Image(MastersOfRenaissance.class.getResourceAsStream("/img/LeonardoDaVinci.jpg"));
-        BackgroundImage backgroundImage = new BackgroundImage(leo, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, null);
-        Background background = new Background(backgroundImage);
-        rootNode.setBackground(background);
-
-        rootNode.setAlignment(Pos.CENTER);
-
-        scene = new Scene(rootNode);
         stage.setScene(scene);
-
-        Label memeLabel = new Label("It's a me... Leo.");
-        memeLabel.setMinWidth(100.0);
-        GridPane.setConstraints(memeLabel, 190, 190);
-
-        Button startGame = new Button("Play");
-        Button exit = new Button("Quit");
-        GridPane.setConstraints(startGame, 10, 100);
-        GridPane.setConstraints(exit, 190, 100);
-
-        startGame.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                try {
-                    controller.setup();
-                }catch(IOException e){}
-            }
-        });
-
-        exit.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                stage.close();
-            }
-        });
-
-        rootNode.getChildren().addAll(memeLabel, startGame, exit);
+        stage.setTitle("Masters of Renaissance");
         stage.show();
+
     }
 
     public BiElement<String, Integer> askIpAndPort(){

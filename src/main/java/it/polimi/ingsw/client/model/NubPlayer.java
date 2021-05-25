@@ -12,8 +12,8 @@ public class NubPlayer implements Comparator<NubPlayer> {
     private final String nickname;
     private int currPos;
     private boolean myTurn = false;
-    private List<Deque<ConcreteProductionCard>> productionStacks;
-    private List<LeaderCard> leaders;
+    private List<Deque<ConcreteProductionCard>> productionStacks = new ArrayList<>();
+    private List<LeaderCard> leaders = new ArrayList<>();
     private Map<BiElement<Resource, Storage>, Integer> allResources;
     private int turnNumber;
     private Boolean[] popePasses;
@@ -61,7 +61,7 @@ public class NubPlayer implements Comparator<NubPlayer> {
         if(allResources.containsKey(resources)){
             allResources.compute(resources, (k,v) -> v + qty);
         }else{
-            allResources.put(resources, 1);
+            allResources.put(resources, qty);
         }
     }
 

@@ -30,4 +30,11 @@ public class Market {
         System.out.println(extra);
     }
 
+    public Resource[][] getMarketBoard() {
+        return marketBoard;
+    }
+
+    public Resource getExtra() {
+        return extra;
+    }
 }

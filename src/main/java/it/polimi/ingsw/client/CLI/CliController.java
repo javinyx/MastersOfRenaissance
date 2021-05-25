@@ -8,6 +8,7 @@ import it.polimi.ingsw.client.model.NubPlayer;
 import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.concreteMessages.*;
 import it.polimi.ingsw.misc.BiElement;
+import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.cards.leader.BoostAbility;
 import it.polimi.ingsw.model.cards.leader.DiscountAbility;
@@ -258,14 +259,24 @@ public class CliController extends ClientController {
 
         System.out.println("Select the resources you want to use for the Development Card");
 
-        List<ConcreteProductionCard> prod = new ArrayList<>();
-        prod.add(convertIdToProductionCard(prodId));
-        cli.selectResWalletProd(prod, fromWare, fromLoot, fromLeader1, fromLeader2);
+        boolean a, b, c, d;
 
-        resWal.setWarehouseTray(fromWare);
-        resWal.setLootchestTray(fromLoot);
-        resWal.setExtraStorage(fromLeader1, 0);
-        resWal.setExtraStorage(fromLeader2, 1);
+        do{
+
+            List<ConcreteProductionCard> prod = new ArrayList<>();
+            prod.add(convertIdToProductionCard(prodId));
+            cli.selectResWalletProd(prod, fromWare, fromLoot, fromLeader1, fromLeader2);
+
+            a = resWal.setWarehouseTray(fromWare);
+            b = resWal.setLootchestTray(fromLoot);
+            c = resWal.setExtraStorage(fromLeader1, 0);
+            d = resWal.setExtraStorage(fromLeader2, 1);
+
+            if ((!a && !resWal.getWarehouseTray().isEmpty()) || (!b && !resWal.getLootchestTray().isEmpty()) || (!c && !resWal.getExtraStorage(0).isEmpty()) || (!d && !resWal.getExtraStorage(1).isEmpty()))
+                System.out.println("An error occur in the selection of the Resources");
+
+        }while ((!a && !resWal.getWarehouseTray().isEmpty()) || (!b && !resWal.getLootchestTray().isEmpty()) || (!c && !resWal.getExtraStorage(0).isEmpty()) || (!d && !resWal.getExtraStorage(1).isEmpty()));
+
 
         BuyProductionMessage msg = new BuyProductionMessage(prodId, stack, leadCard, resWal);
         messageToServerHandler.generateEnvelope(MessageID.BUY_PRODUCTION_CARD, gson.toJson(msg));
@@ -320,6 +331,18 @@ public class CliController extends ClientController {
 
     }
     public void viewOpponents(){
+
+        if(otherPlayers.size() == 0)
+            System.out.println("You're playing alone");
+        else{
+            for(NubPlayer np : otherPlayers){
+                System.out.println("Here the list of the stuff of "+np.getNickname());
+                cli.showPlayerProdCard(np.getProductionStacks());
+                cli.showPlayerLeader(np.getLeaders());
+                cli.showPlayerResources(np.getAllResources());
+
+            }
+        }
 
     }
 
@@ -419,7 +442,7 @@ public class CliController extends ClientController {
             return;
         }
 
-        messageToServerHandler.generateEnvelope(MessageID.ACTIVATE_LEADER, gson.toJson(cli.activeLeaderFromId(activable.size()), Integer.class));
+        messageToServerHandler.generateEnvelope(MessageID.ACTIVATE_LEADER, String.valueOf(cli.activeLeaderFromId(activable)));
     }
 
     // Message From Server ---------------------------------------------------------------------------------------------
@@ -446,6 +469,9 @@ public class CliController extends ClientController {
         cli.showMessage("Choose a storage for each of the following resources:" + res);
 
         storeRes = cli.storeResources(res);
+
+        for (BiElement<Resource, Storage> sr : storeRes)
+            player.addResources(sr, 1);
 
         StoreResourcesMessage msg = new StoreResourcesMessage(storeRes, getPlayer().getTurnNumber());
 

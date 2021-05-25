@@ -3,6 +3,7 @@ package it.polimi.ingsw.client.CLI;
 import it.polimi.ingsw.client.CLI.printer.Printer;
 import it.polimi.ingsw.client.CLI.printer.UnixPrinter;
 import it.polimi.ingsw.client.CLI.printer.WindowsPrinter;
+import it.polimi.ingsw.client.model.NubPlayer;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.cards.leader.BoostAbility;
@@ -139,17 +140,6 @@ public class Cli /*extends ViewInterface*/ {
                 res = scanner.next().toLowerCase();
             }while (!res.equals("stone") && !res.equals("shield") && !res.equals("servant") && !res.equals("coin"));
 
-            /*do{
-                System.out.println("Where do you want to store it in the warehouse? Small(1), Medium(2), Large(3)");
-                pos = scanner.nextInt();
-            } while (pos != 1 && pos != 2 && pos != 3);
-
-            switch (pos){
-                case 1 -> stor = Storage.WAREHOUSE_SMALL;
-                case 2 -> stor = Storage.WAREHOUSE_MID;
-                case 3 -> stor = Storage.WAREHOUSE_LARGE;
-            }*/
-
             resources.add(convertStringToResource(res));
         }
 
@@ -195,18 +185,19 @@ public class Cli /*extends ViewInterface*/ {
 
     public void displayTurnOption(){
 
-        int choice;
+        int choice = 0;
 
-        OSPrinter.printTable();
+        OSPrinter.clearScreen();
+        OSPrinter.printBoard(controller.getPlayer(), controller.getMarket());
 
         OSPrinter.printTurnOptions();
 
-        do{
+        do {
             System.out.println("Select a number:");
             choice = scanner.nextInt();
         } while (choice < 1 || choice > 8);
 
-        switch(choice){
+        switch (choice) {
             case 1 -> controller.buyFromMarket();
             case 2 -> controller.buyProductionCard();
             case 3 -> controller.startProduction();
@@ -222,21 +213,23 @@ public class Cli /*extends ViewInterface*/ {
     public void displayLightTurnOption(){
         int choice = 0;
 
-        OSPrinter.printLightTurnOptions();
-        while (choice != 5) {
-            do {
-                System.out.println("Select a number:");
-                choice = scanner.nextInt();
-            } while (choice < 1 || choice > 5);
+        OSPrinter.clearScreen();
+        OSPrinter.printBoard(controller.getPlayer(), controller.getMarket());
 
-            switch (choice) {
-                case 1 -> controller.viewOpponents();
-                case 2 -> controller.activateLeader();
-                case 3 -> controller.discardLeader();
-                case 4 -> controller.viewProductionCard();
-                case 5 -> controller.passTurn();
-            }
+        OSPrinter.printLightTurnOptions();
+        do {
+            System.out.println("Select a number:");
+            choice = scanner.nextInt();
+        } while (choice < 1 || choice > 5);
+
+        switch (choice) {
+            case 1 -> controller.viewOpponents();
+            case 2 -> controller.activateLeader();
+            case 3 -> controller.discardLeader();
+            case 4 -> controller.viewProductionCard();
+            case 5 -> controller.passTurn();
         }
+
 
     }
 
@@ -290,6 +283,11 @@ public class Cli /*extends ViewInterface*/ {
         int c, numLeader = -1, lock;
         List<StorageAbility> storeLead = new ArrayList<>();
 
+        for (LeaderCard led : controller.getPlayer().getLeaders()) {
+            if (led instanceof StorageAbility && led.isActive())
+                storeLead.add((StorageAbility) led);
+        }
+
         for (ConcreteProductionCard pc : prodCard) {
             int count = 1;
             for(Resource res : pc.getCost()) {
@@ -299,10 +297,6 @@ public class Cli /*extends ViewInterface*/ {
                     System.out.print("Choice: ");
                     c = scanner.nextInt();
                     if (c == 3){
-                        for (LeaderCard led : controller.getPlayer().getLeaders()) {
-                            if (led instanceof StorageAbility && led.isActive())
-                                storeLead.add((StorageAbility) led);
-                        }
                         if (storeLead.size() == 0)
                             System.out.println("You haven't any eligible leader");
                         lock =  0;
@@ -557,13 +551,20 @@ public class Cli /*extends ViewInterface*/ {
         return pos;
     }
 
-    public int activeLeaderFromId(int activable){
-        int id;
+    public int activeLeaderFromId(List<LeaderCard> activable){
+        int id, lock;
+        for (int i = 0; i < activable.size(); i++) {
+            OSPrinter.printLeaders(activable.get(i));
+        }
+        System.out.println("You can activate " + activable.size() + " leaders. Which one do you want to activate?");
         do{
-            System.out.println("You can activate " + activable + " leaders. Which one do you want to activate?" +
-                    "Insert its id.\n" + activable);
+            lock = 1;
+            System.out.print("ID: ");
             id = scanner.nextInt();
-        }while (id > 0 && id < activable);
+            for (LeaderCard lead : activable)
+                if (id != lead.getId())
+                    lock = 0;
+        }while (lock != 0);
 
         return id;
     }
@@ -603,6 +604,48 @@ public class Cli /*extends ViewInterface*/ {
             c = scanner.nextInt();
         } while (c != 1 && c != 2 && c != 3);
         return c;
+    }
+
+    public void showPlayerProdCard(List<Deque<ConcreteProductionCard>> prodStack){
+        System.out.println("Development cards:");
+        if (prodStack.size() == 0)
+            System.out.println("There are no Development card");
+
+        for (int i = 1; i < prodStack.size()+1; i++) {
+            System.out.println("In the stuck number "+i+" there is: ");
+            OSPrinter.printProductionCard(prodStack.get(i - 1).peekFirst());
+        }
+    }
+
+    public void showPlayerLeader(List<LeaderCard> leadCard){
+        System.out.println("Leader cards:");
+        if(leadCard.size() != 0)
+            for (LeaderCard ld : leadCard){
+                if (ld != null && ld.isActive())
+                    OSPrinter.printLeaders(ld);
+                 else
+                    System.out.println("None");
+            }
+        else
+            System.out.println("There are no Leader card");
+
+    }
+
+    public void showPlayerResources(Map<BiElement<Resource, Storage>, Integer> res){
+        List<BiElement<Resource, Storage>> ware = new ArrayList<>();
+        System.out.println("Resources: ");
+        if (res.size() != 0) {
+            for (BiElement<Resource, Storage> bi : res.keySet()) {
+                switch (bi.getSecondValue()) {
+                    case WAREHOUSE_SMALL, WAREHOUSE_MID, WAREHOUSE_LARGE -> ware.add(bi);
+                    case LOOTCHEST, EXTRA1, EXTRA2 -> System.out.println(bi.getFirstValue() + ": " + res.get(bi));
+                }
+            }
+            System.out.println("The warehouse is:");
+            OSPrinter.printWarehouse(ware);
+        }
+        else
+            System.out.println("There are no Resources");
     }
 
     //--------------------------------------------------------------------------------------------------------------------

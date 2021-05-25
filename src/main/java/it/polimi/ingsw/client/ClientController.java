@@ -25,7 +25,7 @@ public abstract class ClientController {
     private List<ConcreteProductionCard> allProductionCards;
     private List<LeaderCard> allLeaders = new ArrayList<>();
     protected List<ConcreteProductionCard> availableProductionCard = new ArrayList<>();
-    private List<NubPlayer> otherPlayers = new ArrayList<>();
+    protected List<NubPlayer> otherPlayers = new ArrayList<>();
     private List<NubPlayer> totalPlayers = new ArrayList<>();
     private List<String> playersNames;
     protected NubPlayer player;
@@ -188,6 +188,10 @@ public abstract class ClientController {
         player.setLeaders(new ArrayList<>(convertIdToLeaderCard(convertStringToListInteger(leaders))));
 
         chooseLeadersAction();
+    }
+
+    public Market getMarket() {
+        return market;
     }
 
     public abstract void startGame();

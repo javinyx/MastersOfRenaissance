@@ -3,7 +3,6 @@ package it.polimi.ingsw.client;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import it.polimi.ingsw.MastersOfRenaissance;
-import it.polimi.ingsw.client.model.ClientGame;
 import it.polimi.ingsw.client.model.Market;
 import it.polimi.ingsw.client.model.NubPlayer;
 import it.polimi.ingsw.messages.MessageID;
@@ -21,18 +20,17 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class ClientController {
-    private ViewInterface view;
-    private List<ConcreteProductionCard> allProductionCards;
-    private List<LeaderCard> allLeaders = new ArrayList<>();
-    protected List<ConcreteProductionCard> availableProductionCard = new ArrayList<>();
-    protected List<NubPlayer> otherPlayers = new ArrayList<>();
-    private List<NubPlayer> totalPlayers = new ArrayList<>();
-    private List<String> playersNames;
-    protected NubPlayer player;
+
     private NubPlayer currPlayer;
     private Market market;
-    private boolean active = true;
-    private ClientGame game = new ClientGame();
+    protected NubPlayer player;
+    protected MessageToServerHandler messageToServerHandler;
+
+    private List<ConcreteProductionCard> allProductionCards;
+    private List<LeaderCard> allLeaders = new ArrayList<>();
+    private List<NubPlayer> totalPlayers = new ArrayList<>();
+    protected List<ConcreteProductionCard> availableProductionCard = new ArrayList<>();
+    protected List<NubPlayer> otherPlayers = new ArrayList<>();
     protected List<BiElement<Resource, Storage>> storeRes;
 
     private MessageID lastRegistrationMessage;
@@ -41,9 +39,7 @@ public abstract class ClientController {
     private boolean waitingServerUpdate = false;
     private boolean registrationPhase = true;
     private boolean gameOver = false;
-
-    protected final Object currPlayerChange = new Object();
-
+    private boolean active = true;
     protected boolean normalTurn;
 
     private static final String prodPath = "/json/ProductionCards.json",
@@ -55,115 +51,59 @@ public abstract class ClientController {
             tokenDoubleMovePath = "/json/ActionTokens/DoubleMoveTokens.json",
             tokenMoveShufflePath = "/json/ActionTokens/MoveShuffleTokens.json";
 
-    protected MessageToServerHandler messageToServerHandler;
 
+    // SETTER & GETTER
     protected MessageToServerHandler getMessageToServerHandler(){return messageToServerHandler;}
 
-    public MessageID getLastRegistrationMessage() {
-        return lastRegistrationMessage;
-    }
+    public MessageID getLastRegistrationMessage() {return lastRegistrationMessage;}
+    public void setLastRegistrationMessage(MessageID lastRegistrationMessage) {this.lastRegistrationMessage = lastRegistrationMessage;}
 
-    public MessageID getLastGameMessage() {
-        return lastGameMessage;
-    }
+    public MessageID getLastGameMessage() {return lastGameMessage;}
+    public void setLastGameMessage(MessageID lastGameMessage) {this.lastGameMessage = lastGameMessage;}
 
-    public boolean isWaitingServerUpdate() {
-        return waitingServerUpdate;
-    }
+    public boolean isWaitingServerUpdate() {return waitingServerUpdate;}
+    public synchronized void setWaitingServerUpdate(boolean waitingServerUpdate) {this.waitingServerUpdate = waitingServerUpdate;}
 
-    public void setRegistrationPhase(boolean registrationPhase) {
-        this.registrationPhase = registrationPhase;
-    }
+    public synchronized boolean isRegistrationPhase() {return registrationPhase;}
+    public void setRegistrationPhase(boolean registrationPhase) {this.registrationPhase = registrationPhase; }
 
-    public boolean isGameOver() {
-        return gameOver;
-    }
+    public boolean isGameOver() {return gameOver;}
+    public void setGameOver(boolean gameOver) {this.gameOver = gameOver;}
 
-    public void setGameOver(boolean gameOver) {
-        this.gameOver = gameOver;
-    }
-
-    public synchronized boolean isActive(){
-        return active;
-    }
-    public void setLastGameMessage(MessageID lastGameMessage) {
-        this.lastGameMessage = lastGameMessage;
-    }
-
-    public void setLastRegistrationMessage(MessageID lastRegistrationMessage) {
-        this.lastRegistrationMessage = lastRegistrationMessage;
-    }
+    public synchronized boolean isActive() {return active;}
+    public synchronized void setActive(boolean active) {this.active = active;}
 
     public synchronized void setClosedConnection(String s) {
         gameOver = true;
         displayMessage(s);
     }
 
-    public synchronized void setWaitingServerUpdate(boolean waitingServerUpdate) {
-        this.waitingServerUpdate = waitingServerUpdate;
-    }
+    protected void connectionError() {setActive(false);}
 
-    public synchronized boolean isRegistrationPhase() {
-        return registrationPhase;
-    }
-
-    protected void connectionError(){
-        setActive(false);
-    }
-
-    public synchronized void setActive(boolean active) {
-        this.active = active;
-    }
-
-    private void initAllCards(){
-        Gson gson = new Gson();
-        Reader reader;
-
-        reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(prodPath)));
-        allProductionCards = gson.fromJson(reader, new TypeToken<List<ConcreteProductionCard>>(){}.getType());
-
-        reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(leadDiscountPath)));
-        allLeaders.addAll(gson.fromJson(reader, new TypeToken<List<DiscountAbility>>(){}.getType()));
-
-        reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(leadStoragePath)));
-        allLeaders.addAll(gson.fromJson(reader, new TypeToken<List<StorageAbility>>(){}.getType()));
-
-        reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(leadMarblePath)));
-        allLeaders.addAll(gson.fromJson(reader, new TypeToken<List<MarbleAbility>>(){}.getType()));
-
-        reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(leadBoostPath)));
-        allLeaders.addAll(gson.fromJson(reader, new TypeToken<List<BoostAbility>>(){}.getType()));
-    }
-
-    public void addPlayers(NubPlayer player){this.otherPlayers.add(player);}
     public List<NubPlayer> getOtherPlayers(){return otherPlayers;}
+    public void setOtherPlayers(List<NubPlayer> otherPlayers) {this.otherPlayers = otherPlayers;}
 
-    public List<NubPlayer> getTotalPlayers() {
-        return totalPlayers;
-    }
-
-    public void setTotalPlayers(List<NubPlayer> totalPlayers) {
-        this.totalPlayers = totalPlayers;
-    }
-
-    public void setOtherPlayers(List<NubPlayer> otherPlayers) {
-        this.otherPlayers = otherPlayers;
-    }
-
-    public void setPlayer(NubPlayer player) {
-        this.player = player;
-    }
+    public List<NubPlayer> getTotalPlayers() {return totalPlayers;}
+    public void setTotalPlayers(List<NubPlayer> totalPlayers) {this.totalPlayers = totalPlayers;}
 
     public NubPlayer getPlayer(){return player;}
-    public void initAvailableProductionCard(){}
+    public void setPlayer(NubPlayer player) {this.player = player;}
+
+    public Market getMarket() {return market;}
     public void setMarket(Resource[][] market, Resource extra){ this.market = new Market(market,extra);}
 
+    public void addPlayers(NubPlayer player){this.otherPlayers.add(player);}
+
+    public NubPlayer getCurrPlayer() {return currPlayer;}
+    public void setCurrPlayer(NubPlayer currPlayer) {this.currPlayer = currPlayer;}
+
+
+    // SETUP PHASE -----------------------------------------------------------------------------------------------------
+
     public abstract boolean setup() throws IOException;
-
-    // SETUP MESSAGES -----------------------------------------------------------------------------------------
-
-    public abstract void askNickname ();
-    public abstract void askNumberOfPlayers ();
+    public abstract void askNickname();
+    public abstract void askNumberOfPlayers();
+    public abstract void startGame();
 
     public void setTotalPlayers(TurnNumberMessage msg){
         for (int i = 0; i < msg.getTurnAss().size(); i++) {
@@ -177,11 +117,7 @@ public abstract class ClientController {
                 player.setTurnNumber(msg.getTurnAss().get(i).getSecondValue());
         }
 
-        //System.out.println("Before sorting: " + totalPlayers.stream().map(NubPlayer::getTurnNumber).collect(Collectors.toList()));
-
         totalPlayers.sort(NubPlayer.getComparator());
-
-        //System.out.println("After sorting: " + totalPlayers.stream().map(NubPlayer::getTurnNumber).collect(Collectors.toList()));
     }
 
     public void setLeaderAvailable(String leaders){
@@ -190,11 +126,12 @@ public abstract class ClientController {
         chooseLeadersAction();
     }
 
-    public Market getMarket() {
-        return market;
+    public void confirmRegistration(String nickName){
+        player = new NubPlayer(nickName);
+        totalPlayers.add(player);
+        initAllCards();
     }
 
-    public abstract void startGame();
     // ERROR MESSAGE ACTIONS -------------------------------------------------------------------------------------------
 
     public void cardNotAvailable(){
@@ -233,17 +170,21 @@ public abstract class ClientController {
     public abstract void chooseResourceAction(int quantity);
     public abstract void chooseStorageAction(List<Resource> s);
     public abstract void chooseLeadersAction();
-
     public abstract void updateMarket();
     public abstract void updateAvailableProductionCards();
+    public abstract void showCurrentTurn(String s);
+    public abstract void startTurnPhase();
+    public abstract void buyFromMarket();
+    public abstract void activateLeader();
+    public abstract void updatePositionAction(PlayersPositionMessage msg);
+
+    /**Move Lorenzo on the faith track*/
+    public abstract void moveLorenzo(int currentPosition);
 
     /**Show other players what the last player has done in his/her turn once it has been set on the corresponding
      * {@link NubPlayer} object.
      * @param player the player who played last turn*/
     public abstract void updateOtherPlayer(NubPlayer player);
-
-    /**Move Lorenzo on the faith track*/
-    public abstract void moveLorenzo(int currentPosition);
 
     public synchronized void updateAction(UpdateMessage msg){
         if(market==null){
@@ -315,16 +256,6 @@ public abstract class ClientController {
         }
     }
 
-    public abstract void showCurrentTurn(String s);
-
-    public NubPlayer getCurrPlayer() {
-        return currPlayer;
-    }
-
-    public void setCurrPlayer(NubPlayer currPlayer) {
-        this.currPlayer = currPlayer;
-    }
-
     public void continueTurn(Boolean basicActionDone){
         if (!registrationPhase){
             System.out.println(basicActionDone);
@@ -358,11 +289,6 @@ public abstract class ClientController {
 
     }
 
-    protected abstract void startTurnPhase();
-
-    public abstract void buyFromMarket();
-    public abstract void activateLeader();
-
     public void infoVaticanReport(VaticanReportMessage msg){
         int reportId = msg.getReportId();
         List<BiElement<Integer, Boolean>> playersPopeStatus = msg.getAllPlayerPopeFavorStatus();
@@ -377,9 +303,12 @@ public abstract class ClientController {
         //TODO: show on UI who caused the vatican report and the player (client owner) his/her status
     }
 
-    public abstract void updatePositionAction(PlayersPositionMessage msg);
+    public void passTurn(){
+        messageToServerHandler.generateEnvelope(MessageID.END_TURN, "");
+    }
 
     //---------------------------CONVERTERS---------------------------------
+
     protected List<ConcreteProductionCard> convertIdToProductionCard(List<Integer> ids){
         return allProductionCards.stream().filter(x -> ids.contains(x.getId())).collect(Collectors.toList());
     }
@@ -417,14 +346,25 @@ public abstract class ClientController {
         return null;
     }
 
+    private void initAllCards() {
+        Gson gson = new Gson();
+        Reader reader;
 
-    public void confirmRegistration(String nickName){
-        player = new NubPlayer(nickName);
-        totalPlayers.add(player);
-        initAllCards();
+        reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(prodPath)));
+        allProductionCards = gson.fromJson(reader, new TypeToken<List<ConcreteProductionCard>>(){}.getType());
+
+        reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(leadDiscountPath)));
+        allLeaders.addAll(gson.fromJson(reader, new TypeToken<List<DiscountAbility>>(){}.getType()));
+
+        reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(leadStoragePath)));
+        allLeaders.addAll(gson.fromJson(reader, new TypeToken<List<StorageAbility>>(){}.getType()));
+
+        reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(leadMarblePath)));
+        allLeaders.addAll(gson.fromJson(reader, new TypeToken<List<MarbleAbility>>(){}.getType()));
+
+        reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(leadBoostPath)));
+        allLeaders.addAll(gson.fromJson(reader, new TypeToken<List<BoostAbility>>(){}.getType()));
     }
-
-    public void passTurn(){
-        messageToServerHandler.generateEnvelope(MessageID.END_TURN, "");
-    };
 }
+
+

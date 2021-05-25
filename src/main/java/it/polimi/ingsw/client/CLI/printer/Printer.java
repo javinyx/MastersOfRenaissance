@@ -325,8 +325,6 @@ public class Printer {
             case 34 -> s = res;
             case 35 -> s = res.substring(0, res.length()-1);
 
-
-
         }
         if (s == null)
             s = " ".repeat(15)+"None"+" ".repeat(15);

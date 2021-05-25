@@ -99,7 +99,7 @@ public class GuiController extends ClientController {
     }
 
     @Override
-    protected void startTurnPhase() {
+    public void startTurnPhase() {
 
     }
 

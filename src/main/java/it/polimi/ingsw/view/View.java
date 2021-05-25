@@ -23,10 +23,4 @@ public abstract class View implements Observer<MessageEnvelope> {
      */
     protected abstract void sendMessage(String message);
 
-    @Override
-    public void updateFrom(MessageEnvelope envelope, String nickname){
-        if(!nickname.equals(this.nickname)){
-            update(envelope);
-        }
-    }
 }

@@ -102,9 +102,5 @@ public class RemoteView extends View {
             readMessageFromClient(gson.fromJson(str, MessageEnvelope.class));
         }
 
-        @Override
-        public void updateFrom(String str, String nickname){
-            //niente
-        }
     }
 }

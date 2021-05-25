@@ -11,4 +11,9 @@
     -fx-background-size: stretch;
     -fx-font-size: 24px;
     -fx-text-fill: #ffffff;
+    -fx-text-alignment: center;
+    -fx-focus-color: transparent;
+}
+.btn:pressed{
+    -fx-background-image: url("/img/btnPressed.png");
 }

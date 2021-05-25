@@ -71,26 +71,26 @@ public class InitialPhaseHandler extends PhaseHandler {
     /**
      * @return a {@link BiElement} containing the IP as first value and the Port as second.
      */
-    public BiElement<String, Integer> getIpAndPort(){
+    public void retrieveIpAndPort(){
         connectBtn.setOnAction(actionEvent -> {
-            ip = ipField.getText();
-            port = portField.getText();
+            if(ipField.getText().length()>0 && ipField.getText().length()>0) {
+                ip = ipField.getText();
+                port = portField.getText();
+            }else{
+                ip = "localhost";
+                port = "27001";
+            }
+            controller.setIpAndPort(ip, port);
         });
 
-        if(ip.isEmpty()){
-            ip = "localhost";
-        }
-        if(port.isEmpty()){
-            port = "27001";
-        }
 
-        connectBtn.setOnAction(actionEvent -> {
+        localModeBtn.setOnAction(actionEvent -> {
             ip = "0";
             port = "0";
+            controller.setIpAndPort(ip, port);
         });
-
-        return new BiElement<>(ip, Integer.parseInt(port));
     }
+
 
     public BiElement<String, Integer> getNickNameAndGameSize(){
         singlePlayerBtn.setOnAction(actionEvent -> {

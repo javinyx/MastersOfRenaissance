@@ -9,6 +9,7 @@ import it.polimi.ingsw.client.model.NubPlayer;
 import it.polimi.ingsw.messages.concreteMessages.PlayersPositionMessage;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.model.market.Resource;
+import javafx.fxml.FXML;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -22,6 +23,8 @@ public class GuiController extends ClientController {
     protected final Gui gui;
     private Stage stage;
     private InitialPhaseHandler initialPhaseHandler;
+
+    private String ip, port;
 
 
 
@@ -40,37 +43,51 @@ public class GuiController extends ClientController {
     }
 
     @Override
+    @FXML
     public boolean setup() throws IOException {
         stage.setScene(initialPhaseHandler.getScene(ScenesEnum.CONNECTION));
         stage.show();
 
-        BiElement<String, Integer> connectionInfo = initialPhaseHandler.getIpAndPort();
-
-        if(connectionInfo.getFirstValue().isEmpty() && connectionInfo.getSecondValue()==0){
-            startLocalGame();
-            return true;
-        }
-
-        Socket socket = new Socket(connectionInfo.getFirstValue(), connectionInfo.getSecondValue());
-        socket.setKeepAlive(true);
-
-        PrintWriter toServer = new PrintWriter(socket.getOutputStream());
-        messageToServerHandler = new MessageToServerHandler(toServer, this);
-
-        try (socket; ObjectInputStream socketIn = new ObjectInputStream(socket.getInputStream()); toServer) {
-            Thread t0 = new Thread(new MessageReceiver(socketIn, this));
-            t0.start();
-            t0.join();
-            synchronized (this){
-                this.wait(3000);
-            }
-
-        } catch (InterruptedException | NoSuchElementException e) {
-            setClosedConnection("Connection closed from the client side");
-            Thread.currentThread().interrupt();
-        }
+        initialPhaseHandler.retrieveIpAndPort();
 
         return true;
+    }
+
+    public void setIpAndPort(String ip, String port){
+        this.ip = ip;
+        this.port = port;
+
+        if(ip.equals("0") && port.equals("0")){
+            startLocalGame();
+            return;
+        }
+
+        try {
+            Socket socket = new Socket(ip, Integer.parseInt(port));
+            socket.setKeepAlive(true);
+
+            PrintWriter toServer = new PrintWriter(socket.getOutputStream());
+
+            messageToServerHandler = new MessageToServerHandler(toServer, this);
+
+            System.out.println("Connection OK");
+
+            try (socket; ObjectInputStream socketIn = new ObjectInputStream(socket.getInputStream()); toServer) {
+                Thread t0 = new Thread(new MessageReceiver(socketIn, this));
+                t0.start();
+                t0.join();
+                synchronized (this){
+                    this.wait(3000);
+                }
+
+            } catch (InterruptedException | NoSuchElementException e) {
+                setClosedConnection("Connection closed from the client side");
+                Thread.currentThread().interrupt();
+            }
+        }catch(IOException e){
+            System.err.println(e.getClass() + "Socket error");
+        }
+
     }
 
     @Override
@@ -78,6 +95,7 @@ public class GuiController extends ClientController {
     }
 
     @Override
+    @FXML
     public void askNickname() {
         stage.setScene(initialPhaseHandler.getScene(ScenesEnum.REGISTRATION));
         stage.show();
@@ -85,6 +103,11 @@ public class GuiController extends ClientController {
         BiElement<String, Integer> nickAndSize = initialPhaseHandler.getNickNameAndGameSize();
 
         messageToServerHandler.sendMessageToServer(nickAndSize.getFirstValue());
+        player = new NubPlayer(nickAndSize.getFirstValue());
+    }
+
+    public void setNickname(){
+
     }
 
     @Override

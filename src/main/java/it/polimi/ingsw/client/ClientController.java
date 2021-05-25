@@ -242,16 +242,13 @@ public abstract class ClientController {
     public abstract void moveLorenzo(int currentPosition);
 
     public synchronized void updateAction(UpdateMessage msg){
-
-        System.out.println(msg.getPlayerId());
-        System.out.println(msg.getNextPlayerId());
-
         if(market==null){
             market = new Market(msg.getMarketBoard(), msg.getExtraMarble());
         }else {
             market.setMarketBoard(msg.getMarketBoard());
             market.setExtra(msg.getExtraMarble());
         }
+        market.printM();
 
         if(msg.getAvailableProductionCards() != null || !msg.getAvailableProductionCards().isEmpty())
             availableProductionCard = convertIdToProductionCard(msg.getAvailableProductionCards());
@@ -262,10 +259,15 @@ public abstract class ClientController {
             if(msg.getProductionCardId() != null)
                 boughtProductionCard = convertIdToProductionCard(msg.getProductionCardId().getFirstValue());
 
-            for (NubPlayer pp : otherPlayers) {
+            //modifica: da for(NubPlayer pp: otherPLayers) a for(NubPlayer pp: totalPlayers)
+            for (NubPlayer pp : totalPlayers) {
                 //update last player state for this client
-                if (pp.getTurnNumber() == msg.getPlayerId()) {
+                if (pp.getTurnNumber() == msg.getPlayerId()) { //search player
                     pp.setCurrPos(msg.getPlayerPos());
+                    if(pp.equals(player)){
+                        //updateFaithTrack();
+                        System.out.println("You're now in position " + player.getCurrPos()); //for debugging
+                    }
                     if (boughtProductionCard != null)
                         pp.addProductionCard(boughtProductionCard, msg.getProductionCardId().getSecondValue() - 1);
 

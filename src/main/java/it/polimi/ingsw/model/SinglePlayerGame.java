@@ -110,7 +110,9 @@ public class SinglePlayerGame extends Game implements ModelObserver {
     public void updatePosition(Player player){
         //controller.update(MessageID.PLAYERS_POSITION);
     }
+
     public void updateEndTurn(ProPlayer player){} //do nothing?
+
     /**Alert the observer that {@code player} has triggered the {@code vaticanReport}.
      * @param vaticanReport must be between 1 and 3. */
     public void alertVaticanReport(Player player, int vaticanReport){

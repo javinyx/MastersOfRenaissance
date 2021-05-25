@@ -177,7 +177,11 @@ public class Controller implements Observer<MessageID> {
             update(MessageID.INFO);
             return;
         }
-        update(MessageID.CONFIRM_END_TURN);
+        //update(MessageID.CONFIRM_END_TURN);
+        //parte nuova
+        previousPlayer = game.getCurrPlayer();
+        game.updateEndTurn(previousPlayer);
+        //fine
         update(MessageID.UPDATE);
     }
 
@@ -205,7 +209,7 @@ public class Controller implements Observer<MessageID> {
         }
 
         mustChoosePlacements = true;
-        //basicActionDone = true;
+        basicActionDone = true;
 
         update(MessageID.STORE_RESOURCES);
     }
@@ -629,6 +633,7 @@ public class Controller implements Observer<MessageID> {
 
             case ACK -> remoteViews.get(playerForOrganizeRes.getTurnID() - 1).update(new MessageEnvelope(messageID, String.valueOf(basicActionDone)));
             case CONFIRM_END_TURN -> {
+                System.err.println("CONFIRM_END_TURN: non dovremmo più essere qui");
                 EndTurnMessage msg = generateEndTurnMessage();
                 String payload = gson.toJson(msg, EndTurnMessage.class);
                 remoteViews.get(previousPlayer.getTurnID() - 1).update(new MessageEnvelope(messageID, payload));
@@ -660,7 +665,9 @@ public class Controller implements Observer<MessageID> {
                     UpdateMessage msg = generateUpdateMessage();
                     MessageEnvelope envelope = new MessageEnvelope(MessageID.UPDATE, gson.toJson(msg, UpdateMessage.class));
                     for (Observer<MessageEnvelope> obs : remoteViews) {
-                        obs.updateFrom(envelope, previousPlayer.getNickname());
+                        //modifica: sostituzione updateFrom -> update normale
+                        obs.update(envelope);
+                        //obs.updateFrom(envelope, previousPlayer.getNickname());
                     }
                // }
             }

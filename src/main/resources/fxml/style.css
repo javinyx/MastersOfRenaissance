@@ -1,19 +1,72 @@
-#pane{
-    -fx-background-image: url("/img/background.jpg");
+/*
+ * Welcome Scene
+*/
+#background {
+    -fx-background-image: url("/img/ui/background.jpg");
     -fx-background-repeat: stretch;
     -fx-background-position: center center;
 }
-#logo{
+#logo {
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
 }
-.btn{
-    -fx-background-image: url("/img/btn.png");
+.btn {
+    -fx-background-image: url("/img/ui/btn.png");
     -fx-background-size: stretch;
     -fx-font-size: 24px;
     -fx-text-fill: #ffffff;
     -fx-text-alignment: center;
     -fx-focus-color: transparent;
+    -fx-background-color: transparent;
+    -fx-label-padding: -5 0 0 0;
 }
-.btn:pressed{
-    -fx-background-image: url("/img/btnPressed.png");
+.btn:pressed {
+    -fx-background-image: url("/img/ui/btnPressed.png");
+}
+.btn:hover {
+    -fx-effect: dropshadow(one-pass-box, rgba(255,255,255,0.5), 10, 0, 0, 0);
+}
+
+/*
+ * Connection Scene
+ */
+.inputLabel {
+    -fx-font-size: 20px;
+    -fx-text-fill: #ffffff;
+}
+.inputLabelSmall {
+    -fx-font-size: 16px;
+    -fx-text-fill: #ffffff;
+}
+.inputArea {
+}
+
+/*
+ * Registration Scene
+ */
+.btnSq {
+    -fx-background-image: url("/img/ui/btnSq.png");
+    -fx-background-size: stretch;
+    -fx-font-size: 30px;
+    -fx-text-fill: #ffffff;
+    -fx-text-alignment: center;
+    -fx-focus-color: transparent;
+    -fx-background-color: transparent;
+}
+.btnSq:pressed {
+    -fx-background-image: url("/img/ui/btnSqPressed.png");
+}
+.btnSq:hover {
+    -fx-effect: dropshadow(one-pass-box, rgba(255,255,255,0.5), 10, 0, 0, 0);
+}
+
+/*
+ * Waiting Room Scene
+ */
+.greeting {
+    -fx-font-size: 35px;
+    -fx-text-fill: #ffffff;
+}
+.waitLabel {
+    -fx-font-size: 30px;
+    -fx-text-fill: #ffffff;
 }

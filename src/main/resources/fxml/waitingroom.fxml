@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="400.0" prefWidth="600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.client.GUI.Gui">
+    <center>
+        <VBox alignment="CENTER" spacing="50" stylesheets="@style.css" BorderPane.alignment="CENTER">
+            <children>
+                <Label alignment="CENTER" contentDisplay="CENTER" styleClass="greeting" stylesheets="@style.css"
+                       text="Hello, PLAYER_NAME"/>
+                <Label alignment="CENTER" contentDisplay="CENTER" styleClass="waitLabel" stylesheets="@style.css"
+                       text="Waiting for other players..."/>
+            </children>
+        </VBox>
+    </center>
+</BorderPane>

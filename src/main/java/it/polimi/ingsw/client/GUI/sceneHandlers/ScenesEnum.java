@@ -1,8 +1,8 @@
 package it.polimi.ingsw.client.GUI.sceneHandlers;
 
 public enum ScenesEnum {
-    WELCOME("index.fxml"),
-    CONNECTION(""),
+    WELCOME("welcome.fxml"),
+    CONNECTION("connection.fxml"),
     REGISTRATION(""),
     WAITING_ROOM(""),
     CHOOSE_LEADERS(""),

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.client.GUI.Gui">
+    <center>
+        <VBox alignment="CENTER" spacing="50" stylesheets="@style.css" BorderPane.alignment="CENTER">
+            <children>
+                <VBox alignment="CENTER" spacing="10">
+                    <children>
+                        <Label alignment="CENTER" styleClass="inputLabel" stylesheets="@style.css" text="Nickname" />
+                        <TextField fx:id="nickName" maxWidth="300.0" minWidth="300.0" promptText="lorenzo" styleClass="inputArea" />
+                    </children>
+                </VBox>
+                <VBox alignment="CENTER" spacing="10">
+                    <children>
+                        <Label alignment="CENTER" styleClass="inputLabel" stylesheets="@style.css" text="Number of Players" />
+                        <HBox alignment="CENTER" spacing="10">
+                            <children>
+                                <Button fx:id="singlePlayer" mnemonicParsing="false" styleClass="btnSq" stylesheets="@style.css" text="1" />
+                                <Button fx:id="twoPlayer" mnemonicParsing="false" styleClass="btnSq" stylesheets="@style.css" text="2" />
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER" spacing="10">
+                            <children>
+                                <Button fx:id="threePlayer" mnemonicParsing="false" styleClass="btnSq" stylesheets="@style.css" text="3" />
+                                <Button fx:id="fourPlayer" mnemonicParsing="false" styleClass="btnSq" stylesheets="@style.css" text="4" />
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+    </center>
+</BorderPane>

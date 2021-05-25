@@ -1,14 +1,18 @@
 package it.polimi.ingsw.client.GUI;
 
+import it.polimi.ingsw.MastersOfRenaissance;
 import it.polimi.ingsw.client.ViewInterface;
 import it.polimi.ingsw.client.model.NubPlayer;
 import it.polimi.ingsw.misc.BiElement;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
+import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -16,11 +20,11 @@ import java.util.*;
 
 
 public class Gui extends Application implements ViewInterface {
-    private static final String INDEX = "index.fxml";
-    private static final String CONNECTION = "";
-    /*private static final String REGISTRATION;
-    private static final String WAITING_ROOM;
-    private static final String CHOOSE_LEADERS;
+    private static final String WELCOME = "welcome.fxml";
+    private static final String CONNECTION = "connection.fxml";
+    private static final String REGISTRATION = "registration.fxml";
+    private static final String WAITING_ROOM = "waitingroom.fxml";
+    /*private static final String CHOOSE_LEADERS;
     private static final String CHOOSE_RESOURCE;
     private static final String MAIN;*/
     private GuiController controller;
@@ -45,17 +49,20 @@ public class Gui extends Application implements ViewInterface {
     }
 
     @Override
+    @FXML
     public void start(Stage stage) throws Exception {
         this.stage = stage;
         controller = new GuiController(stage, this);
+        Image cursor = new Image("/img/ui/cursor.png");
 
         initAllScenes();
         stage.setTitle("Masters of Renaissance");
 
-        scene = sceneMap.get(INDEX);
+        scene = sceneMap.get(WAITING_ROOM);
         scene.getStylesheets().addAll(this.getClass().getResource("/fxml/style.css").toExternalForm());
+        scene.setCursor(new ImageCursor(cursor, 5, 5));
 
-        playBtn.setOnAction(actionEvent -> {
+        /*playBtn.setOnAction(actionEvent -> {
             try {
                 controller.setup();
             } catch (IOException e) {
@@ -63,7 +70,7 @@ public class Gui extends Application implements ViewInterface {
             }
         });
 
-        quitBtn.setOnAction(actionEvent -> System.exit(0));
+        quitBtn.setOnAction(actionEvent -> System.exit(0));*/
 
         stage.setScene(scene);
         stage.show();
@@ -72,16 +79,16 @@ public class Gui extends Application implements ViewInterface {
 
     private void initAllScenes() throws IOException{
         //TODO: add all the paths in scenes
-        List<String> scenes = new ArrayList<>(Arrays.asList(INDEX));
+        List<String> scenes = new ArrayList<>(Arrays.asList(WAITING_ROOM));
         for(String path : scenes){
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + path));
+            FXMLLoader loader = new FXMLLoader(MastersOfRenaissance.class.getResource("/fxml/" + path));
             sceneMap.put(path, new Scene(loader.load()));
         }
     }
 
 
     public BiElement<String, Integer> connectionSetup(){
-        scene = sceneMap.get(CONNECTION);
+        scene = sceneMap.get(WELCOME);
 
         ipText.setOnAction(actionEvent -> {
             ip = ipText.getText();
@@ -165,6 +172,22 @@ public class Gui extends Application implements ViewInterface {
     @Override
     public void updateOtherPlayer(NubPlayer player) {
 
+    }
+
+    @FXML
+    private void setPlayBtn(ActionEvent event)
+    {
+        try {
+            controller.setup();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void setQuitBtn(ActionEvent event)
+    {
+        System.exit(0);
     }
 
 

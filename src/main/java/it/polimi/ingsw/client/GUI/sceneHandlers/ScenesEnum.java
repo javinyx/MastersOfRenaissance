@@ -3,8 +3,8 @@ package it.polimi.ingsw.client.GUI.sceneHandlers;
 public enum ScenesEnum {
     WELCOME("welcome.fxml"),
     CONNECTION("connection.fxml"),
-    REGISTRATION(""),
-    WAITING_ROOM(""),
+    REGISTRATION("registration.fxml"),
+    WAITING_ROOM("waitingroom.fxml"),
     CHOOSE_LEADERS(""),
     CHOOSE_RESOURCES(""),
     MAIN_BOARD("");

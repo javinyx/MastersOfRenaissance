@@ -3,25 +3,25 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.client.GUI.Gui">
+<BorderPane id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <center>
         <VBox spacing="20" alignment="CENTER" minHeight="400.0" minWidth="300.0" stylesheets="@style.css" BorderPane.alignment="CENTER">
             <children>
                 <VBox spacing="10" alignment="CENTER">
                     <children>
                         <Label alignment="CENTER" styleClass="inputLabel" stylesheets="@style.css" text="Server IP" />
-                        <TextField fx:id="serverIP" maxWidth="300.0" minWidth="300.0" promptText="127.0.0.1" styleClass="inputArea" />
+                        <TextField fx:id="ipField" maxWidth="300.0" minWidth="300.0" promptText="127.0.0.1" styleClass="inputArea" />
                     </children>
                 </VBox>
                 <VBox spacing="10" alignment="CENTER">
                     <children>
                         <Label alignment="CENTER" layoutX="287.0" layoutY="189.0" styleClass="inputLabel" stylesheets="@style.css" text="Port" />
-                        <TextField fx:id="port" layoutX="160.0" layoutY="206.0" maxWidth="300.0" minWidth="300.0" promptText="27001" styleClass="inputArea"/>
+                        <TextField fx:id="portField" layoutX="160.0" layoutY="206.0" maxWidth="300.0" minWidth="300.0" promptText="27001" styleClass="inputArea"/>
                     </children>
                 </VBox>
-                <Button fx:id="connect" mnemonicParsing="false" styleClass="btn" stylesheets="@style.css" text="Connect" />
+                <Button fx:id="connectBtn" mnemonicParsing="false" styleClass="btn" stylesheets="@style.css" text="Connect" />
                 <Label alignment="CENTER" layoutX="287.0" layoutY="189.0" styleClass="inputLabelSmall" stylesheets="@style.css" text="OR" />
-                <Button fx:id="localMode" mnemonicParsing="false" styleClass="btn" stylesheets="@style.css" text="Local Mode" />
+                <Button fx:id="localModeBtn" mnemonicParsing="false" styleClass="btn" stylesheets="@style.css" text="Local Mode" />
             </children>
         </VBox>
     </center>

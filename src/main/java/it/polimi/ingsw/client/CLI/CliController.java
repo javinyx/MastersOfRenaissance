@@ -528,4 +528,6 @@ public class CliController extends ClientController {
         }
     }
 
+    public void startLocalGame(){};
+
 }

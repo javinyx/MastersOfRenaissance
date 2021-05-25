@@ -101,6 +101,7 @@ public abstract class ClientController {
     // SETUP PHASE -----------------------------------------------------------------------------------------------------
 
     public abstract boolean setup() throws IOException;
+    public abstract void startLocalGame();
     public abstract void askNickname();
     public abstract void askNumberOfPlayers();
     public abstract void startGame();

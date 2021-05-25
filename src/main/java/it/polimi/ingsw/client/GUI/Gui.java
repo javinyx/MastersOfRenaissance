@@ -1,31 +1,39 @@
 package it.polimi.ingsw.client.GUI;
 
-import it.polimi.ingsw.MastersOfRenaissance;
 import it.polimi.ingsw.client.ViewInterface;
 import it.polimi.ingsw.client.model.NubPlayer;
 import it.polimi.ingsw.misc.BiElement;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.*;
 
 
 public class Gui extends Application implements ViewInterface {
     private static final String INDEX = "index.fxml";
+    private static final String CONNECTION = "";
+    /*private static final String REGISTRATION;
+    private static final String WAITING_ROOM;
+    private static final String CHOOSE_LEADERS;
+    private static final String CHOOSE_RESOURCE;
+    private static final String MAIN;*/
     private GuiController controller;
     private Stage stage;
     private Scene scene;
     private String ip, port;
+
+    @FXML private Button playBtn, quitBtn;
+    @FXML private TextField ipText, portText;
+    @FXML private Button confirm;
+
+
+    private Map<String, Scene> sceneMap = new HashMap<>();
 
     /*public Gui(GuiController controller){
         this.controller = controller;
@@ -41,17 +49,62 @@ public class Gui extends Application implements ViewInterface {
         this.stage = stage;
         controller = new GuiController(stage, this);
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + INDEX));
-        Scene scene = new Scene(loader.load());
+        initAllScenes();
+        stage.setTitle("Masters of Renaissance");
+
+        scene = sceneMap.get(INDEX);
         scene.getStylesheets().addAll(this.getClass().getResource("/fxml/style.css").toExternalForm());
 
+        playBtn.setOnAction(actionEvent -> {
+            try {
+                controller.setup();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        quitBtn.setOnAction(actionEvent -> System.exit(0));
+
         stage.setScene(scene);
-        stage.setTitle("Masters of Renaissance");
         stage.show();
 
     }
 
-    public BiElement<String, Integer> askIpAndPort(){
+    private void initAllScenes() throws IOException{
+        //TODO: add all the paths in scenes
+        List<String> scenes = new ArrayList<>(Arrays.asList(INDEX));
+        for(String path : scenes){
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + path));
+            sceneMap.put(path, new Scene(loader.load()));
+        }
+    }
+
+
+    public BiElement<String, Integer> connectionSetup(){
+        scene = sceneMap.get(CONNECTION);
+
+        ipText.setOnAction(actionEvent -> {
+            ip = ipText.getText();
+        });
+
+        portText.setOnAction(actionEvent -> {
+            port = portText.getText();
+        });
+
+        /*confirm.setOnAction(actionEvent -> {
+            //controller.setIpAndPort
+            }
+        });
+        */
+        return new BiElement<String, Integer>(ip, Integer.parseInt(port));
+
+    }
+
+    public void registrationSetup(){
+
+    }
+
+    /*public BiElement<String, Integer> askIpAndPort(){
         GridPane rootNode = new GridPane();
         rootNode.setAlignment(Pos.CENTER);
         rootNode.getColumnConstraints().add(new ColumnConstraints(200));
@@ -83,7 +136,7 @@ public class Gui extends Application implements ViewInterface {
         });
 
         return new BiElement<>(ip, Integer.parseInt(port));
-    }
+    }*/
 
 
 

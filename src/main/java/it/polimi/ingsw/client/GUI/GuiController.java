@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class GuiController extends ClientController {
-    private final Gui gui;
+    protected final Gui gui;
     private Stage stage;
 
     public GuiController(Stage stage, Gui gui){
@@ -20,7 +20,7 @@ public class GuiController extends ClientController {
     }
     @Override
     public boolean setup() throws IOException {
-        BiElement<String, Integer> connectionInfo = gui.askIpAndPort();
+        BiElement<String, Integer> connectionInfo = gui.connectionSetup();
         return true;
     }
 

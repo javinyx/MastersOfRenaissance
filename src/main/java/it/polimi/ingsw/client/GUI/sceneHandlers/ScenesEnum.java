@@ -4,7 +4,7 @@ public enum ScenesEnum {
     WELCOME("welcome.fxml"),
     CONNECTION("connection.fxml"),
     REGISTRATION("registration.fxml"),
-    WAITING_ROOM("waitingroom.fxml"),
+    WAITING_ROOM("waitingRoom.fxml"),
     CHOOSE_LEADERS(""),
     CHOOSE_RESOURCES(""),
     MAIN_BOARD("");

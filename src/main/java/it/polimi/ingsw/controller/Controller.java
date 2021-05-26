@@ -30,51 +30,34 @@ import static it.polimi.ingsw.messages.MessageID.VATICAN_REPORT;
 public class Controller implements Observer<MessageID> {
 
     private Game game;
-    private List<LeaderCard> allLeaders = new ArrayList<>();
+    private boolean gameOver;
+    private int numPlayer;
+    private boolean initializationPhase;
+    private List<LeaderCard> allLeaders = new ArrayList<>(); /*NIUBBI*/
     private List<ConcreteProductionCard> allProductionCards = new ArrayList<>();
     private List<Observer<MessageEnvelope>> remoteViews;
-
-    private ProPlayer playerForOrganizeRes;
-    private int numPlayer;
-
     Gson gson = new Gson();
-
-    private boolean gameOver;
-    private boolean mustChoosePlacements = false;
-    private boolean basicActionDone = true;
-    private boolean initializationPhase;
+    ProPlayer playerForOrganizeRes;
 
     //player choices to create updateMessage
     Map<BiElement<Resource, Storage>, Integer> addedResources = new HashMap<>();
     Map<BiElement<Resource, Storage>, Integer> removedResources = new HashMap<>();
+    boolean mustChoosePlacements = false;
+    boolean basicActionDone = true;
     Optional<List<BiElement<Integer, Integer>>> boughtCard = Optional.empty();
+
     ProPlayer previousPlayer;
 
     public Controller() {
         initializationPhase = true;
         remoteViews = new ArrayList<>();
         initAllCards();
+
     }
-
-    // GETTER & SETTER --------------------------------------------------------------------------------------
-
-    public String getCurrPlayerNick() {return game.getCurrPlayer().getNickname();}
-
-    public int getCurrPlayerTurnID() {return game.getCurrPlayer().getTurnID();}
 
     public boolean registerObserver(Observer<MessageEnvelope> obs) {
         return remoteViews.add(obs);
     }
-
-    /**
-     * @return {@code true}, if the game already ended
-     */
-    synchronized boolean isGameOver() {return gameOver;}
-
-    /**
-     * sets the game as ended
-     */
-    synchronized void gameOver() {gameOver = true;}
 
     // GAME INITIALIZATION -------------------------------------------------------------------------------
 
@@ -151,6 +134,32 @@ public class Controller implements Observer<MessageID> {
             }
 
         }
+        /*for (ProPlayer p : ((MultiPlayerGame) game).getActivePlayers()){
+            game.start(p);
+            envelope = new MessageEnvelope(MessageID.UPDATE, p.getUpdate());
+            remoteViews.get(p.getTurnID()-1).update(envelope);
+        }*/
+
+        // TODO: ogni giocatore va informato della situazione degli altri 3
+
+        //timer = new Timer(true);
+        //timer.schedule(new TurnTimerTask(this, game.getCurrPlayer().getTurnType()),turnTime*1000);
+    }
+
+    public synchronized void chooseLeaderCards(String ids, String nick) {
+        /*List<Integer> leadersIds = convertStringToListInteger(ids);
+        List<LeaderCard> leaders = convertIdToLeaderCard(leadersIds);
+        List<ProPlayer> allP = new ArrayList<>();
+        ProPlayer pp;
+        if(game instanceof MultiPlayerGame){
+            allP = ((MultiPlayerGame)game).getPlayers();
+        }
+        for(ProPlayer p : allP){
+            if(p.getNickname().equals(nick)){
+                p.chooseLeaders(leaders);
+                return;
+            }
+        }*/
     }
 
     // END GAME INITIALIZATION -----------------------------------------------------------------------------------------
@@ -177,6 +186,31 @@ public class Controller implements Observer<MessageID> {
     // TURN STRUCTURE --------------------------------------------------------------------------------------------------
 
     //m == buymarket, b == buyproduction, p == activateProduction
+
+    /**
+     * Invoke {@code buyFromMarket()} method in {@link ProPlayer} checking the player choice's correctness.
+     * <p>If everything is fine, calls {@code update()} in order to generate a {@code MessageID.CHOOSE_PLACEMENTS_IN_STORAGE}
+     * and ask the player where to store the resources bought, otherwise generate various error messages.</p>
+     */
+    public synchronized void buyFromMarAction(BuyMarketMessage buyMark) {
+        /*if (mustChoosePlacements || basicActionDone) {
+            update(MessageID.INFO);
+            return;
+        }*/
+        playerForOrganizeRes = game.getCurrPlayer();
+        try {
+            game.getCurrPlayer().buyFromMarket(buyMark.getDimension(), buyMark.getIndex(), buyMark.getMarbleUsage());
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
+            update(MessageID.BAD_DIMENSION_REQUEST);
+        } catch (RuntimeException e) {
+            update(MessageID.CARD_NOT_AVAILABLE);
+        }
+
+        mustChoosePlacements = true;
+        basicActionDone = true;
+
+        update(MessageID.STORE_RESOURCES);
+    }
 
     public synchronized void buyProdCardAction(BuyProductionMessage buyProd) {
         /*if (mustChoosePlacements || basicActionDone) {
@@ -349,34 +383,52 @@ public class Controller implements Observer<MessageID> {
         update(MessageID.ACK);
     }
 
-    /**
-     * Invoke {@code buyFromMarket()} method in {@link ProPlayer} checking the player choice's correctness.
-     * <p>If everything is fine, calls {@code update()} in order to generate a {@code MessageID.CHOOSE_PLACEMENTS_IN_STORAGE}
-     * and ask the player where to store the resources bought, otherwise generate various error messages.</p>
-     */
-    public synchronized void buyFromMarAction(BuyMarketMessage buyMark) {
-        /*if (mustChoosePlacements || basicActionDone) {
-            update(MessageID.INFO);
-            return;
-        }*/
-        playerForOrganizeRes = game.getCurrPlayer();
-        try {
-            game.getCurrPlayer().buyFromMarket(buyMark.getDimension(), buyMark.getIndex(), buyMark.getMarbleUsage());
-        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
-            update(MessageID.BAD_DIMENSION_REQUEST);
-        } catch (RuntimeException e) {
-            update(MessageID.CARD_NOT_AVAILABLE);
-        }
-
-        mustChoosePlacements = true;
-        basicActionDone = true;
-
-        update(MessageID.STORE_RESOURCES);
-    }
-
     // END TURN STRUCTURE ----------------------------------------------------------------------------------------------
 
     // TURN UTILITIES --------------------------------------------------------------------------------------------------
+
+    /**
+     * @param leaderCard the card to be activated.
+     */
+    public synchronized void activateLeader(LeaderCard leaderCard) {
+        /*if (mustChoosePlacements) {
+            update(MessageID.INFO);
+            return;
+        }*/
+
+        for (int i = 0; i < ProPlayer.getMaxNumExtraStorage(); i++) {
+            if (game.getCurrPlayer().getLeaderCards().get(i).equals(leaderCard)) {
+                if (game.getCurrPlayer().activateLeaderCard(leaderCard)) {
+                    update(MessageID.ACK);
+                    return;
+                } else {
+                    update(MessageID.CARD_NOT_AVAILABLE);
+                    return;
+                }
+            }
+        }
+        update(MessageID.CARD_NOT_AVAILABLE);
+    }
+
+    /**
+     * Let the player discard a leader.
+     */
+    public synchronized void discardLeader(String s) {
+        //boolean found = false;
+        List<LeaderCard> leaders = game.getCurrPlayer().getLeaderCards();
+        for (LeaderCard card : leaders) {
+            if (card.getId() == Integer.parseInt(s)) {
+                if (game.getCurrPlayer().discardLeaderCard(card)) {
+                    //found = true;
+                    update(MessageID.PLAYERS_POSITION);
+                    update(MessageID.ACK);
+                    break;
+                }
+
+            }
+        }
+        update(MessageID.CARD_NOT_AVAILABLE);
+    }
 
     /**
      * Let the player choose where to store the resources or even discard them accordingly to the {@code message}'s
@@ -484,61 +536,7 @@ public class Controller implements Observer<MessageID> {
             remoteViews.get(playerForOrganizeRes.getTurnID()-1).update(envelope);
             playerForOrganizeRes.setInitializationPhase(false);
         }
-    }
 
-    public synchronized void chooseLeaderCards(String ids, String nick) {
-        List<Integer> leadersIds = convertStringToListInteger(ids);
-        List<LeaderCard> leaders = convertIdToLeaderCard(leadersIds);
-        List<ProPlayer> allP;
-        allP = game.getPlayers();
-
-        for(ProPlayer p : allP){
-            if(p.getNickname().equals(nick)){
-                p.chooseLeaders(leaders);
-                return;
-            }
-        }
-    }
-
-    /**
-     * @param leaderCard the card to be activated.
-     */
-    public synchronized void activateLeader(LeaderCard leaderCard) {
-        /*if (mustChoosePlacements) {
-            update(MessageID.INFO);
-            return;
-        }*/
-
-        for (int i = 0; i < ProPlayer.getMaxNumExtraStorage(); i++) {
-            if (game.getCurrPlayer().getLeaderCards().get(i).equals(leaderCard)) {
-                if (game.getCurrPlayer().activateLeaderCard(leaderCard)) {
-                    update(MessageID.ACK);
-                    return;
-                } else {
-                    update(MessageID.CARD_NOT_AVAILABLE);
-                    return;
-                }
-            }
-        }
-        update(MessageID.CARD_NOT_AVAILABLE);
-    }
-
-    /**
-     * Let the player discard a leader.
-     */
-    public synchronized void discardLeader(String s) {
-        List<LeaderCard> leaders = game.getCurrPlayer().getLeaderCards();
-        for (LeaderCard card : leaders) {
-            if (card.getId() == Integer.parseInt(s)) {
-                if (game.getCurrPlayer().discardLeaderCard(card)) {
-                    update(MessageID.PLAYERS_POSITION);
-                    update(MessageID.ACK);
-                    break;
-                }
-
-            }
-        }
-        update(MessageID.CARD_NOT_AVAILABLE);
     }
 
     /**
@@ -575,6 +573,14 @@ public class Controller implements Observer<MessageID> {
         } else {
             removedResources.put(element, 1);
         }
+    }
+
+    public String getCurrPlayerNick() {
+        return game.getCurrPlayer().getNickname();
+    }
+
+    public int getCurrPlayerTurnID() {
+        return game.getCurrPlayer().getTurnID();
     }
 
     // END TURN UTILITIES ----------------------------------------------------------------------------------------------
@@ -652,16 +658,16 @@ public class Controller implements Observer<MessageID> {
                 /*if (initializationPhase) {
                     remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getUpdate()));
                 } else {*/
-                    /*WARNING : in order to generate correctly an UpdateMessage with generateUpdateMessage(), a CONFIRM_END_TURN must be
-                     *  sent because it causes a generateEndTurnMessage() that updates the previousPlayer and the currentPlayer */
-                    UpdateMessage msg = generateUpdateMessage();
-                    MessageEnvelope envelope = new MessageEnvelope(MessageID.UPDATE, gson.toJson(msg, UpdateMessage.class));
-                    for (Observer<MessageEnvelope> obs : remoteViews) {
-                        //modifica: sostituzione updateFrom -> update normale
-                        obs.update(envelope);
-                        //obs.updateFrom(envelope, previousPlayer.getNickname());
-                    }
-               // }
+                /*WARNING : in order to generate correctly an UpdateMessage with generateUpdateMessage(), a CONFIRM_END_TURN must be
+                 *  sent because it causes a generateEndTurnMessage() that updates the previousPlayer and the currentPlayer */
+                UpdateMessage msg = generateUpdateMessage();
+                MessageEnvelope envelope = new MessageEnvelope(MessageID.UPDATE, gson.toJson(msg, UpdateMessage.class));
+                for (Observer<MessageEnvelope> obs : remoteViews) {
+                    //modifica: sostituzione updateFrom -> update normale
+                    obs.update(envelope);
+                    //obs.updateFrom(envelope, previousPlayer.getNickname());
+                }
+                // }
             }
 
             case LORENZO_POSITION -> {
@@ -708,6 +714,7 @@ public class Controller implements Observer<MessageID> {
         }
     }
 
+
     protected List<Integer> convertStringToListInteger(String s) {
         return (new ArrayList<>(Arrays.asList(s.substring(1, s.length() - 1).split(", ")))).stream()
                 .map(Integer::parseInt)
@@ -738,6 +745,21 @@ public class Controller implements Observer<MessageID> {
 
     // END ENVELOPE CREATOR --------------------------------------------------------------------------------------------
 
+
+    /**
+     * @return {@code true}, if the game already ended
+     */
+    synchronized boolean isGameOver() {
+        return gameOver;
+    }
+
+    /**
+     * sets the game as ended
+     */
+    synchronized void gameOver() {
+        gameOver = true;
+    }
+
     /**
      * Aborts game due to an early disconnection or error.
      */
@@ -746,14 +768,12 @@ public class Controller implements Observer<MessageID> {
         //game.setRequest(GameMessagesToClient.ABORT_GAME.name());
     }
 
-    // REJOIN PART ---------------------------------------------------------
-
     public void setInactivePlayer(String playerName) {
         if (game instanceof MultiPlayerGame) {
             ((MultiPlayerGame) game).removeFromActivePlayers(playerName);
         } else {
             //do nothing, unless we want reset the game instead of leaving it pending
-            //disconnect?
+            //timer and then disconnect?
         }
     }
 
@@ -817,7 +837,7 @@ public class Controller implements Observer<MessageID> {
                 game.getMarket().getMarketBoard(), game.getMarket().getExtraMarble(), game.getBuyableProductionID(),
                 prodCards, leadersIds, addedResources, removedResources);
 
-        //TODO: ha creato il messaggio di update ma come glielo mandiamo? Con il metodo update
+        //TODO: ha creato il messaggio di update ma come glielo mandiamo?
     }
 
     public void rejoin(SinglePlayerGame game, String nickname) {

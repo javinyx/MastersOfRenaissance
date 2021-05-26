@@ -7,8 +7,8 @@ import it.polimi.ingsw.client.MessageReceiver;
 import it.polimi.ingsw.client.MessageToServerHandler;
 import it.polimi.ingsw.client.model.NubPlayer;
 import it.polimi.ingsw.messages.concreteMessages.PlayersPositionMessage;
-import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.model.market.Resource;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.stage.Stage;
 
@@ -24,7 +24,7 @@ public class GuiController extends ClientController {
     private Stage stage;
     private InitialPhaseHandler initialPhaseHandler;
 
-    private String ip, port;
+    private Integer gameSize;
 
 
 
@@ -45,8 +45,9 @@ public class GuiController extends ClientController {
     @Override
     @FXML
     public boolean setup() throws IOException {
-        stage.setScene(initialPhaseHandler.getScene(ScenesEnum.CONNECTION));
-        stage.show();
+        initialPhaseHandler.setScene(ScenesEnum.CONNECTION);
+        //stage.setScene(initialPhaseHandler.getScene(ScenesEnum.CONNECTION));
+        //stage.show();
 
         initialPhaseHandler.retrieveIpAndPort();
 
@@ -54,9 +55,6 @@ public class GuiController extends ClientController {
     }
 
     public void setIpAndPort(String ip, String port){
-        this.ip = ip;
-        this.port = port;
-
         if(ip.equals("0") && port.equals("0")){
             startLocalGame();
             return;
@@ -71,6 +69,8 @@ public class GuiController extends ClientController {
             messageToServerHandler = new MessageToServerHandler(toServer, this);
 
             System.out.println("Connection OK");
+
+            setActive(true);
 
             try (socket; ObjectInputStream socketIn = new ObjectInputStream(socket.getInputStream()); toServer) {
                 Thread t0 = new Thread(new MessageReceiver(socketIn, this));
@@ -97,22 +97,20 @@ public class GuiController extends ClientController {
     @Override
     @FXML
     public void askNickname() {
-        stage.setScene(initialPhaseHandler.getScene(ScenesEnum.REGISTRATION));
-        stage.show();
-
-        BiElement<String, Integer> nickAndSize = initialPhaseHandler.getNickNameAndGameSize();
-
-        messageToServerHandler.sendMessageToServer(nickAndSize.getFirstValue());
-        player = new NubPlayer(nickAndSize.getFirstValue());
+        Platform.runLater(() -> stage.setScene(initialPhaseHandler.getScene(ScenesEnum.REGISTRATION)));
     }
 
-    public void setNickname(){
-
+    public void setNickname(String nickname){
+        messageToServerHandler.sendMessageToServer(nickname);
     }
 
     @Override
     public void askNumberOfPlayers() {
-        //messageToServerHandler.sendMessageToServer();
+        messageToServerHandler.sendMessageToServer(gameSize.toString());
+    }
+
+    public void setGameSize(String size){
+        gameSize = Integer.parseInt(size);
     }
 
     @Override

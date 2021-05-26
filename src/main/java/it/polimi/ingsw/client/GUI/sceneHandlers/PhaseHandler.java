@@ -20,17 +20,15 @@ public abstract class PhaseHandler {
         this.stage = stage;
     }
 
-    public void setScene(String code){
+    public abstract boolean setScene(ScenesEnum sceneName);
 
-    }
 
     /**
      * @param sceneName name of the scene wanted (see {@link ScenesEnum})
      * @return the scene requested through its name
      */
-    public Scene getScene(ScenesEnum sceneName){
-       return generalSceneMap.get(sceneName);
-    }
+    public Scene getScene(ScenesEnum sceneName){ return generalSceneMap.get(sceneName); }
+
 
     /**
      * Each PhaseHandler's subclass has to register all the scenes it produces through this method.
@@ -39,4 +37,5 @@ public abstract class PhaseHandler {
     protected void buildGeneralSceneMap(Map<ScenesEnum, Scene> partialMap){
         generalSceneMap.putAll(partialMap);
     }
+
 }

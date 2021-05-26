@@ -25,6 +25,7 @@ public class InitialPhaseHandler extends PhaseHandler {
     private String nickname, gameSize;
 
     private Map<ScenesEnum, Scene> sceneMap = new HashMap<>();
+    //private Map<ScenesEnum, InitialPhaseHandler> sceneControllerMap = new HashMap<>();
 
     @FXML
     private Button  playBtn, quitBtn, connectBtn, localModeBtn;
@@ -39,6 +40,7 @@ public class InitialPhaseHandler extends PhaseHandler {
         for(ScenesEnum path : allPaths){
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + path.getPath()));
             loader.setController(this);
+            //sceneControllerMap.put(path, loader.getController());
             try {
                 Scene scene = new Scene(loader.load());
                 scene.getStylesheets().addAll(this.getClass().getResource("/fxml/style.css").toExternalForm());
@@ -51,6 +53,14 @@ public class InitialPhaseHandler extends PhaseHandler {
         }
 
         buildGeneralSceneMap(sceneMap);
+    }
+
+    public boolean setScene(ScenesEnum sceneName){
+        if(!sceneMap.containsKey(sceneName)){
+            return false;
+        }
+        stage.setScene(sceneMap.get(sceneName));
+        return true;
     }
 
     @FXML
@@ -92,30 +102,35 @@ public class InitialPhaseHandler extends PhaseHandler {
     }
 
 
-    public BiElement<String, Integer> getNickNameAndGameSize(){
+    public void getNickNameAndGameSize(){
         singlePlayerBtn.setOnAction(actionEvent -> {
             nickname = nickNameField.getText();
             gameSize = singlePlayerBtn.getText();
+            controller.setNickname(nickname);
+            controller.setGameSize(gameSize);
         });
 
         twoPlayerBtn.setOnAction(actionEvent -> {
             nickname = nickNameField.getText();
             gameSize = twoPlayerBtn.getText();
+            controller.setNickname(nickname);
+            controller.setGameSize(gameSize);
         });
 
         threePlayerBtn.setOnAction(actionEvent -> {
             nickname = nickNameField.getText();
             gameSize = threePlayerBtn.getText();
+            controller.setNickname(nickname);
+            controller.setGameSize(gameSize);
         });
 
         fourPlayerBtn.setOnAction(actionEvent -> {
             nickname = nickNameField.getText();
             gameSize = fourPlayerBtn.getText();
+            controller.setNickname(nickname);
+            controller.setGameSize(gameSize);
         });
 
-        //check for correctness of nickname
-
-        return new BiElement<>(nickname, Integer.parseInt(gameSize));
     }
 
 }

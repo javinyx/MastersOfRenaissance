@@ -18,7 +18,6 @@ import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 public class GuiController extends ClientController {
     protected final Gui gui;
@@ -94,6 +93,7 @@ public class GuiController extends ClientController {
     @FXML
     public void askNickname() {
         Platform.runLater(() -> stage.setScene(initialPhaseHandler.getScene(ScenesEnum.REGISTRATION)));
+        initialPhaseHandler.getNickNameAndGameSize();
     }
 
     public void setNickname(String nickname){

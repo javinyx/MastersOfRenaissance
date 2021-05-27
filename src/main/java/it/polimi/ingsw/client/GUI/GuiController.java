@@ -10,6 +10,7 @@ import it.polimi.ingsw.messages.concreteMessages.PlayersPositionMessage;
 import it.polimi.ingsw.model.market.Resource;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -17,7 +18,6 @@ import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 public class GuiController extends ClientController {
     protected final Gui gui;
@@ -30,6 +30,9 @@ public class GuiController extends ClientController {
 
     public GuiController(Stage stage, Gui gui){
         this.stage = stage;
+
+        Font.loadFont(getClass().getResourceAsStream("/fonts/godofwar.ttf"), 14);
+
         this.gui = gui;
         initialPhaseHandler = new InitialPhaseHandler(this, stage);
         start();
@@ -72,18 +75,10 @@ public class GuiController extends ClientController {
 
             setActive(true);
 
-            try (socket; ObjectInputStream socketIn = new ObjectInputStream(socket.getInputStream()); toServer) {
-                Thread t0 = new Thread(new MessageReceiver(socketIn, this));
-                t0.start();
-                t0.join();
-                synchronized (this){
-                    this.wait(3000);
-                }
+            ObjectInputStream socketIn = new ObjectInputStream(socket.getInputStream());
+            Thread t1 = new Thread(new MessageReceiver(socketIn, this));
+            t1.start();
 
-            } catch (InterruptedException | NoSuchElementException e) {
-                setClosedConnection("Connection closed from the client side");
-                Thread.currentThread().interrupt();
-            }
         }catch(IOException e){
             System.err.println(e.getClass() + "Socket error");
         }
@@ -98,6 +93,7 @@ public class GuiController extends ClientController {
     @FXML
     public void askNickname() {
         Platform.runLater(() -> stage.setScene(initialPhaseHandler.getScene(ScenesEnum.REGISTRATION)));
+        initialPhaseHandler.getNickNameAndGameSize();
     }
 
     public void setNickname(String nickname){

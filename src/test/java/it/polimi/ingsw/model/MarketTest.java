@@ -3,11 +3,12 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.model.market.Market;
 import it.polimi.ingsw.model.market.Resource;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /*
 * I test controllano se gli elementi della lista che viene ritornata dai metodi chooseRow e chooseCol
@@ -21,9 +22,25 @@ class MarketTest {
     @BeforeEach
     public void testSetup(){
         market = new Market();
+
+        for(int i=0; i<4; i++){
+            market.printM();
+            if(i%2==0){
+                market.chooseRow(i);
+            }else{
+                market.chooseColumn(i);
+            }
+            System.out.println("\n");
+        }
+        market.printM();
     }
 
     @Test
+    void boh(){
+
+    }
+
+    @Disabled
     void chooseRow() {
 
         List<Resource> res = market.chooseRow(0);
@@ -54,7 +71,7 @@ class MarketTest {
 
     }
 
-    @Test
+    @Disabled
     void chooseColumn() {
 
         List<Resource> res = market.chooseColumn(0);

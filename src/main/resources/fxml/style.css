@@ -18,6 +18,7 @@
     -fx-focus-color: transparent;
     -fx-background-color: transparent;
     -fx-label-padding: -5 0 0 0;
+    -fx-font-family: "godofwar";
 }
 .btn:pressed {
     -fx-background-image: url("/img/ui/btnPressed.png");
@@ -32,10 +33,12 @@
 .inputLabel {
     -fx-font-size: 20px;
     -fx-text-fill: #ffffff;
+    -fx-font-family: "godofwar";
 }
 .inputLabelSmall {
     -fx-font-size: 16px;
     -fx-text-fill: #ffffff;
+    -fx-font-family: "godofwar";
 }
 .inputArea {
 }
@@ -51,6 +54,7 @@
     -fx-text-alignment: center;
     -fx-focus-color: transparent;
     -fx-background-color: transparent;
+    -fx-font-family: "godofwar";
 }
 .btnSq:pressed {
     -fx-background-image: url("/img/ui/btnSqPressed.png");
@@ -65,8 +69,10 @@
 .greeting {
     -fx-font-size: 35px;
     -fx-text-fill: #ffffff;
+    -fx-font-family: "godofwar";
 }
 .waitLabel {
     -fx-font-size: 30px;
     -fx-text-fill: #ffffff;
+    -fx-font-family: "godofwar";
 }

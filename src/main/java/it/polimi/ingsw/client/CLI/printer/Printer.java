@@ -160,13 +160,13 @@ public class Printer {
 
         StringBuilder s = new StringBuilder();
         s.append("   ").append("-".repeat(52));
-        System.out.println("         ↓            ↓            ↓            ↓");
         System.out.println(s);
 
         for (int i = 0; i < 3; i++){
-            System.out.print("-> |");
+            System.out.print("   |");
             for (int j = 0; j < 4; j++)
                 System.out.print(printRes(market.getMarketBoard()[i][j])+" | ");
+            System.out.print("←— ");
 
             if(i == 1)
                 System.out.print("\t Extra Marble: " + printRes(market.getExtra()));
@@ -174,6 +174,7 @@ public class Printer {
             System.out.println();
         }
         System.out.println(s);
+        System.out.println("         ↑            ↑            ↑            ↑");
 
         Resource wareSmall = null;
         List<Resource> wareMid = new ArrayList<>();
@@ -274,7 +275,7 @@ public class Printer {
         switch (res){
             case COIN -> s = Color.YELLOW.escape() +    "  COIN    " + Color.RESET;
             case SERVANT -> s = Color.PURPLE.escape() + "  SERVANT " + Color.RESET;
-            case STONE -> s = Color.RESET +             "  STONE   " + Color.RESET;
+            case STONE -> s = Color.GRAY.escape() +     "  STONE   " + Color.RESET;
             case SHIELD -> s = Color.BLUE.escape() +    "  SHIELD  " + Color.RESET;
             case BLANK -> s = Color.RESET +             "  BLANK   " + Color.RESET;
             case FAITH -> s = Color.RED.escape() +      "  FAITH   " + Color.RESET;

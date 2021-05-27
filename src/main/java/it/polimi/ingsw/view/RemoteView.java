@@ -12,6 +12,7 @@ import it.polimi.ingsw.misc.Observer;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.server.ClientConnection;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -63,7 +64,12 @@ public class RemoteView extends View {
 
                 case BUY_PRODUCTION_CARD -> controller.buyProdCardAction(gson.fromJson(envelope.getPayload(), BuyProductionMessage.class));
 
-                case ACTIVATE_LEADER -> controller.activateLeader(gson.fromJson(envelope.getPayload(), LeaderCard.class));
+                case ACTIVATE_LEADER -> {
+                    List <Integer> lead = new ArrayList <> ();
+                    lead.add(Integer.parseInt(envelope.getPayload()));
+                    List<LeaderCard> l = controller.convertIdToLeaderCard(lead);
+                    controller.activateLeader(l.get(0));
+                }
 
                 case STORE_RESOURCES -> controller.organizeResourceAction(gson.fromJson(envelope.getPayload(), StoreResourcesMessage.class));
 

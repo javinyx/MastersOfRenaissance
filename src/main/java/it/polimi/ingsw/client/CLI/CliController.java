@@ -171,7 +171,7 @@ public class CliController extends ClientController {
 
         getPlayer().setLeaders(convertIdToLeaderCard(lId));
 
-        messageToServerHandler.generateEnvelope(MessageID.CHOOSE_LEADER_CARDS, convertIdToLeaderCard(lId).toString());
+        messageToServerHandler.generateEnvelope(MessageID.CHOOSE_LEADER_CARDS, lId.toString());
 
     }
 

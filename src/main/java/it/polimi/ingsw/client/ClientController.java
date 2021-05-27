@@ -135,33 +135,14 @@ public abstract class ClientController {
 
     // ERROR MESSAGE ACTIONS -------------------------------------------------------------------------------------------
 
-    public void cardNotAvailable(){
-        displayMessage("The chosen card is not available");
-    }
-
-    public void badProductionRequest(){
-        displayMessage("There something wrong with the storage");
-    }
-
-    public void badPaymentRequest(){
-        displayMessage("don't have enough resources");
-    }
-
-    public void badDimensionRequest(){
-        displayMessage("The dimension is wrong");
-    }
-    public void wrongStackRequest(){
-        displayMessage("Stacks are from 1 to 3/4");
-    }
-    public void wrongLevelRequest(){
-        displayMessage("The level of the card is wrong");
-    }
-
-    public void badStorageRequest(){
-        displayMessage("Wrong resources placement");
-        chooseStorageAction(new ArrayList<>(storeRes.stream().map(BiElement::getFirstValue).collect(Collectors.toList())));
-    }
-
+    public abstract void cardNotAvailable();
+    public abstract void badProductionRequest();
+    public abstract void badPaymentRequest();
+    public abstract void badDimensionRequest();
+    public abstract void wrongStackRequest();
+    public abstract void wrongLevelRequest();
+    public abstract void badStorageRequest();
+    public abstract void leaderNotActivable();
     public abstract boolean ackConfirmed (String msg);
     public abstract void displayMessage(String str);
 
@@ -217,7 +198,7 @@ public abstract class ClientController {
                     if (boughtProductionCard != null)
                         pp.addProductionCard(boughtProductionCard, msg.getProductionCardId().getSecondValue() - 1);
 
-                    if (msg.getLeadersId() != null || !msg.getLeadersId().isEmpty())
+                    if (msg.getLeadersId() != null && !msg.getLeadersId().isEmpty())
                         pp.setLeaders(convertIdToLeaderCard(msg.getLeadersId()));
 
                     Map<BiElement<Resource, Storage>, Integer> resources = msg.getAddedResources();

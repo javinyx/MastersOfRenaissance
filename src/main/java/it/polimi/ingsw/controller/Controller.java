@@ -514,7 +514,7 @@ public class Controller implements Observer<MessageID> {
                     update(MessageID.ACK);
                     return;
                 } else {
-                    update(MessageID.CARD_NOT_AVAILABLE);
+                    update(LEADER_NOT_ACTIVABLE);
                     return;
                 }
             }
@@ -643,6 +643,7 @@ public class Controller implements Observer<MessageID> {
                     BAD_PAYMENT_REQUEST,
                     BAD_DIMENSION_REQUEST,
                     WRONG_STACK_CHOICE,
+                    LEADER_NOT_ACTIVABLE,
                     WRONG_LEVEL_REQUEST -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, ""));
 
             case STORE_RESOURCES -> remoteViews.get(playerForOrganizeRes.getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));

@@ -233,6 +233,19 @@ public class Cli /*extends ViewInterface*/ {
 
     }
 
+    public void pressEnter(){
+        System.out.print("Press enter to continue.");
+        try {
+            System.in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void clearScreen(){
+        OSPrinter.clearScreen();
+    }
+
     public int discardLeader(List<LeaderCard> led){
         int c;
 

@@ -166,6 +166,7 @@ public class CliController extends ClientController {
 
     @Override
     public void chooseLeadersAction(){
+        cli.clearScreen();
         cli.showMessage("Choose 2 leaders among these:");
         List<Integer> lId = cli.chooseLeader(getPlayer().getLeaders());
 
@@ -194,20 +195,6 @@ public class CliController extends ClientController {
         if(isRegistrationPhase()) {
             cli.showMessage("You are ready to play, wait until it's your turn");
         }
-
-        /*while(!getCurrPlayer().equals(player)){
-            player.setMyTurn(false);
-            showCurrentTurn(getCurrPlayer().getNickname());
-            //qui si potrebbe potenzialmente inserire un metodo che stampi a video alcune opzione mentri si aspetta
-            //ma potrebbe essere un po' complicato
-            synchronized (currPlayerChange) {
-                try {
-                    currPlayerChange.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }*/
         //se siamo qui allora è il mio turno e posso ritornare nel client controller
         if(getCurrPlayer().equals(player)) {
             player.setMyTurn(true);
@@ -232,6 +219,8 @@ public class CliController extends ClientController {
 
     public void viewProductionCard(){
         cli.showProductionCardInTheStore(availableProductionCard);
+        cli.pressEnter();
+        startTurnPhase();
     }
 
     public void buyProductionCard(){
@@ -343,6 +332,9 @@ public class CliController extends ClientController {
 
             }
         }
+
+        cli.pressEnter();
+        startTurnPhase();
 
     }
 
@@ -529,5 +521,52 @@ public class CliController extends ClientController {
     }
 
     public void startLocalGame(){};
+
+    // ERROR MESSAGE FROM SERVER ---------------------------------------------------------------------------------------
+    public void cardNotAvailable(){
+        displayMessage("The chosen card is not available");
+        startTurnPhase();
+
+    }
+
+    public void badProductionRequest(){
+        displayMessage("There something wrong with the storage");
+        startTurnPhase();
+
+    }
+
+    public void badPaymentRequest(){
+        displayMessage("don't have enough resources");
+        startTurnPhase();
+
+    }
+
+    public void badDimensionRequest(){
+        displayMessage("The dimension is wrong");
+        startTurnPhase();
+
+    }
+
+    public void wrongStackRequest(){
+        displayMessage("Stacks are from 1 to 3/4");
+        startTurnPhase();
+
+    }
+
+    public void wrongLevelRequest(){
+        displayMessage("The level of the card is wrong");
+        startTurnPhase();
+    }
+
+    public void badStorageRequest(){
+        displayMessage("Wrong resources placement");
+        chooseStorageAction(new ArrayList<>(storeRes.stream().map(BiElement::getFirstValue).collect(Collectors.toList())));
+    }
+
+    public void leaderNotActivable(){
+        displayMessage("This leader is not activable, you don't have enough resources.");
+        startTurnPhase();
+    }
+
 
 }

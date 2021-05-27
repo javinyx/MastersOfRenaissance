@@ -115,6 +115,46 @@ public class GuiController extends ClientController {
     }
 
     @Override
+    public void cardNotAvailable() {
+
+    }
+
+    @Override
+    public void badProductionRequest() {
+
+    }
+
+    @Override
+    public void badPaymentRequest() {
+
+    }
+
+    @Override
+    public void badDimensionRequest() {
+
+    }
+
+    @Override
+    public void wrongStackRequest() {
+
+    }
+
+    @Override
+    public void wrongLevelRequest() {
+
+    }
+
+    @Override
+    public void badStorageRequest() {
+
+    }
+
+    @Override
+    public void leaderNotActivable() {
+
+    }
+
+    @Override
     public boolean ackConfirmed(String msg) {
         return false;
     }

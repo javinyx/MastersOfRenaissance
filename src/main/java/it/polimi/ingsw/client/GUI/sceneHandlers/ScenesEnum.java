@@ -5,12 +5,15 @@ public enum ScenesEnum {
     CONNECTION("connection.fxml"),
     REGISTRATION("registration.fxml"),
     WAITING_ROOM("waitingRoom.fxml"),
-    CHOOSE_LEADERS(""),
-    CHOOSE_RESOURCES(""),
-    MAIN_BOARD("");
+    CHOOSE_LEADERS("chooseLeaders.fxml"),
+    CHOOSE_RESOURCES("chooseResources.fxml"),
+    MAIN_BOARD("mainBoard.fxml");
 
     private String path;
-    ScenesEnum(String path){this.path = path;}
+
+    ScenesEnum(String path) {
+        this.path = path;
+    }
 
     public String getPath() {
         return path;

@@ -4,22 +4,26 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
-   <center>
-      <VBox alignment="CENTER" minHeight="400.0" minWidth="600.0" stylesheets="@style.css">
-         <children>
-            <ImageView id="logo" fitHeight="250.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../img/ui/logo.png" />
-               </image>
-            </ImageView>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="40.0" stylesheets="@style.css">
-               <children>
-                  <Button fx:id="playBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" styleClass="btn" stylesheets="@style.css" text="Play" />
-                  <Button fx:id="quitBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" styleClass="btn" stylesheets="@style.css" text="Quit" />
-               </children>
-            </HBox>
-         </children>
-      </VBox>
-   </center>
+<BorderPane id="background" prefHeight="400.0" prefWidth="700.0" stylesheets="@style.css"
+            xmlns="https://javafx.com/javafx"
+            xmlns:fx="https://javafx.com/fxml">
+    <center>
+        <VBox alignment="CENTER" minHeight="400.0" minWidth="600.0" stylesheets="@style.css">
+            <children>
+                <ImageView id="logo" fitHeight="250.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../img/ui/logo.png"/>
+                    </image>
+                </ImageView>
+                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="40.0" stylesheets="@style.css">
+                    <children>
+                        <Button fx:id="playBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
+                                styleClass="btn" stylesheets="@style.css" text="Play"/>
+                        <Button fx:id="quitBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
+                                styleClass="btn" stylesheets="@style.css" text="Quit"/>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </center>
 </BorderPane>

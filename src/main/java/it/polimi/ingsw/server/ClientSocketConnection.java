@@ -100,6 +100,7 @@ public class ClientSocketConnection extends Observable<String> implements Client
 
             while (!correctRegistration) {
                 readName = in.nextLine();
+                System.out.println(readName);
                 send(gson.toJson(new MessageEnvelope(MessageID.PLAYER_NUM, "numPlayers")));
 
                 readNumber = in.nextLine();

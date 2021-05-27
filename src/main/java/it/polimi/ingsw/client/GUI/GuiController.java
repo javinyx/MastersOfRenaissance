@@ -7,6 +7,7 @@ import it.polimi.ingsw.client.MessageReceiver;
 import it.polimi.ingsw.client.MessageToServerHandler;
 import it.polimi.ingsw.client.model.NubPlayer;
 import it.polimi.ingsw.messages.concreteMessages.PlayersPositionMessage;
+import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.market.Resource;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GuiController extends ClientController {
@@ -187,6 +189,20 @@ public class GuiController extends ClientController {
 
     @Override
     public void chooseLeadersAction() {
+        List<LeaderCard> availableLeaders = getPlayer().getLeaders();
+        List<LeaderCard> chosenLeaders = new ArrayList<>();
+
+        initialPhaseHandler.setScene(ScenesEnum.CHOOSE_LEADERS);
+        initialPhaseHandler.displayLeaders(availableLeaders);
+        initialPhaseHandler.chooseLeaders();
+
+        /*for (int i = 0; i < availableLeaders.size(); i++) {
+            if (selectedLeaders.get(i) == true) {
+                chosenLeaders.add(availableLeaders.get(i));
+
+        }
+
+        messageToServerHandler.generateEnvelope(MessageID.CHOOSE_LEADER_CARDS, chosenLeaders.toString());*/
 
     }
 

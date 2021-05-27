@@ -3,9 +3,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="400.0" prefWidth="600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/11.0.1"
-            xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane id="background" prefHeight="400.0" prefWidth="700.0" stylesheets="@style.css"
+            xmlns="https://javafx.com/javafx"
+            xmlns:fx="https://javafx.com/fxml">
     <center>
         <VBox alignment="CENTER" spacing="50" stylesheets="@style.css" BorderPane.alignment="CENTER">
             <children>

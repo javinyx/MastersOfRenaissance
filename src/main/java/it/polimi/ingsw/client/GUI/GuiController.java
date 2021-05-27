@@ -103,6 +103,7 @@ public class GuiController extends ClientController {
     @Override
     public void askNumberOfPlayers() {
         messageToServerHandler.sendMessageToServer(gameSize.toString());
+        Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.WAITING_ROOM));
     }
 
     public void setGameSize(String size){

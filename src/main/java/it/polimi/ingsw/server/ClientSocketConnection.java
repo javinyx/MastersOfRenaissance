@@ -103,6 +103,7 @@ public class ClientSocketConnection extends Observable<String> implements Client
                 send(gson.toJson(new MessageEnvelope(MessageID.PLAYER_NUM, "numPlayers")));
 
                 readNumber = in.nextLine();
+                System.out.println(readNumber);
                 while (!readNumber.equals("1") && !readNumber.equals("2") && !readNumber.equals("3") && !readNumber.equals("4")) {
                     send(gson.toJson(new MessageEnvelope(MessageID.TOO_MANY_PLAYERS, "numPlayers ERROR")));
                     readNumber = in.nextLine();

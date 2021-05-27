@@ -113,31 +113,31 @@ public class InitialPhaseHandler extends PhaseHandler {
 
     @FXML
     public void getNickNameAndGameSize(){
-
+        //TODO: check nickname length
         singlePlayerBtn.setOnAction(actionEvent -> {
             nickname = nickNameField.getText();
-            gameSize = "1";
+            gameSize = singlePlayerBtn.getText();
             controller.setNickname(nickname);
             controller.setGameSize(gameSize);
         });
 
         twoPlayerBtn.setOnAction(actionEvent -> {
             nickname = nickNameField.getText();
-            gameSize = "2";
+            gameSize = twoPlayerBtn.getText();
             controller.setNickname(nickname);
             controller.setGameSize(gameSize);
         });
 
         threePlayerBtn.setOnAction(actionEvent -> {
             nickname = nickNameField.getText();
-            gameSize = "3";
+            gameSize = threePlayerBtn.getText();
             controller.setNickname(nickname);
             controller.setGameSize(gameSize);
         });
 
         fourPlayerBtn.setOnAction(actionEvent -> {
             nickname = nickNameField.getText();
-            gameSize = "4";
+            gameSize = fourPlayerBtn.getText();
             controller.setNickname(nickname);
             controller.setGameSize(gameSize);
         });
@@ -151,16 +151,16 @@ public class InitialPhaseHandler extends PhaseHandler {
             selectedLeaders.add(leader2Toggle.isSelected());
             selectedLeaders.add(leader3Toggle.isSelected());
             selectedLeaders.add(leader4Toggle.isSelected());
-            /*controller.setSelectedLeaders(selectedLeaders);*/
+            controller.setSelectedLeaders(selectedLeaders);
         });
     }
 
     @FXML
     public void displayLeaders(List<LeaderCard> availableLeaders) {
-        leader1Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(0).getId()));
-        leader2Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(1).getId()));
-        leader3Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(2).getId()));
-        leader4Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(3).getId()));
+        leader1Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(0).getId() + ".jpg"));
+        leader2Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(1).getId() + ".jpg"));
+        leader3Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(2).getId() + ".jpg"));
+        leader4Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(3).getId() + ".jpg"));
     }
 
     @FXML

@@ -6,6 +6,7 @@ import it.polimi.ingsw.client.GUI.sceneHandlers.ScenesEnum;
 import it.polimi.ingsw.client.MessageReceiver;
 import it.polimi.ingsw.client.MessageToServerHandler;
 import it.polimi.ingsw.client.model.NubPlayer;
+import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.concreteMessages.PlayersPositionMessage;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.market.Resource;
@@ -51,8 +52,6 @@ public class GuiController extends ClientController {
     @FXML
     public boolean setup() throws IOException {
         initialPhaseHandler.setScene(ScenesEnum.CONNECTION);
-        //stage.setScene(initialPhaseHandler.getScene(ScenesEnum.CONNECTION));
-        //stage.show();
 
         initialPhaseHandler.retrieveIpAndPort();
 
@@ -105,11 +104,24 @@ public class GuiController extends ClientController {
     @Override
     public void askNumberOfPlayers() {
         messageToServerHandler.sendMessageToServer(gameSize.toString());
-        Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.WAITING_ROOM));
+        if(gameSize!=1) {
+            Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.WAITING_ROOM));
+        }
     }
 
     public void setGameSize(String size){
         gameSize = Integer.parseInt(size);
+    }
+
+    public void setSelectedLeaders(List<Boolean> leadersChoice){
+        List<LeaderCard> availableLeaders = getPlayer().getLeaders();
+        List<Integer> chosenLeadersId = new ArrayList<>();
+        for (int i = 0; i < leadersChoice.size(); i++) {
+            if (leadersChoice.get(i)) {
+                chosenLeadersId.add(availableLeaders.get(i).getId());
+            }
+        }
+        messageToServerHandler.generateEnvelope(MessageID.CHOOSE_LEADER_CARDS, chosenLeadersId.toString());
     }
 
     @Override
@@ -179,7 +191,7 @@ public class GuiController extends ClientController {
 
     @Override
     public void chooseResourceAction(int quantity) {
-
+        Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.CHOOSE_RESOURCES));
     }
 
     @Override
@@ -189,21 +201,11 @@ public class GuiController extends ClientController {
 
     @Override
     public void chooseLeadersAction() {
+        Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.CHOOSE_LEADERS));
         List<LeaderCard> availableLeaders = getPlayer().getLeaders();
-        List<LeaderCard> chosenLeaders = new ArrayList<>();
-
-        initialPhaseHandler.setScene(ScenesEnum.CHOOSE_LEADERS);
         initialPhaseHandler.displayLeaders(availableLeaders);
+
         initialPhaseHandler.chooseLeaders();
-
-        /*for (int i = 0; i < availableLeaders.size(); i++) {
-            if (selectedLeaders.get(i) == true) {
-                chosenLeaders.add(availableLeaders.get(i));
-
-        }
-
-        messageToServerHandler.generateEnvelope(MessageID.CHOOSE_LEADER_CARDS, chosenLeaders.toString());*/
-
     }
 
     @Override

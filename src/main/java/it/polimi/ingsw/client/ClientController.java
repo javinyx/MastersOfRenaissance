@@ -106,6 +106,8 @@ public abstract class ClientController {
     public abstract void askNumberOfPlayers();
     public abstract void startGame();
 
+    public abstract void refreshView();
+
     public void setTotalPlayers(TurnNumberMessage msg){
         for (int i = 0; i < msg.getTurnAss().size(); i++) {
             if (!msg.getTurnAss().get(i).getFirstValue().equals(player.getNickname())){
@@ -175,7 +177,6 @@ public abstract class ClientController {
             market.setMarketBoard(msg.getMarketBoard());
             market.setExtra(msg.getExtraMarble());
         }
-        market.printM();
 
         if(msg.getAvailableProductionCards() != null || !msg.getAvailableProductionCards().isEmpty())
             availableProductionCard = convertIdToProductionCard(msg.getAvailableProductionCards());
@@ -213,6 +214,10 @@ public abstract class ClientController {
                         if (resources.size() > 0) {
                             resources.forEach(pp::removeResources);
                         }
+                    }
+
+                    if(pp.equals(player)){
+                        refreshView();
                     }
                     updateOtherPlayer(pp);
                     break;

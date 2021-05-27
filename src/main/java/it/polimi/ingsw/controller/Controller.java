@@ -33,14 +33,14 @@ public class Controller implements Observer<MessageID> {
     private List<ConcreteProductionCard> allProductionCards = new ArrayList<>();
     private List<Observer<MessageEnvelope>> remoteViews;
 
-    private ProPlayer playerForOrganizeRes;
+    private ProPlayer playerToAck;
     private int numPlayer;
 
     Gson gson = new Gson();
 
     private boolean gameOver;
     private boolean mustChoosePlacements = false;
-    private boolean basicActionDone = true;
+    private boolean basicActionDone = false;
     private boolean initializationPhase;
 
     //player choices to create updateMessage
@@ -188,15 +188,20 @@ public class Controller implements Observer<MessageID> {
         try {
             ConcreteProductionCard card = null;
             List<LeaderCard> leaderCards = new ArrayList<>();
+            boolean found = false;
 
             for (int i = 0; i < 12; i++) {
-                if (game.getBuyableProductionCards().get(i).getId() == buyProd.getProdCardId())
+                if (game.getBuyableProductionCards().get(i).getId() == buyProd.getProdCardId()) {
+                    found = true;
                     card = game.getBuyableProductionCards().get(i);
-                else {
-                    update(MessageID.CARD_NOT_AVAILABLE);
-                    return;
                 }
             }
+
+            if(!found){
+                update(CARD_NOT_AVAILABLE);
+                return;
+            }
+
 
             for (int i = 0; i < buyProd.getLeader().size(); i++) {
 
@@ -256,8 +261,8 @@ public class Controller implements Observer<MessageID> {
         }
 
         basicActionDone = true;
+        playerToAck = game.getCurrPlayer();
         update(MessageID.ACK);
-
     }
 
     /**
@@ -358,7 +363,7 @@ public class Controller implements Observer<MessageID> {
             update(MessageID.INFO);
             return;
         }*/
-        playerForOrganizeRes = game.getCurrPlayer();
+        playerToAck = game.getCurrPlayer();
         try {
             game.getCurrPlayer().buyFromMarket(buyMark.getDimension(), buyMark.getIndex(), buyMark.getMarbleUsage());
         } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
@@ -391,7 +396,7 @@ public class Controller implements Observer<MessageID> {
         int playerID = message.getTurnID();
         for(ProPlayer p : game.getPlayers()){
             if(p.getTurnID() == playerID){
-                playerForOrganizeRes = p;
+                playerToAck = p;
             }
         }
         //playerForOrganizeRes = game.getCurrPlayer();
@@ -399,7 +404,7 @@ public class Controller implements Observer<MessageID> {
         if (game instanceof MultiPlayerGame)
             for(ProPlayer p : ((MultiPlayerGame) game).getActivePlayers())
                 if(p.getTurnID() == message.getTurnID())
-                    playerForOrganizeRes = p;
+                    playerToAck = p;
 
         addedResources.clear();
         removedResources.clear();
@@ -409,7 +414,7 @@ public class Controller implements Observer<MessageID> {
         for (BiElement<Resource, Storage> element : message.getPlacements()) {
             switch (element.getSecondValue()) {
                 case WAREHOUSE_SMALL -> {
-                    if (playerForOrganizeRes.storeInWarehouse(element.getFirstValue(), 1)) {
+                    if (playerToAck.storeInWarehouse(element.getFirstValue(), 1)) {
                         addResources(element);
                     } else {
                         addedResources.clear();
@@ -419,7 +424,7 @@ public class Controller implements Observer<MessageID> {
                     }
                 }
                 case WAREHOUSE_MID -> {
-                    if (playerForOrganizeRes.storeInWarehouse(element.getFirstValue(), 2)) {
+                    if (playerToAck.storeInWarehouse(element.getFirstValue(), 2)) {
                         addResources(element);
                     } else {
                         addedResources.clear();
@@ -429,7 +434,7 @@ public class Controller implements Observer<MessageID> {
                     }
                 }
                 case WAREHOUSE_LARGE -> {
-                    if (playerForOrganizeRes.storeInWarehouse(element.getFirstValue(), 3)) {
+                    if (playerToAck.storeInWarehouse(element.getFirstValue(), 3)) {
                         addResources(element);
                     } else {
                         addedResources.clear();
@@ -439,7 +444,7 @@ public class Controller implements Observer<MessageID> {
                     }
                 }
                 case EXTRA1 -> {
-                    if (playerForOrganizeRes.storeInExtraStorage(element.getFirstValue(), playerForOrganizeRes.getExtraStorage().get(0))) {
+                    if (playerToAck.storeInExtraStorage(element.getFirstValue(), playerToAck.getExtraStorage().get(0))) {
                         addResources(element);
                     } else {
                         addedResources.clear();
@@ -449,7 +454,7 @@ public class Controller implements Observer<MessageID> {
                     }
                 }
                 case EXTRA2 -> {
-                    if (playerForOrganizeRes.storeInExtraStorage(element.getFirstValue(), playerForOrganizeRes.getExtraStorage().get(1))) {
+                    if (playerToAck.storeInExtraStorage(element.getFirstValue(), playerToAck.getExtraStorage().get(1))) {
                         addResources(element);
                     } else {
                         addedResources.clear();
@@ -471,17 +476,17 @@ public class Controller implements Observer<MessageID> {
         }
 
         if (discarding > 0) {
-            playerForOrganizeRes.discardResources(discarding);
+            playerToAck.discardResources(discarding);
         }
 
         mustChoosePlacements = false;
-        if(!playerForOrganizeRes.isInitializationPhase())
+        if(!playerToAck.isInitializationPhase())
             update(MessageID.ACK);
         else{
-            game.start(playerForOrganizeRes);
-            MessageEnvelope envelope = new MessageEnvelope(MessageID.UPDATE, playerForOrganizeRes.getUpdate());
-            remoteViews.get(playerForOrganizeRes.getTurnID()-1).update(envelope);
-            playerForOrganizeRes.setInitializationPhase(false);
+            game.start(playerToAck);
+            MessageEnvelope envelope = new MessageEnvelope(MessageID.UPDATE, playerToAck.getUpdate());
+            remoteViews.get(playerToAck.getTurnID()-1).update(envelope);
+            playerToAck.setInitializationPhase(false);
         }
     }
 
@@ -526,18 +531,21 @@ public class Controller implements Observer<MessageID> {
      * Let the player discard a leader.
      */
     public synchronized void discardLeader(String s) {
-        List<LeaderCard> leaders = game.getCurrPlayer().getLeaderCards();
+        System.out.println("discardin'n'pimpin \n" + s);
+        playerToAck = game.getCurrPlayer();
+        List<LeaderCard> leaders = playerToAck.getLeaderCards();
         for (LeaderCard card : leaders) {
             if (card.getId() == Integer.parseInt(s)) {
-                if (game.getCurrPlayer().discardLeaderCard(card)) {
+                if (playerToAck.discardLeaderCard(card)) {
                     update(MessageID.PLAYERS_POSITION);
+                    System.out.println(basicActionDone);
                     update(MessageID.ACK);
-                    break;
+                }else{
+                    update(MessageID.CARD_NOT_AVAILABLE);
                 }
-
+                break;
             }
         }
-        update(MessageID.CARD_NOT_AVAILABLE);
     }
 
     /**
@@ -584,6 +592,7 @@ public class Controller implements Observer<MessageID> {
      * <p>In the message, it stores the new player that has to play and the buyable production cards.</p>
      */
     private synchronized EndTurnMessage generateEndTurnMessage() {
+        basicActionDone = false;
         previousPlayer = game.getCurrPlayer();
         game.updateEndTurn(previousPlayer);
 
@@ -622,7 +631,7 @@ public class Controller implements Observer<MessageID> {
     public synchronized void update(MessageID messageID) {
         switch (messageID) {
 
-            case ACK -> remoteViews.get(playerForOrganizeRes.getTurnID() - 1).update(new MessageEnvelope(messageID, String.valueOf(basicActionDone)));
+            case ACK -> remoteViews.get(playerToAck.getTurnID() - 1).update(new MessageEnvelope(messageID, String.valueOf(basicActionDone)));
             case CONFIRM_END_TURN -> {
                 System.err.println("CONFIRM_END_TURN: non dovremmo più essere qui");
                 EndTurnMessage msg = generateEndTurnMessage();
@@ -646,7 +655,7 @@ public class Controller implements Observer<MessageID> {
                     LEADER_NOT_ACTIVABLE,
                     WRONG_LEVEL_REQUEST -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, ""));
 
-            case STORE_RESOURCES -> remoteViews.get(playerForOrganizeRes.getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
+            case STORE_RESOURCES -> remoteViews.get(playerToAck.getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
 
             case UPDATE -> {
                 /*if (initializationPhase) {

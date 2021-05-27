@@ -207,6 +207,11 @@ public class CliController extends ClientController {
         }
     }
 
+    @Override
+    public void refreshView() {
+
+    }
+
     // GAME PHASES -----------------------------------------------------------------------------------------------------
 
     public synchronized void startTurnPhase(){

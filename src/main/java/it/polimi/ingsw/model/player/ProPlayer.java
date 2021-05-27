@@ -4,7 +4,6 @@ package it.polimi.ingsw.model.player;
 import com.google.gson.Gson;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.exception.BadStorageException;
-import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.concreteMessages.UpdateMessage;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.model.Game;
@@ -283,7 +282,6 @@ public class ProPlayer extends Player{
         game.removeFromProdDeck(card);
         prodStack.addFirst(card);
 
-        controller.update(MessageID.CONFIRM_END_TURN);
     }
 //----------------------------------------MARKET-------------------------------
     /**Obtains the resources chosen from market by column or row.

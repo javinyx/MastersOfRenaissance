@@ -115,6 +115,11 @@ public class GuiController extends ClientController {
     }
 
     @Override
+    public void refreshView() {
+
+    }
+
+    @Override
     public void cardNotAvailable() {
 
     }

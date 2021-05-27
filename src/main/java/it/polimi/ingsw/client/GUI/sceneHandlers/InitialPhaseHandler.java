@@ -130,7 +130,7 @@ public class InitialPhaseHandler extends PhaseHandler {
             controller.setNickname(nickname);
             controller.setGameSize(gameSize);
         });
-
     }
+
 
 }

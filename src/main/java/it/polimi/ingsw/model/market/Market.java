@@ -139,9 +139,16 @@ public class Market{
 
         Resource last;
 
-        last = marketBoard[row][3];
+        /*last = marketBoard[row][3];
         System.arraycopy(marketBoard[row], 0, marketBoard[row], 1, 3);
         marketBoard[row][0] = extraMarble;
+        extraMarble = last;*/
+
+        last = marketBoard[row][0];
+        for(int j = 1; j<4; j++){
+            marketBoard[row][j-1] = marketBoard[row][j];
+        }
+        marketBoard[row][3] = extraMarble;
         extraMarble = last;
     }
 
@@ -152,12 +159,20 @@ public class Market{
 
         Resource last;
 
-        last = marketBoard[2][col];
+        /*last = marketBoard[2][col];
         for (int i = 2; i > 0;  i--){
             marketBoard[i][col] = marketBoard[i-1][col];
         }
         marketBoard[0][col] = extraMarble;
 
+        extraMarble = last;*/
+
+        last = marketBoard[0][col];
+        //shifting
+        for(int i=1 ; i<3; i++){
+            marketBoard[i-1][col] = marketBoard[i][col];
+        }
+        marketBoard[2][col] = extraMarble;
         extraMarble = last;
 
 

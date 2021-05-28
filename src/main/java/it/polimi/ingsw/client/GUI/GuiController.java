@@ -30,8 +30,6 @@ public class GuiController extends ClientController {
     private String nickName;
     private Integer gameSize;
 
-
-
     public GuiController(Stage stage, Gui gui){
         this.stage = stage;
 
@@ -44,7 +42,7 @@ public class GuiController extends ClientController {
 
     private void start(){
         stage.setTitle("Masters of Renaissance");
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("/img/ui/calamaio.png")));
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/img/ui/inkwell.png")));
         stage.setResizable(false);
         stage.setScene(initialPhaseHandler.getScene(ScenesEnum.WELCOME));
         stage.show();

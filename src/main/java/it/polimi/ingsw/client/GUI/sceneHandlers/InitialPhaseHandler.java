@@ -13,8 +13,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -164,10 +162,10 @@ public class InitialPhaseHandler extends PhaseHandler {
 
     @FXML
     public void displayLeaders(List<LeaderCard> availableLeaders) {
-        leader1Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(0).getId() + ".jpg"));
-        leader2Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(1).getId() + ".jpg"));
-        leader3Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(2).getId() + ".jpg"));
-        leader4Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(3).getId() + ".jpg"));
+        leader1Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(0).getId() + ".png"));
+        leader2Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(1).getId() + ".png"));
+        leader3Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(2).getId() + ".png"));
+        leader4Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(3).getId() + ".png"));
     }
 
     @FXML

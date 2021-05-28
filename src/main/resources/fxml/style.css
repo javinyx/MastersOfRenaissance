@@ -1,10 +1,31 @@
 /*
+ * Global Values
+ */
+Label {
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "godofwar";
+}
+
+Button {
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "godofwar";
+    -fx-label-padding: -5 0 0 0;
+    -fx-text-alignment: center;
+    -fx-focus-color: transparent;
+    -fx-background-color: transparent;
+}
+
+ToggleButton {
+    -fx-background-color: transparent;
+    -fx-focus-color: transparent;
+}
+
+/*
  * Welcome Scene
  */
 #background {
     -fx-background-image: url("/img/ui/background.jpg");
     -fx-background-repeat: stretch;
-    -fx-background-position: center center;
 }
 
 #logo {
@@ -15,12 +36,6 @@
     -fx-background-image: url("/img/ui/btn.png");
     -fx-background-size: stretch;
     -fx-font-size: 24px;
-    -fx-text-fill: #ffffff;
-    -fx-text-alignment: center;
-    -fx-focus-color: transparent;
-    -fx-background-color: transparent;
-    -fx-label-padding: -5 0 0 0;
-    -fx-font-family: "godofwar";
 }
 
 .btn:pressed {
@@ -36,14 +51,10 @@
  */
 .inputLabel {
     -fx-font-size: 20px;
-    -fx-text-fill: #ffffff;
-    -fx-font-family: "godofwar";
 }
 
 .inputLabelSmall {
     -fx-font-size: 16px;
-    -fx-text-fill: #ffffff;
-    -fx-font-family: "godofwar";
 }
 
 .inputArea {
@@ -56,12 +67,6 @@
     -fx-background-image: url("/img/ui/btnSq.png");
     -fx-background-size: stretch;
     -fx-font-size: 30px;
-    -fx-text-fill: #ffffff;
-    -fx-text-alignment: center;
-    -fx-focus-color: transparent;
-    -fx-background-color: transparent;
-    -fx-font-family: "godofwar";
-    -fx-label-padding: -5 0 0 0;
 }
 
 .btnSq:pressed {
@@ -77,14 +82,10 @@
  */
 .greeting {
     -fx-font-size: 35px;
-    -fx-text-fill: #ffffff;
-    -fx-font-family: "godofwar";
 }
 
 .waitLabel {
     -fx-font-size: 30px;
-    -fx-text-fill: #ffffff;
-    -fx-font-family: "godofwar";
 }
 
 #progressBar {
@@ -99,8 +100,6 @@
 }
 
 .leaderToggle {
-    -fx-background-color: transparent;
-    -fx-focus-color: transparent;
     -fx-pref-width: 50;
 }
 
@@ -117,8 +116,6 @@
  */
 .resourceNumLabel {
     -fx-font-size: 30px;
-    -fx-text-fill: #ffffff;
-    -fx-font-family: "godofwar";
     -fx-padding: 0 5 0 5;
 }
 

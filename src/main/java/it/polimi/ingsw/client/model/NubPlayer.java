@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class NubPlayer implements Comparator<NubPlayer> {
     private final String nickname;
@@ -59,20 +60,42 @@ public class NubPlayer implements Comparator<NubPlayer> {
     public void setCurrPos(int pos){currPos = pos;}
 
     public void addResources(BiElement<Resource,Storage> resources, Integer qty){
-        if(allResources.containsKey(resources)){
+        //Set<Map.Entry<BiElement<Resource, Storage>, Integer>> entrySet = allResources.entrySet();
+
+        AtomicBoolean found = new AtomicBoolean(false);
+        allResources.forEach((x,y) -> {
+            if (x.equals(resources)) {
+                found.set(true);
+                allResources.compute(x, (k,v) -> v + qty);
+            }
+        });
+
+        if(!found.get()){
+            allResources.put(resources, qty);
+        }
+        /*if(allResources.containsKey(resources)){
             allResources.compute(resources, (k,v) -> v + qty);
         }else{
             allResources.put(resources, qty);
-        }
+        }*/
     }
 
     public void removeResources(BiElement<Resource, Storage> resources, Integer qty){
-        if(allResources.containsKey(resources)){
+
+        allResources.forEach((x,y) -> {
+            if(x.equals(resources)){
+                allResources.compute(x, (k,v) -> v - qty);
+                if(allResources.get(x)<1){
+                    allResources.remove(x);
+                }
+            }
+        });
+        /*if(allResources.containsKey(resources)){
             allResources.compute(resources, (k,v) -> v - qty);
             if(allResources.get(resources)<1){
                 allResources.remove(resources);
             }
-        }
+        }*/
     }
 
     public Map<BiElement<Resource,Storage>,Integer> getAllResources(){return allResources;}

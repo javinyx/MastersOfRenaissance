@@ -207,6 +207,8 @@ public abstract class ClientController {
                     resources.forEach(pp::addResources);
                 }
 
+                System.out.println(pp.getAllResources());
+
                 resources = msg.getRemovedResources();
                 if (resources != null && resources.size()>0) {
                     resources.forEach(pp::removeResources);

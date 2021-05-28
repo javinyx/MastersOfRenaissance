@@ -21,4 +21,14 @@ public class BiElement<T, V> {
     public String toString() {
         return "[ " + t + ", " + v + " ]";
     }
+
+    @Override
+    public boolean equals(Object obj){
+        if(obj instanceof BiElement){
+            return t.equals(((BiElement<?, ?>) obj).getFirstValue()) && v.equals(((BiElement<?, ?>) obj).getSecondValue());
+        }
+        return false;
+    }
+
+
 }

@@ -203,7 +203,14 @@ public class GuiController extends ClientController {
 
     @Override
     public void chooseResourceAction(int quantity) {
-        Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.CHOOSE_RESOURCES));
+        synchronized (lock){
+            try {
+                lock.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.CHOOSE_RESOURCES));
+        }
     }
 
     @Override

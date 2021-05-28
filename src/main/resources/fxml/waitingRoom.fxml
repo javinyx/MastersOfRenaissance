@@ -9,10 +9,11 @@
     <center>
         <VBox alignment="CENTER" spacing="50" stylesheets="@style.css" BorderPane.alignment="CENTER">
             <children>
-                <Label alignment="CENTER" contentDisplay="CENTER" styleClass="greeting" stylesheets="@style.css"
-                       text="Hello, PLAYER_NAME"/>
+                <Label fx:id="waitingRoomLbl" alignment="CENTER" contentDisplay="CENTER" styleClass="greeting" stylesheets="@style.css"
+                       text="Hello, "/>
                 <Label alignment="CENTER" contentDisplay="CENTER" styleClass="waitLabel" stylesheets="@style.css"
                        text="Waiting for other players..."/>
+                <ProgressBar prefHeight="50.0" prefWidth="400.0" id="progressBar" />
             </children>
         </VBox>
     </center>

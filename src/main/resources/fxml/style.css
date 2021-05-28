@@ -87,6 +87,31 @@
     -fx-font-family: "godofwar";
 }
 
+#progressBar {
+    -fx-padding: 8;
+}
+
+/*
+ * Choose Leaders Scene
+ */
+.leaderImg {
+    -fx-background-size: 100px;
+}
+
+.leaderToggle {
+    -fx-background-color: transparent;
+    -fx-focus-color: transparent;
+    -fx-pref-width: 50;
+}
+
+.leaderToggle:selected {
+    -fx-effect: dropshadow(one-pass-box, rgba(37, 242, 255, 0.5), 10, 0, 0, 0);
+}
+
+.leaderToggle:hover {
+    -fx-effect: dropshadow(one-pass-box, rgba(255, 255, 255, 0.5), 10, 0, 0, 0);
+}
+
 /*
  * Choose Resources Scene
  */

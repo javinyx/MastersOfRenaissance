@@ -12,24 +12,24 @@
             <children>
                 <HBox alignment="CENTER" spacing="20">
                     <children>
-                        <ToggleButton fx:id="leader1Toggle" mnemonicParsing="false">
+                        <ToggleButton fx:id="leader1Toggle" styleClass="leaderToggle" mnemonicParsing="false">
                             <graphic>
-                                <ImageView fx:id="leader1Img" pickOnBounds="true" preserveRatio="true"/>
+                                <ImageView fx:id="leader1Img" styleClass="leaderImg" pickOnBounds="true" preserveRatio="true" fitHeight="200.0"/>
                             </graphic>
                         </ToggleButton>
-                        <ToggleButton fx:id="leader2Toggle" mnemonicParsing="false">
+                        <ToggleButton fx:id="leader2Toggle" styleClass="leaderToggle" mnemonicParsing="false">
                             <graphic>
-                                <ImageView fx:id="leader2Img" pickOnBounds="true" preserveRatio="true"/>
+                                <ImageView fx:id="leader2Img" styleClass="leaderImg" pickOnBounds="true" preserveRatio="true" fitHeight="200.0"/>
                             </graphic>
                         </ToggleButton>
-                        <ToggleButton fx:id="leader3Toggle" mnemonicParsing="false">
+                        <ToggleButton fx:id="leader3Toggle" styleClass="leaderToggle" mnemonicParsing="false">
                             <graphic>
-                                <ImageView fx:id="leader3Img" pickOnBounds="true" preserveRatio="true"/>
+                                <ImageView fx:id="leader3Img" styleClass="leaderImg" pickOnBounds="true" preserveRatio="true" fitHeight="200.0"/>
                             </graphic>
                         </ToggleButton>
-                        <ToggleButton fx:id="leader4Toggle" mnemonicParsing="false">
+                        <ToggleButton fx:id="leader4Toggle" styleClass="leaderToggle" mnemonicParsing="false">
                             <graphic>
-                                <ImageView fx:id="leader4Img" pickOnBounds="true" preserveRatio="true"/>
+                                <ImageView fx:id="leader4Img" styleClass="leaderImg" pickOnBounds="true" preserveRatio="true" fitHeight="200.0"/>
                             </graphic>
                         </ToggleButton>
                     </children>

@@ -13,6 +13,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -34,6 +36,7 @@ public class InitialPhaseHandler extends PhaseHandler {
     @FXML private Button  playBtn, quitBtn, connectBtn, localModeBtn;
     @FXML private TextField ipField, portField, nickNameField;
     @FXML private Button singlePlayerBtn, twoPlayerBtn, threePlayerBtn, fourPlayerBtn;
+    @FXML private Label waitingRoomLbl;
     @FXML private Button chooseLeadersBtn, chooseResourcesBtn;
     @FXML private ToggleButton leader1Toggle, leader2Toggle, leader3Toggle, leader4Toggle;
     @FXML private ImageView leader1Img, leader2Img, leader3Img, leader4Img;
@@ -144,6 +147,19 @@ public class InitialPhaseHandler extends PhaseHandler {
     }
 
     @FXML
+    public void setWaitingRoomName(String nickName) {
+        waitingRoomLbl.setText("Hello, " + nickName);
+    }
+
+    @FXML
+    public void displayLeaders(List<LeaderCard> availableLeaders) {
+        leader1Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(0).getId() + ".jpg"));
+        leader2Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(1).getId() + ".jpg"));
+        leader3Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(2).getId() + ".jpg"));
+        leader4Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(3).getId() + ".jpg"));
+    }
+
+    @FXML
     public void chooseLeaders() {
         chooseLeadersBtn.setOnAction(actionEvent -> {
             List<Boolean> selectedLeaders = new ArrayList<>();
@@ -153,14 +169,6 @@ public class InitialPhaseHandler extends PhaseHandler {
             selectedLeaders.add(leader4Toggle.isSelected());
             controller.setSelectedLeaders(selectedLeaders);
         });
-    }
-
-    @FXML
-    public void displayLeaders(List<LeaderCard> availableLeaders) {
-        leader1Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(0).getId() + ".jpg"));
-        leader2Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(1).getId() + ".jpg"));
-        leader3Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(2).getId() + ".jpg"));
-        leader4Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(3).getId() + ".jpg"));
     }
 
     @FXML

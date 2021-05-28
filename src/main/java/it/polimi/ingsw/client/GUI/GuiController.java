@@ -12,6 +12,7 @@ import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.market.Resource;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -27,6 +28,7 @@ public class GuiController extends ClientController {
     private Stage stage;
     private InitialPhaseHandler initialPhaseHandler;
 
+    private String nickName;
     private Integer gameSize;
 
 
@@ -43,6 +45,8 @@ public class GuiController extends ClientController {
 
     private void start(){
         stage.setTitle("Masters of Renaissance");
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/img/ui/calamaio.png")));
+        stage.setResizable(false);
         stage.setScene(initialPhaseHandler.getScene(ScenesEnum.WELCOME));
         stage.show();
         initialPhaseHandler.start();
@@ -97,8 +101,9 @@ public class GuiController extends ClientController {
         initialPhaseHandler.getNickNameAndGameSize();
     }
 
-    public void setNickname(String nickname){
-        messageToServerHandler.sendMessageToServer(nickname);
+    public void setNickname(String receivedName){
+        nickName = receivedName;
+        messageToServerHandler.sendMessageToServer(receivedName);
     }
 
     @Override
@@ -106,6 +111,7 @@ public class GuiController extends ClientController {
         messageToServerHandler.sendMessageToServer(gameSize.toString());
         if(gameSize!=1) {
             Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.WAITING_ROOM));
+            initialPhaseHandler.setWaitingRoomName(nickName);
         }
     }
 

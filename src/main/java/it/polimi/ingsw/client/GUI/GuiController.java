@@ -50,14 +50,14 @@ public class GuiController extends ClientController {
     }
 
     @Override
-    public boolean setup() throws IOException {
+    public synchronized boolean setup() throws IOException {
         initialPhaseHandler.setScene(ScenesEnum.CONNECTION);
         initialPhaseHandler.retrieveIpAndPort();
 
         return true;
     }
 
-    public void setIpAndPort(String ip, String port){
+    public synchronized void setIpAndPort(String ip, String port){
         if(ip.equals("0") && port.equals("0")){
             startLocalGame();
             return;
@@ -79,29 +79,29 @@ public class GuiController extends ClientController {
             Thread t1 = new Thread(new MessageReceiver(socketIn, this));
             t1.start();
 
-        }catch(IOException e){
+        } catch(IOException e) {
             System.err.println(e.getClass() + "Socket error");
         }
 
     }
 
     @Override
-    public void setWaitingServerUpdate(boolean b) {
+    public synchronized void setWaitingServerUpdate(boolean b) {
     }
 
     @Override
-    public void askNickname() {
+    public synchronized void askNickname() {
         Platform.runLater(() -> stage.setScene(initialPhaseHandler.getScene(ScenesEnum.REGISTRATION)));
         initialPhaseHandler.getNickNameAndGameSize();
     }
 
-    public void setNickname(String receivedName){
+    public synchronized void setNickname(String receivedName){
         nickName = receivedName;
         messageToServerHandler.sendMessageToServer(receivedName);
     }
 
     @Override
-    public void askNumberOfPlayers() {
+    public synchronized void askNumberOfPlayers() {
         messageToServerHandler.sendMessageToServer(gameSize.toString());
         if(gameSize != 1) {
             Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.WAITING_ROOM));
@@ -109,11 +109,11 @@ public class GuiController extends ClientController {
         }
     }
 
-    public void setGameSize(String size){
+    public synchronized void setGameSize(String size){
         gameSize = Integer.parseInt(size);
     }
 
-    public void setSelectedLeaders(List<Boolean> leadersChoice){
+    public synchronized void setSelectedLeaders(List<Boolean> leadersChoice){
         List<LeaderCard> availableLeaders = getPlayer().getLeaders();
         List<Integer> chosenLeadersId = new ArrayList<>();
 
@@ -126,7 +126,7 @@ public class GuiController extends ClientController {
     }
 
     @Override
-    public void startGame() {
+    public synchronized void startGame() {
         Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.MAIN_BOARD));
     }
 
@@ -201,10 +201,10 @@ public class GuiController extends ClientController {
     }
 
     @Override
-    public void chooseLeadersAction() {
+    public synchronized void chooseLeadersAction() {
         Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.CHOOSE_LEADERS));
-        List<LeaderCard> availableLeaders = getPlayer().getLeaders();
 
+        List<LeaderCard> availableLeaders = getPlayer().getLeaders();
         initialPhaseHandler.displayLeaders(availableLeaders);
         initialPhaseHandler.chooseLeaders();
     }

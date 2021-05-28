@@ -49,9 +49,9 @@ public class InitialPhaseHandler extends PhaseHandler {
     @FXML
     private Label chooseResLbl, chooseFaithLbl;
     @FXML
-    private Button StoneSubBtn, StoneAddBtn, ServantSubBtn, ServantAddBtn, CoinSubBtn, CoinAddBtn, ShieldSubBtn, ShieldAddBtn;
+    private Button stoneSubBtn, stoneAddBtn, servantSubBtn, servantAddBtn, coinSubBtn, coinAddBtn, shieldSubBtn, shieldAddBtn;
     @FXML
-    private Label StoneLbl, ServantLbl, CoinLbl, ShieldLbl;
+    private Label stoneLbl, servantLbl, coinLbl, shieldLbl, resPluralLbl;
 
     public InitialPhaseHandler(GuiController controller, Stage stage) {
         super(controller, stage);
@@ -291,6 +291,7 @@ public class InitialPhaseHandler extends PhaseHandler {
         });
 
         chooseLeadersBtn.setOnAction(actionEvent -> {
+            //TODO: check if 2 leaders have been selected
             List<Boolean> selectedLeaders = new ArrayList<>();
             selectedLeaders.add(leader1Toggle.isSelected());
             selectedLeaders.add(leader2Toggle.isSelected());
@@ -301,37 +302,73 @@ public class InitialPhaseHandler extends PhaseHandler {
     }
 
     @FXML
-    public void displayResources(Integer resources, Integer faithPoints) {
+    public void displayResources(Integer resources) {
         chooseResLbl.setText(resources.toString());
-        chooseFaithLbl.setText("You have also received: " + faithPoints.toString() + " faith points");
+        if (resources == 1) {
+            resPluralLbl.setText("resource");
+        } else {
+            resPluralLbl.setText("resources");
+        }
 
-        StoneAddBtn.setOnAction(actionEvent -> {
-            StoneLbl.setText(String.valueOf((Integer.parseInt(StoneLbl.getText()) + 1)));
+        if(controller.getPlayer().getTurnNumber() == 3 || controller.getPlayer().getTurnNumber() == 4){
+            chooseFaithLbl.setText("You have also received 1 bonus faith point");
+        } else {
+            chooseFaithLbl.setDisable(true);
+        }
+
+        ctr = 0;
+
+        stoneAddBtn.setOnAction(actionEvent -> {
+            if (ctr < resources) {
+                stoneLbl.setText(String.valueOf((Integer.parseInt(stoneLbl.getText()) + 1)));
+                ctr++;
+            }
         });
-        StoneSubBtn.setOnAction(actionEvent -> {
-            StoneLbl.setText(String.valueOf((Integer.parseInt(StoneLbl.getText()) - 1)));
+        stoneSubBtn.setOnAction(actionEvent -> {
+            if (Integer.parseInt(stoneLbl.getText()) != 0) {
+                stoneLbl.setText(String.valueOf((Integer.parseInt(stoneLbl.getText()) - 1)));
+                ctr--;
+            }
         });
-        ServantAddBtn.setOnAction(actionEvent -> {
-            ServantLbl.setText(String.valueOf((Integer.parseInt(ServantLbl.getText()) + 1)));
+        servantAddBtn.setOnAction(actionEvent -> {
+            if (ctr < resources) {
+                servantLbl.setText(String.valueOf((Integer.parseInt(servantLbl.getText()) + 1)));
+                ctr++;
+            }
         });
-        ServantSubBtn.setOnAction(actionEvent -> {
-            ServantLbl.setText(String.valueOf((Integer.parseInt(ServantLbl.getText()) - 1)));
+        servantSubBtn.setOnAction(actionEvent -> {
+            if (Integer.parseInt(servantLbl.getText()) != 0) {
+                servantLbl.setText(String.valueOf((Integer.parseInt(servantLbl.getText()) - 1)));
+                ctr--;
+            }
         });
-        CoinAddBtn.setOnAction(actionEvent -> {
-            CoinLbl.setText(String.valueOf((Integer.parseInt(CoinLbl.getText()) + 1)));
+        coinAddBtn.setOnAction(actionEvent -> {
+            if (ctr < resources) {
+                coinLbl.setText(String.valueOf((Integer.parseInt(coinLbl.getText()) + 1)));
+                ctr++;
+            }
         });
-        CoinSubBtn.setOnAction(actionEvent -> {
-            CoinLbl.setText(String.valueOf((Integer.parseInt(CoinLbl.getText()) - 1)));
+        coinSubBtn.setOnAction(actionEvent -> {
+            if (Integer.parseInt(coinLbl.getText()) != 0) {
+                coinLbl.setText(String.valueOf((Integer.parseInt(coinLbl.getText()) - 1)));
+                ctr--;
+            }
         });
-        ShieldAddBtn.setOnAction(actionEvent -> {
-            ShieldLbl.setText(String.valueOf((Integer.parseInt(ShieldLbl.getText()) + 1)));
+        shieldAddBtn.setOnAction(actionEvent -> {
+            if (ctr < resources) {
+                shieldLbl.setText(String.valueOf((Integer.parseInt(shieldLbl.getText()) + 1)));
+                ctr++;
+            }
         });
-        ShieldSubBtn.setOnAction(actionEvent -> {
-            ShieldLbl.setText(String.valueOf((Integer.parseInt(ShieldLbl.getText()) - 1)));
+        shieldSubBtn.setOnAction(actionEvent -> {
+            if (Integer.parseInt(shieldLbl.getText()) != 0) {
+                shieldLbl.setText(String.valueOf((Integer.parseInt(shieldLbl.getText()) - 1)));
+                ctr--;
+            }
         });
 
         chooseResourcesBtn.setOnAction(actionEvent -> {
-            //Lista di risorse col numero scelto
+            //TODO: get all the label texts, check if they're not 0 and ask where to store the resources
         });
     }
 

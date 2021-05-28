@@ -15,6 +15,10 @@ Button {
     -fx-background-color: transparent;
 }
 
+Button:hover {
+    -fx-effect: dropshadow(one-pass-box, rgba(255, 255, 255, 0.5), 10, 0, 0, 0);
+}
+
 ToggleButton {
     -fx-background-color: transparent;
     -fx-focus-color: transparent;
@@ -25,7 +29,14 @@ ToggleButton {
  */
 #background {
     -fx-background-image: url("/img/ui/background.jpg");
-    -fx-background-repeat: stretch;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center center;
+}
+
+#backgroundStart {
+    -fx-background-image: url("/img/ui/backgroundStart.jpg");
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center center;
 }
 
 #logo {
@@ -40,10 +51,6 @@ ToggleButton {
 
 .btn:pressed {
     -fx-background-image: url("/img/ui/btnPressed.png");
-}
-
-.btn:hover {
-    -fx-effect: dropshadow(one-pass-box, rgba(255, 255, 255, 0.5), 10, 0, 0, 0);
 }
 
 /*
@@ -71,10 +78,6 @@ ToggleButton {
 
 .btnSq:pressed {
     -fx-background-image: url("/img/ui/btnSqPressed.png");
-}
-
-.btnSq:hover {
-    -fx-effect: dropshadow(one-pass-box, rgba(255, 255, 255, 0.5), 10, 0, 0, 0);
 }
 
 /*
@@ -117,6 +120,16 @@ ToggleButton {
 .resourceNumLabel {
     -fx-font-size: 30px;
     -fx-padding: 0 5 0 5;
+}
+
+.btnSqAlt {
+    -fx-background-image: url("/img/ui/btnSq.png");
+    -fx-background-size: stretch;
+    -fx-font-size: 20px;
+}
+
+.btnSq:pressed {
+    -fx-background-image: url("/img/ui/btnSqPressed.png");
 }
 
 /*

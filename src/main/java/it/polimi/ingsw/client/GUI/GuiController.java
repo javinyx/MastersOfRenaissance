@@ -209,7 +209,9 @@ public class GuiController extends ClientController {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
             Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.CHOOSE_RESOURCES));
+            initialPhaseHandler.displayResources(quantity);
         }
     }
 

@@ -105,7 +105,7 @@
 }
 
 .leaderToggle:selected {
-    -fx-effect: dropshadow(one-pass-box, rgba(37, 242, 255, 0.5), 10, 0, 0, 0);
+    -fx-effect: dropshadow(one-pass-box, rgba(37, 242, 255, 0.5), 20, 0, 0, 0);
 }
 
 .leaderToggle:hover {
@@ -120,4 +120,11 @@
     -fx-text-fill: #ffffff;
     -fx-font-family: "godofwar";
     -fx-padding: 0 5 0 5;
+}
+
+/*
+ * Main Board Scene
+ */
+#mainBoard {
+    -fx-background-image: url("/img/ui/mainBoard.png");
 }

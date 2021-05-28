@@ -11,7 +11,6 @@ import it.polimi.ingsw.messages.concreteMessages.PlayersPositionMessage;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.market.Resource;
 import javafx.application.Platform;
-import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -53,10 +52,8 @@ public class GuiController extends ClientController {
     }
 
     @Override
-    @FXML
     public boolean setup() throws IOException {
         initialPhaseHandler.setScene(ScenesEnum.CONNECTION);
-
         initialPhaseHandler.retrieveIpAndPort();
 
         return true;
@@ -95,7 +92,6 @@ public class GuiController extends ClientController {
     }
 
     @Override
-    @FXML
     public void askNickname() {
         Platform.runLater(() -> stage.setScene(initialPhaseHandler.getScene(ScenesEnum.REGISTRATION)));
         initialPhaseHandler.getNickNameAndGameSize();
@@ -109,7 +105,7 @@ public class GuiController extends ClientController {
     @Override
     public void askNumberOfPlayers() {
         messageToServerHandler.sendMessageToServer(gameSize.toString());
-        if(gameSize!=1) {
+        if(gameSize != 1) {
             Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.WAITING_ROOM));
             initialPhaseHandler.setWaitingRoomName(nickName);
         }
@@ -122,6 +118,7 @@ public class GuiController extends ClientController {
     public void setSelectedLeaders(List<Boolean> leadersChoice){
         List<LeaderCard> availableLeaders = getPlayer().getLeaders();
         List<Integer> chosenLeadersId = new ArrayList<>();
+
         for (int i = 0; i < leadersChoice.size(); i++) {
             if (leadersChoice.get(i)) {
                 chosenLeadersId.add(availableLeaders.get(i).getId());
@@ -209,8 +206,8 @@ public class GuiController extends ClientController {
     public void chooseLeadersAction() {
         Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.CHOOSE_LEADERS));
         List<LeaderCard> availableLeaders = getPlayer().getLeaders();
-        initialPhaseHandler.displayLeaders(availableLeaders);
 
+        initialPhaseHandler.displayLeaders(availableLeaders);
         initialPhaseHandler.chooseLeaders();
     }
 

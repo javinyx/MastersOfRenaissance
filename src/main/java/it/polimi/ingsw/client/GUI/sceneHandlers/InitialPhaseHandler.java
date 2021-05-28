@@ -29,26 +29,37 @@ import static it.polimi.ingsw.client.GUI.sceneHandlers.ScenesEnum.*;
 public class InitialPhaseHandler extends PhaseHandler {
     private String ip, port;
     private String nickname, gameSize;
+    private int ctr;
 
     private Map<ScenesEnum, Scene> sceneMap = new HashMap<>();
     //private Map<ScenesEnum, InitialPhaseHandler> sceneControllerMap = new HashMap<>();
 
-    @FXML private Button  playBtn, quitBtn, connectBtn, localModeBtn;
-    @FXML private TextField ipField, portField, nickNameField;
-    @FXML private Button singlePlayerBtn, twoPlayerBtn, threePlayerBtn, fourPlayerBtn;
-    @FXML private Label waitingRoomLbl;
-    @FXML private Button chooseLeadersBtn, chooseResourcesBtn;
-    @FXML private ToggleButton leader1Toggle, leader2Toggle, leader3Toggle, leader4Toggle;
-    @FXML private ImageView leader1Img, leader2Img, leader3Img, leader4Img;
-    @FXML private Label chooseResLbl, chooseFaithLbl;
-    @FXML private Button StoneSubBtn, StoneAddBtn, ServantSubBtn, ServantAddBtn, CoinSubBtn, CoinAddBtn, ShieldSubBtn, ShieldAddBtn;
-    @FXML private Label StoneLbl, ServantLbl, CoinLbl, ShieldLbl;
+    @FXML
+    private Button playBtn, quitBtn, connectBtn, localModeBtn;
+    @FXML
+    private TextField ipField, portField, nickNameField;
+    @FXML
+    private Button singlePlayerBtn, twoPlayerBtn, threePlayerBtn, fourPlayerBtn;
+    @FXML
+    private Label waitingRoomLbl;
+    @FXML
+    private Button chooseLeadersBtn, chooseResourcesBtn;
+    @FXML
+    private ToggleButton leader1Toggle, leader2Toggle, leader3Toggle, leader4Toggle;
+    @FXML
+    private ImageView leader1Img, leader2Img, leader3Img, leader4Img;
+    @FXML
+    private Label chooseResLbl, chooseFaithLbl;
+    @FXML
+    private Button StoneSubBtn, StoneAddBtn, ServantSubBtn, ServantAddBtn, CoinSubBtn, CoinAddBtn, ShieldSubBtn, ShieldAddBtn;
+    @FXML
+    private Label StoneLbl, ServantLbl, CoinLbl, ShieldLbl;
 
-    public InitialPhaseHandler(GuiController controller, Stage stage){
+    public InitialPhaseHandler(GuiController controller, Stage stage) {
         super(controller, stage);
 
-        List<ScenesEnum> allPaths = new ArrayList<>(Arrays.asList(WELCOME, CONNECTION, REGISTRATION, WAITING_ROOM, CHOOSE_LEADERS, CHOOSE_RESOURCES));
-        for(ScenesEnum path : allPaths){
+        List<ScenesEnum> allPaths = new ArrayList<>(Arrays.asList(WELCOME, CONNECTION, REGISTRATION, WAITING_ROOM, CHOOSE_LEADERS, CHOOSE_RESOURCES, MAIN_BOARD));
+        for (ScenesEnum path : allPaths) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + path.getPath()));
             loader.setController(this);
 
@@ -60,7 +71,7 @@ public class InitialPhaseHandler extends PhaseHandler {
 
                 sceneMap.put(path, scene);
 
-            } catch(IOException e) {
+            } catch (IOException e) {
                 System.err.println("Loader cannot load " + path);
             }
         }
@@ -68,8 +79,8 @@ public class InitialPhaseHandler extends PhaseHandler {
         buildGeneralSceneMap(sceneMap);
     }
 
-    public boolean setScene(ScenesEnum sceneName){
-        if(!sceneMap.containsKey(sceneName)){
+    public boolean setScene(ScenesEnum sceneName) {
+        if (!sceneMap.containsKey(sceneName)) {
             return false;
         }
         stage.setScene(sceneMap.get(sceneName));
@@ -77,7 +88,7 @@ public class InitialPhaseHandler extends PhaseHandler {
     }
 
     @FXML
-    public void start(){
+    public void start() {
         playBtn.setOnAction(actionEvent -> {
             try {
                 controller.setup();
@@ -95,9 +106,9 @@ public class InitialPhaseHandler extends PhaseHandler {
      * @return a {@link BiElement} containing the IP as first value and the Port as second.
      */
     @FXML
-    public void retrieveIpAndPort(){
+    public void retrieveIpAndPort() {
         connectBtn.setOnAction(actionEvent -> {
-            if(ipField.getText().length()>0 && ipField.getText().length()>0) {
+            if (ipField.getText().length() > 0 && ipField.getText().length() > 0) {
                 ip = ipField.getText();
                 port = portField.getText();
             } else {
@@ -115,7 +126,7 @@ public class InitialPhaseHandler extends PhaseHandler {
     }
 
     @FXML
-    public void getNickNameAndGameSize(){
+    public void getNickNameAndGameSize() {
         //TODO: check nickname length
         singlePlayerBtn.setOnAction(actionEvent -> {
             nickname = nickNameField.getText();
@@ -161,6 +172,126 @@ public class InitialPhaseHandler extends PhaseHandler {
 
     @FXML
     public void chooseLeaders() {
+        leader1Toggle.setOnAction(actionEvent -> {
+            if (leader1Toggle.isSelected()) {
+                if (ctr == 0) {
+                    ctr++;
+                } else if (ctr == 1) {
+                    ctr++;
+                    if (!leader2Toggle.isSelected()) {
+                        leader2Toggle.setDisable(true);
+                    }
+                    if (!leader3Toggle.isSelected()) {
+                        leader3Toggle.setDisable(true);
+                    }
+                    if (!leader4Toggle.isSelected()) {
+                        leader4Toggle.setDisable(true);
+                    }
+                }
+            } else {
+                ctr--;
+                if (leader2Toggle.isDisabled()) {
+                    leader2Toggle.setDisable(false);
+                }
+                if (leader3Toggle.isDisabled()) {
+                    leader3Toggle.setDisable(false);
+                }
+                if (leader4Toggle.isDisabled()) {
+                    leader4Toggle.setDisable(false);
+                }
+            }
+        });
+
+        leader2Toggle.setOnAction(actionEvent -> {
+            if (leader2Toggle.isSelected()) {
+                if (ctr == 0) {
+                    ctr++;
+                } else if (ctr == 1) {
+                    ctr++;
+                    if (!leader1Toggle.isSelected()) {
+                        leader1Toggle.setDisable(true);
+                    }
+                    if (!leader3Toggle.isSelected()) {
+                        leader3Toggle.setDisable(true);
+                    }
+                    if (!leader4Toggle.isSelected()) {
+                        leader4Toggle.setDisable(true);
+                    }
+                }
+            } else {
+                ctr--;
+                if (leader1Toggle.isDisabled()) {
+                    leader1Toggle.setDisable(false);
+                }
+                if (leader3Toggle.isDisabled()) {
+                    leader3Toggle.setDisable(false);
+                }
+                if (leader4Toggle.isDisabled()) {
+                    leader4Toggle.setDisable(false);
+                }
+            }
+        });
+
+        leader3Toggle.setOnAction(actionEvent -> {
+            if (leader3Toggle.isSelected()) {
+                if (ctr == 0) {
+                    ctr++;
+                } else if (ctr == 1) {
+                    ctr++;
+                    if (!leader2Toggle.isSelected()) {
+                        leader2Toggle.setDisable(true);
+                    }
+                    if (!leader1Toggle.isSelected()) {
+                        leader1Toggle.setDisable(true);
+                    }
+                    if (!leader4Toggle.isSelected()) {
+                        leader4Toggle.setDisable(true);
+                    }
+                }
+            } else {
+                ctr--;
+                if (leader2Toggle.isDisabled()) {
+                    leader2Toggle.setDisable(false);
+                }
+                if (leader1Toggle.isDisabled()) {
+                    leader1Toggle.setDisable(false);
+                }
+                if (leader4Toggle.isDisabled()) {
+                    leader4Toggle.setDisable(false);
+                }
+            }
+        });
+
+        leader4Toggle.setOnAction(actionEvent -> {
+            if (leader4Toggle.isSelected()) {
+                if (ctr == 0) {
+                    ctr++;
+                } else if (ctr == 1) {
+                    ctr++;
+                    if (!leader2Toggle.isSelected()) {
+                        leader2Toggle.setDisable(true);
+                    }
+                    if (!leader3Toggle.isSelected()) {
+                        leader3Toggle.setDisable(true);
+                    }
+                    if (!leader1Toggle.isSelected()) {
+                        leader1Toggle.setDisable(true);
+                    }
+                }
+            } else {
+                ctr--;
+                if (leader2Toggle.isDisabled()) {
+                    leader2Toggle.setDisable(false);
+                }
+                if (leader3Toggle.isDisabled()) {
+                    leader3Toggle.setDisable(false);
+                }
+                if (leader1Toggle.isDisabled()) {
+                    leader1Toggle.setDisable(false);
+                }
+            }
+        });
+
         chooseLeadersBtn.setOnAction(actionEvent -> {
             List<Boolean> selectedLeaders = new ArrayList<>();
             selectedLeaders.add(leader1Toggle.isSelected());

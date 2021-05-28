@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="mainBoard" prefHeight="800.0" prefWidth="1200.0" stylesheets="@style.css"
+            xmlns="https://javafx.com/javafx"
+            xmlns:fx="https://javafx.com/fxml">
+</AnchorPane>

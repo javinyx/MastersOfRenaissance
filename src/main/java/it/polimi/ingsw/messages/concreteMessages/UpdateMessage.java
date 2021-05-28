@@ -79,6 +79,8 @@ public class UpdateMessage extends SimpleMessage {
     public List<BiElement<Integer, Integer>> getAllProductionCardsIds(){return productionCardsId;}
 
     public List<Integer> getLeadersId() {
+        if (leadersId == null)
+            return null;
         return leadersId.stream().map(BiElement::getFirstValue).collect(Collectors.toList());
     }
 

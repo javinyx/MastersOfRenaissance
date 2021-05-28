@@ -4,14 +4,20 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.concreteMessages.UpdateMessage;
+import it.polimi.ingsw.misc.BiElement;
+import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.market.Market;
+import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.PopePass;
 import it.polimi.ingsw.model.player.ProPlayer;
+import it.polimi.ingsw.model.player.Warehouse;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MultiPlayerGame extends Game implements ModelObserver {
     protected List<ProPlayer> players;
@@ -63,9 +69,22 @@ public class MultiPlayerGame extends Game implements ModelObserver {
 
         currPlayer = activePlayers.get(0);
 
+        Map<BiElement<Resource, Storage>, Integer> addRes = new HashMap<>();
+
+        Warehouse war = p.getWarehouse();
+
+        if (war.getSmallInventory() != null)
+            addRes.put(new BiElement<>(war.getSmallInventory(), Storage.WAREHOUSE_SMALL), 1);
+        if (!war.getMidInventory().isEmpty())
+            addRes.put(new BiElement<>(war.getMidInventory().get(0), Storage.WAREHOUSE_MID), war.getMidInventory().size());
+        if (!war.getLargeInventory().isEmpty())
+            addRes.put(new BiElement<>(war.getLargeInventory().get(0), Storage.WAREHOUSE_LARGE), war.getLargeInventory().size());
+
         UpdateMessage msg = new UpdateMessage(p.getTurnID(), p.getCurrentPosition(), 1,
                 getMarket().getMarketBoard(), getMarket().getExtraMarble(), getBuyableProductionID(),
-                null, null, null, null);
+                null, null, addRes, null);
+
+        msg.setSerializedResources();
 
         p.setUpdate(msg);
         //controller.update(MessageID.UPDATE);

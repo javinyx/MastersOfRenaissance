@@ -182,50 +182,45 @@ public abstract class ClientController {
             availableProductionCard = convertIdToProductionCard(msg.getAvailableProductionCards());
 
 
-        if(!isRegistrationPhase()) {
-            ConcreteProductionCard boughtProductionCard = null;
-            if(msg.getProductionCardId() != null)
-                boughtProductionCard = convertIdToProductionCard(msg.getProductionCardId().getFirstValue());
+        ConcreteProductionCard boughtProductionCard = null;
+        if(msg.getProductionCardId() != null)
+            boughtProductionCard = convertIdToProductionCard(msg.getProductionCardId().getFirstValue());
 
-            //modifica: da for(NubPlayer pp: otherPLayers) a for(NubPlayer pp: totalPlayers)
-            for (NubPlayer pp : totalPlayers) {
-                //update last player state for this client
-                if (pp.getTurnNumber() == msg.getPlayerId()) { //search player
-                    pp.setCurrPos(msg.getPlayerPos());
-                    if(pp.equals(player)){
-                        //updateFaithTrack();
-                        System.out.println("You're now in position " + player.getCurrPos()); //for debugging
-                    }
-                    if (boughtProductionCard != null)
-                        pp.addProductionCard(boughtProductionCard, msg.getProductionCardId().getSecondValue() - 1);
-
-                    if (msg.getLeadersId() != null && !msg.getLeadersId().isEmpty())
-                        pp.setLeaders(convertIdToLeaderCard(msg.getLeadersId()));
-
-                    Map<BiElement<Resource, Storage>, Integer> resources = msg.getAddedResources();
-
-                    if (msg.getAddedResources() != null) {
-                        if (resources.size() > 0) {
-                            resources.forEach(pp::addResources);
-                        }
-                    }
-                    if (msg.getRemovedResources() != null) {
-                        resources = msg.getRemovedResources();
-                        if (resources.size() > 0) {
-                            resources.forEach(pp::removeResources);
-                        }
-                    }
-
-                    if(pp.equals(player)){
-                        refreshView();
-                    }
-                    updateOtherPlayer(pp);
-                    break;
+        //modifica: da for(NubPlayer pp: otherPLayers) a for(NubPlayer pp: totalPlayers)
+        for (NubPlayer pp : totalPlayers) {
+            //update last player state for this client
+            if (pp.getTurnNumber() == msg.getPlayerId()) { //search player
+                pp.setCurrPos(msg.getPlayerPos());
+                if(pp.equals(player)){
+                    //updateFaithTrack();
+                    System.out.println("You're now in position " + player.getCurrPos()); //for debugging
                 }
-            }
+                if (boughtProductionCard != null)
+                    pp.addProductionCard(boughtProductionCard, msg.getProductionCardId().getSecondValue() - 1);
 
-        }else{
-            //update message iniziale
+                if (msg.getLeadersId() != null && !msg.getLeadersId().isEmpty())
+                    pp.setLeaders(convertIdToLeaderCard(msg.getLeadersId()));
+
+                Map<BiElement<Resource, Storage>, Integer> resources = msg.getAddedResources();
+
+                if (msg.getAddedResources() != null) {
+                    if (resources.size() > 0) {
+                        resources.forEach(pp::addResources);
+                    }
+                }
+                if (msg.getRemovedResources() != null) {
+                    resources = msg.getRemovedResources();
+                    if (resources.size() > 0) {
+                        resources.forEach(pp::removeResources);
+                    }
+                }
+
+                if(pp.equals(player)){
+                    refreshView();
+                }
+                updateOtherPlayer(pp);
+                break;
+            }
         }
         updateMarket();
         updateAvailableProductionCards();

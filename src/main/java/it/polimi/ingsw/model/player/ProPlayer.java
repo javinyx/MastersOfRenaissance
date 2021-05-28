@@ -707,7 +707,7 @@ public class ProPlayer extends Player{
         if(cards!=null) {
             for (ConcreteProductionCard p : cards) {
                 //check if they can produce
-                if (!(p.equals(prodCards1.peekFirst()) || p.equals(prodCards2.peekFirst()) || p.equals(prodCards3.peekFirst()))) {
+                if (!((!prodCards1.isEmpty() && p.getId() == prodCards1.peekFirst().getId()) || (!prodCards2.isEmpty() && p.getId() == prodCards2.peekFirst().getId())|| (!prodCards3.isEmpty() && p.getId() == prodCards3.peekFirst().getId()))) {
                     //controller will ask the player to adjust the ProdCards selection and try again to call this method
                     repairBackup(warBackup, lootBackup, extraStorageBackup);
                     throw new RuntimeException("Production card " + p + " cannot produce");
@@ -862,18 +862,21 @@ public class ProPlayer extends Player{
 
         for(Resource r : costDupe){
             if(removeFromWar.contains(r)){
-               if(warehouse.getSmallInventory().equals(r)){
+               if(warehouse.getSmallInventory() != null && warehouse.getSmallInventory().equals(r)){
                    removeFromWar.remove(r);
                    warehouse.removeSmall();
                    cost.remove(r);
-               }else if(warehouse.getMidInventory().contains(r)){
+               }else if(warehouse.getMidInventory().size() != 0 && warehouse.getMidInventory().contains(r)){
                    removeFromWar.remove(r);
                    warehouse.removeMid();
                    cost.remove(r);
-               }else if(warehouse.getLargeInventory().contains(r)){
+               }else if(warehouse.getLargeInventory().size() != 0 && warehouse.getLargeInventory().contains(r)){
                    removeFromWar.remove(r);
                    warehouse.removeLarge();
                    cost.remove(r);
+               }
+               else {
+                   throw new BadStorageException();
                }
             }else if(removeFromLoot.contains(r)){
                 if(lootChest.getInventory().containsKey(r)) {

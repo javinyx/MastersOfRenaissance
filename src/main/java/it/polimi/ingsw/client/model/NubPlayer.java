@@ -24,6 +24,7 @@ public class NubPlayer implements Comparator<NubPlayer> {
         popePasses = new Boolean[3];
         for(int i=0; i<3; i++){
             popePasses[i] = false;
+            productionStacks.add(new ArrayDeque<>());
         }
     }
 

@@ -96,18 +96,20 @@ public class Printer {
                 "3) Start production: you can produce Resources\n" +
                 "4) View your opponents status\n" +
                 "5) Activate a Leader Card\n" +
-                "6) DiscardLeader Card\n" +
-                "7) View Develop Card that you can buy\n" +
-                "8) End turn");
+                "6) Discard Leader Card\n" +
+                "7) View Development Card that you can buy\n" +
+                "8) View your status\n" +
+                "9) End turn");
     }
 
     public void printLightTurnOptions() {
         System.out.println("Now it's your turn, you can choose between these by typing the number:\n" +
                 "1) View your opponents status\n" +
                 "2) Activate a Leader Card\n" +
-                "3) DiscardLeader Card\n" +
-                "4) View Develop Card that you can buy\n" +
-                "5) End turn");
+                "3) Discard Leader Card\n" +
+                "4) View Development Card that you can buy\n" +
+                "5) View your status\n" +
+                "6) End turn");
     }
 
     public void printFaithTrack(int currPos){
@@ -244,7 +246,7 @@ public class Printer {
         System.out.println(line2+Color.RESET);
 
         line2 = new StringBuilder();
-        line2.append(" ".repeat(6)).append("|").append(" ".repeat(11)).append("|").append(" ".repeat(11)).append("|").append(" ".repeat(6)).append("\t").append("|").append(prod.get(0) != null? printProdList(prod.get(0).getRequiredResources()): " ".repeat(34)).append("|").append("\t").append("|").append(prod.get(1) != null? printProdList(prod.get(1).getRequiredResources()): " ".repeat(34)).append("|").append("\t").append("|").append(prod.get(2) != null? printProdList(prod.get(2).getRequiredResources()): " ".repeat(34)).append("|");
+        line2.append(" ".repeat(6)).append("|").append(" ".repeat(11)).append("|").append(" ".repeat(11)).append("|").append(" ".repeat(6)).append("\t").append("|").append(prod.get(0) != null? printProdList(prod.get(0).getProduction()): " ".repeat(34)).append("|").append("\t").append("|").append(prod.get(1) != null? printProdList(prod.get(1).getProduction()): " ".repeat(34)).append("|").append("\t").append("|").append(prod.get(2) != null? printProdList(prod.get(2).getProduction()): " ".repeat(34)).append("|");
         System.out.println(line2+Color.RESET);
 
         line = new StringBuilder();
@@ -270,7 +272,7 @@ public class Printer {
 
     }
 
-    private String printRes (Resource res){
+    public String printRes (Resource res){
         String s = null;
         switch (res){
             case COIN -> s = Color.YELLOW.escape() +    "  COIN    " + Color.RESET;
@@ -298,6 +300,11 @@ public class Printer {
         String s = null;
 
         switch (res.length()){
+            case 4 ->  s = " ".repeat(15)+ res+" ".repeat(15);
+            case 5 ->  s = " ".repeat(14)+ res+" ".repeat(15);
+            case 6 ->  s = " ".repeat(14)+ res+" ".repeat(14);
+            case 7 ->  s = " ".repeat(13)+ res+" ".repeat(14);
+            case 8 ->  s = " ".repeat(13)+ res+" ".repeat(13);
             case 9 ->  s = " ".repeat(12)+ res+" ".repeat(13);
             case 10 ->  s = " ".repeat(12)+res+" ".repeat(12);
             case 11 ->  s = " ".repeat(11)+res+" ".repeat(12);

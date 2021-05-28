@@ -14,17 +14,16 @@ import it.polimi.ingsw.model.cards.leader.BoostAbility;
 import it.polimi.ingsw.model.cards.leader.DiscountAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.MarbleAbility;
+import it.polimi.ingsw.model.cards.production.ColorEnum;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
+import it.polimi.ingsw.model.player.LootChest;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CliController extends ClientController {
@@ -228,6 +227,20 @@ public class CliController extends ClientController {
         startTurnPhase();
     }
 
+    public void viewYourInfo(){
+        cli.showPlayerLeader(player.getLeaders());
+        System.out.println();
+        for(BiElement<Resource, Storage> res : player.getAllResources().keySet()){
+            if (res.getSecondValue().equals(Storage.LOOTCHEST)) {
+                cli.printResource(res.getFirstValue());
+                System.out.println(": " + player.getAllResources().get(res));
+            }
+        }
+        cli.pressEnter();
+        startTurnPhase();
+
+    }
+
     public void buyProductionCard(){
 
         int prodId, stack;
@@ -278,6 +291,17 @@ public class CliController extends ClientController {
 
     public void startProduction(){
 
+        /*List<Resource> cost = new ArrayList<>();
+        cost.add(Resource.SHIELD);cost.add(Resource.SERVANT);cost.add(Resource.STONE);
+        List<Resource> reqRes = new ArrayList<>();
+        reqRes.add(Resource.STONE);
+        List<Resource> prod11 = new ArrayList<>();
+        prod11.add(Resource.SERVANT);
+        ConcreteProductionCard prod = new ConcreteProductionCard(5,2, ColorEnum.GREEN,1, cost, reqRes, prod11);
+        player.addProductionCard(prod, 0);*/
+
+
+
         List<ConcreteProductionCard> prodCard;
         List<LeaderCard> leadCard = null;
         List<BoostAbility> betterLeaderCard = null;
@@ -294,7 +318,21 @@ public class CliController extends ClientController {
         prodCard = cli.selectProdCard();
 
         System.out.println("Select the resources you want to use for the Development Card");
-        cli.selectResWalletProd(prodCard, fromWare, fromLoot, fromLeader1, fromLeader2);
+
+        boolean a, b, c, d;
+        do{
+
+            cli.selectWalletForProduction(prodCard, fromWare, fromLoot, fromLeader1, fromLeader2);
+
+            a = resWal.setWarehouseTray(fromWare);
+            b = resWal.setLootchestTray(fromLoot);
+            c = resWal.setExtraStorage(fromLeader1, 0);
+            d = resWal.setExtraStorage(fromLeader2, 1);
+
+            if ((!a && !resWal.getWarehouseTray().isEmpty()) || (!b && !resWal.getLootchestTray().isEmpty()) || (!c && !resWal.getExtraStorage(0).isEmpty()) || (!d && !resWal.getExtraStorage(1).isEmpty()))
+                System.out.println("An error occur in the selection of the Resources");
+
+        }while ((!a && !resWal.getWarehouseTray().isEmpty()) || (!b && !resWal.getLootchestTray().isEmpty()) || (!c && !resWal.getExtraStorage(0).isEmpty()) || (!d && !resWal.getExtraStorage(1).isEmpty()));
 
         if(cli.wantPlayLeader()) {
             for (LeaderCard led : getPlayer().getLeaders())

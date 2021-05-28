@@ -195,7 +195,7 @@ public class Cli /*extends ViewInterface*/ {
         do {
             System.out.println("Select a number:");
             choice = scanner.nextInt();
-        } while (choice < 1 || choice > 8);
+        } while (choice < 1 || choice > 9);
 
         switch (choice) {
             case 1 -> controller.buyFromMarket();
@@ -205,7 +205,8 @@ public class Cli /*extends ViewInterface*/ {
             case 5 -> controller.activateLeader();
             case 6 -> controller.discardLeader();
             case 7 -> controller.viewProductionCard();
-            case 8 -> controller.passTurn();
+            case 8 -> controller.viewYourInfo();
+            case 9 -> controller.passTurn();
         }
 
     }
@@ -220,14 +221,15 @@ public class Cli /*extends ViewInterface*/ {
         do {
             System.out.println("Select a number:");
             choice = scanner.nextInt();
-        } while (choice < 1 || choice > 5);
+        } while (choice < 1 || choice > 6);
 
         switch (choice) {
             case 1 -> controller.viewOpponents();
             case 2 -> controller.activateLeader();
             case 3 -> controller.discardLeader();
             case 4 -> controller.viewProductionCard();
-            case 5 -> controller.passTurn();
+            case 5 -> controller.viewYourInfo();
+            case 6 -> controller.passTurn();
         }
 
 
@@ -273,21 +275,26 @@ public class Cli /*extends ViewInterface*/ {
         int c = -1;
 
         for (int i = 0; i < 3; i++) {
-            if (controller.getPlayer().getProductionStacks().get(i) != null) {
+            if (controller.getPlayer().getProductionStacks().get(i).size() != 0) {
                 card.add(controller.getPlayer().getProductionStacks().get(i).peekFirst());
                 OSPrinter.printProductionCard(card.get(i));
             }
         }
 
         while (c != 0) {
+            boolean lock;
             do {
+                lock = true;
                 System.out.println("Select the Development Card you want to use, press 0 to exit selection");
                 c = scanner.nextInt();
-            } while (c != card.get(0).getId() && c != card.get(1).getId() && c != card.get(2).getId() && c != 0);
-
-            for(ConcreteProductionCard pc : card)
-                if(c != 0 && pc.getId() == c)
-                    retCard.add(pc);
+                for(ConcreteProductionCard card1 : card)
+                    if (card1.getId() == c) {
+                        lock = false;
+                        retCard.add(card1);
+                        card.remove(card1);
+                        break;
+                    }
+            } while (!lock);
         }
         return retCard;
     }
@@ -304,6 +311,48 @@ public class Cli /*extends ViewInterface*/ {
         for (ConcreteProductionCard pc : prodCard) {
             int count = 1;
             for(Resource res : pc.getCost()) {
+                System.out.print("From where do you want to take the resource number "+ count + " ("+res+") for the Development Card with ID number " + pc.getId() + "?\n (1) Warehouse\n (2) StrongBox\n (3) Leader Extra storage\n");
+                do {
+                    lock = 1;
+                    System.out.print("Choice: ");
+                    c = scanner.nextInt();
+                    if (c == 3){
+                        if (storeLead.size() == 0)
+                            System.out.println("You haven't any eligible leader");
+                        lock =  0;
+                    }
+                } while (c != 1 && c != 2 && c != 3 || lock != 1);
+
+                switch (c) {
+                    case 1 -> fromWare.add(selectProdRes());
+                    case 2 -> fromLoot.add(selectProdRes());
+                    case 3 -> {
+                        BiElement<Resource, Integer> bi = selectProdResLeader(storeLead);
+                        numLeader = bi.getSecondValue();
+                        if (numLeader == 0)
+                            fromLeader1.add(bi.getFirstValue());
+                        else
+                            fromLeader2.add(bi.getFirstValue());
+                    }
+                }
+
+                count++;
+            }
+        }
+    }
+
+    public void selectWalletForProduction(List<ConcreteProductionCard> prodCard, List<Resource> fromWare, List<Resource> fromLoot, List<Resource> fromLeader1, List<Resource> fromLeader2){
+        int c, numLeader = -1, lock;
+        List<StorageAbility> storeLead = new ArrayList<>();
+
+        for (LeaderCard led : controller.getPlayer().getLeaders()) {
+            if (led instanceof StorageAbility && led.isActive())
+                storeLead.add((StorageAbility) led);
+        }
+
+        for (ConcreteProductionCard pc : prodCard) {
+            int count = 1;
+            for(Resource res : pc.getRequiredResources()) {
                 System.out.print("From where do you want to take the resource number "+ count + " ("+res+") for the Development Card with ID number " + pc.getId() + "?\n (1) Warehouse\n (2) StrongBox\n (3) Leader Extra storage\n");
                 do {
                     lock = 1;
@@ -659,6 +708,10 @@ public class Cli /*extends ViewInterface*/ {
         }
         else
             System.out.println("There are no Resources");
+    }
+
+    public void printResource(Resource res){
+        System.out.print(OSPrinter.printRes(res));
     }
 
     //--------------------------------------------------------------------------------------------------------------------

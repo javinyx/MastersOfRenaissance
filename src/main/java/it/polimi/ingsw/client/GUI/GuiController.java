@@ -127,7 +127,7 @@ public class GuiController extends ClientController {
 
     @Override
     public void startGame() {
-
+        Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.MAIN_BOARD));
     }
 
     @Override

@@ -124,4 +124,7 @@ ToggleButton {
  */
 #mainBoard {
     -fx-background-image: url("/img/ui/mainBoard.png");
+    -fx-background-position: center center;
+    -fx-background-size: contain;
+    -fx-background-repeat: no-repeat;
 }

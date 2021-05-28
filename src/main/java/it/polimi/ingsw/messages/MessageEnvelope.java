@@ -8,6 +8,7 @@ import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.market.Market;
 import it.polimi.ingsw.model.market.Resource;
 
+import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,7 +53,7 @@ public class MessageEnvelope {
             Type type = new TypeToken<HashMap<BiElement<Resource, Storage>, Integer>>(){}.getType();
             Gson gson = new Gson();
             GsonBuilder builder = new GsonBuilder();
-            Gson gsun = builder.enableComplexMapKeySerialization().setPrettyPrinting().create();
+            Gson gsun = builder.enableComplexMapKeySerialization().create();
             JsonObject jsonObject = json.getAsJsonObject();
 
             Resource[][] marketBoard = gson.fromJson(jsonObject.get("marketBoard"), Resource[][].class);
@@ -60,8 +61,8 @@ public class MessageEnvelope {
             List<Integer> availableProductionCards = gson.fromJson(jsonObject.get("availableProductionCards"), new TypeToken<ArrayList<Integer>>(){}.getType());
             List<BiElement<Integer, Integer>> productionCardsId = gson.fromJson(jsonObject.get("productionCardsId"), new TypeToken<ArrayList<BiElement<Integer, Integer>>>(){}.getType());
             List<BiElement<Integer, Boolean>> leadersId = gson.fromJson(jsonObject.get("leadersId"), new TypeToken<ArrayList<BiElement<Integer, Boolean>>>(){}.getType());
-            String serializedAddedResources = gson.fromJson(jsonObject.get("serializedAddedResource"), String.class);
-            String serializedRemovedResources = gson.fromJson(jsonObject.get("serializedRemovedResource"), String.class);
+            String serializedAddedResources = gson.fromJson(jsonObject.get("serializedAddedResources"), String.class);
+            String serializedRemovedResources = gson.fromJson(jsonObject.get("serializedRemovedResources"), String.class);
             Map<BiElement<Resource, Storage>, Integer> addedResources = gsun.fromJson(serializedAddedResources, type);
             Map<BiElement<Resource, Storage>, Integer> removedResources = gsun.fromJson(serializedRemovedResources, type);
 

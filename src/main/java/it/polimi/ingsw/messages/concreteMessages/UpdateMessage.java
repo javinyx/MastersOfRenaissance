@@ -100,7 +100,7 @@ public class UpdateMessage extends SimpleMessage {
     public void setSerializedResources(){
         GsonBuilder builder = new GsonBuilder();
 
-        Gson gson = builder.enableComplexMapKeySerialization().setPrettyPrinting().create();
+        Gson gson = builder.enableComplexMapKeySerialization().create();
         Type type = new TypeToken<HashMap<BiElement<Resource, Storage>, Integer>>(){}.getType();
 
         serializedAddedResources = gson.toJson(addedResources, type);

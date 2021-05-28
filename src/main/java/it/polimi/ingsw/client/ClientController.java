@@ -203,16 +203,13 @@ public abstract class ClientController {
 
                 Map<BiElement<Resource, Storage>, Integer> resources = msg.getAddedResources();
 
-                if (msg.getAddedResources() != null) {
-                    if (resources.size() > 0) {
-                        resources.forEach(pp::addResources);
-                    }
+                if (resources != null && resources.size()>0) {
+                    resources.forEach(pp::addResources);
                 }
-                if (msg.getRemovedResources() != null) {
-                    resources = msg.getRemovedResources();
-                    if (resources.size() > 0) {
-                        resources.forEach(pp::removeResources);
-                    }
+
+                resources = msg.getRemovedResources();
+                if (resources != null && resources.size()>0) {
+                    resources.forEach(pp::removeResources);
                 }
 
                 if(pp.equals(player)){

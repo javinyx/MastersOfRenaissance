@@ -505,8 +505,8 @@ public class CliController extends ClientController {
 
         storeRes = cli.storeResources(res);
 
-        for (BiElement<Resource, Storage> sr : storeRes)
-            player.addResources(sr, 1);
+        /*for (BiElement<Resource, Storage> sr : storeRes)
+            player.addResources(sr, 1);*/
 
         StoreResourcesMessage msg = new StoreResourcesMessage(storeRes, getPlayer().getTurnNumber());
 

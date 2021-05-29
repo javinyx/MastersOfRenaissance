@@ -670,12 +670,17 @@ public class Cli /*extends ViewInterface*/ {
 
     public void showPlayerProdCard(List<Deque<ConcreteProductionCard>> prodStack){
         System.out.println("Development cards:");
-        if (prodStack.size() == 0)
+        if (prodStack.get(0).size() == 0 && prodStack.get(1).size() == 0 && prodStack.get(2).size() == 0)
             System.out.println("There are no Development card");
-
-        for (int i = 1; i < prodStack.size()+1; i++) {
-            System.out.println("In the stuck number "+i+" there is: ");
-            OSPrinter.printProductionCard(prodStack.get(i - 1).peekFirst());
+        else {
+            int i = 1;
+            for (Deque d : prodStack) {
+                if (d.size() != 0) {
+                    System.out.println("In the stuck number " + i + " there is: ");
+                    OSPrinter.printProductionCard(prodStack.get(i - 1).peekFirst());
+                    i++;
+                }
+            }
         }
     }
 
@@ -694,17 +699,46 @@ public class Cli /*extends ViewInterface*/ {
     }
 
     public void showPlayerResources(Map<BiElement<Resource, Storage>, Integer> res){
-        List<BiElement<Resource, Storage>> ware = new ArrayList<>();
+        List<Resource> extra = new ArrayList<>();
+        Resource small = null;
+        List<Resource> mid = new ArrayList<>();
+        List<Resource> large = new ArrayList<>();
+
+        int shield = 0, stone = 0, ser = 0, coin = 0;
+
         System.out.println("Resources: ");
+
         if (res.size() != 0) {
             for (BiElement<Resource, Storage> bi : res.keySet()) {
                 switch (bi.getSecondValue()) {
-                    case WAREHOUSE_SMALL, WAREHOUSE_MID, WAREHOUSE_LARGE -> ware.add(bi);
-                    case LOOTCHEST, EXTRA1, EXTRA2 -> System.out.println(bi.getFirstValue() + ": " + res.get(bi));
+                    case WAREHOUSE_SMALL -> small = bi.getFirstValue();
+                    case WAREHOUSE_MID -> mid.add(bi.getFirstValue());
+                    case WAREHOUSE_LARGE -> large.add(bi.getFirstValue());
+                    case LOOTCHEST -> {
+                        switch (bi.getFirstValue()){
+                            case SERVANT -> ser++;
+                            case SHIELD -> shield++;
+                            case STONE -> stone++;
+                            case COIN -> coin++;
+                        }
+                    }
+                    case EXTRA1, EXTRA2 -> extra.add(bi.getFirstValue());
                 }
             }
             System.out.println("The warehouse is:");
-            OSPrinter.printWarehouse(ware);
+            System.out.println("Small shelf: " + small);
+            System.out.println("Middle shelf: " + mid);
+            System.out.println("Large shelf: " + large);
+
+            System.out.println("In the Strong Box there are:");
+            System.out.println("Servant: " + ser);
+            System.out.println("Stone: " + stone);
+            System.out.println("Shield: " + shield);
+            System.out.println("Coin: " + coin);
+
+            System.out.println("In the extra space there are: ");
+            System.out.println(extra);
+
         }
         else
             System.out.println("There are no Resources");

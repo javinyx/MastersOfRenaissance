@@ -368,11 +368,11 @@ public class CliController extends ClientController {
             System.out.println("You're playing alone");
         else{
             for(NubPlayer np : otherPlayers){
+                System.out.println(np.getNickname() + " is in position number: " + np.getCurrPos());
                 System.out.println("Here the list of the stuff of "+np.getNickname());
                 cli.showPlayerProdCard(np.getProductionStacks());
                 cli.showPlayerLeader(np.getLeaders());
                 cli.showPlayerResources(np.getAllResources());
-
             }
         }
 

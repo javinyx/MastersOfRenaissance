@@ -8,18 +8,15 @@ import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.cards.leader.*;
 import it.polimi.ingsw.model.cards.production.ColorEnum;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
-import it.polimi.ingsw.model.cards.production.ProductionCard;
 import it.polimi.ingsw.model.market.Buyable;
 import it.polimi.ingsw.model.market.Resource;
 
-import java.awt.*;
+
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.List;
-import java.util.Map;
+
 
 public class Printer {
-    protected final int SIDEBAR_SIZE = 51;
 
     public void clearScreen() {
         System.out.print("\n".repeat(60));
@@ -37,9 +34,8 @@ public class Printer {
     public void printLeaders(LeaderCard card) {
 
         List<Buyable> cost = card.getCost();
-        List<ConcreteProductionCard> lp;
         Resource res;
-        String lines = "-".repeat(160);
+        String lines = "-".repeat(150);
 
         System.out.println(lines);
         System.out.println("Leader Card with ID: " + card.getId());
@@ -138,10 +134,10 @@ public class Printer {
         for (int i = 0; i < 25; i++) {
             if (currPos == i)
                 switch (i){
-                    case 5,6,7,12,13,14,15,20,21,22,23 -> System.out.print(Color.YELLOW.escape()+ "│  X  ");
-                    case 8,9,16,17 -> System.out.print(Color.RED.escape()+ "│  X  ");
-                    case 24 -> System.out.print(Color.RED.escape()+ "│  X │");
-                    default -> System.out.print(Color.RESET+ "│  X  ");
+                    case 5,6,7,12,13,14,15,20,21,22,23 -> System.out.print(Color.YELLOW.escape()+ "│  †  ");
+                    case 8,9,16,17 -> System.out.print(Color.RED.escape()+ "│  †  ");
+                    case 24 -> System.out.print(Color.RED.escape()+ "│  † │");
+                    default -> System.out.print(Color.RESET+ "│  †  ");
                 }
             else
                 switch (i){
@@ -156,10 +152,7 @@ public class Printer {
 
     }
 
-    public void printBoard(NubPlayer player, Market market) {
-
-        printFaithTrack(player.getCurrPos());
-
+    public void printMarket(Market market){
         StringBuilder s = new StringBuilder();
         s.append("   ").append("-".repeat(52));
         System.out.println(s);
@@ -177,6 +170,13 @@ public class Printer {
         }
         System.out.println(s);
         System.out.println("         ↑            ↑            ↑            ↑");
+    }
+
+    public void printBoard(NubPlayer player, Market market) {
+
+        printFaithTrack(player.getCurrPos());
+
+        printMarket(market);
 
         Resource wareSmall = null;
         List<Resource> wareMid = new ArrayList<>();
@@ -284,7 +284,7 @@ public class Printer {
         }
         return s;
     }
-    private String printColorprod (ConcreteProductionCard p){
+    public String printColorprod (ConcreteProductionCard p){
         String s = null;
         switch (p.getColor()){
             case BLUE -> s = Color.BLUE.escape() +      " BLUE   " + Color.RESET;
@@ -372,10 +372,8 @@ public class Printer {
         spaces = " ".repeat(10) ;
         System.out.print(spaces + "|");
         spaces = " ".repeat(7);
-        System.out.print(spaces + "GREEN " + spaces + "|");
-        System.out.print(spaces + "BLUE  " + spaces + "|");
-        System.out.print(spaces + "YELLOW" + spaces + "|");
-        System.out.print(spaces + "PURPLE" + spaces + "|");
+
+        printFirstLineGridProdCard();
 
         System.out.println();
 
@@ -448,8 +446,12 @@ public class Printer {
 
     }
 
-    public void printWarehouse(List<BiElement<Resource, Storage>> res){
-
+    public void printFirstLineGridProdCard(){
+        String spaces = " ".repeat(7);
+        System.out.print(spaces + Color.GREEN.escape() + "GREEN " + Color.RESET + spaces + "|");
+        System.out.print(spaces + Color.BLUE.escape() + "BLUE  " + Color.RESET + spaces + "|");
+        System.out.print(spaces + Color.YELLOW.escape() + "YELLOW" + Color.RESET + spaces + "|");
+        System.out.print(spaces + Color.PURPLE.escape() + "PURPLE" + Color.RESET + spaces + "|");
     }
 
 

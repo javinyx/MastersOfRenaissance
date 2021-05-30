@@ -60,7 +60,14 @@ public class NubPlayer implements Comparator<NubPlayer> {
     public void setCurrPos(int pos){currPos = pos;}
 
     public void addResources(BiElement<Resource,Storage> resources, Integer qty){
-        //Set<Map.Entry<BiElement<Resource, Storage>, Integer>> entrySet = allResources.entrySet();
+        /*AtomicBoolean bool = new AtomicBoolean(false);
+        Set<Map.Entry<BiElement<Resource, Storage>, Integer>> entrySet = allResources.entrySet();
+        entrySet.forEach((x) -> {
+            if(x.equals(resources)){
+                bool = true;
+            }
+        });*/
+
 
         AtomicBoolean found = new AtomicBoolean(false);
         allResources.forEach((x,y) -> {

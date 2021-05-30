@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.GUI;
 
+import com.google.gson.Gson;
 import it.polimi.ingsw.client.ClientController;
 import it.polimi.ingsw.client.GUI.sceneHandlers.GamePhaseHandler;
 import it.polimi.ingsw.client.GUI.sceneHandlers.InitialPhaseHandler;
@@ -9,6 +10,9 @@ import it.polimi.ingsw.client.MessageToServerHandler;
 import it.polimi.ingsw.client.model.NubPlayer;
 import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.concreteMessages.PlayersPositionMessage;
+import it.polimi.ingsw.messages.concreteMessages.StoreResourcesMessage;
+import it.polimi.ingsw.misc.BiElement;
+import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.market.Resource;
 import javafx.application.Platform;
@@ -25,13 +29,15 @@ import java.util.List;
 
 public class GuiController extends ClientController {
     protected final Gui gui;
-    private Stage stage;
-    private InitialPhaseHandler initialPhaseHandler;
+    private final Stage stage;
+    private final InitialPhaseHandler initialPhaseHandler;
     private GamePhaseHandler gamePhaseHandler;
     private final Object lock = new Object();
 
     private String nickName;
     private Integer gameSize;
+
+    public final Gson gson = new Gson();
 
     public GuiController(Stage stage, Gui gui) {
         this.stage = stage;
@@ -134,6 +140,11 @@ public class GuiController extends ClientController {
             messageToServerHandler.generateEnvelope(MessageID.CHOOSE_LEADER_CARDS, chosenLeadersId.toString());
             lock.notifyAll();
         }
+    }
+
+    public void setInitialResourcePlacements(List<BiElement<Resource, Storage>> placements){
+        StoreResourcesMessage msg = new StoreResourcesMessage(placements, getPlayer().getTurnNumber());
+        messageToServerHandler.generateEnvelope(MessageID.STORE_RESOURCES, gson.toJson(msg, StoreResourcesMessage.class));
     }
 
     @Override

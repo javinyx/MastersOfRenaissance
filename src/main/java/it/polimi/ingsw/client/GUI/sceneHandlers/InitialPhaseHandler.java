@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.GUI.sceneHandlers;
 
 import it.polimi.ingsw.client.GUI.GuiController;
 import it.polimi.ingsw.misc.BiElement;
+import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.market.Resource;
 
@@ -37,9 +38,10 @@ import static it.polimi.ingsw.client.GUI.sceneHandlers.ScenesEnum.*;
  */
 public class InitialPhaseHandler extends PhaseHandler {
     private String ip, port;
-    private String nickname, gameSize;
     private int ctr;
     private Node target;
+
+    private List<BiElement<Resource, Storage>> initialResourcePlacements = new ArrayList<>();
 
     private Map<ScenesEnum, Scene> sceneMap = new HashMap<>();
 
@@ -155,8 +157,8 @@ public class InitialPhaseHandler extends PhaseHandler {
     @FXML
     private void setNickNameAndGameSize(ActionEvent event) {
         if (nickNameField.getText().length() > 0 && nickNameField.getText().length() <= 25) {
-            nickname = nickNameField.getText();
-            gameSize = ((Button) event.getSource()).getText();
+            String nickname = nickNameField.getText();
+            String gameSize = ((Button) event.getSource()).getText();
             controller.setNickname(nickname);
             controller.setGameSize(gameSize);
         } else {
@@ -367,33 +369,35 @@ public class InitialPhaseHandler extends PhaseHandler {
 
         shelf1.setOnDragOver(this::targetDragOver);
         shelf1.setOnDragDropped(event -> {
-            targetDragDropped(event);
+            initialResourcePlacements.add(new BiElement<>(targetDragDropped(event), Storage.WAREHOUSE_SMALL));
         });
 
         shelf21.setOnDragOver(this::targetDragOver);
         shelf21.setOnDragDropped(event -> {
-            targetDragDropped(event);
+            initialResourcePlacements.add(new BiElement<>(targetDragDropped(event), Storage.WAREHOUSE_MID));
         });
         shelf22.setOnDragOver(this::targetDragOver);
         shelf22.setOnDragDropped(event -> {
-            targetDragDropped(event);
+            initialResourcePlacements.add(new BiElement<>(targetDragDropped(event), Storage.WAREHOUSE_MID));
         });
 
         shelf31.setOnDragOver(this::targetDragOver);
         shelf31.setOnDragDropped(event -> {
-            targetDragDropped(event);
+            initialResourcePlacements.add(new BiElement<>(targetDragDropped(event), Storage.WAREHOUSE_LARGE));
         });
         shelf32.setOnDragOver(this::targetDragOver);
         shelf32.setOnDragDropped(event -> {
-            targetDragDropped(event);
+            initialResourcePlacements.add(new BiElement<>(targetDragDropped(event), Storage.WAREHOUSE_LARGE));
         });
         shelf33.setOnDragOver(this::targetDragOver);
         shelf33.setOnDragDropped(event -> {
-            targetDragDropped(event);
+            initialResourcePlacements.add(new BiElement<>(targetDragDropped(event), Storage.WAREHOUSE_LARGE));
         });
 
         chooseStorageBtn.setOnAction(actionEvent -> {
-            
+            if(initialResourcePlacements.size() == selectedRes.size()){
+                controller.setInitialResourcePlacements(initialResourcePlacements);
+            }
         });
     }
 

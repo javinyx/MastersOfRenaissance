@@ -22,6 +22,7 @@ import it.polimi.ingsw.model.player.ProPlayer;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static it.polimi.ingsw.messages.MessageID.*;
@@ -43,7 +44,10 @@ public class Controller implements Observer<MessageID> {
     private boolean basicActionDone = false;
     private boolean initializationPhase;
 
-    //player choices to create updateMessage
+    /**
+     * The following attributes are needed for generating the UpdateMessage. They're filled during the player turn and cleared everytime
+     * the turn is over to collect next player data.
+     */
     Map<BiElement<Resource, Storage>, Integer> addedResources = new HashMap<>();
     Map<BiElement<Resource, Storage>, Integer> removedResources = new HashMap<>();
     Optional<List<BiElement<Integer, Integer>>> boughtCard = Optional.empty();
@@ -221,13 +225,13 @@ public class Controller implements Observer<MessageID> {
                 if (wallet.anyFromLootchestTray()) {
                     for (Resource r : wallet.getLootchestTray()) {
                         elem = new BiElement<>(r, Storage.LOOTCHEST);
-                        removeResources(elem);
+                        removeResources(elem, 1);
                     }
                 }
                 if (wallet.anyFromWarehouseTray()) {
                     for (Resource r : wallet.getWarehouseTray()) {
                         elem = new BiElement<>(r, Storage.WAREHOUSE);
-                        removeResources(elem);
+                        removeResources(elem, 1);
                     }
                 }
                 if (wallet.anyFromExtraStorage()) {
@@ -235,7 +239,7 @@ public class Controller implements Observer<MessageID> {
                         Storage extra = index == 0 ? Storage.EXTRA1 : Storage.EXTRA2;
                         for (Resource r : wallet.getExtraStorage(index)) {
                             elem = new BiElement<>(r, extra);
-                            removeResources(elem);
+                            removeResources(elem, 1);
                         }
                     }
                 }
@@ -294,7 +298,7 @@ public class Controller implements Observer<MessageID> {
                     for (Resource r : c.getProduction()) {
                         if (r.isValidForTrading()) {
                             elem = new BiElement<>(r, Storage.LOOTCHEST);
-                            addResources(elem);
+                            addResources(elem, 1);
                         }
                     }
                 }
@@ -302,7 +306,7 @@ public class Controller implements Observer<MessageID> {
                     if (extraPowerProd.size() == extraOutput.size()) {
                         for (Resource r : extraOutput) {
                             elem = new BiElement<>(r, Storage.LOOTCHEST);
-                            addResources(elem);
+                            addResources(elem, 1);
                         }
                     } else {
                         throw new BadStorageException();
@@ -311,18 +315,18 @@ public class Controller implements Observer<MessageID> {
 
                 if (produce.isBasicProduction() && basicOut.isPresent()) {
                     elem = new BiElement<>(basicOut.get(), Storage.LOOTCHEST);
-                    addResources(elem);
+                    addResources(elem, 1);
                 }
                 if (wallet.anyFromLootchestTray()) {
                     for (Resource r : wallet.getLootchestTray()) {
                         elem = new BiElement<>(r, Storage.LOOTCHEST);
-                        removeResources(elem);
+                        removeResources(elem, 1);
                     }
                 }
                 if (wallet.anyFromWarehouseTray()) {
                     for (Resource r : wallet.getWarehouseTray()) {
                         elem = new BiElement<>(r, Storage.WAREHOUSE);
-                        removeResources(elem);
+                        removeResources(elem,1 );
                     }
                 }
                 if (wallet.anyFromExtraStorage()) {
@@ -330,7 +334,7 @@ public class Controller implements Observer<MessageID> {
                         Storage extra = index == 0 ? Storage.EXTRA1 : Storage.EXTRA2;
                         for (Resource r : wallet.getExtraStorage(index)) {
                             elem = new BiElement<>(r, extra);
-                            removeResources(elem);
+                            removeResources(elem, 1);
                         }
                     }
                 }
@@ -415,7 +419,7 @@ public class Controller implements Observer<MessageID> {
             switch (element.getSecondValue()) {
                 case WAREHOUSE_SMALL -> {
                     if (playerToAck.storeInWarehouse(element.getFirstValue(), 1)) {
-                        addResources(element);
+                        addResources(element, 1);
                     } else {
                         addedResources.clear();
                         mustChoosePlacements = true;
@@ -425,7 +429,7 @@ public class Controller implements Observer<MessageID> {
                 }
                 case WAREHOUSE_MID -> {
                     if (playerToAck.storeInWarehouse(element.getFirstValue(), 2)) {
-                        addResources(element);
+                        addResources(element, 1);
                     } else {
                         addedResources.clear();
                         mustChoosePlacements = true;
@@ -435,7 +439,7 @@ public class Controller implements Observer<MessageID> {
                 }
                 case WAREHOUSE_LARGE -> {
                     if (playerToAck.storeInWarehouse(element.getFirstValue(), 3)) {
-                        addResources(element);
+                        addResources(element, 1);
                     } else {
                         addedResources.clear();
                         mustChoosePlacements = true;
@@ -445,7 +449,7 @@ public class Controller implements Observer<MessageID> {
                 }
                 case EXTRA1 -> {
                     if (playerToAck.storeInExtraStorage(element.getFirstValue(), playerToAck.getExtraStorage().get(0))) {
-                        addResources(element);
+                        addResources(element, 1);
                     } else {
                         addedResources.clear();
                         mustChoosePlacements = true;
@@ -455,7 +459,7 @@ public class Controller implements Observer<MessageID> {
                 }
                 case EXTRA2 -> {
                     if (playerToAck.storeInExtraStorage(element.getFirstValue(), playerToAck.getExtraStorage().get(1))) {
-                        addResources(element);
+                        addResources(element, 1);
                     } else {
                         addedResources.clear();
                         mustChoosePlacements = true;
@@ -552,35 +556,42 @@ public class Controller implements Observer<MessageID> {
      * If {@code element} is already contained in {@code addedResources}, then it increments its presence by 1.
      * Otherwise, it add the element to the map as a new occurrence with is value set at 1.
      */
-    private synchronized void addResources(BiElement<Resource, Storage> element) {
-        if (addedResources.containsKey(element)) {
-            addedResources.compute(element, (k, v) -> v++);
-        } else {
-            addedResources.put(element, 1);
-        }
-    }
-
     private synchronized void addResources(BiElement<Resource, Storage> element, Integer qty) {
         if (qty == 0) {
             return;
         }
-        if (addedResources.containsKey(element)) {
-            addedResources.compute(element, (k, v) -> v + qty);
-        } else {
+        AtomicBoolean found = new AtomicBoolean(false);
+        addedResources.forEach((x,y) -> {
+            if (x.equals(element)) {
+                found.set(true);
+                addedResources.compute(x, (k,v) -> v + qty);
+            }
+        });
+
+        if(!found.get()){
             addedResources.put(element, qty);
         }
     }
 
     /**
-     * If {@code element} is already contained in {@code addedResources}, then it decrements its presence by 1.
+     * If {@code element} is already contained in {@code addedResources}, then it decrements its presence by {@code qty}.
      * In order to do this, it increments the presence in {@code removedResources} map which is specific for this
-     * purpose. Otherwise, it add the element to the map as a new occurrence with is value set at 1.
+     * purpose. Otherwise, it add the element to the map as a new occurrence with is value set at {@code qty}.
      */
-    private synchronized void removeResources(BiElement<Resource, Storage> element) {
-        if (removedResources.containsKey(element)) {
-            removedResources.compute(element, (k, v) -> v++);
-        } else {
-            removedResources.put(element, 1);
+    private synchronized void removeResources(BiElement<Resource, Storage> element, Integer qty) {
+        if(qty == 0){
+            return;
+        }
+        AtomicBoolean found = new AtomicBoolean(false);
+        removedResources.forEach((x,y) -> {
+            if (x.equals(element)) {
+                found.set(true);
+                removedResources.compute(x, (k,v) -> v + qty);
+            }
+        });
+
+        if(!found.get()){
+            removedResources.put(element, qty);
         }
     }
 
@@ -795,13 +806,13 @@ public class Controller implements Observer<MessageID> {
         }
         Resource resource;
         if ((resource = player.getWarehouse().getSmallInventory()) != null) {
-            addResources(new BiElement<>(resource, Storage.WAREHOUSE_SMALL));
+            addResources(new BiElement<>(resource, Storage.WAREHOUSE_SMALL), 1);
         }
         for (Resource res : player.getWarehouse().getMidInventory()) {
-            addResources(new BiElement<>(res, Storage.WAREHOUSE_MID));
+            addResources(new BiElement<>(res, Storage.WAREHOUSE_MID), 1);
         }
         for (Resource res : player.getWarehouse().getLargeInventory()) {
-            addResources(new BiElement<>(res, Storage.WAREHOUSE_LARGE));
+            addResources(new BiElement<>(res, Storage.WAREHOUSE_LARGE), 1);
         }
         Map<Resource, Integer> inventory = player.getLootChest().getInventory();
         addResources(new BiElement<>(Resource.SERVANT, Storage.LOOTCHEST), inventory.get(Resource.SERVANT));

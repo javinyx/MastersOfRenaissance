@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.GUI;
 
 import it.polimi.ingsw.client.ClientController;
+import it.polimi.ingsw.client.GUI.sceneHandlers.GamePhaseHandler;
 import it.polimi.ingsw.client.GUI.sceneHandlers.InitialPhaseHandler;
 import it.polimi.ingsw.client.GUI.sceneHandlers.ScenesEnum;
 import it.polimi.ingsw.client.MessageReceiver;
@@ -26,6 +27,7 @@ public class GuiController extends ClientController {
     protected final Gui gui;
     private Stage stage;
     private InitialPhaseHandler initialPhaseHandler;
+    private GamePhaseHandler gamePhaseHandler;
     private final Object lock = new Object();
 
     private String nickName;
@@ -142,7 +144,16 @@ public class GuiController extends ClientController {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
+            //initialPhaseHandler.initiateBoard();
+
             Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.MAIN_BOARD));
+
+            stage.centerOnScreen();
+            stage.setResizable(true);
+
+            //gamePhaseHandler = new GamePhaseHandler(this, stage);
+
         }
     }
 

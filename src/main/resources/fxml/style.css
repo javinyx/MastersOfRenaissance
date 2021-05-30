@@ -25,9 +25,6 @@ ToggleButton {
     -fx-focus-color: transparent;
 }
 
-/*
- * Welcome Scene
- */
 #background {
     -fx-background-image: url("/img/ui/background.jpg");
     -fx-background-repeat: no-repeat;
@@ -40,8 +37,10 @@ ToggleButton {
     -fx-background-position: center center;
 }
 
-#logo {
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);
+#popUp {
+    -fx-background-image: url("/img/ui/backgroundStart.jpg");
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center center;
 }
 
 .btn {
@@ -52,6 +51,23 @@ ToggleButton {
 
 .btn:pressed {
     -fx-background-image: url("/img/ui/btnPressed.png");
+}
+
+.btnSq {
+    -fx-background-image: url("/img/ui/btnSq.png");
+    -fx-background-size: stretch;
+    -fx-font-size: 30px;
+}
+
+.btnSq:pressed {
+    -fx-background-image: url("/img/ui/btnSqPressed.png");
+}
+
+/*
+ * Welcome Scene
+ */
+#logo {
+   /* -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);*/
 }
 
 /*
@@ -71,16 +87,6 @@ ToggleButton {
 /*
  * Registration Scene
  */
-.btnSq {
-    -fx-background-image: url("/img/ui/btnSq.png");
-    -fx-background-size: stretch;
-    -fx-font-size: 30px;
-}
-
-.btnSq:pressed {
-    -fx-background-image: url("/img/ui/btnSqPressed.png");
-}
-
 .badNameLabel {
     -fx-font-size: 16px;
 }
@@ -104,11 +110,9 @@ ToggleButton {
  * Choose Leaders Scene
  */
 .leaderImg {
-    -fx-background-size: 100px;
 }
 
 .leaderToggle {
-    -fx-pref-width: 50;
 }
 
 .leaderToggle:selected {
@@ -138,11 +142,19 @@ ToggleButton {
 }
 
 /*
+ * Choose Storage Scene
+ */
+.resImg {
+
+}
+
+#wareHouseImg {
+
+}
+
+/*
  * Main Board Scene
  */
 #mainBoard {
-    -fx-background-image: url("/img/ui/mainBoard.png");
-    -fx-background-position: center center;
-    -fx-background-size: contain;
-    -fx-background-repeat: no-repeat;
+    -fx-background-color: #2d0f08;
 }

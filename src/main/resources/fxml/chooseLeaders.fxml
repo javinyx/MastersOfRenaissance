@@ -4,14 +4,12 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane id="backgroundStart" prefHeight="600.0" prefWidth="950.0" stylesheets="@style.css"
-            xmlns="https://javafx.com/javafx"
+<BorderPane id="backgroundStart" prefHeight="600.0" prefWidth="950.0" xmlns="https://javafx.com/javafx"
             xmlns:fx="https://javafx.com/fxml">
     <center>
-        <VBox alignment="CENTER" spacing="30" stylesheets="@style.css" BorderPane.alignment="CENTER">
+        <VBox alignment="CENTER" spacing="30" BorderPane.alignment="CENTER">
             <children>
-                <Label alignment="CENTER" styleClass="inputLabel" stylesheets="@style.css"
-                       text="Choose 2 leaders"/>
+                <Label alignment="CENTER" styleClass="inputLabel" text="Choose 2 leaders"/>
                 <HBox alignment="CENTER" spacing="20">
                     <children>
                         <ToggleButton fx:id="leader1Toggle" styleClass="leaderToggle" mnemonicParsing="false">
@@ -36,8 +34,7 @@
                         </ToggleButton>
                     </children>
                 </HBox>
-                <Button fx:id="chooseLeadersBtn" mnemonicParsing="false" styleClass="btn" stylesheets="@style.css"
-                        text="Confirm"/>
+                <Button fx:id="chooseLeadersBtn" mnemonicParsing="false" styleClass="btn" text="Confirm"/>
             </children>
         </VBox>
     </center>

@@ -5,10 +5,10 @@ import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.market.Resource;
 
-import javafx.event.EventHandler;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Point2D;
 import javafx.scene.ImageCursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -16,12 +16,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -39,6 +39,7 @@ public class InitialPhaseHandler extends PhaseHandler {
     private String ip, port;
     private String nickname, gameSize;
     private int ctr;
+    private Node target;
 
     private Map<ScenesEnum, Scene> sceneMap = new HashMap<>();
 
@@ -66,6 +67,12 @@ public class InitialPhaseHandler extends PhaseHandler {
     private Pane chooseResPane, chooseStrPane;
     @FXML
     private ImageView resource1Img, resource2Img, wareHouseImg;
+    @FXML
+    private Region shelf1, shelf21, shelf22, shelf31, shelf32, shelf33;
+    @FXML
+    private Button chooseStorageBtn;
+    @FXML
+    private ImageView leader1Show, leader2Show;
 
     public InitialPhaseHandler(GuiController controller, Stage stage) {
         super(controller, stage);
@@ -139,49 +146,22 @@ public class InitialPhaseHandler extends PhaseHandler {
 
     @FXML
     public void getNickNameAndGameSize() {
-        singlePlayerBtn.setOnAction(actionEvent -> {
-            if (nickNameField.getText().length() > 0 && nickNameField.getText().length() <= 25) {
-                nickname = nickNameField.getText();
-                gameSize = singlePlayerBtn.getText();
-                controller.setNickname(nickname);
-                controller.setGameSize(gameSize);
-            } else {
-                badNameLbl.setText("Your name must be between 1 and 25 characters long");
-            }
-        });
+        singlePlayerBtn.setOnAction(this::setNickNameAndGameSize);
+        twoPlayerBtn.setOnAction(this::setNickNameAndGameSize);
+        threePlayerBtn.setOnAction(this::setNickNameAndGameSize);
+        fourPlayerBtn.setOnAction(this::setNickNameAndGameSize);
+    }
 
-        twoPlayerBtn.setOnAction(actionEvent -> {
-            if (nickNameField.getText().length() > 0 && nickNameField.getText().length() <= 25) {
-                nickname = nickNameField.getText();
-                gameSize = twoPlayerBtn.getText();
-                controller.setNickname(nickname);
-                controller.setGameSize(gameSize);
-            } else {
-                badNameLbl.setText("Your name must be between 1 and 25 characters long");
-            }
-        });
-
-        threePlayerBtn.setOnAction(actionEvent -> {
-            if (nickNameField.getText().length() > 0 && nickNameField.getText().length() <= 25) {
-                nickname = nickNameField.getText();
-                gameSize = threePlayerBtn.getText();
-                controller.setNickname(nickname);
-                controller.setGameSize(gameSize);
-            } else {
-                badNameLbl.setText("Your name must be between 1 and 25 characters long");
-            }
-        });
-
-        fourPlayerBtn.setOnAction(actionEvent -> {
-            if (nickNameField.getText().length() > 0 && nickNameField.getText().length() <= 25) {
-                nickname = nickNameField.getText();
-                gameSize = fourPlayerBtn.getText();
-                controller.setNickname(nickname);
-                controller.setGameSize(gameSize);
-            } else {
-                badNameLbl.setText("Your name must be between 1 and 25 characters long");
-            }
-        });
+    @FXML
+    private void setNickNameAndGameSize(ActionEvent event) {
+        if (nickNameField.getText().length() > 0 && nickNameField.getText().length() <= 25) {
+            nickname = nickNameField.getText();
+            gameSize = ((Button) event.getSource()).getText();
+            controller.setNickname(nickname);
+            controller.setGameSize(gameSize);
+        } else {
+            badNameLbl.setText("Your name must be between 1 and 25 characters long");
+        }
     }
 
     @FXML
@@ -199,128 +179,18 @@ public class InitialPhaseHandler extends PhaseHandler {
 
     @FXML
     public void chooseLeaders() {
-
         ctr = 0;
 
-        leader1Toggle.setOnAction(actionEvent -> {
-            if (leader1Toggle.isSelected()) {
-                if (ctr == 0) {
-                    ctr++;
-                } else if (ctr == 1) {
-                    ctr++;
-                    if (!leader2Toggle.isSelected()) {
-                        leader2Toggle.setDisable(true);
-                    }
-                    if (!leader3Toggle.isSelected()) {
-                        leader3Toggle.setDisable(true);
-                    }
-                    if (!leader4Toggle.isSelected()) {
-                        leader4Toggle.setDisable(true);
-                    }
-                }
-            } else {
-                ctr--;
-                if (leader2Toggle.isDisabled()) {
-                    leader2Toggle.setDisable(false);
-                }
-                if (leader3Toggle.isDisabled()) {
-                    leader3Toggle.setDisable(false);
-                }
-                if (leader4Toggle.isDisabled()) {
-                    leader4Toggle.setDisable(false);
-                }
-            }
-        });
+        List<ToggleButton> toggleButtons = new ArrayList<>();
+        toggleButtons.add(leader1Toggle);
+        toggleButtons.add(leader2Toggle);
+        toggleButtons.add(leader3Toggle);
+        toggleButtons.add(leader4Toggle);
 
-        leader2Toggle.setOnAction(actionEvent -> {
-            if (leader2Toggle.isSelected()) {
-                if (ctr == 0) {
-                    ctr++;
-                } else if (ctr == 1) {
-                    ctr++;
-                    if (!leader1Toggle.isSelected()) {
-                        leader1Toggle.setDisable(true);
-                    }
-                    if (!leader3Toggle.isSelected()) {
-                        leader3Toggle.setDisable(true);
-                    }
-                    if (!leader4Toggle.isSelected()) {
-                        leader4Toggle.setDisable(true);
-                    }
-                }
-            } else {
-                ctr--;
-                if (leader1Toggle.isDisabled()) {
-                    leader1Toggle.setDisable(false);
-                }
-                if (leader3Toggle.isDisabled()) {
-                    leader3Toggle.setDisable(false);
-                }
-                if (leader4Toggle.isDisabled()) {
-                    leader4Toggle.setDisable(false);
-                }
-            }
-        });
-
-        leader3Toggle.setOnAction(actionEvent -> {
-            if (leader3Toggle.isSelected()) {
-                if (ctr == 0) {
-                    ctr++;
-                } else if (ctr == 1) {
-                    ctr++;
-                    if (!leader2Toggle.isSelected()) {
-                        leader2Toggle.setDisable(true);
-                    }
-                    if (!leader1Toggle.isSelected()) {
-                        leader1Toggle.setDisable(true);
-                    }
-                    if (!leader4Toggle.isSelected()) {
-                        leader4Toggle.setDisable(true);
-                    }
-                }
-            } else {
-                ctr--;
-                if (leader2Toggle.isDisabled()) {
-                    leader2Toggle.setDisable(false);
-                }
-                if (leader1Toggle.isDisabled()) {
-                    leader1Toggle.setDisable(false);
-                }
-                if (leader4Toggle.isDisabled()) {
-                    leader4Toggle.setDisable(false);
-                }
-            }
-        });
-
-        leader4Toggle.setOnAction(actionEvent -> {
-            if (leader4Toggle.isSelected()) {
-                if (ctr == 0) {
-                    ctr++;
-                } else if (ctr == 1) {
-                    ctr++;
-                    if (!leader2Toggle.isSelected()) {
-                        leader2Toggle.setDisable(true);
-                    }
-                    if (!leader3Toggle.isSelected()) {
-                        leader3Toggle.setDisable(true);
-                    }
-                    if (!leader1Toggle.isSelected()) {
-                        leader1Toggle.setDisable(true);
-                    }
-                }
-            } else {
-                ctr--;
-                if (leader2Toggle.isDisabled()) {
-                    leader2Toggle.setDisable(false);
-                }
-                if (leader3Toggle.isDisabled()) {
-                    leader3Toggle.setDisable(false);
-                }
-                if (leader1Toggle.isDisabled()) {
-                    leader1Toggle.setDisable(false);
-                }
-            }
-        });
+        leader1Toggle.setOnAction(actionEvent -> leaderToggle(actionEvent, toggleButtons));
+        leader2Toggle.setOnAction(actionEvent -> leaderToggle(actionEvent, toggleButtons));
+        leader3Toggle.setOnAction(actionEvent -> leaderToggle(actionEvent, toggleButtons));
+        leader4Toggle.setOnAction(actionEvent -> leaderToggle(actionEvent, toggleButtons));
 
         chooseLeadersBtn.setOnAction(actionEvent -> {
             if (ctr == 2) {
@@ -334,15 +204,39 @@ public class InitialPhaseHandler extends PhaseHandler {
         });
     }
 
+    public void leaderToggle(ActionEvent event, List<ToggleButton> toggleButtons) {
+        if (((ToggleButton) event.getSource()).isSelected()) {
+            if (ctr == 0) {
+                ctr++;
+            } else if (ctr == 1) {
+                ctr++;
+                for (ToggleButton currBtn : toggleButtons) {
+                    if (currBtn != event.getSource()) {
+                        if (!currBtn.isSelected()) {
+                            currBtn.setDisable(true);
+                        }
+                    }
+                }
+            }
+        } else {
+            ctr--;
+            for (ToggleButton currBtn : toggleButtons) {
+                if (currBtn != event.getSource()) {
+                    if (!currBtn.isSelected()) {
+                        currBtn.setDisable(false);
+                    }
+                }
+            }
+        }
+    }
+
     @FXML
     public void chooseResources(Integer resources) {
 
         List<Resource> selectedRes = new ArrayList<>();
 
         chooseResLbl.setText(resources.toString());
-        if (resources == 1) {
-            resPluralLbl.setText("resource");
-        } else {
+        if (resources == 2) {
             resPluralLbl.setText("resources");
         }
 
@@ -440,7 +334,6 @@ public class InitialPhaseHandler extends PhaseHandler {
     }
 
     private void chooseStorage(Pane motherPane, Scene popUpScene, List<Resource> selectedRes) {
-
         resource1Img.setImage(new Image("img/pawns/" + selectedRes.get(0).toString().toLowerCase() + ".png"));
         if (selectedRes.size() == 1) {
             resource2Img.setManaged(false);
@@ -460,78 +353,101 @@ public class InitialPhaseHandler extends PhaseHandler {
         popUpStage.setScene(popUpScene);
         popUpStage.show();
 
-        /*resource1Img.setOnDragDetected(event -> {
-            System.out.println("onDragDetected");
+        resource1Img.setOnDragDetected(event -> {
+            sourceDragDetected(event, selectedRes.get(0));
+        });
+        resource1Img.setOnDragDone(this::sourceDragDone);
 
-            Dragboard db = resource1Img.startDragAndDrop(TransferMode.ANY);
+        if (resource2Img.isManaged()) {
+            resource2Img.setOnDragDetected(event -> {
+                sourceDragDetected(event, selectedRes.get(0));
+            });
+            resource2Img.setOnDragDone(this::sourceDragDone);
+        }
 
-            ClipboardContent content = new ClipboardContent();
-            content.putString(resource1Img.getImage().getUrl());
-            db.setContent(content);
-
-            System.out.println(resource1Img.getImage().getUrl());
-
-            event.consume();
+        shelf1.setOnDragOver(this::targetDragOver);
+        shelf1.setOnDragDropped(event -> {
+            targetDragDropped(event);
         });
 
-        wareHouseImg.setOnDragOver(event -> {
-            System.out.println("onDragOver");
-
-            if (event.getGestureSource() != wareHouseImg &&
-                    event.getDragboard().hasString()) {
-                event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-            }
-
-            event.consume();
+        shelf21.setOnDragOver(this::targetDragOver);
+        shelf21.setOnDragDropped(event -> {
+            targetDragDropped(event);
+        });
+        shelf22.setOnDragOver(this::targetDragOver);
+        shelf22.setOnDragDropped(event -> {
+            targetDragDropped(event);
         });
 
-        wareHouseImg.setOnDragEntered(event -> {
-            System.out.println("onDragEntered");
-
-            if (event.getGestureSource() != wareHouseImg &&
-                    event.getDragboard().hasString()) {
-                wareHouseImg.setStyle("-fx-effect: dropshadow(one-pass-box, rgba(255, 255, 255, 0.5), 10, 0, 0, 0);");
-            }
-
-            event.consume();
+        shelf31.setOnDragOver(this::targetDragOver);
+        shelf31.setOnDragDropped(event -> {
+            targetDragDropped(event);
+        });
+        shelf32.setOnDragOver(this::targetDragOver);
+        shelf32.setOnDragDropped(event -> {
+            targetDragDropped(event);
+        });
+        shelf33.setOnDragOver(this::targetDragOver);
+        shelf33.setOnDragDropped(event -> {
+            targetDragDropped(event);
         });
 
-        wareHouseImg.setOnDragExited(event -> {
-            wareHouseImg.setStyle("-fx-effect: null");
-
-            event.consume();
+        chooseStorageBtn.setOnAction(actionEvent -> {
+            
         });
+    }
 
-        wareHouseImg.setOnDragDropped(event -> {
-            System.out.println("onDragDropped");
+    private void sourceDragDetected(Event event, Resource resource) {
+        Dragboard db = ((Node) event.getSource()).startDragAndDrop(TransferMode.ANY);
+        ClipboardContent content = new ClipboardContent();
+        content.putString(resource.toString());
+        db.setContent(content);
 
-            Dragboard db = event.getDragboard();
-            boolean success = false;
-            if (db.hasString()) {
-                System.out.println(db.getString());
-                success = true;
-            }
+        event.consume();
+    }
 
-            event.setDropCompleted(success);
+    private void sourceDragDone(DragEvent event) {
+        if (event.getTransferMode() == TransferMode.MOVE) {
+            ((Node) event.getSource()).setLayoutX(target.getLayoutX() + 5);
+            ((Node) event.getSource()).setLayoutY(target.getLayoutY() + 5);
+        }
 
-            event.consume();
-        });
+        event.consume();
+    }
 
-        resource1Img.setOnDragDone(event -> {
-            System.out.println("onDragDone");
+    private void targetDragOver(DragEvent event) {
+        if (event.getGestureSource() != ((Node) event.getSource()) &&
+                event.getDragboard().hasString()) {
+            event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+        }
 
-            if (event.getTransferMode() == TransferMode.MOVE) {
-                System.out.println("stonks");
-            }
+        event.consume();
+    }
 
-            event.consume();
-        });*/
+    private Resource targetDragDropped(DragEvent event) {
+        Dragboard db = event.getDragboard();
+        /*Resource movedRes = Resource.valueOf(db.getString());
 
-        resource1Img.setOnMouseDragged(dragEvent -> {
-            Node n = (Node)dragEvent.getSource();
-            n.setTranslateX(n.getTranslateX() + dragEvent.getX());
-            n.setTranslateY(n.getTranslateY() + dragEvent.getY());
-        });
+        switch (db.getString()) {
+            case "STONE":
+                movedRes = Resource.STONE;
+            case "SERVANT":
+                movedRes = Resource.SERVANT;
+            case "COIN":
+                movedRes = Resource.COIN;
+            case "SHIELD":
+                movedRes = Resource.SHIELD;
+        }*/
+        target = (Node) event.getSource();
 
+        event.setDropCompleted(true);
+        event.consume();
+
+        return Resource.valueOf(db.getString());
+    }
+
+    public void initiateBoard() {
+        leader1Show.setImage(new Image("img/leaderCards/" + controller.getPlayer().getLeaders().get(0).getId() + ".png"));
+        leader2Show.setImage(new Image("img/leaderCards/" + controller.getPlayer().getLeaders().get(1).getId() + ".png"));
     }
 }

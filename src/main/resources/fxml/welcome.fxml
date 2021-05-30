@@ -4,21 +4,20 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane id="background" prefHeight="400.0" prefWidth="700.0" stylesheets="@style.css"
-            xmlns="https://javafx.com/javafx"
+<BorderPane id="background" prefHeight="400.0" prefWidth="700.0" xmlns="https://javafx.com/javafx"
             xmlns:fx="https://javafx.com/fxml">
     <center>
-        <VBox alignment="CENTER" minHeight="400.0" minWidth="600.0" stylesheets="@style.css">
+        <VBox alignment="CENTER">
             <children>
-                <ImageView id="logo" fitHeight="250.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
-                    <Image url="@../img/ui/logo.png"/>
+                <ImageView id="logo" fitWidth="400.0" pickOnBounds="true" preserveRatio="true">
+                    <Image url="@../img/ui/logo_en.png"/>
                 </ImageView>
-                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="40.0" stylesheets="@style.css">
+                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="40.0">
                     <children>
                         <Button fx:id="playBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
-                                styleClass="btn" stylesheets="@style.css" text="Play"/>
+                                styleClass="btn" text="Play"/>
                         <Button fx:id="quitBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
-                                styleClass="btn" stylesheets="@style.css" text="Quit"/>
+                                styleClass="btn" text="Quit"/>
                     </children>
                 </HBox>
             </children>

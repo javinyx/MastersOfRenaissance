@@ -23,7 +23,6 @@ public class Gui extends Application implements ViewInterface {
 
     }
 
-
     @Override
     public void updateMarket() {
 
@@ -43,6 +42,4 @@ public class Gui extends Application implements ViewInterface {
     public void updateOtherPlayer(NubPlayer player) {
 
     }
-
-
 }

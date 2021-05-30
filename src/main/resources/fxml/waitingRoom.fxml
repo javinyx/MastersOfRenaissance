@@ -3,15 +3,14 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane id="background" prefHeight="400.0" prefWidth="700.0" stylesheets="@style.css"
-            xmlns="https://javafx.com/javafx"
+<BorderPane id="background" prefHeight="400.0" prefWidth="700.0" xmlns="https://javafx.com/javafx"
             xmlns:fx="https://javafx.com/fxml">
     <center>
-        <VBox alignment="CENTER" spacing="50" stylesheets="@style.css" BorderPane.alignment="CENTER">
+        <VBox alignment="CENTER" spacing="50" BorderPane.alignment="CENTER">
             <children>
-                <Label fx:id="waitingRoomLbl" alignment="CENTER" contentDisplay="CENTER" styleClass="greeting" stylesheets="@style.css"
+                <Label fx:id="waitingRoomLbl" alignment="CENTER" contentDisplay="CENTER" styleClass="greeting"
                        text="Hello, "/>
-                <Label alignment="CENTER" contentDisplay="CENTER" styleClass="waitLabel" stylesheets="@style.css"
+                <Label alignment="CENTER" contentDisplay="CENTER" styleClass="waitLabel"
                        text="Waiting for other players..."/>
                 <ProgressBar prefHeight="50.0" prefWidth="400.0" id="progressBar" />
             </children>

@@ -11,9 +11,7 @@
         <VBox alignment="CENTER" minHeight="400.0" minWidth="600.0" stylesheets="@style.css">
             <children>
                 <ImageView id="logo" fitHeight="250.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../img/ui/logo.png"/>
-                    </image>
+                    <Image url="@../img/ui/logo.png"/>
                 </ImageView>
                 <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="40.0" stylesheets="@style.css">
                     <children>

@@ -31,7 +31,7 @@ public class GuiController extends ClientController {
     private String nickName;
     private Integer gameSize;
 
-    public GuiController(Stage stage, Gui gui){
+    public GuiController(Stage stage, Gui gui) {
         this.stage = stage;
 
         Font.loadFont(getClass().getResourceAsStream("/fonts/godofwar.ttf"), 14);
@@ -41,10 +41,15 @@ public class GuiController extends ClientController {
         start();
     }
 
-    private void start(){
+    private void start() {
         stage.setTitle("Masters of Renaissance");
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/img/ui/inkwell.png")));
         stage.setResizable(false);
+        stage.setOnCloseRequest(closeEvent -> {
+            //closeEvent.consume();
+            //TODO: PopUp asking if the user is sure that they want to exit, maybe use the same popup when they click Esc
+            stage.close();
+        });
         stage.setScene(initialPhaseHandler.getScene(ScenesEnum.WELCOME));
         stage.show();
         initialPhaseHandler.start();
@@ -58,8 +63,8 @@ public class GuiController extends ClientController {
         return true;
     }
 
-    public void setIpAndPort(String ip, String port){
-        if(ip.equals("0") && port.equals("0")){
+    public void setIpAndPort(String ip, String port) {
+        if (ip.equals("0") && port.equals("0")) {
             startLocalGame();
             return;
         }
@@ -80,7 +85,7 @@ public class GuiController extends ClientController {
             Thread t1 = new Thread(new MessageReceiver(socketIn, this));
             t1.start();
 
-        }catch(IOException e){
+        } catch (IOException e) {
             System.err.println(e.getClass() + "Socket error");
         }
 
@@ -96,7 +101,7 @@ public class GuiController extends ClientController {
         initialPhaseHandler.getNickNameAndGameSize();
     }
 
-    public void setNickname(String receivedName){
+    public void setNickname(String receivedName) {
         nickName = receivedName;
         messageToServerHandler.sendMessageToServer(receivedName);
     }
@@ -104,17 +109,17 @@ public class GuiController extends ClientController {
     @Override
     public void askNumberOfPlayers() {
         messageToServerHandler.sendMessageToServer(gameSize.toString());
-        if(gameSize != 1) {
+        if (gameSize != 1) {
             Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.WAITING_ROOM));
             initialPhaseHandler.setWaitingRoomName(nickName);
         }
     }
 
-    public void setGameSize(String size){
+    public void setGameSize(String size) {
         gameSize = Integer.parseInt(size);
     }
 
-    public void setSelectedLeaders(List<Boolean> leadersChoice){
+    public void setSelectedLeaders(List<Boolean> leadersChoice) {
         List<LeaderCard> availableLeaders = getPlayer().getLeaders();
         List<Integer> chosenLeadersId = new ArrayList<>();
 
@@ -203,7 +208,7 @@ public class GuiController extends ClientController {
 
     @Override
     public void chooseResourceAction(int quantity) {
-        synchronized (lock){
+        synchronized (lock) {
             try {
                 lock.wait();
             } catch (InterruptedException e) {
@@ -211,7 +216,7 @@ public class GuiController extends ClientController {
             }
 
             Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.CHOOSE_RESOURCES));
-            initialPhaseHandler.displayResources(quantity);
+            initialPhaseHandler.chooseResources(quantity);
         }
     }
 
@@ -222,12 +227,12 @@ public class GuiController extends ClientController {
 
     @Override
     public void chooseLeadersAction() {
+        List<LeaderCard> availableLeaders = getPlayer().getLeaders();
+        initialPhaseHandler.displayLeaders(availableLeaders);
         synchronized (lock) {
             Platform.runLater(() -> {
                 initialPhaseHandler.setScene(ScenesEnum.CHOOSE_LEADERS);
             });
-            List<LeaderCard> availableLeaders = getPlayer().getLeaders();
-            initialPhaseHandler.displayLeaders(availableLeaders);
             initialPhaseHandler.chooseLeaders();
         }
     }
@@ -278,7 +283,7 @@ public class GuiController extends ClientController {
     }
 
     @Override
-    public void startLocalGame(){
+    public void startLocalGame() {
 
     }
 }

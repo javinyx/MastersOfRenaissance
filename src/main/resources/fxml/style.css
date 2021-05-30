@@ -4,6 +4,7 @@
 Label {
     -fx-text-fill: #ffffff;
     -fx-font-family: "godofwar";
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 5, 0, 0, 0);
 }
 
 Button {
@@ -78,6 +79,10 @@ ToggleButton {
 
 .btnSq:pressed {
     -fx-background-image: url("/img/ui/btnSqPressed.png");
+}
+
+.badNameLabel {
+    -fx-font-size: 16px;
 }
 
 /*

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<BorderPane fx:id="chooseStrPane" id="backgroundStart" prefHeight="400.0" prefWidth="700.0" stylesheets="@style.css"
+           xmlns="https://javafx.com/javafx"
+           xmlns:fx="https://javafx.com/fxml">
+    <center>
+        <HBox alignment="CENTER" spacing="50">
+            <children>
+                <VBox alignment="CENTER" spacing="30" stylesheets="@style.css" BorderPane.alignment="CENTER">
+                    <children>
+                        <ImageView fx:id="resource1Img" pickOnBounds="true" preserveRatio="true" fitHeight="50.0"/>
+                        <ImageView fx:id="resource2Img" pickOnBounds="true" preserveRatio="true" fitHeight="50.0"/>
+                    </children>
+                </VBox>
+                <ImageView fx:id="wareHouseImg" pickOnBounds="true" preserveRatio="true" fitHeight="200.0">
+                    <Image url="@../img/ui/wareHouse.png"/>
+                </ImageView>
+            </children>
+        </HBox>
+    </center>
+</BorderPane>

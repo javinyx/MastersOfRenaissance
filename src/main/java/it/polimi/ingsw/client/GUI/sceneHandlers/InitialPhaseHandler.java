@@ -3,17 +3,28 @@ package it.polimi.ingsw.client.GUI.sceneHandlers;
 import it.polimi.ingsw.client.GUI.GuiController;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
+import it.polimi.ingsw.model.market.Resource;
+
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Point2D;
 import javafx.scene.ImageCursor;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.*;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.util.*;
@@ -30,7 +41,6 @@ public class InitialPhaseHandler extends PhaseHandler {
     private int ctr;
 
     private Map<ScenesEnum, Scene> sceneMap = new HashMap<>();
-    //private Map<ScenesEnum, InitialPhaseHandler> sceneControllerMap = new HashMap<>();
 
     @FXML
     private Button playBtn, quitBtn, connectBtn, localModeBtn;
@@ -39,7 +49,7 @@ public class InitialPhaseHandler extends PhaseHandler {
     @FXML
     private Button singlePlayerBtn, twoPlayerBtn, threePlayerBtn, fourPlayerBtn;
     @FXML
-    private Label waitingRoomLbl;
+    private Label waitingRoomLbl, badNameLbl;
     @FXML
     private Button chooseLeadersBtn, chooseResourcesBtn;
     @FXML
@@ -52,11 +62,15 @@ public class InitialPhaseHandler extends PhaseHandler {
     private Button stoneSubBtn, stoneAddBtn, servantSubBtn, servantAddBtn, coinSubBtn, coinAddBtn, shieldSubBtn, shieldAddBtn;
     @FXML
     private Label stoneLbl, servantLbl, coinLbl, shieldLbl, resPluralLbl;
+    @FXML
+    private Pane chooseResPane, chooseStrPane;
+    @FXML
+    private ImageView resource1Img, resource2Img, wareHouseImg;
 
     public InitialPhaseHandler(GuiController controller, Stage stage) {
         super(controller, stage);
 
-        List<ScenesEnum> allPaths = new ArrayList<>(Arrays.asList(WELCOME, CONNECTION, REGISTRATION, WAITING_ROOM, CHOOSE_LEADERS, CHOOSE_RESOURCES, MAIN_BOARD));
+        List<ScenesEnum> allPaths = new ArrayList<>(Arrays.asList(WELCOME, CONNECTION, REGISTRATION, WAITING_ROOM, CHOOSE_LEADERS, CHOOSE_RESOURCES, CHOOSE_STORAGE, MAIN_BOARD));
         for (ScenesEnum path : allPaths) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + path.getPath()));
             loader.setController(this);
@@ -125,33 +139,48 @@ public class InitialPhaseHandler extends PhaseHandler {
 
     @FXML
     public void getNickNameAndGameSize() {
-        //TODO: check nickname length
         singlePlayerBtn.setOnAction(actionEvent -> {
-            nickname = nickNameField.getText();
-            gameSize = singlePlayerBtn.getText();
-            controller.setNickname(nickname);
-            controller.setGameSize(gameSize);
+            if (nickNameField.getText().length() > 0 && nickNameField.getText().length() <= 25) {
+                nickname = nickNameField.getText();
+                gameSize = singlePlayerBtn.getText();
+                controller.setNickname(nickname);
+                controller.setGameSize(gameSize);
+            } else {
+                badNameLbl.setText("Your name must be between 1 and 25 characters long");
+            }
         });
 
         twoPlayerBtn.setOnAction(actionEvent -> {
-            nickname = nickNameField.getText();
-            gameSize = twoPlayerBtn.getText();
-            controller.setNickname(nickname);
-            controller.setGameSize(gameSize);
+            if (nickNameField.getText().length() > 0 && nickNameField.getText().length() <= 25) {
+                nickname = nickNameField.getText();
+                gameSize = twoPlayerBtn.getText();
+                controller.setNickname(nickname);
+                controller.setGameSize(gameSize);
+            } else {
+                badNameLbl.setText("Your name must be between 1 and 25 characters long");
+            }
         });
 
         threePlayerBtn.setOnAction(actionEvent -> {
-            nickname = nickNameField.getText();
-            gameSize = threePlayerBtn.getText();
-            controller.setNickname(nickname);
-            controller.setGameSize(gameSize);
+            if (nickNameField.getText().length() > 0 && nickNameField.getText().length() <= 25) {
+                nickname = nickNameField.getText();
+                gameSize = threePlayerBtn.getText();
+                controller.setNickname(nickname);
+                controller.setGameSize(gameSize);
+            } else {
+                badNameLbl.setText("Your name must be between 1 and 25 characters long");
+            }
         });
 
         fourPlayerBtn.setOnAction(actionEvent -> {
-            nickname = nickNameField.getText();
-            gameSize = fourPlayerBtn.getText();
-            controller.setNickname(nickname);
-            controller.setGameSize(gameSize);
+            if (nickNameField.getText().length() > 0 && nickNameField.getText().length() <= 25) {
+                nickname = nickNameField.getText();
+                gameSize = fourPlayerBtn.getText();
+                controller.setNickname(nickname);
+                controller.setGameSize(gameSize);
+            } else {
+                badNameLbl.setText("Your name must be between 1 and 25 characters long");
+            }
         });
     }
 
@@ -170,6 +199,9 @@ public class InitialPhaseHandler extends PhaseHandler {
 
     @FXML
     public void chooseLeaders() {
+
+        ctr = 0;
+
         leader1Toggle.setOnAction(actionEvent -> {
             if (leader1Toggle.isSelected()) {
                 if (ctr == 0) {
@@ -291,18 +323,22 @@ public class InitialPhaseHandler extends PhaseHandler {
         });
 
         chooseLeadersBtn.setOnAction(actionEvent -> {
-            //TODO: check if 2 leaders have been selected
-            List<Boolean> selectedLeaders = new ArrayList<>();
-            selectedLeaders.add(leader1Toggle.isSelected());
-            selectedLeaders.add(leader2Toggle.isSelected());
-            selectedLeaders.add(leader3Toggle.isSelected());
-            selectedLeaders.add(leader4Toggle.isSelected());
-            controller.setSelectedLeaders(selectedLeaders);
+            if (ctr == 2) {
+                List<Boolean> selectedLeaders = new ArrayList<>();
+                selectedLeaders.add(leader1Toggle.isSelected());
+                selectedLeaders.add(leader2Toggle.isSelected());
+                selectedLeaders.add(leader3Toggle.isSelected());
+                selectedLeaders.add(leader4Toggle.isSelected());
+                controller.setSelectedLeaders(selectedLeaders);
+            }
         });
     }
 
     @FXML
-    public void displayResources(Integer resources) {
+    public void chooseResources(Integer resources) {
+
+        List<Resource> selectedRes = new ArrayList<>();
+
         chooseResLbl.setText(resources.toString());
         if (resources == 1) {
             resPluralLbl.setText("resource");
@@ -310,7 +346,7 @@ public class InitialPhaseHandler extends PhaseHandler {
             resPluralLbl.setText("resources");
         }
 
-        if(controller.getPlayer().getTurnNumber() == 3 || controller.getPlayer().getTurnNumber() == 4){
+        if (controller.getPlayer().getTurnNumber() == 3 || controller.getPlayer().getTurnNumber() == 4) {
             chooseFaithLbl.setText("You have also received 1 bonus faith point");
         } else {
             chooseFaithLbl.setDisable(true);
@@ -368,8 +404,134 @@ public class InitialPhaseHandler extends PhaseHandler {
         });
 
         chooseResourcesBtn.setOnAction(actionEvent -> {
-            //TODO: get all the label texts, check if they're not 0 and ask where to store the resources
+            if (Integer.parseInt(stoneLbl.getText()) + Integer.parseInt(servantLbl.getText()) + Integer.parseInt(coinLbl.getText()) + Integer.parseInt(shieldLbl.getText()) == resources) {
+
+                if (Integer.parseInt(stoneLbl.getText()) == 1) {
+                    selectedRes.add(Resource.STONE);
+                } else if (Integer.parseInt(stoneLbl.getText()) == 2) {
+                    selectedRes.add(Resource.STONE);
+                    selectedRes.add(Resource.STONE);
+                }
+
+                if (Integer.parseInt(servantLbl.getText()) == 1) {
+                    selectedRes.add(Resource.SERVANT);
+                } else if (Integer.parseInt(servantLbl.getText()) == 2) {
+                    selectedRes.add(Resource.SERVANT);
+                    selectedRes.add(Resource.SERVANT);
+                }
+
+                if (Integer.parseInt(coinLbl.getText()) == 1) {
+                    selectedRes.add(Resource.COIN);
+                } else if (Integer.parseInt(coinLbl.getText()) == 2) {
+                    selectedRes.add(Resource.COIN);
+                    selectedRes.add(Resource.COIN);
+                }
+
+                if (Integer.parseInt(shieldLbl.getText()) == 1) {
+                    selectedRes.add(Resource.SHIELD);
+                } else if (Integer.parseInt(shieldLbl.getText()) == 2) {
+                    selectedRes.add(Resource.SHIELD);
+                    selectedRes.add(Resource.SHIELD);
+                }
+
+                chooseStorage(chooseResPane, getScene(CHOOSE_STORAGE), selectedRes);
+            }
         });
     }
 
+    private void chooseStorage(Pane motherPane, Scene popUpScene, List<Resource> selectedRes) {
+
+        resource1Img.setImage(new Image("img/pawns/" + selectedRes.get(0).toString().toLowerCase() + ".png"));
+        if (selectedRes.size() == 1) {
+            resource2Img.setManaged(false);
+        } else {
+            resource2Img.setImage(new Image("img/pawns/" + selectedRes.get(1).toString().toLowerCase() + ".png"));
+        }
+
+        motherPane.setEffect(new GaussianBlur());
+
+        Stage popUpStage = new Stage(StageStyle.TRANSPARENT);
+        popUpStage.initOwner(stage);
+        popUpStage.initModality(Modality.APPLICATION_MODAL);
+
+        popUpStage.setX(stage.getX() + (stage.getWidth() / 4));
+        popUpStage.setY(stage.getY() + (stage.getHeight() / 4));
+
+        popUpStage.setScene(popUpScene);
+        popUpStage.show();
+
+        /*resource1Img.setOnDragDetected(event -> {
+            System.out.println("onDragDetected");
+
+            Dragboard db = resource1Img.startDragAndDrop(TransferMode.ANY);
+
+            ClipboardContent content = new ClipboardContent();
+            content.putString(resource1Img.getImage().getUrl());
+            db.setContent(content);
+
+            System.out.println(resource1Img.getImage().getUrl());
+
+            event.consume();
+        });
+
+        wareHouseImg.setOnDragOver(event -> {
+            System.out.println("onDragOver");
+
+            if (event.getGestureSource() != wareHouseImg &&
+                    event.getDragboard().hasString()) {
+                event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+            }
+
+            event.consume();
+        });
+
+        wareHouseImg.setOnDragEntered(event -> {
+            System.out.println("onDragEntered");
+
+            if (event.getGestureSource() != wareHouseImg &&
+                    event.getDragboard().hasString()) {
+                wareHouseImg.setStyle("-fx-effect: dropshadow(one-pass-box, rgba(255, 255, 255, 0.5), 10, 0, 0, 0);");
+            }
+
+            event.consume();
+        });
+
+        wareHouseImg.setOnDragExited(event -> {
+            wareHouseImg.setStyle("-fx-effect: null");
+
+            event.consume();
+        });
+
+        wareHouseImg.setOnDragDropped(event -> {
+            System.out.println("onDragDropped");
+
+            Dragboard db = event.getDragboard();
+            boolean success = false;
+            if (db.hasString()) {
+                System.out.println(db.getString());
+                success = true;
+            }
+
+            event.setDropCompleted(success);
+
+            event.consume();
+        });
+
+        resource1Img.setOnDragDone(event -> {
+            System.out.println("onDragDone");
+
+            if (event.getTransferMode() == TransferMode.MOVE) {
+                System.out.println("stonks");
+            }
+
+            event.consume();
+        });*/
+
+        resource1Img.setOnMouseDragged(dragEvent -> {
+            Node n = (Node)dragEvent.getSource();
+            n.setTranslateX(n.getTranslateX() + dragEvent.getX());
+            n.setTranslateY(n.getTranslateY() + dragEvent.getY());
+        });
+
+    }
 }

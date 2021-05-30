@@ -7,6 +7,7 @@ public enum ScenesEnum {
     WAITING_ROOM("waitingRoom.fxml"),
     CHOOSE_LEADERS("chooseLeaders.fxml"),
     CHOOSE_RESOURCES("chooseResources.fxml"),
+    CHOOSE_STORAGE("chooseStorage.fxml"),
     MAIN_BOARD("mainBoard.fxml");
 
     private String path;

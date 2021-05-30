@@ -7,13 +7,15 @@
             xmlns="https://javafx.com/javafx"
             xmlns:fx="https://javafx.com/fxml">
     <center>
-        <VBox alignment="CENTER" spacing="50" stylesheets="@style.css" BorderPane.alignment="CENTER">
+        <VBox alignment="CENTER" spacing="40" stylesheets="@style.css" BorderPane.alignment="CENTER">
             <children>
                 <VBox alignment="CENTER" spacing="10">
                     <children>
                         <Label alignment="CENTER" styleClass="inputLabel" stylesheets="@style.css" text="Nickname"/>
-                        <TextField fx:id="nickNameField" maxWidth="300.0" minWidth="300.0" promptText="lorenzo"
+                        <TextField fx:id="nickNameField" maxWidth="300.0" minWidth="300.0" promptText="name"
                                    styleClass="inputArea"/>
+                        <Label fx:id="badNameLbl" alignment="CENTER" styleClass="badNameLabel" stylesheets="@style.css"
+                               text=""/>
                     </children>
                 </VBox>
                 <VBox alignment="CENTER" spacing="10">

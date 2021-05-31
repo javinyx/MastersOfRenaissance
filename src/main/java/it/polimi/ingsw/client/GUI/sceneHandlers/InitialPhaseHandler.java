@@ -86,6 +86,10 @@ public class InitialPhaseHandler extends PhaseHandler {
     private Pane mainBoard;
     @FXML
     private GridPane marketMarbles;
+    @FXML
+    private Button player1Btn, player2Btn, player3Btn;
+    @FXML
+    private Label player1FaithLbl, player2FaithLbl, player3FaithLbl;
 
     public InitialPhaseHandler(GuiController controller, Stage stage) {
         super(controller, stage);

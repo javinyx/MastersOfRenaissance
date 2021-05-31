@@ -162,3 +162,8 @@ ToggleButton {
 .marble {
     -fx-effect: innershadow(one-pass-box, rgba(0, 0, 0, 0.5), 30, 0, 0, 0);
 }
+
+#enemyBoard {
+    -fx-background-color: #737777;
+    -fx-padding: 20px;
+}

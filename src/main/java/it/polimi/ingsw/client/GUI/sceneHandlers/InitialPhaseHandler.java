@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.GUI.sceneHandlers;
 
 import it.polimi.ingsw.client.GUI.GuiController;
+import it.polimi.ingsw.client.GUI.MarbleColor;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
@@ -18,11 +19,15 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.effect.GaussianBlur;
+import javafx.scene.effect.SepiaTone;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -75,6 +80,8 @@ public class InitialPhaseHandler extends PhaseHandler {
     private Button chooseStorageBtn;
     @FXML
     private ImageView leader1Show, leader2Show;
+    @FXML
+    private Pane mainBoard;
 
     public InitialPhaseHandler(GuiController controller, Stage stage) {
         super(controller, stage);
@@ -395,7 +402,9 @@ public class InitialPhaseHandler extends PhaseHandler {
         });
 
         chooseStorageBtn.setOnAction(actionEvent -> {
-            if(initialResourcePlacements.size() == selectedRes.size()){
+            if (initialResourcePlacements.size() == selectedRes.size()) {
+                motherPane.setEffect(null);
+                popUpStage.close();
                 controller.setInitialResourcePlacements(initialResourcePlacements);
             }
         });
@@ -430,18 +439,6 @@ public class InitialPhaseHandler extends PhaseHandler {
 
     private Resource targetDragDropped(DragEvent event) {
         Dragboard db = event.getDragboard();
-        /*Resource movedRes = Resource.valueOf(db.getString());
-
-        switch (db.getString()) {
-            case "STONE":
-                movedRes = Resource.STONE;
-            case "SERVANT":
-                movedRes = Resource.SERVANT;
-            case "COIN":
-                movedRes = Resource.COIN;
-            case "SHIELD":
-                movedRes = Resource.SHIELD;
-        }*/
         target = (Node) event.getSource();
 
         event.setDropCompleted(true);
@@ -450,8 +447,28 @@ public class InitialPhaseHandler extends PhaseHandler {
         return Resource.valueOf(db.getString());
     }
 
-    public void initiateBoard() {
-        leader1Show.setImage(new Image("img/leaderCards/" + controller.getPlayer().getLeaders().get(0).getId() + ".png"));
-        leader2Show.setImage(new Image("img/leaderCards/" + controller.getPlayer().getLeaders().get(1).getId() + ".png"));
+    public void initiateBoard(List<Integer> chosenLeadersId) {
+        leader1Show.setImage(new Image("img/leaderCards/" + chosenLeadersId.get(0) + ".png"));
+        leader1Show.setEffect(new SepiaTone());
+        leader2Show.setImage(new Image("img/leaderCards/" + chosenLeadersId.get(1) + ".png"));
+        leader2Show.setEffect(new SepiaTone());
+
+        for (int x = 0; x < 3; x++) {
+            for (int y = 0; y < 4; y++) {
+                switch (controller.getMarket().getMarketBoard()[x][y]) {
+                    case COIN -> createMarble(MarbleColor.COIN, x, y);
+                    case BLANK -> createMarble(MarbleColor.BLANK, x, y);
+                    case SHIELD -> createMarble(MarbleColor.SHIELD, x, y);
+                    case FAITH -> createMarble(MarbleColor.FAITH, x, y);
+                    case STONE -> createMarble(MarbleColor.STONE, x, y);
+                    case SERVANT -> createMarble(MarbleColor.SERVANT, x, y);
+                }
+            }
+        }
     }
+
+    private void createMarble(MarbleColor color, int x, int y) {
+        mainBoard.getChildren().add(new Circle((1200 + (x * 20)), (50 + (y * 20)), 50, Color.RED));
+    }
+
 }

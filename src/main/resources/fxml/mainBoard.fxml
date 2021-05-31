@@ -8,9 +8,9 @@
     <ImageView fitHeight="700" layoutX="50" layoutY="150" preserveRatio="true">
         <Image url="@../img/ui/mainBoard.png"/>
     </ImageView>
-    <ImageView fitWidth="350" layoutX="1170.0" layoutY="50.0" preserveRatio="true">
+    <ImageView fitWidth="350" layoutX="1200.0" layoutY="50.0" preserveRatio="true">
         <Image url="@../img/ui/market.png"/>
     </ImageView>
-    <ImageView fx:id="leader1Show" styleClass="leaderImg" preserveRatio="true" fitHeight="50.0" layoutX="1100.0" layoutY="500.0"/>
-    <ImageView fx:id="leader2Show" styleClass="leaderImg" preserveRatio="true" fitHeight="50.0" layoutX="1400.0" layoutY="500.0"/>
+    <ImageView fx:id="leader1Show" preserveRatio="true" fitWidth="200.0" layoutX="1100.0" layoutY="550.0"/>
+    <ImageView fx:id="leader2Show" preserveRatio="true" fitWidth="200.0" layoutX="1350.0" layoutY="550.0"/>
 </AnchorPane>

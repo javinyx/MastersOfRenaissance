@@ -11,6 +11,7 @@
                    pickOnBounds="true" preserveRatio="true">
             <Image url="@../img/ui/wareHouse.png"/>
         </ImageView>
+
         <Region fx:id="shelf1" layoutX="261.0" layoutY="104.0" prefHeight="50.0" prefWidth="50.0"/>
         <Region fx:id="shelf21" layoutX="235.0" layoutY="164.0" prefHeight="50.0" prefWidth="50.0"/>
         <Region fx:id="shelf22" layoutX="282.0" layoutY="164.0" prefHeight="50.0" prefWidth="50.0"/>
@@ -22,6 +23,6 @@
                    preserveRatio="true" styleClass="resImg"/>
         <ImageView fx:id="resource2Img" fitHeight="30.0" layoutX="109.0" layoutY="207.0" pickOnBounds="true"
                    preserveRatio="true" styleClass="resImg"/>
-        <Button fx:id="chooseStorageBtn" layoutX="187.0" layoutY="337.0" mnemonicParsing="false" text="Button" styleClass="btn"/>
+        <Button fx:id="chooseStorageBtn" layoutX="187.0" layoutY="337.0" mnemonicParsing="false" text="Confirm" styleClass="btn"/>
     </children>
 </AnchorPane>

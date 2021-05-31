@@ -33,6 +33,7 @@ public class GuiController extends ClientController {
     private final InitialPhaseHandler initialPhaseHandler;
     private GamePhaseHandler gamePhaseHandler;
     private final Object lock = new Object();
+    List<Integer> chosenLeadersId = new ArrayList<>();
 
     private String nickName;
     private Integer gameSize;
@@ -129,7 +130,6 @@ public class GuiController extends ClientController {
 
     public void setSelectedLeaders(List<Boolean> leadersChoice) {
         List<LeaderCard> availableLeaders = getPlayer().getLeaders();
-        List<Integer> chosenLeadersId = new ArrayList<>();
 
         for (int i = 0; i < leadersChoice.size(); i++) {
             if (leadersChoice.get(i)) {
@@ -142,9 +142,12 @@ public class GuiController extends ClientController {
         }
     }
 
-    public void setInitialResourcePlacements(List<BiElement<Resource, Storage>> placements){
+    public void setInitialResourcePlacements(List<BiElement<Resource, Storage>> placements) {
         StoreResourcesMessage msg = new StoreResourcesMessage(placements, getPlayer().getTurnNumber());
-        messageToServerHandler.generateEnvelope(MessageID.STORE_RESOURCES, gson.toJson(msg, StoreResourcesMessage.class));
+        synchronized (lock) {
+            messageToServerHandler.generateEnvelope(MessageID.STORE_RESOURCES, gson.toJson(msg, StoreResourcesMessage.class));
+            lock.notifyAll();
+        }
     }
 
     @Override
@@ -156,15 +159,10 @@ public class GuiController extends ClientController {
                 e.printStackTrace();
             }
 
-            //initialPhaseHandler.initiateBoard();
-
             Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.MAIN_BOARD));
-
+            initialPhaseHandler.initiateBoard(chosenLeadersId);
             stage.centerOnScreen();
-            stage.setResizable(true);
-
-            //gamePhaseHandler = new GamePhaseHandler(this, stage);
-
+            stage.sizeToScene();
         }
     }
 
@@ -236,7 +234,6 @@ public class GuiController extends ClientController {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
             Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.CHOOSE_RESOURCES));
             initialPhaseHandler.chooseResources(quantity);
         }
@@ -252,9 +249,7 @@ public class GuiController extends ClientController {
         List<LeaderCard> availableLeaders = getPlayer().getLeaders();
         initialPhaseHandler.displayLeaders(availableLeaders);
         synchronized (lock) {
-            Platform.runLater(() -> {
-                initialPhaseHandler.setScene(ScenesEnum.CHOOSE_LEADERS);
-            });
+            Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.CHOOSE_LEADERS));
             initialPhaseHandler.chooseLeaders();
         }
     }

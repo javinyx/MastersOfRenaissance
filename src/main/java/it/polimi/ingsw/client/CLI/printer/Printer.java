@@ -152,9 +152,9 @@ public class Printer {
 
     }
 
-    public void printMarket(Market market){
+    public void printMarket(Market market, Boolean[] pope){
         StringBuilder s = new StringBuilder();
-        s.append("   ").append("-".repeat(52));
+        s.append("   ").append("-".repeat(52)).append(" ".repeat(47)).append("Pope Favor Box");
         System.out.println(s);
 
         for (int i = 0; i < 3; i++){
@@ -165,9 +165,30 @@ public class Printer {
 
             if(i == 1)
                 System.out.print("\t Extra Marble: " + printRes(market.getExtra()));
-
+            switch (i){
+                case 0, 2 -> System.out.print(" ".repeat(37)+ Color.RED.escape() + "-----     -----     -----" + Color.RESET);
+                case 1 -> {
+                    int j = 0;
+                    if(!pope[0])
+                        j = -1;
+                    else {
+                        if (pope[1])
+                            j = 1;
+                        if (pope[2])
+                            j = 2;
+                    }
+                    switch (j) {
+                        case -1 -> System.out.print(" ".repeat(7) + Color.RED.escape() + "|   |     |   |     |   |" + Color.RESET);
+                        case 0 ->  System.out.print(" ".repeat(7) + Color.RED.escape() + "| X |     |   |     |   |" + Color.RESET);
+                        case 1 ->  System.out.print(" ".repeat(7) + Color.RED.escape() + "| X |     | X |     |   |" + Color.RESET);
+                        case 2 ->  System.out.print(" ".repeat(7) + Color.RED.escape() + "| X |     | X |     | X |" + Color.RESET);
+                    }
+                }
+            }
             System.out.println();
         }
+        s = new StringBuilder();
+        s.append("   ").append("-".repeat(52));
         System.out.println(s);
         System.out.println("         ↑            ↑            ↑            ↑");
     }
@@ -176,7 +197,7 @@ public class Printer {
 
         printFaithTrack(player.getCurrPos());
 
-        printMarket(market);
+        printMarket(market, player.getPopePasses());
 
         Resource wareSmall = null;
         List<Resource> wareMid = new ArrayList<>();

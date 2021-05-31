@@ -152,8 +152,8 @@ public class Controller implements Observer<MessageID> {
                 envelope = new MessageEnvelope(MessageID.UPDATE, p.getUpdate());
                 remoteViews.get(curr).update(envelope);
             }
-
         }
+        //TODO: Gli altri 3 devono essere aggiornati
     }
 
     // END GAME INITIALIZATION -----------------------------------------------------------------------------------------
@@ -175,6 +175,9 @@ public class Controller implements Observer<MessageID> {
         game.updateEndTurn(previousPlayer);
         //fine
         update(MessageID.UPDATE);
+        addedResources.clear();
+        removedResources.clear();
+        boughtCard = Optional.empty();
     }
 
     // TURN STRUCTURE --------------------------------------------------------------------------------------------------

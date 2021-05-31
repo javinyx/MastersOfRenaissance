@@ -10,10 +10,7 @@ import it.polimi.ingsw.messages.concreteMessages.*;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.ResourcesWallet;
-import it.polimi.ingsw.model.cards.leader.BoostAbility;
-import it.polimi.ingsw.model.cards.leader.DiscountAbility;
-import it.polimi.ingsw.model.cards.leader.LeaderCard;
-import it.polimi.ingsw.model.cards.leader.MarbleAbility;
+import it.polimi.ingsw.model.cards.leader.*;
 import it.polimi.ingsw.model.cards.production.ColorEnum;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
@@ -172,7 +169,6 @@ public class CliController extends ClientController {
         getPlayer().setLeaders(convertIdToLeaderCard(lId));
 
         messageToServerHandler.generateEnvelope(MessageID.CHOOSE_LEADER_CARDS, lId.toString());
-
     }
 
     @Override
@@ -201,6 +197,7 @@ public class CliController extends ClientController {
             normalTurn = true;
             startTurnPhase();
         }else{
+            showBoard();
             player.setMyTurn(false);
             showCurrentTurn(getCurrPlayer().getNickname());
         }
@@ -221,6 +218,11 @@ public class CliController extends ClientController {
 
     }
 
+    public void showBoard(){
+        cli.clearScreen();
+        cli.showPlayerBoard();
+    }
+
     public void viewProductionCard(){
         cli.showProductionCardInTheStore(availableProductionCard);
         cli.pressEnter();
@@ -228,14 +230,39 @@ public class CliController extends ClientController {
     }
 
     public void viewYourInfo(){
-        cli.showPlayerLeader(player.getLeaders());
+        List<Resource> extra = new ArrayList<>();
+        int shield = 0, stone = 0, ser = 0, coin = 0;
+
+        cli.showYourLeader(player.getLeaders());
         System.out.println();
+
         for(BiElement<Resource, Storage> res : player.getAllResources().keySet()){
             if (res.getSecondValue().equals(Storage.LOOTCHEST)) {
-                cli.printResource(res.getFirstValue());
-                System.out.println(": " + player.getAllResources().get(res));
+                switch (res.getFirstValue()){
+                    case SERVANT -> ser++;
+                    case SHIELD -> shield++;
+                    case STONE -> stone++;
+                    case COIN -> coin++;
+                }
+            }
+            else if (res.getSecondValue().equals(Storage.EXTRA1) || res.getSecondValue().equals(Storage.EXTRA2))
+                extra.add(res.getFirstValue());
+        }
+
+        System.out.println("In the Strong Box there are:");
+        System.out.println("Servant: " + ser);
+        System.out.println("Stone: " + stone);
+        System.out.println("Shield: " + shield);
+        System.out.println("Coin: " + coin);
+
+        for (LeaderCard led : player.getLeaders()) {
+            if (led instanceof StorageAbility) {
+                System.out.println("In the extra space there are: ");
+                System.out.println(extra);
+                break;
             }
         }
+
         cli.pressEnter();
         startTurnPhase();
 

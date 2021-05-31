@@ -305,6 +305,11 @@ public class GuiController extends ClientController {
     }
 
     @Override
+    public void showBoard() {
+
+    }
+
+    @Override
     public void startLocalGame() {
 
     }

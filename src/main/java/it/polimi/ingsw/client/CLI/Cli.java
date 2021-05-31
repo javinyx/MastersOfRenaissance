@@ -698,6 +698,23 @@ public class Cli /*extends ViewInterface*/ {
 
     }
 
+    public void showYourLeader(List<LeaderCard> leadCard){
+        System.out.println("Leader cards:");
+        if(leadCard.size() != 0)
+            for (LeaderCard ld : leadCard){
+                if (ld != null) {
+                    OSPrinter.printLeaders(ld);
+                    System.out.print("This leader is: ");
+                    System.out.println(ld.isActive()? "ACTIVATE" : "INACTIVE");
+                }
+                else
+                    System.out.println("None");
+            }
+        else
+            System.out.println("There are no Leader card");
+
+    }
+
     public void showPlayerResources(Map<BiElement<Resource, Storage>, Integer> res){
         List<Resource> extra = new ArrayList<>();
         Resource small = null;
@@ -712,8 +729,16 @@ public class Cli /*extends ViewInterface*/ {
             for (BiElement<Resource, Storage> bi : res.keySet()) {
                 switch (bi.getSecondValue()) {
                     case WAREHOUSE_SMALL -> small = bi.getFirstValue();
-                    case WAREHOUSE_MID -> mid.add(bi.getFirstValue());
-                    case WAREHOUSE_LARGE -> large.add(bi.getFirstValue());
+                    case WAREHOUSE_MID -> {
+                        for (int i = 0; i < res.get(bi); i++) {
+                            mid.add(bi.getFirstValue());
+                        }
+                    }
+                    case WAREHOUSE_LARGE -> {
+                        for (int i = 0; i < res.get(bi); i++) {
+                            large.add(bi.getFirstValue());
+                        }
+                    }
                     case LOOTCHEST -> {
                         switch (bi.getFirstValue()){
                             case SERVANT -> ser++;
@@ -736,9 +761,6 @@ public class Cli /*extends ViewInterface*/ {
             System.out.println("Shield: " + shield);
             System.out.println("Coin: " + coin);
 
-            System.out.println("In the extra space there are: ");
-            System.out.println(extra);
-
         }
         else
             System.out.println("There are no Resources");
@@ -747,6 +769,8 @@ public class Cli /*extends ViewInterface*/ {
     public void printResource(Resource res){
         System.out.print(OSPrinter.printRes(res));
     }
+
+    public void showPlayerBoard(){ OSPrinter.printBoard(controller.getPlayer(), controller.getMarket()); }
 
     //--------------------------------------------------------------------------------------------------------------------
 

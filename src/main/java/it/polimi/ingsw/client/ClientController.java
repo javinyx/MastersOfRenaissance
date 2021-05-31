@@ -161,6 +161,7 @@ public abstract class ClientController {
     public abstract void buyFromMarket();
     public abstract void activateLeader();
     public abstract void updatePositionAction(PlayersPositionMessage msg);
+    public abstract void showBoard();
 
     /**Move Lorenzo on the faith track*/
     public abstract void moveLorenzo(int currentPosition);
@@ -256,6 +257,7 @@ public abstract class ClientController {
         this.currPlayer = totalPlayers.get(msg.getNextPlayerId()-1);
         this.availableProductionCard = convertIdToProductionCard(msg.getBuyableProdCardsIds());
 
+        showBoard();
 
         if (player.getTurnNumber() == currPlayer.getTurnNumber()) {
             getPlayer().setMyTurn(true);

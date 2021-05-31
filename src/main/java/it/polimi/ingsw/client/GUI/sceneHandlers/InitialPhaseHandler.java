@@ -1,12 +1,10 @@
 package it.polimi.ingsw.client.GUI.sceneHandlers;
 
 import it.polimi.ingsw.client.GUI.GuiController;
-import it.polimi.ingsw.client.GUI.MarbleColor;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.market.Resource;
-
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -22,11 +20,13 @@ import javafx.scene.effect.GaussianBlur;
 import javafx.scene.effect.SepiaTone;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.*;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -431,7 +431,7 @@ public class InitialPhaseHandler extends PhaseHandler {
     private void targetDragOver(DragEvent event) {
         if (event.getGestureSource() != ((Node) event.getSource()) &&
                 event.getDragboard().hasString()) {
-            event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+            event.acceptTransferModes(TransferMode.MOVE);
         }
 
         event.consume();
@@ -455,19 +455,13 @@ public class InitialPhaseHandler extends PhaseHandler {
 
         for (int x = 0; x < 3; x++) {
             for (int y = 0; y < 4; y++) {
-                switch (controller.getMarket().getMarketBoard()[x][y]) {
-                    case COIN -> createMarble(MarbleColor.COIN, x, y);
-                    case BLANK -> createMarble(MarbleColor.BLANK, x, y);
-                    case SHIELD -> createMarble(MarbleColor.SHIELD, x, y);
-                    case FAITH -> createMarble(MarbleColor.FAITH, x, y);
-                    case STONE -> createMarble(MarbleColor.STONE, x, y);
-                    case SERVANT -> createMarble(MarbleColor.SERVANT, x, y);
-                }
+                createMarble(controller.getMarket().getMarketBoard()[x][y].getHexCode(), x, y);
             }
         }
     }
 
-    private void createMarble(MarbleColor color, int x, int y) {
+    private void createMarble(String color, int x, int y) {
+        System.out.println("Halooooo");
         mainBoard.getChildren().add(new Circle((1200 + (x * 20)), (50 + (y * 20)), 50, Color.RED));
     }
 

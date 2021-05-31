@@ -3,12 +3,20 @@ package it.polimi.ingsw.model.market;
 import java.util.Random;
 
 public enum Resource implements Buyable{
-    STONE,
-    SERVANT,
-    SHIELD,
-    COIN,
-    FAITH,
-    BLANK;
+    STONE("#8697AA"),
+    SERVANT("#8A2BA2"),
+    SHIELD("#1697D2"),
+    COIN("#FEF17E"),
+    FAITH("#D63350"),
+    BLANK("#FFFFFF");
+
+    private String hexCode;
+
+    Resource(String hexCode){
+        this.hexCode = hexCode;
+    }
+
+    public String getHexCode(){return hexCode;}
 
     /**
      * Pick a random value of the Resource.

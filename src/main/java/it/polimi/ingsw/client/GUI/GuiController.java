@@ -37,6 +37,7 @@ public class GuiController extends ClientController {
 
     private String nickName;
     private Integer gameSize;
+    private Boolean monke = false;
 
     public final Gson gson = new Gson();
 
@@ -144,21 +145,27 @@ public class GuiController extends ClientController {
 
     public void setInitialResourcePlacements(List<BiElement<Resource, Storage>> placements) {
         StoreResourcesMessage msg = new StoreResourcesMessage(placements, getPlayer().getTurnNumber());
-        synchronized (lock) {
-            messageToServerHandler.generateEnvelope(MessageID.STORE_RESOURCES, gson.toJson(msg, StoreResourcesMessage.class));
-            lock.notifyAll();
-        }
+        messageToServerHandler.generateEnvelope(MessageID.STORE_RESOURCES, gson.toJson(msg, StoreResourcesMessage.class));
+        //WARNING: don't touch Monke, it will break everything
+        monke = true;
     }
 
     @Override
     public void startGame() {
-        synchronized (lock) {
-            try {
-                lock.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        if(!monke) {
+            synchronized (lock) {
+                try {
+                    lock.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
+                Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.MAIN_BOARD));
+                initialPhaseHandler.initiateBoard(chosenLeadersId);
+                stage.centerOnScreen();
+                stage.sizeToScene();
+            }
+        }else{
             Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.MAIN_BOARD));
             initialPhaseHandler.initiateBoard(chosenLeadersId);
             stage.centerOnScreen();
@@ -236,6 +243,7 @@ public class GuiController extends ClientController {
             }
             Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.CHOOSE_RESOURCES));
             initialPhaseHandler.chooseResources(quantity);
+            //lock.notifyAll();
         }
     }
 

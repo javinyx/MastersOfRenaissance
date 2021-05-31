@@ -59,6 +59,7 @@ public class GuiController extends ClientController {
             //closeEvent.consume();
             //TODO: PopUp asking if the user is sure that they want to exit, maybe use the same popup when they click Esc
             stage.close();
+            System.exit(0);
         });
         stage.setScene(initialPhaseHandler.getScene(ScenesEnum.WELCOME));
         stage.show();

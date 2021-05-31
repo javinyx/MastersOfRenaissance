@@ -5,6 +5,7 @@ import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.market.Resource;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -24,6 +25,7 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
@@ -82,6 +84,8 @@ public class InitialPhaseHandler extends PhaseHandler {
     private ImageView leader1Show, leader2Show;
     @FXML
     private Pane mainBoard;
+    @FXML
+    private GridPane marketMarbles;
 
     public InitialPhaseHandler(GuiController controller, Stage stage) {
         super(controller, stage);
@@ -369,7 +373,7 @@ public class InitialPhaseHandler extends PhaseHandler {
 
         if (resource2Img.isManaged()) {
             resource2Img.setOnDragDetected(event -> {
-                sourceDragDetected(event, selectedRes.get(0));
+                sourceDragDetected(event, selectedRes.get(1));
             });
             resource2Img.setOnDragDone(this::sourceDragDone);
         }
@@ -429,7 +433,7 @@ public class InitialPhaseHandler extends PhaseHandler {
     }
 
     private void targetDragOver(DragEvent event) {
-        if (event.getGestureSource() != ((Node) event.getSource()) &&
+        if (event.getGestureSource() != event.getSource() &&
                 event.getDragboard().hasString()) {
             event.acceptTransferModes(TransferMode.MOVE);
         }
@@ -455,14 +459,19 @@ public class InitialPhaseHandler extends PhaseHandler {
 
         for (int x = 0; x < 3; x++) {
             for (int y = 0; y < 4; y++) {
-                createMarble(controller.getMarket().getMarketBoard()[x][y].getHexCode(), x, y);
+                setMarbleColor(x, y, marketMarbles, controller.getMarket().getMarketBoard()[x][y].getHexCode());
             }
         }
     }
 
-    private void createMarble(String color, int x, int y) {
-        System.out.println("Halooooo");
-        mainBoard.getChildren().add(new Circle((1200 + (x * 20)), (50 + (y * 20)), 50, Color.RED));
-    }
+    private void setMarbleColor(int row, int column, GridPane gridPane, String color) {
+        ObservableList<Node> children = gridPane.getChildren();
 
+        for (Node node : children) {
+            if(gridPane.getRowIndex(node) == row && gridPane.getColumnIndex(node) == column) {
+                ((Circle)node).setFill(Color.web(color));
+                break;
+            }
+        }
+    }
 }

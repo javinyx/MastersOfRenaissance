@@ -1,12 +1,17 @@
 package it.polimi.ingsw.client.GUI.sceneHandlers;
 
 import it.polimi.ingsw.client.GUI.GuiController;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.ImageCursor;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -19,6 +24,10 @@ public class GamePhaseHandler extends PhaseHandler{
 
     @FXML
     private ImageView leader1Show, leader2Show;
+    @FXML
+    private GridPane marketMarbles;
+    @FXML
+    private Circle extraMarble;
 
     private Map<ScenesEnum, Scene> sceneMap = new HashMap<>();
 
@@ -54,5 +63,21 @@ public class GamePhaseHandler extends PhaseHandler{
         return true;
     }
 
+    private void updateMarket() {
+        ObservableList<Node> children = marketMarbles.getChildren();
+
+        extraMarble.setFill(Color.web(controller.getMarket().getExtra().getHexCode()));
+
+        for (int x = 0; x < 3; x++) {
+            for (int y = 0; y < 4; y++) {
+                for (Node node : children) {
+                    if (marketMarbles.getRowIndex(node) == x && marketMarbles.getColumnIndex(node) == y) {
+                        ((Circle) node).setFill(Color.web(controller.getMarket().getMarketBoard()[x][y].getHexCode()));
+                        break;
+                    }
+                }
+            }
+        }
+    }
 
 }

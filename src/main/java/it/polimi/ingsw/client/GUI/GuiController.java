@@ -160,15 +160,16 @@ public class GuiController extends ClientController {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
                 Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.MAIN_BOARD));
                 initialPhaseHandler.initiateBoard(chosenLeadersId);
+                gamePhaseHandler = new GamePhaseHandler(this, stage);
                 stage.centerOnScreen();
                 stage.sizeToScene();
             }
-        }else{
+        } else {
             Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.MAIN_BOARD));
             initialPhaseHandler.initiateBoard(chosenLeadersId);
+            gamePhaseHandler = new GamePhaseHandler(this, stage);
             stage.centerOnScreen();
             stage.sizeToScene();
         }
@@ -244,7 +245,6 @@ public class GuiController extends ClientController {
             }
             Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.CHOOSE_RESOURCES));
             initialPhaseHandler.chooseResources(quantity);
-            //lock.notifyAll();
         }
     }
 

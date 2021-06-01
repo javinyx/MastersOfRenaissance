@@ -5,7 +5,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
-<AnchorPane fx:id="mainBoard" prefHeight="900" prefWidth="1600" xmlns="https://javafx.com/javafx"
+<AnchorPane fx:id="mainBoard" prefHeight="900" prefWidth="1500" xmlns="https://javafx.com/javafx"
             xmlns:fx="https://javafx.com/fxml">
     <HBox alignment="CENTER_LEFT" spacing="20" id="enemyBoard" prefWidth="600" prefHeight="80" layoutX="50" layoutY="20">
         <VBox spacing="10" alignment="CENTER">
@@ -56,6 +56,7 @@
         <Circle styleClass="marble" radius="20" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
         <Circle styleClass="marble" radius="20" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
     </GridPane>
-    <ImageView fx:id="leader1Show" preserveRatio="true" fitWidth="200.0" layoutX="1100.0" layoutY="550.0"/>
-    <ImageView fx:id="leader2Show" preserveRatio="true" fitWidth="200.0" layoutX="1350.0" layoutY="550.0"/>
+    <Circle fx:id="extraMarble" layoutX="1200.0" layoutY="150.0" styleClass="marble" radius="20"/>
+    <ImageView fx:id="leader1Show" styleClass="leaderNotActive" preserveRatio="true" fitWidth="200.0" layoutX="1100.0" layoutY="550.0"/>
+    <ImageView fx:id="leader2Show" styleClass="leaderNotActive" preserveRatio="true" fitWidth="200.0" layoutX="1350.0" layoutY="550.0"/>
 </AnchorPane>

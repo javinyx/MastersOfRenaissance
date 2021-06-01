@@ -17,8 +17,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.effect.GaussianBlur;
-import javafx.scene.effect.SepiaTone;
+import javafx.scene.effect.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
@@ -73,7 +72,7 @@ public class InitialPhaseHandler extends PhaseHandler {
     @FXML
     private Label stoneLbl, servantLbl, coinLbl, shieldLbl, resPluralLbl;
     @FXML
-    private Pane chooseResPane, chooseStrPane;
+    private Pane chooseResPane, chooseStrPane, welcomePane;
     @FXML
     private ImageView resource1Img, resource2Img, wareHouseImg;
     @FXML
@@ -86,6 +85,8 @@ public class InitialPhaseHandler extends PhaseHandler {
     private Pane mainBoard;
     @FXML
     private GridPane marketMarbles;
+    @FXML
+    private Circle extraMarble;
     @FXML
     private Button player1Btn, player2Btn, player3Btn;
     @FXML
@@ -457,15 +458,17 @@ public class InitialPhaseHandler extends PhaseHandler {
 
     public void initiateBoard(List<Integer> chosenLeadersId) {
         leader1Show.setImage(new Image("img/leaderCards/" + chosenLeadersId.get(0) + ".png"));
-        leader1Show.setEffect(new SepiaTone());
         leader2Show.setImage(new Image("img/leaderCards/" + chosenLeadersId.get(1) + ".png"));
-        leader2Show.setEffect(new SepiaTone());
 
+        extraMarble.setFill(Color.web(controller.getMarket().getExtra().getHexCode()));
         for (int x = 0; x < 3; x++) {
             for (int y = 0; y < 4; y++) {
                 setMarbleColor(x, y, marketMarbles, controller.getMarket().getMarketBoard()[x][y].getHexCode());
             }
         }
+
+
+
     }
 
     private void setMarbleColor(int row, int column, GridPane gridPane, String color) {

@@ -338,6 +338,7 @@ public class Server {
      * Runs the server, starts to listen for connections from the client and then creates the client socket.
      */
     public void run() {
+        System.out.println("Server is ready.");
         while(true) {
             try {
                 Socket newSocket = serverSocket.accept();

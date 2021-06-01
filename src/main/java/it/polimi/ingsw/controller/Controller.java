@@ -19,6 +19,7 @@ import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.exception.BadStorageException;
 import it.polimi.ingsw.model.player.ProPlayer;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.*;
@@ -26,6 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static it.polimi.ingsw.messages.MessageID.*;
+import static java.lang.Thread.sleep;
 
 public class Controller implements Observer<MessageID> {
 
@@ -36,6 +38,7 @@ public class Controller implements Observer<MessageID> {
 
     private ProPlayer playerToAck;
     private int numPlayer;
+    private int startCounter = 0;
 
     Gson gson = new Gson();
 
@@ -107,7 +110,7 @@ public class Controller implements Observer<MessageID> {
         initializationPhase = false;
     }
 
-    public void createMultiplayerGame(List<String> players) {
+    public synchronized void createMultiplayerGame(List<String> players) {
 
         this.numPlayer = players.size();
         game = new MultiPlayerGame(this);
@@ -164,6 +167,11 @@ public class Controller implements Observer<MessageID> {
      * send all the updates of the things that has been done during the turn.
      */
     public synchronized void endTurn() {
+        if(!basicActionDone){
+            addedResources.clear();
+            removedResources.clear();
+            boughtCard = Optional.empty();
+        }
         basicActionDone = false;
         if (mustChoosePlacements) {
             update(MessageID.INFO);
@@ -407,7 +415,6 @@ public class Controller implements Observer<MessageID> {
             }
         }
         //playerForOrganizeRes = game.getCurrPlayer();
-
         if (game instanceof MultiPlayerGame)
             for(ProPlayer p : ((MultiPlayerGame) game).getActivePlayers())
                 if(p.getTurnID() == message.getTurnID())
@@ -492,9 +499,22 @@ public class Controller implements Observer<MessageID> {
         else{
             game.start(playerToAck);
             MessageEnvelope envelope = new MessageEnvelope(MessageID.UPDATE, playerToAck.getUpdate());
-            remoteViews.get(playerToAck.getTurnID()-1).update(envelope);
+            for(ProPlayer pp : ((MultiPlayerGame) game).getActivePlayers()){
+                    remoteViews.get(pp.getTurnID()-1).update(envelope);
+            }
+            //remoteViews.get(playerToAck.getTurnID()-1).update(envelope);
             playerToAck.setInitializationPhase(false);
+            startCounter++;
+            if(startCounter == game.getTotalPlayers()-1 && game.getTotalPlayers() != 1){
+                MessageEnvelope envelope1 = new MessageEnvelope(MessageID.START_INITIAL_GAME, "");
+                for(ProPlayer pp : ((MultiPlayerGame) game).getActivePlayers()){
+                    remoteViews.get(pp.getTurnID()-1).update(envelope1);
+                }
+            }
+
         }
+
+
     }
 
     public synchronized void chooseLeaderCards(String ids, String nick) {

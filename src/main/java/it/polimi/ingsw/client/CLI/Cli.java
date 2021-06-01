@@ -195,7 +195,7 @@ public class Cli /*extends ViewInterface*/ {
         do {
             System.out.println("Select a number:");
             choice = scanner.nextInt();
-        } while (choice < 1 || choice > 9);
+        } while (choice < 1 || (choice > 9 && choice != 42));
 
         switch (choice) {
             case 1 -> controller.buyFromMarket();
@@ -207,6 +207,7 @@ public class Cli /*extends ViewInterface*/ {
             case 7 -> controller.viewProductionCard();
             case 8 -> controller.viewYourInfo();
             case 9 -> controller.passTurn();
+            case 42 -> controller.easterEgg();
         }
 
     }
@@ -221,7 +222,7 @@ public class Cli /*extends ViewInterface*/ {
         do {
             System.out.println("Select a number:");
             choice = scanner.nextInt();
-        } while (choice < 1 || choice > 6);
+        } while (choice < 1 || (choice > 6 && choice != 42));
 
         switch (choice) {
             case 1 -> controller.viewOpponents();
@@ -230,6 +231,7 @@ public class Cli /*extends ViewInterface*/ {
             case 4 -> controller.viewProductionCard();
             case 5 -> controller.viewYourInfo();
             case 6 -> controller.passTurn();
+            case 42 -> controller.easterEgg();
         }
 
 

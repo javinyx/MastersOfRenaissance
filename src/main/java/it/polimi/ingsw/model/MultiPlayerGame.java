@@ -73,12 +73,23 @@ public class MultiPlayerGame extends Game implements ModelObserver {
 
         Warehouse war = p.getWarehouse();
 
-        if (war.getSmallInventory() != null)
+        /*if (war.getSmallInventory() != null)
             addRes.put(new BiElement<>(war.getSmallInventory(), Storage.WAREHOUSE_SMALL), 1);
         if (!war.getMidInventory().isEmpty())
             addRes.put(new BiElement<>(war.getMidInventory().get(0), Storage.WAREHOUSE_MID), war.getMidInventory().size());
         if (!war.getLargeInventory().isEmpty())
-            addRes.put(new BiElement<>(war.getLargeInventory().get(0), Storage.WAREHOUSE_LARGE), war.getLargeInventory().size());
+            addRes.put(new BiElement<>(war.getLargeInventory().get(0), Storage.WAREHOUSE_LARGE), war.getLargeInventory().size());*/
+
+        if (p.getWarehouse().getSmallInventory() != null)
+            addRes.put(new BiElement<>(war.getSmallInventory(), Storage.WAREHOUSE_SMALL), 1);
+        if (p.getWarehouse().getMidInventory().size() != 0) {
+            for (Resource r : war.getMidInventory())
+                addRes.put(new BiElement<>(r, Storage.WAREHOUSE_MID), 1);
+        }
+        if (p.getWarehouse().getLargeInventory().size() != 0) {
+            for (Resource r : war.getLargeInventory())
+                addRes.put(new BiElement<>(r, Storage.WAREHOUSE_LARGE), 1);
+        }
 
         UpdateMessage msg = new UpdateMessage(p.getTurnID(), p.getCurrentPosition(), 1,
                 getMarket().getMarketBoard(), getMarket().getExtraMarble(), getBuyableProductionID(),

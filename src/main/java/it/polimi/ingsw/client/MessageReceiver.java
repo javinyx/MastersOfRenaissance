@@ -65,7 +65,7 @@ public class MessageReceiver implements Runnable{
     public void readRegistrationMessage(MessageEnvelope envelope){
         controller.setLastRegistrationMessage(envelope.getMessageID());
 
-        System.out.println(envelope.getMessageID());
+        System.out.println("REGISTRATION: " + envelope.getMessageID());
 
         switch(envelope.getMessageID()){
             case ACK -> controller.continueTurn(Boolean.parseBoolean(envelope.getPayload()));
@@ -83,6 +83,8 @@ public class MessageReceiver implements Runnable{
             case CONFIRM_END_TURN -> controller.endTurn(gson.fromJson(envelope.getPayload(), EndTurnMessage.class));
             case PLAYERS_POSITION -> controller.updatePositionAction(gson.fromJson(envelope.getPayload(), PlayersPositionMessage.class));
 
+            case START_INITIAL_GAME -> controller.startInitialGame();
+
             default -> System.err.println("MessageID not recognised Registration");
         }
 
@@ -92,9 +94,12 @@ public class MessageReceiver implements Runnable{
     public void readGameMessage(MessageEnvelope envelope) {
         controller.setLastGameMessage(envelope.getMessageID());
 
-        System.out.println(envelope.getMessageID());
+        System.out.println("GAME: " + envelope.getMessageID());
 
         switch(envelope.getMessageID()){
+
+            case START_INITIAL_GAME -> controller.startInitialGame();
+
             case ACK -> controller.continueTurn(Boolean.parseBoolean(envelope.getPayload()));
             case CARD_NOT_AVAILABLE -> controller.cardNotAvailable();
             case BAD_PRODUCTION_REQUEST -> controller.badProductionRequest();

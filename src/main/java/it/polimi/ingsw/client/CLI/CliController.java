@@ -543,7 +543,7 @@ public class CliController extends ClientController {
 
     @Override
     public void showCurrentTurn(String s){
-        cli.showMessage(getPlayer().isMyTurn() ? "It is your turn!" : "It is " + getCurrPlayer().getNickname() + "'s turn");
+        cli.showMessage(getPlayer().isMyTurn() ? "It is your turn!" : "It is " + getCurrPlayer().getNickname() + "'s turn, wait until your turn.");
     }
 
     @Override
@@ -636,6 +636,10 @@ public class CliController extends ClientController {
     public void leaderNotActivable(){
         displayMessage("This leader is not activable, you don't have enough resources.");
         startTurnPhase();
+    }
+
+    public void easterEgg(){
+
     }
 
 

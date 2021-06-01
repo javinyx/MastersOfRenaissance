@@ -25,6 +25,7 @@ public abstract class ClientController {
     private Market market;
     protected NubPlayer player;
     protected MessageToServerHandler messageToServerHandler;
+    private int count = 0;
 
     private List<ConcreteProductionCard> allProductionCards;
     private List<LeaderCard> allLeaders = new ArrayList<>();
@@ -230,13 +231,22 @@ public abstract class ClientController {
                 currPlayer = p;
         }
 
-        startGame();
+        if(!isRegistrationPhase() || totalPlayers.size() == 1)
+            startGame();
 
-        if (registrationPhase) {
-            registrationPhase = false;
-            //startGame();
+        count++;
+
+        if (player.getTurnNumber() == 1) {
+            if (count == totalPlayers.size()) {
+                registrationPhase = false;
+            }
+        }
+        else {
+            if (count == totalPlayers.size() - 1)
+                registrationPhase = false;
         }
     }
+
 
     public void continueTurn(Boolean basicActionDone){
         if (!registrationPhase){
@@ -244,6 +254,10 @@ public abstract class ClientController {
             normalTurn = !basicActionDone;
             startTurnPhase();
         }
+    }
+
+    public void startInitialGame(){
+        startGame();
     }
 
     public synchronized void endTurn(EndTurnMessage msg){

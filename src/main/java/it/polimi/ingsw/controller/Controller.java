@@ -663,6 +663,7 @@ public class Controller implements Observer<MessageID> {
 
     @Override
     public synchronized void update(MessageID messageID) {
+        System.out.println(messageID);
         switch (messageID) {
 
             case ACK -> remoteViews.get(playerToAck.getTurnID() - 1).update(new MessageEnvelope(messageID, String.valueOf(basicActionDone)));

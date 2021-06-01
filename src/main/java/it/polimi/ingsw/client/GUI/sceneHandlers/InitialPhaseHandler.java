@@ -5,7 +5,7 @@ import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.market.Resource;
-
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -17,12 +17,18 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.effect.GaussianBlur;
+import javafx.scene.effect.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.*;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -66,7 +72,7 @@ public class InitialPhaseHandler extends PhaseHandler {
     @FXML
     private Label stoneLbl, servantLbl, coinLbl, shieldLbl, resPluralLbl;
     @FXML
-    private Pane chooseResPane, chooseStrPane;
+    private Pane chooseResPane, chooseStrPane, welcomePane;
     @FXML
     private ImageView resource1Img, resource2Img, wareHouseImg;
     @FXML
@@ -75,6 +81,16 @@ public class InitialPhaseHandler extends PhaseHandler {
     private Button chooseStorageBtn;
     @FXML
     private ImageView leader1Show, leader2Show;
+    @FXML
+    private Pane mainBoard;
+    @FXML
+    private GridPane marketMarbles;
+    @FXML
+    private Circle extraMarble;
+    @FXML
+    private Button player1Btn, player2Btn, player3Btn;
+    @FXML
+    private Label player1FaithLbl, player2FaithLbl, player3FaithLbl;
 
     public InitialPhaseHandler(GuiController controller, Stage stage) {
         super(controller, stage);
@@ -362,7 +378,7 @@ public class InitialPhaseHandler extends PhaseHandler {
 
         if (resource2Img.isManaged()) {
             resource2Img.setOnDragDetected(event -> {
-                sourceDragDetected(event, selectedRes.get(0));
+                sourceDragDetected(event, selectedRes.get(1));
             });
             resource2Img.setOnDragDone(this::sourceDragDone);
         }
@@ -395,7 +411,9 @@ public class InitialPhaseHandler extends PhaseHandler {
         });
 
         chooseStorageBtn.setOnAction(actionEvent -> {
-            if(initialResourcePlacements.size() == selectedRes.size()){
+            if (initialResourcePlacements.size() == selectedRes.size()) {
+                motherPane.setEffect(null);
+                popUpStage.close();
                 controller.setInitialResourcePlacements(initialResourcePlacements);
             }
         });
@@ -420,9 +438,9 @@ public class InitialPhaseHandler extends PhaseHandler {
     }
 
     private void targetDragOver(DragEvent event) {
-        if (event.getGestureSource() != ((Node) event.getSource()) &&
+        if (event.getGestureSource() != event.getSource() &&
                 event.getDragboard().hasString()) {
-            event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+            event.acceptTransferModes(TransferMode.MOVE);
         }
 
         event.consume();
@@ -430,18 +448,6 @@ public class InitialPhaseHandler extends PhaseHandler {
 
     private Resource targetDragDropped(DragEvent event) {
         Dragboard db = event.getDragboard();
-        /*Resource movedRes = Resource.valueOf(db.getString());
-
-        switch (db.getString()) {
-            case "STONE":
-                movedRes = Resource.STONE;
-            case "SERVANT":
-                movedRes = Resource.SERVANT;
-            case "COIN":
-                movedRes = Resource.COIN;
-            case "SHIELD":
-                movedRes = Resource.SHIELD;
-        }*/
         target = (Node) event.getSource();
 
         event.setDropCompleted(true);
@@ -450,8 +456,29 @@ public class InitialPhaseHandler extends PhaseHandler {
         return Resource.valueOf(db.getString());
     }
 
-    public void initiateBoard() {
-        leader1Show.setImage(new Image("img/leaderCards/" + controller.getPlayer().getLeaders().get(0).getId() + ".png"));
-        leader2Show.setImage(new Image("img/leaderCards/" + controller.getPlayer().getLeaders().get(1).getId() + ".png"));
+    public void initiateBoard(List<Integer> chosenLeadersId) {
+        leader1Show.setImage(new Image("img/leaderCards/" + chosenLeadersId.get(0) + ".png"));
+        leader2Show.setImage(new Image("img/leaderCards/" + chosenLeadersId.get(1) + ".png"));
+
+        extraMarble.setFill(Color.web(controller.getMarket().getExtra().getHexCode()));
+        for (int x = 0; x < 3; x++) {
+            for (int y = 0; y < 4; y++) {
+                setMarbleColor(x, y, marketMarbles, controller.getMarket().getMarketBoard()[x][y].getHexCode());
+            }
+        }
+
+
+
+    }
+
+    private void setMarbleColor(int row, int column, GridPane gridPane, String color) {
+        ObservableList<Node> children = gridPane.getChildren();
+
+        for (Node node : children) {
+            if(gridPane.getRowIndex(node) == row && gridPane.getColumnIndex(node) == column) {
+                ((Circle)node).setFill(Color.web(color));
+                break;
+            }
+        }
     }
 }

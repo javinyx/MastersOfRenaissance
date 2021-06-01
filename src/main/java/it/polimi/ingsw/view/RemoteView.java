@@ -15,16 +15,6 @@ import it.polimi.ingsw.server.ClientConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
-**guardare il tipo del paylod della message envelop
-i messaggi vanno mandati a tutti o a singoli?
-guardare come fare arrivare le cose dal model a qui:
-
-fare il pattern observer (o property change) ha senso se quando il model ha problemi chiama il controller che chiama questo?
-cioè chiamate vs pattern observer(property change)
-
- */
-
 public class RemoteView extends View {
 
     Controller controller;
@@ -45,46 +35,40 @@ public class RemoteView extends View {
 
     // MESSAGE RECEIVER ------------------------------------------------------------------------------------------------
 
-    public void readMessageFromClient(MessageEnvelope envelope){
+    public void readMessageFromClient(MessageEnvelope envelope) {
 
-        //if (controller.getNick().equals(getNickname())) {
+        switch (envelope.getMessageID()) {
 
-            switch (envelope.getMessageID()) {
-
-                // PLAYER REGISTRATION
+            // PLAYER REGISTRATION
 
 
-                // GAME PHASES
-                case END_TURN -> controller.endTurn();
-                case CHOOSE_LEADER_CARDS -> controller.chooseLeaderCards(envelope.getPayload(), getNickname());
+            // GAME PHASES
+            case END_TURN -> controller.endTurn();
 
-                case BUY_FROM_MARKET -> controller.buyFromMarAction(gson.fromJson(envelope.getPayload(), BuyMarketMessage.class));
+            case CHOOSE_LEADER_CARDS -> controller.chooseLeaderCards(envelope.getPayload(), getNickname());
 
-                case PRODUCE -> controller.activateProdAction(gson.fromJson(envelope.getPayload(), ProduceMessage.class));
+            case BUY_FROM_MARKET -> controller.buyFromMarAction(gson.fromJson(envelope.getPayload(), BuyMarketMessage.class));
 
-                case BUY_PRODUCTION_CARD -> controller.buyProdCardAction(gson.fromJson(envelope.getPayload(), BuyProductionMessage.class));
+            case PRODUCE -> controller.activateProdAction(gson.fromJson(envelope.getPayload(), ProduceMessage.class));
 
-                case ACTIVATE_LEADER -> {
-                    List <Integer> lead = new ArrayList <> ();
-                    lead.add(Integer.parseInt(envelope.getPayload()));
-                    List<LeaderCard> l = controller.convertIdToLeaderCard(lead);
-                    controller.activateLeader(l.get(0));
-                }
+            case BUY_PRODUCTION_CARD -> controller.buyProdCardAction(gson.fromJson(envelope.getPayload(), BuyProductionMessage.class));
 
-                case STORE_RESOURCES -> controller.organizeResourceAction(gson.fromJson(envelope.getPayload(), StoreResourcesMessage.class));
-
-                case DISCARD_LEADER -> controller.discardLeader(envelope.getPayload());
-
-
-                //PING PONG
-                case PONG -> clientConnection.setStillConnected(true);
-                default -> System.out.println("why??");
+            case ACTIVATE_LEADER -> {
+                List<Integer> lead = new ArrayList<>();
+                lead.add(Integer.parseInt(envelope.getPayload()));
+                List<LeaderCard> l = controller.convertIdToLeaderCard(lead);
+                controller.activateLeader(l.get(0));
             }
-        /*}
 
-        else
-            update(new MessageEnvelope(MessageID.WRONG_PLAYER_REQUEST, "Request from wrong player"));
-    */
+            case STORE_RESOURCES -> controller.organizeResourceAction(gson.fromJson(envelope.getPayload(), StoreResourcesMessage.class));
+
+            case DISCARD_LEADER -> controller.discardLeader(envelope.getPayload());
+
+
+            //PING PONG
+            case PONG -> clientConnection.setStillConnected(true);
+            default -> System.out.println("why??");
+        }
     }
 
     // MESSAGE SENDER --------------------------------------------------------------------------------------------------
@@ -94,17 +78,17 @@ public class RemoteView extends View {
 
         sendMessage(gson.toJson(messageToSend));
 
-        if(messageToSend.getMessageID() != null && (messageToSend.getMessageID().equals(MessageID.PLAYER_WIN)
+        if (messageToSend.getMessageID() != null && (messageToSend.getMessageID().equals(MessageID.PLAYER_WIN)
                 || messageToSend.getMessageID().equals(MessageID.ABORT_GAME))) {
             clientConnection.setActive(false);
         }
     }
 
-    private class InputMessageHandler implements Observer<String>{
+    private class InputMessageHandler implements Observer<String> {
         private Gson gson = new Gson();
 
         @Override
-        public void update(String str){
+        public void update(String str) {
             readMessageFromClient(gson.fromJson(str, MessageEnvelope.class));
         }
 

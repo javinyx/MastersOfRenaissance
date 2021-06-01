@@ -33,9 +33,11 @@ public class GuiController extends ClientController {
     private final InitialPhaseHandler initialPhaseHandler;
     private GamePhaseHandler gamePhaseHandler;
     private final Object lock = new Object();
+    List<Integer> chosenLeadersId = new ArrayList<>();
 
     private String nickName;
     private Integer gameSize;
+    private Boolean monke = false;
 
     public final Gson gson = new Gson();
 
@@ -57,6 +59,7 @@ public class GuiController extends ClientController {
             //closeEvent.consume();
             //TODO: PopUp asking if the user is sure that they want to exit, maybe use the same popup when they click Esc
             stage.close();
+            System.exit(0);
         });
         stage.setScene(initialPhaseHandler.getScene(ScenesEnum.WELCOME));
         stage.show();
@@ -129,7 +132,6 @@ public class GuiController extends ClientController {
 
     public void setSelectedLeaders(List<Boolean> leadersChoice) {
         List<LeaderCard> availableLeaders = getPlayer().getLeaders();
-        List<Integer> chosenLeadersId = new ArrayList<>();
 
         for (int i = 0; i < leadersChoice.size(); i++) {
             if (leadersChoice.get(i)) {
@@ -142,29 +144,34 @@ public class GuiController extends ClientController {
         }
     }
 
-    public void setInitialResourcePlacements(List<BiElement<Resource, Storage>> placements){
+    public void setInitialResourcePlacements(List<BiElement<Resource, Storage>> placements) {
         StoreResourcesMessage msg = new StoreResourcesMessage(placements, getPlayer().getTurnNumber());
         messageToServerHandler.generateEnvelope(MessageID.STORE_RESOURCES, gson.toJson(msg, StoreResourcesMessage.class));
+        //WARNING: don't touch Monke, it will break everything
+        monke = true;
     }
 
     @Override
     public void startGame() {
-        synchronized (lock) {
-            try {
-                lock.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        if(!monke) {
+            synchronized (lock) {
+                try {
+                    lock.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.MAIN_BOARD));
+                initialPhaseHandler.initiateBoard(chosenLeadersId);
+                gamePhaseHandler = new GamePhaseHandler(this, stage);
+                stage.centerOnScreen();
+                stage.sizeToScene();
             }
-
-            //initialPhaseHandler.initiateBoard();
-
+        } else {
             Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.MAIN_BOARD));
-
+            initialPhaseHandler.initiateBoard(chosenLeadersId);
+            gamePhaseHandler = new GamePhaseHandler(this, stage);
             stage.centerOnScreen();
-            stage.setResizable(true);
-
-            //gamePhaseHandler = new GamePhaseHandler(this, stage);
-
+            stage.sizeToScene();
         }
     }
 
@@ -236,7 +243,6 @@ public class GuiController extends ClientController {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
             Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.CHOOSE_RESOURCES));
             initialPhaseHandler.chooseResources(quantity);
         }
@@ -252,9 +258,7 @@ public class GuiController extends ClientController {
         List<LeaderCard> availableLeaders = getPlayer().getLeaders();
         initialPhaseHandler.displayLeaders(availableLeaders);
         synchronized (lock) {
-            Platform.runLater(() -> {
-                initialPhaseHandler.setScene(ScenesEnum.CHOOSE_LEADERS);
-            });
+            Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.CHOOSE_LEADERS));
             initialPhaseHandler.chooseLeaders();
         }
     }

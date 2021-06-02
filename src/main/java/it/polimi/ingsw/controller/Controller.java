@@ -3,6 +3,7 @@ package it.polimi.ingsw.controller;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import it.polimi.ingsw.MastersOfRenaissance;
+import it.polimi.ingsw.exception.BadStorageException;
 import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.concreteMessages.*;
@@ -16,11 +17,9 @@ import it.polimi.ingsw.model.SinglePlayerGame;
 import it.polimi.ingsw.model.cards.leader.*;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
-import it.polimi.ingsw.exception.BadStorageException;
 import it.polimi.ingsw.model.player.ProPlayer;
 import it.polimi.ingsw.model.player.Warehouse;
 
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.*;
@@ -28,7 +27,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static it.polimi.ingsw.messages.MessageID.*;
-import static java.lang.Thread.sleep;
 
 public class Controller implements Observer<MessageID> {
 
@@ -193,7 +191,19 @@ public class Controller implements Observer<MessageID> {
 
     //m == buymarket, b == buyproduction, p == activateProduction
 
-    public synchronized void buyProdCardAction(BuyProductionMessage buyProd) {
+    /**
+     * Let the currentPlayer buy the single production card specified by the message.
+     * <li>It checks if the selected card is available for purchase, if not it throws a
+     * {@code CARD_NOT_AVAILABLE};</li>
+     * <li>If the stack chosen is not suited for that card accordingly to the rules implemented by the model,
+     * send {@code WRONG_STACK_CHOICE} or {@code WRONG_LEVEL_REQUEST};</li>
+     * <li>If the payment foreseen by the player is not adequate for the card, send a
+     * {@code BAD_PAYMENT_REQUEST};</li>
+     * <li>Otherwise: {@code ACK}.</li>
+     * Related: {@link MessageID}
+     * @param buyProdMsg the message that carries all the information about: card, payment, production stack.
+     */
+    public synchronized void buyProdCardAction(BuyProductionMessage buyProdMsg) {
         /*if (mustChoosePlacements || basicActionDone) {
             update(MessageID.INFO);
             return;
@@ -207,7 +217,7 @@ public class Controller implements Observer<MessageID> {
             boolean found = false;
 
             for (int i = 0; i < 12; i++) {
-                if (game.getBuyableProductionCards().get(i).getId() == buyProd.getProdCardId()) {
+                if (game.getBuyableProductionCards().get(i).getId() == buyProdMsg.getProdCardId()) {
                     found = true;
                     card = game.getBuyableProductionCards().get(i);
                 }
@@ -219,20 +229,20 @@ public class Controller implements Observer<MessageID> {
             }
 
 
-            for (int i = 0; i < buyProd.getLeader().size(); i++) {
+            for (int i = 0; i < buyProdMsg.getLeader().size(); i++) {
 
-                if (game.getCurrPlayer().getLeaderCards().get(0).getId() == buyProd.getLeader().get(i))
+                if (game.getCurrPlayer().getLeaderCards().get(0).getId() == buyProdMsg.getLeader().get(i))
                     leaderCards.add(game.getCurrPlayer().getLeaderCards().get(0));
-                if (game.getCurrPlayer().getLeaderCards().get(1).getId() == buyProd.getLeader().get(i))
+                if (game.getCurrPlayer().getLeaderCards().get(1).getId() == buyProdMsg.getLeader().get(i))
                     leaderCards.add(game.getCurrPlayer().getLeaderCards().get(1));
 
             }
 
             if (card != null) {
                 List<BiElement<Integer, Integer>> cards = new ArrayList<>();
-                cards.add(new BiElement<>(card.getId(), buyProd.getStack()));
+                cards.add(new BiElement<>(card.getId(), buyProdMsg.getStack()));
                 boughtCard = Optional.of(cards);
-                ResourcesWallet wallet = buyProd.getResourcesWallet();
+                ResourcesWallet wallet = buyProdMsg.getResourcesWallet();
                 BiElement<Resource, Storage> elem;
                 if (wallet.anyFromLootchestTray()) {
                     for (Resource r : wallet.getLootchestTray()) {
@@ -255,7 +265,7 @@ public class Controller implements Observer<MessageID> {
                         }
                     }
                 }
-                game.getCurrPlayer().buyProductionCard(card, buyProd.getStack(), leaderCards, buyProd.getResourcesWallet());
+                game.getCurrPlayer().buyProductionCard(card, buyProdMsg.getStack(), leaderCards, buyProdMsg.getResourcesWallet());
             }
 
         } catch (BadStorageException e) {
@@ -517,6 +527,12 @@ public class Controller implements Observer<MessageID> {
         }
     }
 
+    /**
+     * Rearrange all the resources in the player's warehouse removing everything currently present and replacing them
+     * in the correct shelves as indicated by the {@code msg}. It doesn't check if the message is well formed or is exhaustive
+     * on how to refurnish the warehouse.
+     * @param msg has to contain all the resources previously held by the player with the new arrangement
+     */
     public synchronized void rearrangeWarehouse(StoreResourcesMessage msg){
 
         Warehouse warBackup;

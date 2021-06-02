@@ -60,15 +60,6 @@ public class NubPlayer implements Comparator<NubPlayer> {
     public void setCurrPos(int pos){currPos = pos;}
 
     public void addResources(BiElement<Resource,Storage> resources, Integer qty){
-        /*AtomicBoolean bool = new AtomicBoolean(false);
-        Set<Map.Entry<BiElement<Resource, Storage>, Integer>> entrySet = allResources.entrySet();
-        entrySet.forEach((x) -> {
-            if(x.equals(resources)){
-                bool = true;
-            }
-        });*/
-
-
         AtomicBoolean found = new AtomicBoolean(false);
         allResources.forEach((x,y) -> {
             if (x.equals(resources)) {
@@ -80,11 +71,6 @@ public class NubPlayer implements Comparator<NubPlayer> {
         if(!found.get()){
             allResources.put(resources, qty);
         }
-        /*if(allResources.containsKey(resources)){
-            allResources.compute(resources, (k,v) -> v + qty);
-        }else{
-            allResources.put(resources, qty);
-        }*/
     }
 
     public void removeResources(BiElement<Resource, Storage> resources, Integer qty){
@@ -98,12 +84,6 @@ public class NubPlayer implements Comparator<NubPlayer> {
                 }
             }
         });
-        /*if(allResources.containsKey(resources)){
-            allResources.compute(resources, (k,v) -> v - qty);
-            if(allResources.get(resources)<1){
-                allResources.remove(resources);
-            }
-        }*/
     }
 
     public Map<BiElement<Resource,Storage>,Integer> getAllResources(){return allResources;}

@@ -35,6 +35,12 @@ public class RemoteView extends View {
 
     // MESSAGE RECEIVER ------------------------------------------------------------------------------------------------
 
+    /**
+     * Message dispatcher.
+     * <p>By the messageID contained in the envelope, it choose which controller's method to call in order to
+     * asses players' requests.</p>
+     * @param envelope
+     */
     public void readMessageFromClient(MessageEnvelope envelope) {
 
         switch (envelope.getMessageID()) {
@@ -68,7 +74,7 @@ public class RemoteView extends View {
 
             //PING PONG
             case PONG -> clientConnection.setStillConnected(true);
-            default -> System.out.println("why??");
+            default -> System.err.println("MessageID not recognised in class " + this.getClass());
         }
     }
 

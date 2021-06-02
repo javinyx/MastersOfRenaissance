@@ -150,47 +150,34 @@ public class GuiController extends ClientController {
         StoreResourcesMessage msg = new StoreResourcesMessage(placements, getPlayer().getTurnNumber());
         messageToServerHandler.generateEnvelope(MessageID.STORE_RESOURCES, gson.toJson(msg, StoreResourcesMessage.class));
         //WARNING: don't touch Monke, it will break everything
-        monke = true;
+        //monke = true;
     }
 
     @Override
     public void startGame() {
         Screen screen = Screen.getPrimary();
         Rectangle2D bounds = screen.getVisualBounds();
-        if(!monke) {
+        if(/*!monke*/ player.getTurnNumber()==1) {
             synchronized (lock) {
                 try {
                     lock.wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.MAIN_BOARD));
-                initialPhaseHandler.initiateBoard(chosenLeadersId, availableProductionCard);
-                gamePhaseHandler = new GamePhaseHandler(this, stage);
-
-                /*stage.setX(bounds.getMinX());
-                stage.setY(bounds.getMinY());
-                stage.setWidth(bounds.getWidth());
-                stage.setHeight(bounds.getHeight());*/
-
-                stage.setMaximized(true);
-                stage.centerOnScreen();
-                //stage.sizeToScene();
             }
-        } else {
-            Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.MAIN_BOARD));
-            initialPhaseHandler.initiateBoard(chosenLeadersId, availableProductionCard);
-            gamePhaseHandler = new GamePhaseHandler(this, stage);
-
-            /*stage.setX(bounds.getMinX());
-            stage.setY(bounds.getMinY());
-            stage.setWidth(bounds.getWidth());
-            stage.setHeight(bounds.getHeight());*/
-
-            stage.setMaximized(true);
-            stage.centerOnScreen();
-            //stage.sizeToScene();
         }
+        Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.MAIN_BOARD));
+        initialPhaseHandler.initiateBoard(chosenLeadersId, availableProductionCard);
+        gamePhaseHandler = new GamePhaseHandler(this, stage);
+
+        /*stage.setX(bounds.getMinX());
+        stage.setY(bounds.getMinY());
+        stage.setWidth(bounds.getWidth());
+        stage.setHeight(bounds.getHeight());*/
+
+        stage.setMaximized(true);
+        stage.centerOnScreen();
+        //stage.sizeToScene();
     }
 
     @Override

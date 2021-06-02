@@ -84,28 +84,43 @@ public class Printer {
             System.out.println("                         " + "*Development Card number " + i + ": Level: " + lp.get(i).getLevel() + "; Color: " + lp.get(i).getColor());
         }
     }
-
+/*
+switch (choice) {
+            case 1 -> controller.buyFromMarket();
+            case 2 -> controller.buyProductionCard();
+            case 3 -> controller.startProduction();
+            case 4 -> controller.activateLeader();
+            case 5 -> controller.discardLeader();
+            case 6 -> controller.viewOpponents();
+            case 7 -> controller.viewYourInfo();
+            case 8 -> controller.viewProductionCard();
+            case 9 -> controller.rearrangeWarehouse();
+            case 10 -> controller.passTurn();
+            case 42 -> controller.normalProcedure();
+ */
     public void printTurnOptions() {
         System.out.println("Now it's your turn, you can choose between these by typing the number:\n" +
-                "1) Buy from market: you can buy Resources from the market\n" +
-                "2) Buy a Development Card\n" +
-                "3) Start production: you can produce Resources\n" +
-                "4) View your opponents status\n" +
-                "5) Activate a Leader Card\n" +
-                "6) Discard Leader Card\n" +
-                "7) View Development Card that you can buy\n" +
-                "8) View your status\n" +
-                "9) End turn");
+                "1)  Buy from market: you can buy Resources from the market\n" +
+                "2)  Buy a Development Card\n" +
+                "3)  Start production: you can produce Resources\n" +
+                "4)  Activate a Leader Card\n" +
+                "5)  Discard Leader Card\n" +
+                "6)  View your opponents status\n" +
+                "7)  View your status\n" +
+                "8)  View Development Card that you can buy\n" +
+                "9)  Rearrange the resource in the warehouse\n" +
+                "10) End turn");
     }
 
     public void printLightTurnOptions() {
         System.out.println("Now it's your turn, you can choose between these by typing the number:\n" +
-                "1) View your opponents status\n" +
-                "2) Activate a Leader Card\n" +
-                "3) Discard Leader Card\n" +
-                "4) View Development Card that you can buy\n" +
-                "5) View your status\n" +
-                "6) End turn");
+                "1) Activate a Leader Card\n" +
+                "2) Discard Leader Card\n" +
+                "3) View your opponents status\n" +
+                "4) View your status\n" +
+                "5) View Development Card that you can buy\n" +
+                "6) Rearrange the resource in the warehouse\n" +
+                "7) End turn");
     }
 
     public void printFaithTrack(int currPos){

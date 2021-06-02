@@ -11,14 +11,10 @@ import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.cards.leader.*;
-import it.polimi.ingsw.model.cards.production.ColorEnum;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
-import it.polimi.ingsw.model.player.LootChest;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -122,7 +118,7 @@ public class CliController extends ClientController {
                     askNickname();
                     return;
                 }
-                if (input.length() > 25){
+                if (input.length() > 12){
                     cli.showMessage("Name too long!");
                     askNickname();
                     return;
@@ -507,6 +503,25 @@ public class CliController extends ClientController {
         messageToServerHandler.generateEnvelope(MessageID.ACTIVATE_LEADER, String.valueOf(cli.activeLeaderFromId(activable)));
     }
 
+    public void rearrangeWarehouse(){
+
+        List<Resource> elem = new ArrayList<>();
+
+        for (BiElement<Resource, Storage> res : player.getAllResources().keySet()) {
+            if (res.getSecondValue().equals(Storage.WAREHOUSE_SMALL) || res.getSecondValue().equals(Storage.WAREHOUSE_MID) || res.getSecondValue().equals(Storage.WAREHOUSE_LARGE))
+                elem.add(res.getFirstValue());
+        }
+        cli.showMessage("Choose a storage for each of the following resources:" + elem);
+        setRegistrationPhase(true);
+        storeRes = cli.storeResources(elem);
+        setRegistrationPhase(false);
+
+        StoreResourcesMessage msg = new StoreResourcesMessage(storeRes, getPlayer().getTurnNumber());
+
+        messageToServerHandler.generateEnvelope(MessageID.REARRANGE_WAREHOUSE, gson.toJson(msg, StoreResourcesMessage.class));
+
+    }
+
     // Message From Server ---------------------------------------------------------------------------------------------
 
     @Override
@@ -564,7 +579,7 @@ public class CliController extends ClientController {
     @Override
     public void moveLorenzo(int currentPosition) {
         if(currentPosition==24){
-            cli.showMessage("Lorenzo completed the faith track. \nAH. You lose! :)");
+            cli.showMessage("Lorenzo completed the faith track. \nYou lose! :)");
         }
         cli.showMessage("Lorenzo moved. Now he is cell " + currentPosition);
     }
@@ -633,13 +648,27 @@ public class CliController extends ClientController {
         chooseStorageAction(new ArrayList<>(storeRes.stream().map(BiElement::getFirstValue).collect(Collectors.toList())));
     }
 
+    public void badRearrangeRequest(){
+        displayMessage("Wrong resources rearrange");
+        rearrangeWarehouse();
+    }
+
     public void leaderNotActivable(){
         displayMessage("This leader is not activable, you don't have enough resources.");
         startTurnPhase();
     }
 
-    public void easterEgg(){
-
+    public void normalProcedure(){
+        cli.clearScreen();
+        System.out.println("This game was created by: \nOttavia\nAlessio\nJavin\nYou can find our name in the initial ascii art too.");
+        InputStream in = getClass().getResourceAsStream("/normalFile.txt");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        try {
+            for (int i = 0; i < 44; i++)
+                System.out.println(reader.readLine());
+        }catch (Exception e){}
+        cli.pressEnter();
+        startTurnPhase();
     }
 
 

@@ -64,6 +64,7 @@ public class RemoteView extends View {
 
             case DISCARD_LEADER -> controller.discardLeader(envelope.getPayload());
 
+            case REARRANGE_WAREHOUSE -> controller.rearrangeWarehouse(gson.fromJson(envelope.getPayload(), StoreResourcesMessage.class));
 
             //PING PONG
             case PONG -> clientConnection.setStillConnected(true);

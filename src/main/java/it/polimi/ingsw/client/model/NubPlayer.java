@@ -88,8 +88,9 @@ public class NubPlayer implements Comparator<NubPlayer> {
     }
 
     public void removeResources(BiElement<Resource, Storage> resources, Integer qty){
+        Map<BiElement<Resource, Storage>, Integer> dupe = new HashMap<>(allResources);
 
-        allResources.forEach((x,y) -> {
+        dupe.forEach((x,y) -> {
             if(x.equals(resources)){
                 allResources.compute(x, (k,v) -> v - qty);
                 if(allResources.get(x)<1){
@@ -106,6 +107,7 @@ public class NubPlayer implements Comparator<NubPlayer> {
     }
 
     public Map<BiElement<Resource,Storage>,Integer> getAllResources(){return allResources;}
+
     public boolean setPosition(int pos){
         if(pos>0 && pos<25) {
             currPos = pos;

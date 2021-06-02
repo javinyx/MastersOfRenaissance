@@ -117,7 +117,12 @@ public class ProPlayer extends Player{
     public List<StorageAbility> getExtraStorage(){
         return extraStorage.orElse(new ArrayList<>());
     }
-
+    public void clearWarehouse(){
+        warehouse = new Warehouse();
+    }
+    public void setWarehouse(Warehouse war){
+        this.warehouse = war;
+    }
 
 //-------------------------------VICTORY POINTS---------------------------------
     /**Returns the sum of player's victory points taking in consideration:

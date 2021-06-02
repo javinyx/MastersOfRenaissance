@@ -16,7 +16,7 @@ public class WindowsPrinter extends Printer{
             e.printStackTrace();
         }
     }
-   /* @Override
+    @Override
     public String printRes (Resource res){
         String s = null;
         switch (res){
@@ -126,5 +126,5 @@ public class WindowsPrinter extends Printer{
         System.out.print(spaces + "BLUE  " + spaces + "|");
         System.out.print(spaces + "YELLOW" + spaces + "|");
         System.out.print(spaces + "PURPLE" + spaces + "|");
-    }*/
+    }
 }

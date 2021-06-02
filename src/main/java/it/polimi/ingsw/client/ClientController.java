@@ -140,6 +140,7 @@ public abstract class ClientController {
 
     public abstract void cardNotAvailable();
     public abstract void badProductionRequest();
+    public abstract void badRearrangeRequest();
     public abstract void badPaymentRequest();
     public abstract void badDimensionRequest();
     public abstract void wrongStackRequest();
@@ -163,6 +164,7 @@ public abstract class ClientController {
     public abstract void activateLeader();
     public abstract void updatePositionAction(PlayersPositionMessage msg);
     public abstract void showBoard();
+    public abstract void rearrangeWarehouse();
 
     /**Move Lorenzo on the faith track*/
     public abstract void moveLorenzo(int currentPosition);
@@ -210,8 +212,13 @@ public abstract class ClientController {
                 }
 
                 System.out.println(pp.getAllResources());
+                System.out.println(resources);
 
                 resources = msg.getRemovedResources();
+
+                System.out.println(pp.getAllResources());
+                System.out.println(resources);
+
                 if (resources != null && resources.size()>0) {
                     resources.forEach(pp::removeResources);
                 }

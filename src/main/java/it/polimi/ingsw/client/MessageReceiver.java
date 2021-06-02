@@ -109,6 +109,7 @@ public class MessageReceiver implements Runnable{
             case WRONG_LEVEL_REQUEST -> controller.wrongLevelRequest();
             case BAD_STORAGE_REQUEST -> controller.badStorageRequest();
             case LEADER_NOT_ACTIVABLE -> controller.leaderNotActivable();
+            case BAD_REARRANGE_REQUEST -> controller.badRearrangeRequest();
 
             case CHOOSE_LEADER_CARDS -> controller.chooseLeadersAction();
             case STORE_RESOURCES -> controller.chooseStorageAfterMarketAction(envelope.getPayload());

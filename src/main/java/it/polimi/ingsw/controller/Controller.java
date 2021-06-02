@@ -18,6 +18,7 @@ import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.exception.BadStorageException;
 import it.polimi.ingsw.model.player.ProPlayer;
+import it.polimi.ingsw.model.player.Warehouse;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -167,11 +168,11 @@ public class Controller implements Observer<MessageID> {
      * send all the updates of the things that has been done during the turn.
      */
     public synchronized void endTurn() {
-        if(!basicActionDone){
+        /*if(!basicActionDone){
             addedResources.clear();
             removedResources.clear();
             boughtCard = Optional.empty();
-        }
+        }*/
         basicActionDone = false;
         if (mustChoosePlacements) {
             update(MessageID.INFO);
@@ -502,6 +503,8 @@ public class Controller implements Observer<MessageID> {
             for(ProPlayer pp : ((MultiPlayerGame) game).getActivePlayers()){
                     remoteViews.get(pp.getTurnID()-1).update(envelope);
             }
+            addedResources.clear();
+            removedResources.clear();
             //remoteViews.get(playerToAck.getTurnID()-1).update(envelope);
             playerToAck.setInitializationPhase(false);
             startCounter++;
@@ -511,10 +514,88 @@ public class Controller implements Observer<MessageID> {
                     remoteViews.get(pp.getTurnID()-1).update(envelope1);
                 }
             }
-
         }
+    }
+
+    public synchronized void rearrangeWarehouse(StoreResourcesMessage msg){
+
+        Warehouse warBackup;
+
+        int playerID = msg.getTurnID();
+        for(ProPlayer p : game.getPlayers()){
+            if(p.getTurnID() == playerID){
+                playerToAck = p;
+            }
+        }
+        //playerForOrganizeRes = game.getCurrPlayer();
+        if (game instanceof MultiPlayerGame)
+            for(ProPlayer p : ((MultiPlayerGame) game).getActivePlayers())
+                if(p.getTurnID() == msg.getTurnID())
+                    playerToAck = p;
+
+        addedResources.clear();
+        removedResources.clear();
+
+        if(playerToAck.getWarehouse().getLargeInventory() != null)
+            for (int i = 0; i < playerToAck.getWarehouse().getLargeInventory().size(); i++) {
+                removeResources(new BiElement<>(playerToAck.getWarehouse().getLargeInventory().get(i), Storage.WAREHOUSE_LARGE), 1);
+            }
+        if(playerToAck.getWarehouse().getMidInventory() != null)
+            for (int i = 0; i < playerToAck.getWarehouse().getMidInventory().size(); i++) {
+                removeResources(new BiElement<>(playerToAck.getWarehouse().getMidInventory().get(i), Storage.WAREHOUSE_MID), 1);
+            }
+        if(playerToAck.getWarehouse().getSmallInventory() != null)
+            removeResources(new BiElement<>(playerToAck.getWarehouse().getSmallInventory(), Storage.WAREHOUSE_SMALL), 1);
 
 
+        warBackup = playerToAck.getWarehouse();
+        playerToAck.clearWarehouse();
+
+        for (BiElement<Resource, Storage> element : msg.getPlacements()) {
+            switch (element.getSecondValue()) {
+                case WAREHOUSE_SMALL -> {
+                    if (playerToAck.storeInWarehouse(element.getFirstValue(), 1)) {
+                        addResources(element, 1);
+                    } else {
+                        addedResources.clear();
+                        mustChoosePlacements = true;
+                        playerToAck.setWarehouse(warBackup);
+                        update(MessageID.BAD_REARRANGE_REQUEST);
+                        return;
+                    }
+                }
+                case WAREHOUSE_MID -> {
+                    if (playerToAck.storeInWarehouse(element.getFirstValue(), 2)) {
+                        addResources(element, 1);
+                    } else {
+                        addedResources.clear();
+                        mustChoosePlacements = true;
+                        playerToAck.setWarehouse(warBackup);
+                        update(MessageID.BAD_REARRANGE_REQUEST);
+                        return;
+                    }
+                }
+                case WAREHOUSE_LARGE -> {
+                    if (playerToAck.storeInWarehouse(element.getFirstValue(), 3)) {
+                        addResources(element, 1);
+                    } else {
+                        addedResources.clear();
+                        mustChoosePlacements = true;
+                        playerToAck.setWarehouse(warBackup);
+                        update(MessageID.BAD_REARRANGE_REQUEST);
+                        return;
+                    }
+                }
+                default -> {
+                    addedResources.clear();
+                    mustChoosePlacements = true;
+                    playerToAck.setWarehouse(warBackup);
+                    update(MessageID.BAD_REARRANGE_REQUEST);
+                    return;
+                }
+            }
+        }
+        update(MessageID.ACK);
     }
 
     public synchronized void chooseLeaderCards(String ids, String nick) {
@@ -688,6 +769,7 @@ public class Controller implements Observer<MessageID> {
                     BAD_DIMENSION_REQUEST,
                     WRONG_STACK_CHOICE,
                     LEADER_NOT_ACTIVABLE,
+                    BAD_REARRANGE_REQUEST,
                     WRONG_LEVEL_REQUEST -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, ""));
 
             case STORE_RESOURCES -> remoteViews.get(playerToAck.getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));

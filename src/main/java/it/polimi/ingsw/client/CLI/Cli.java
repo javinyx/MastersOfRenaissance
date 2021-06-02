@@ -195,19 +195,20 @@ public class Cli /*extends ViewInterface*/ {
         do {
             System.out.println("Select a number:");
             choice = scanner.nextInt();
-        } while (choice < 1 || (choice > 9 && choice != 42));
+        } while (choice < 1 || (choice > 10 && choice != 42));
 
         switch (choice) {
             case 1 -> controller.buyFromMarket();
             case 2 -> controller.buyProductionCard();
             case 3 -> controller.startProduction();
-            case 4 -> controller.viewOpponents();
-            case 5 -> controller.activateLeader();
-            case 6 -> controller.discardLeader();
-            case 7 -> controller.viewProductionCard();
-            case 8 -> controller.viewYourInfo();
-            case 9 -> controller.passTurn();
-            case 42 -> controller.easterEgg();
+            case 4 -> controller.activateLeader();
+            case 5 -> controller.discardLeader();
+            case 6 -> controller.viewOpponents();
+            case 7 -> controller.viewYourInfo();
+            case 8 -> controller.viewProductionCard();
+            case 9 -> controller.rearrangeWarehouse();
+            case 10 -> controller.passTurn();
+            case 42 -> controller.normalProcedure();
         }
 
     }
@@ -222,16 +223,17 @@ public class Cli /*extends ViewInterface*/ {
         do {
             System.out.println("Select a number:");
             choice = scanner.nextInt();
-        } while (choice < 1 || (choice > 6 && choice != 42));
+        } while (choice < 1 || (choice > 7 && choice != 42));
 
         switch (choice) {
-            case 1 -> controller.viewOpponents();
-            case 2 -> controller.activateLeader();
-            case 3 -> controller.discardLeader();
-            case 4 -> controller.viewProductionCard();
-            case 5 -> controller.viewYourInfo();
-            case 6 -> controller.passTurn();
-            case 42 -> controller.easterEgg();
+            case 1 -> controller.activateLeader();
+            case 2 -> controller.discardLeader();
+            case 3 -> controller.viewOpponents();
+            case 4 -> controller.viewYourInfo();
+            case 5 -> controller.viewProductionCard();
+            case 6 -> controller.rearrangeWarehouse();
+            case 7 -> controller.passTurn();
+            case 42 -> controller.normalProcedure();
         }
 
 

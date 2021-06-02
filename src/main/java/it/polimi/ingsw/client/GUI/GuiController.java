@@ -209,6 +209,11 @@ public class GuiController extends ClientController {
     }
 
     @Override
+    public void badRearrangeRequest() {
+
+    }
+
+    @Override
     public void badPaymentRequest() {
 
     }
@@ -328,6 +333,11 @@ public class GuiController extends ClientController {
 
     @Override
     public void showBoard() {
+
+    }
+
+    @Override
+    public void rearrangeWarehouse() {
 
     }
 

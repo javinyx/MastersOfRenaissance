@@ -186,6 +186,7 @@ public class CliController extends ClientController {
         if(isRegistrationPhase()) {
             cli.showMessage("You are ready to play, wait until it's your turn");
         }
+        setRegistrationPhase(false);
         //se siamo qui allora è il mio turno e posso ritornare nel client controller
         if(getCurrPlayer().equals(player)) {
             player.setMyTurn(true);

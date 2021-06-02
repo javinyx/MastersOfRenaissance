@@ -190,6 +190,12 @@ public class InitialPhaseHandler extends PhaseHandler {
     }
 
     @FXML
+    public void waitStartGame(){
+        waitingRoomLbl.setText("The game is about to start!");
+        setScene(WAITING_ROOM);
+    }
+
+    @FXML
     public void displayLeaders(List<LeaderCard> availableLeaders) {
         leader1Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(0).getId() + ".png"));
         leader2Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(1).getId() + ".png"));

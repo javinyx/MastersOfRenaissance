@@ -38,6 +38,7 @@ public class Controller implements Observer<MessageID> {
     private ProPlayer playerToAck;
     private int numPlayer;
     private int startCounter = 0;
+    private int playerLeaderDoneCtr = 0;
 
     Gson gson = new Gson();
 
@@ -518,7 +519,7 @@ public class Controller implements Observer<MessageID> {
             //remoteViews.get(playerToAck.getTurnID()-1).update(envelope);
             playerToAck.setInitializationPhase(false);
             startCounter++;
-            if(startCounter == game.getTotalPlayers()-1 && game.getTotalPlayers() != 1){
+            if(startCounter == game.getTotalPlayers()-1 && game.getTotalPlayers() != 1 && playerLeaderDoneCtr==game.getTotalPlayers()){
                 MessageEnvelope envelope1 = new MessageEnvelope(MessageID.START_INITIAL_GAME, "");
                 for(ProPlayer pp : ((MultiPlayerGame) game).getActivePlayers()){
                     remoteViews.get(pp.getTurnID()-1).update(envelope1);
@@ -615,17 +616,24 @@ public class Controller implements Observer<MessageID> {
     }
 
     public synchronized void chooseLeaderCards(String ids, String nick) {
+
         List<Integer> leadersIds = convertStringToListInteger(ids);
         List<LeaderCard> leaders = convertIdToLeaderCard(leadersIds);
         List<ProPlayer> allP;
         allP = game.getPlayers();
+        ProPlayer brutto =null;
 
         for(ProPlayer p : allP){
             if(p.getNickname().equals(nick)){
+                brutto = p;
                 p.chooseLeaders(leaders);
-                return;
+                break;
             }
         }
+        if(playerLeaderDoneCtr == game.getTotalPlayers()-1 && game.getTotalPlayers()!=1 && brutto!=null && brutto.getTurnID()==1){
+            update(START_INITIAL_GAME);
+        }
+        playerLeaderDoneCtr++;
     }
 
     /**
@@ -844,6 +852,12 @@ public class Controller implements Observer<MessageID> {
                 }
             }
             case INFO -> remoteViews.get(getCurrPlayerTurnID() - 1).update(new MessageEnvelope(messageID, "Invalid operation now"));
+            case START_INITIAL_GAME -> {
+                MessageEnvelope envelope1 = new MessageEnvelope(MessageID.START_INITIAL_GAME, "");
+                for(ProPlayer pp : ((MultiPlayerGame) game).getActivePlayers()){
+                    remoteViews.get(pp.getTurnID()-1).update(envelope1);
+                }
+            }
 
 
             default -> System.out.println("No no no");

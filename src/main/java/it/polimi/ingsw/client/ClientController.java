@@ -238,7 +238,7 @@ public abstract class ClientController {
 
         count++;
 
-        if (player.getTurnNumber() == 1) {
+        /*if (player.getTurnNumber() == 1) {
             if (count == totalPlayers.size()) {
                 registrationPhase = false;
             }
@@ -246,7 +246,7 @@ public abstract class ClientController {
         else {
             if (count == totalPlayers.size() - 1)
                 registrationPhase = false;
-        }
+        }*/
     }
 
 

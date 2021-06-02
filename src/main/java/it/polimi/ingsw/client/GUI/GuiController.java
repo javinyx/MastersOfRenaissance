@@ -133,6 +133,7 @@ public class GuiController extends ClientController {
     }
 
     public void setSelectedLeaders(List<Boolean> leadersChoice) {
+        Platform.runLater(initialPhaseHandler::waitStartGame);
         List<LeaderCard> availableLeaders = getPlayer().getLeaders();
 
         for (int i = 0; i < leadersChoice.size(); i++) {
@@ -147,6 +148,7 @@ public class GuiController extends ClientController {
     }
 
     public void setInitialResourcePlacements(List<BiElement<Resource, Storage>> placements) {
+        Platform.runLater(initialPhaseHandler::waitStartGame);
         StoreResourcesMessage msg = new StoreResourcesMessage(placements, getPlayer().getTurnNumber());
         messageToServerHandler.generateEnvelope(MessageID.STORE_RESOURCES, gson.toJson(msg, StoreResourcesMessage.class));
         //WARNING: don't touch Monke, it will break everything
@@ -155,9 +157,28 @@ public class GuiController extends ClientController {
 
     @Override
     public void startGame() {
-        Screen screen = Screen.getPrimary();
+        if(isRegistrationPhase() && gameSize==1){
+            System.out.println("Init singlePlayer start BEFORE WAIT");
+            synchronized (lock) {
+                try {
+                    lock.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            System.out.println("Init singlePlayer start AFTER WAIT");
+            initialGameStart();
+        }else if(isRegistrationPhase() && gameSize!=1){
+            System.out.println("Init multiplayer start");
+          initialGameStart();
+        }else {
+            System.out.println("Middle game start");
+            middleGameStart();
+        }
+
+            /*Screen screen = Screen.getPrimary();
         Rectangle2D bounds = screen.getVisualBounds();
-        if(/*!monke*/ player.getTurnNumber()==1) {
+        if(/*!monke player.getTurnNumber()==1) {
             synchronized (lock) {
                 try {
                     lock.wait();
@@ -168,16 +189,33 @@ public class GuiController extends ClientController {
         }
         Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.MAIN_BOARD));
         initialPhaseHandler.initiateBoard(chosenLeadersId, availableProductionCard);
-        gamePhaseHandler = new GamePhaseHandler(this, stage);
+        gamePhaseHandler = new GamePhaseHandler(this, stage);*/
+        //}
 
         /*stage.setX(bounds.getMinX());
         stage.setY(bounds.getMinY());
         stage.setWidth(bounds.getWidth());
         stage.setHeight(bounds.getHeight());*/
 
+        /*stage.setMaximized(true);
+        stage.centerOnScreen();*/
+        //stage.sizeToScene();*/
+    }
+
+    private void middleGameStart(){
+        initialGameStart();
+    }
+
+    private void initialGameStart(){
+        setRegistrationPhase(false);
+        Screen screen = Screen.getPrimary();
+        Rectangle2D bounds = screen.getVisualBounds();
+
+        Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.MAIN_BOARD));
+        initialPhaseHandler.initiateBoard(chosenLeadersId, availableProductionCard);
+        gamePhaseHandler = new GamePhaseHandler(this, stage);
         stage.setMaximized(true);
         stage.centerOnScreen();
-        //stage.sizeToScene();
     }
 
     @Override

@@ -157,6 +157,7 @@ ToggleButton {
  */
 #mainBoard {
     -fx-background-color: #2d0f08;
+    -fx-padding: 5px;
 }
 
 .marble {
@@ -165,9 +166,11 @@ ToggleButton {
 
 #enemyBoard {
     -fx-background-color: #737777;
-    -fx-padding: 20px;
+    -fx-padding: 10px;
 }
 
 .leaderNotActive {
-    -fx-effect: innershadow(one-pass-box, rgba(0, 0, 0, 0.84), 50, 0, 0, 0);
+}
+
+.productionCard {
 }

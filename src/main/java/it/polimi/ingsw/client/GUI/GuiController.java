@@ -16,8 +16,10 @@ import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.market.Resource;
 import javafx.application.Platform;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -153,6 +155,8 @@ public class GuiController extends ClientController {
 
     @Override
     public void startGame() {
+        Screen screen = Screen.getPrimary();
+        Rectangle2D bounds = screen.getVisualBounds();
         if(!monke) {
             synchronized (lock) {
                 try {
@@ -161,17 +165,31 @@ public class GuiController extends ClientController {
                     e.printStackTrace();
                 }
                 Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.MAIN_BOARD));
-                initialPhaseHandler.initiateBoard(chosenLeadersId);
+                initialPhaseHandler.initiateBoard(chosenLeadersId, availableProductionCard);
                 gamePhaseHandler = new GamePhaseHandler(this, stage);
+
+                /*stage.setX(bounds.getMinX());
+                stage.setY(bounds.getMinY());
+                stage.setWidth(bounds.getWidth());
+                stage.setHeight(bounds.getHeight());*/
+
+                stage.setMaximized(true);
                 stage.centerOnScreen();
-                stage.sizeToScene();
+                //stage.sizeToScene();
             }
         } else {
             Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.MAIN_BOARD));
-            initialPhaseHandler.initiateBoard(chosenLeadersId);
+            initialPhaseHandler.initiateBoard(chosenLeadersId, availableProductionCard);
             gamePhaseHandler = new GamePhaseHandler(this, stage);
+
+            /*stage.setX(bounds.getMinX());
+            stage.setY(bounds.getMinY());
+            stage.setWidth(bounds.getWidth());
+            stage.setHeight(bounds.getHeight());*/
+
+            stage.setMaximized(true);
             stage.centerOnScreen();
-            stage.sizeToScene();
+            //stage.sizeToScene();
         }
     }
 

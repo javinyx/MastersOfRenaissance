@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.GUI.sceneHandlers;
 
 import it.polimi.ingsw.client.GUI.GuiController;
+import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -25,7 +26,7 @@ public class GamePhaseHandler extends PhaseHandler{
     @FXML
     private ImageView leader1Show, leader2Show;
     @FXML
-    private GridPane marketMarbles;
+    private GridPane marketMarbles, productionCards;
     @FXML
     private Circle extraMarble;
 
@@ -63,14 +64,17 @@ public class GamePhaseHandler extends PhaseHandler{
         return true;
     }
 
-    private void updateMarket() {
-        ObservableList<Node> children = marketMarbles.getChildren();
+    private void updateBoard(List<ConcreteProductionCard> availableProductionCards) {
+        int x, y, i;
+
+        ObservableList<Node> children1 = marketMarbles.getChildren();
+        ObservableList<Node> children2 = productionCards.getChildren();
 
         extraMarble.setFill(Color.web(controller.getMarket().getExtra().getHexCode()));
 
-        for (int x = 0; x < 3; x++) {
-            for (int y = 0; y < 4; y++) {
-                for (Node node : children) {
+        for (x = 0; x < 3; x++) {
+            for (y = 0; y < 4; y++) {
+                for (Node node : children1) {
                     if (marketMarbles.getRowIndex(node) == x && marketMarbles.getColumnIndex(node) == y) {
                         ((Circle) node).setFill(Color.web(controller.getMarket().getMarketBoard()[x][y].getHexCode()));
                         break;
@@ -78,6 +82,20 @@ public class GamePhaseHandler extends PhaseHandler{
                 }
             }
         }
+
+        i = 0;
+        for (x = 0; x < 3; x++) {
+            for (y = 0; y < 4; y++) {
+                for (Node node : children2) {
+                    if (productionCards.getRowIndex(node) == x && productionCards.getColumnIndex(node) == y) {
+                        ((ImageView) node).setImage(new Image("img/productionCardsFront/" + availableProductionCards.get(i).getId() + ".png"));
+                        i++;
+                        break;
+                    }
+                }
+            }
+        }
+
     }
 
 }

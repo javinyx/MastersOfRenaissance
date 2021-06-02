@@ -4,6 +4,8 @@ import it.polimi.ingsw.client.GUI.GuiController;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
+import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
+import it.polimi.ingsw.model.cards.production.ProductionCard;
 import it.polimi.ingsw.model.market.Resource;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -84,7 +86,7 @@ public class InitialPhaseHandler extends PhaseHandler {
     @FXML
     private Pane mainBoard;
     @FXML
-    private GridPane marketMarbles;
+    private GridPane marketMarbles, productionCards;
     @FXML
     private Circle extraMarble;
     @FXML
@@ -456,9 +458,11 @@ public class InitialPhaseHandler extends PhaseHandler {
         return Resource.valueOf(db.getString());
     }
 
-    public void initiateBoard(List<Integer> chosenLeadersId) {
+    public void initiateBoard(List<Integer> chosenLeadersId, List<ConcreteProductionCard> availableProductionCards) {
         leader1Show.setImage(new Image("img/leaderCards/" + chosenLeadersId.get(0) + ".png"));
+        leader1Show.setEffect(new SepiaTone(0.6));
         leader2Show.setImage(new Image("img/leaderCards/" + chosenLeadersId.get(1) + ".png"));
+        leader2Show.setEffect(new SepiaTone(0.6));
 
         extraMarble.setFill(Color.web(controller.getMarket().getExtra().getHexCode()));
         for (int x = 0; x < 3; x++) {
@@ -467,7 +471,13 @@ public class InitialPhaseHandler extends PhaseHandler {
             }
         }
 
-
+        int i = 0;
+        for (int x = 0; x < 3; x++) {
+            for (int y = 0; y < 4; y++) {
+                setProductionCards(x, y, productionCards, availableProductionCards.get(i).getId());
+                i++;
+            }
+        }
 
     }
 
@@ -481,4 +491,16 @@ public class InitialPhaseHandler extends PhaseHandler {
             }
         }
     }
+
+    private void setProductionCards(int row, int column, GridPane gridPane, int imgId) {
+        ObservableList<Node> children = gridPane.getChildren();
+
+        for (Node node : children) {
+            if(gridPane.getRowIndex(node) == row && gridPane.getColumnIndex(node) == column) {
+                ((ImageView)node).setImage(new Image("img/productionCardsFront/" + imgId + ".png"));
+                break;
+            }
+        }
+    }
+
 }

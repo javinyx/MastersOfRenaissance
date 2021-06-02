@@ -201,7 +201,7 @@ public class CliController extends ClientController {
 
     @Override
     public void refreshView() {
-
+        displayMessage("Wait other player to join.");
     }
 
     // GAME PHASES -----------------------------------------------------------------------------------------------------

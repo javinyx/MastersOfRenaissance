@@ -211,20 +211,13 @@ public abstract class ClientController {
                     resources.forEach(pp::addResources);
                 }
 
-                System.out.println(pp.getAllResources());
-                System.out.println(resources);
+                /*System.out.println(pp.getAllResources());
+                System.out.println(resources);*/
 
                 resources = msg.getRemovedResources();
 
-                System.out.println(pp.getAllResources());
-                System.out.println(resources);
-
                 if (resources != null && resources.size()>0) {
                     resources.forEach(pp::removeResources);
-                }
-
-                if(pp.equals(player)){
-                    refreshView();
                 }
                 updateOtherPlayer(pp);
                 break;
@@ -240,6 +233,8 @@ public abstract class ClientController {
 
         if(!isRegistrationPhase() || totalPlayers.size() == 1)
             startGame();
+        else
+            refreshView();
 
         count++;
 

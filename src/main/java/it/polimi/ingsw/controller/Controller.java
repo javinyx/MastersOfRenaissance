@@ -215,16 +215,16 @@ public class Controller implements Observer<MessageID> {
         try {
             ConcreteProductionCard card = null;
             List<LeaderCard> leaderCards = new ArrayList<>();
-            boolean found = false;
+            //boolean found = false;
 
             for (int i = 0; i < 12; i++) {
                 if (game.getBuyableProductionCards().get(i).getId() == buyProdMsg.getProdCardId()) {
-                    found = true;
+                    //found = true;
                     card = game.getBuyableProductionCards().get(i);
                 }
             }
 
-            if(!found){
+            if(card==null/*!found*/){
                 update(CARD_NOT_AVAILABLE);
                 return;
             }
@@ -238,6 +238,9 @@ public class Controller implements Observer<MessageID> {
                     leaderCards.add(game.getCurrPlayer().getLeaderCards().get(1));
 
             }
+            System.out.println("BEFORE small w: " + game.getCurrPlayer().getWarehouse().getSmallInventory());
+            System.out.println("BEFORE mid w: " + game.getCurrPlayer().getWarehouse().getMidInventory());
+            System.out.println("BEFORE large w: " + game.getCurrPlayer().getWarehouse().getLargeInventory());
 
             if (card != null) {
                 List<BiElement<Integer, Integer>> cards = new ArrayList<>();
@@ -252,9 +255,20 @@ public class Controller implements Observer<MessageID> {
                     }
                 }
                 if (wallet.anyFromWarehouseTray()) {
+                    Warehouse w = game.getCurrPlayer().getWarehouse();
+                    Storage s = null;
                     for (Resource r : wallet.getWarehouseTray()) {
-                        elem = new BiElement<>(r, Storage.WAREHOUSE);
-                        removeResources(elem, 1);
+                        if(r.equals(w.getSmallInventory())){
+                            s = Storage.WAREHOUSE_SMALL;
+                        }else if(w.getMidInventory().contains(r)){
+                            s = Storage.WAREHOUSE_MID;
+                        }else if(w.getLargeInventory().contains(r)){
+                            s = Storage.WAREHOUSE_LARGE;
+                        }
+                        if(s!=null) {
+                            elem = new BiElement<>(r, s);
+                            removeResources(elem, 1);
+                        }
                     }
                 }
                 if (wallet.anyFromExtraStorage()) {
@@ -268,6 +282,11 @@ public class Controller implements Observer<MessageID> {
                 }
                 game.getCurrPlayer().buyProductionCard(card, buyProdMsg.getStack(), leaderCards, buyProdMsg.getResourcesWallet());
             }
+
+            System.out.println("AFTER small w: " + game.getCurrPlayer().getWarehouse().getSmallInventory());
+            System.out.println("AFTER mid w: " + game.getCurrPlayer().getWarehouse().getMidInventory());
+            System.out.println("AFTER large w: " + game.getCurrPlayer().getWarehouse().getLargeInventory());
+            System.out.println("Removed: " + removedResources);
 
         } catch (BadStorageException e) {
             //player has no resources
@@ -347,9 +366,21 @@ public class Controller implements Observer<MessageID> {
                     }
                 }
                 if (wallet.anyFromWarehouseTray()) {
+                    Warehouse w = game.getCurrPlayer().getWarehouse();
+                    Storage s = null;
                     for (Resource r : wallet.getWarehouseTray()) {
-                        elem = new BiElement<>(r, Storage.WAREHOUSE);
-                        removeResources(elem,1 );
+                        if(r.equals(w.getSmallInventory())){
+                            s = Storage.WAREHOUSE_SMALL;
+                        }else if(w.getMidInventory().contains(r)){
+                            s = Storage.WAREHOUSE_MID;
+                        }else if(w.getLargeInventory().contains(r)){
+                            s = Storage.WAREHOUSE_LARGE;
+                        }
+                        if(s!=null) {
+                            elem = new BiElement<>(r, s);
+                            removeResources(elem, 1);
+                        }
+
                     }
                 }
                 if (wallet.anyFromExtraStorage()) {

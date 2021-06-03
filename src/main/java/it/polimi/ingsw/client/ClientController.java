@@ -211,14 +211,14 @@ public abstract class ClientController {
                     resources.forEach(pp::addResources);
                 }
 
-                /*System.out.println(pp.getAllResources());
-                System.out.println(resources);*/
 
                 resources = msg.getRemovedResources();
+                System.out.println("To remove: " + resources);
 
                 if (resources != null && resources.size()>0) {
                     resources.forEach(pp::removeResources);
                 }
+                System.out.println("After removing: " + pp.getAllResources());
                 updateOtherPlayer(pp);
                 break;
             }

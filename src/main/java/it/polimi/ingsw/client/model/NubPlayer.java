@@ -74,16 +74,24 @@ public class NubPlayer implements Comparator<NubPlayer> {
     }
 
     public void removeResources(BiElement<Resource, Storage> resources, Integer qty){
-        Map<BiElement<Resource, Storage>, Integer> dupe = new HashMap<>(allResources);
+        //Map<BiElement<Resource, Storage>, Integer> dupe = new HashMap<>(allResources);
+        List<BiElement<Resource, Storage>> toRemove = new ArrayList<>();
 
-        dupe.forEach((x,y) -> {
+        allResources.forEach((x,y) -> {
             if(x.equals(resources)){
+                System.out.println("Ho trovato una corrispondenza tra " + x + " e " + resources);
                 allResources.compute(x, (k,v) -> v - qty);
                 if(allResources.get(x)<1){
-                    allResources.remove(x);
+                    System.out.println("L'elemento " + x + " è da rimuovere");
+                    toRemove.add(x);
                 }
             }
         });
+        System.out.println("NubPlayer toRemove: " + toRemove);
+
+        for(BiElement<Resource, Storage> x : toRemove){
+            allResources.remove(x);
+        }
     }
 
     public Map<BiElement<Resource,Storage>,Integer> getAllResources(){return allResources;}

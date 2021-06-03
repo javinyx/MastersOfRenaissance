@@ -1,5 +1,8 @@
 package it.polimi.ingsw.model.cards.leader;
 
+import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.misc.BiElement;
+import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.cards.production.ProductionCard;
@@ -70,24 +73,28 @@ public class BoostAbility implements LeaderCard {
     public boolean applyEffect(ProPlayer player){
         if (player.getTurnType() == 'p'){
             ResourcesWallet wallet = player.getResAsCash();
+            Controller playerController = player.getController();
 
             if(wallet.isInLootChestTray(resourceNeeded) && player.getLootChest().getNumberResInInventory(resourceNeeded)>0){
                 List<Resource> removeFromLoot = wallet.getLootchestTray();
                 removeFromLoot.remove(resourceNeeded);
                 player.getLootChest().removeResources(resourceNeeded);
-
+                playerController.removeResources(new BiElement<>(resourceNeeded, Storage.LOOTCHEST), 1);
             }else if(wallet.isInWarehouseTray(resourceNeeded)){
                 List<Resource> removeFromWar = wallet.getWarehouseTray();
                 Warehouse warehouse = player.getWarehouse();
                 if(warehouse.getSmallInventory().equals(resourceNeeded)){
                     warehouse.removeSmall();
                     removeFromWar.remove(resourceNeeded);
+                    playerController.removeResources(new BiElement<>(resourceNeeded, Storage.WAREHOUSE_SMALL), 1);
                 }else if(warehouse.getMidInventory().contains(resourceNeeded)){
                     warehouse.removeMid();
                     removeFromWar.remove(resourceNeeded);
+                    playerController.removeResources(new BiElement<>(resourceNeeded, Storage.WAREHOUSE_MID), 1);
                 }else if(warehouse.getLargeInventory().contains(resourceNeeded)){
                     warehouse.removeLarge();
                     removeFromWar.remove(resourceNeeded);
+                    playerController.removeResources(new BiElement<>(resourceNeeded, Storage.WAREHOUSE_LARGE), 1);
                 }else{
                     //player said that there were resources to be removed from warehouse but there isn't that res in Warehouse
                     return false;
@@ -99,9 +106,10 @@ public class BoostAbility implements LeaderCard {
                     extra = player.getExtraStorage().get(0);
                 }else
                     return false;
-                if(extra.isActive() && extra.getStorageType().equals(resourceNeeded) && extra.size()>0){
+                if(extra!=null && extra.isActive() && extra.getStorageType().equals(resourceNeeded) && extra.size()>0){
                     extra.remove(resourceNeeded);
                     wallet.getExtraStorage(0).remove(resourceNeeded);
+                    playerController.removeResources(new BiElement<>(resourceNeeded, Storage.EXTRA1), 1);
                 /*}else if(extra2.isActive() && extra2.getStorageType().equals(resourceNeeded) && extra2.size()>0){
                     //player might have swapped the extraStorage cards and teh extraStorage in Wallet
                     extra2.remove(resourceNeeded);
@@ -115,9 +123,10 @@ public class BoostAbility implements LeaderCard {
                     extra = player.getExtraStorage().get(1);
                 }else
                     return false;
-                if(extra.isActive() && extra.getStorageType().equals(resourceNeeded) && extra.size()>0){
+                if(extra!=null && extra.isActive() && extra.getStorageType().equals(resourceNeeded) && extra.size()>0){
                     extra.remove(resourceNeeded);
                     wallet.getExtraStorage(1).remove(resourceNeeded);
+                    playerController.removeResources(new BiElement<>(resourceNeeded, Storage.EXTRA2), 1);
                 /*}else if(extra1.isActive() && extra1.getStorageType().equals(resourceNeeded) && extra1.size()>0){
                     //player might have swapped the extraStorage cards and teh extraStorage in Wallet
                     extra1.remove(resourceNeeded);

@@ -242,46 +242,45 @@ public class Controller implements Observer<MessageID> {
             System.out.println("BEFORE mid w: " + game.getCurrPlayer().getWarehouse().getMidInventory());
             System.out.println("BEFORE large w: " + game.getCurrPlayer().getWarehouse().getLargeInventory());
 
-            if (card != null) {
-                List<BiElement<Integer, Integer>> cards = new ArrayList<>();
-                cards.add(new BiElement<>(card.getId(), buyProdMsg.getStack()));
-                boughtCard = Optional.of(cards);
-                ResourcesWallet wallet = buyProdMsg.getResourcesWallet();
-                BiElement<Resource, Storage> elem;
-                if (wallet.anyFromLootchestTray()) {
-                    for (Resource r : wallet.getLootchestTray()) {
-                        elem = new BiElement<>(r, Storage.LOOTCHEST);
+            List<BiElement<Integer, Integer>> cards = new ArrayList<>();
+            cards.add(new BiElement<>(card.getId(), buyProdMsg.getStack()));
+            boughtCard = Optional.of(cards);
+            /*ResourcesWallet wallet = buyProdMsg.getResourcesWallet();
+            BiElement<Resource, Storage> elem;
+            if (wallet.anyFromLootchestTray()) {
+                for (Resource r : wallet.getLootchestTray()) {
+                    elem = new BiElement<>(r, Storage.LOOTCHEST);
+                    removeResources(elem, 1);
+                }
+            }
+            if (wallet.anyFromWarehouseTray()) {
+                Warehouse w = game.getCurrPlayer().getWarehouse();
+                Storage s = null;
+                for (Resource r : wallet.getWarehouseTray()) {
+                    if(r.equals(w.getSmallInventory())){
+                        s = Storage.WAREHOUSE_SMALL;
+                    }else if(w.getMidInventory().contains(r)){
+                        s = Storage.WAREHOUSE_MID;
+                    }else if(w.getLargeInventory().contains(r)){
+                        s = Storage.WAREHOUSE_LARGE;
+                    }
+                    if(s!=null) {
+                        elem = new BiElement<>(r, s);
                         removeResources(elem, 1);
                     }
                 }
-                if (wallet.anyFromWarehouseTray()) {
-                    Warehouse w = game.getCurrPlayer().getWarehouse();
-                    Storage s = null;
-                    for (Resource r : wallet.getWarehouseTray()) {
-                        if(r.equals(w.getSmallInventory())){
-                            s = Storage.WAREHOUSE_SMALL;
-                        }else if(w.getMidInventory().contains(r)){
-                            s = Storage.WAREHOUSE_MID;
-                        }else if(w.getLargeInventory().contains(r)){
-                            s = Storage.WAREHOUSE_LARGE;
-                        }
-                        if(s!=null) {
-                            elem = new BiElement<>(r, s);
-                            removeResources(elem, 1);
-                        }
-                    }
-                }
-                if (wallet.anyFromExtraStorage()) {
-                    for (int index = wallet.extraStorageSize() - 1; index >= 0; index--) {
-                        Storage extra = index == 0 ? Storage.EXTRA1 : Storage.EXTRA2;
-                        for (Resource r : wallet.getExtraStorage(index)) {
-                            elem = new BiElement<>(r, extra);
-                            removeResources(elem, 1);
-                        }
-                    }
-                }
-                game.getCurrPlayer().buyProductionCard(card, buyProdMsg.getStack(), leaderCards, buyProdMsg.getResourcesWallet());
             }
+            if (wallet.anyFromExtraStorage()) {
+                for (int index = wallet.extraStorageSize() - 1; index >= 0; index--) {
+                    Storage extra = index == 0 ? Storage.EXTRA1 : Storage.EXTRA2;
+                    for (Resource r : wallet.getExtraStorage(index)) {
+                        elem = new BiElement<>(r, extra);
+                        removeResources(elem, 1);
+                    }
+                }
+            }*/
+            game.getCurrPlayer().buyProductionCard(card, buyProdMsg.getStack(), leaderCards, buyProdMsg.getResourcesWallet());
+
 
             System.out.println("AFTER small w: " + game.getCurrPlayer().getWarehouse().getSmallInventory());
             System.out.println("AFTER mid w: " + game.getCurrPlayer().getWarehouse().getMidInventory());
@@ -336,14 +335,15 @@ public class Controller implements Observer<MessageID> {
         BiElement<Resource, Storage> elem;
         try {
             if (cards != null && !cards.isEmpty() && wallet != null) {
-                for (ConcreteProductionCard c : cards) {
+                /*for (ConcreteProductionCard c : cards) {
                     for (Resource r : c.getProduction()) {
                         if (r.isValidForTrading()) {
                             elem = new BiElement<>(r, Storage.LOOTCHEST);
                             addResources(elem, 1);
                         }
                     }
-                }
+                }*/
+                /*
                 if (extraPowerProd != null && !extraPowerProd.isEmpty() && extraOutput != null && !extraOutput.isEmpty()) {
                     if (extraPowerProd.size() == extraOutput.size()) {
                         for (Resource r : extraOutput) {
@@ -391,7 +391,7 @@ public class Controller implements Observer<MessageID> {
                             removeResources(elem, 1);
                         }
                     }
-                }
+                }*/
 
                 game.getCurrPlayer().startProduction(cards, wallet, extraPowerProd, extraOutput, produce.isBasicProduction(), basicOut);
             }
@@ -661,7 +661,7 @@ public class Controller implements Observer<MessageID> {
                 break;
             }
         }
-        if(playerLeaderDoneCtr == game.getTotalPlayers()-1 && game.getTotalPlayers()!=1 && brutto!=null && brutto.getTurnID()==1){
+        if(playerLeaderDoneCtr == game.getTotalPlayers()-1 && game.getTotalPlayers()!=1 && brutto!=null && brutto.getTurnID()==1 && startCounter==game.getTotalPlayers()-1){
             update(START_INITIAL_GAME);
         }
         playerLeaderDoneCtr++;
@@ -715,7 +715,7 @@ public class Controller implements Observer<MessageID> {
      * If {@code element} is already contained in {@code addedResources}, then it increments its presence by 1.
      * Otherwise, it add the element to the map as a new occurrence with is value set at 1.
      */
-    private synchronized void addResources(BiElement<Resource, Storage> element, Integer qty) {
+    public synchronized void addResources(BiElement<Resource, Storage> element, Integer qty) {
         if (qty == 0) {
             return;
         }
@@ -737,7 +737,7 @@ public class Controller implements Observer<MessageID> {
      * In order to do this, it increments the presence in {@code removedResources} map which is specific for this
      * purpose. Otherwise, it add the element to the map as a new occurrence with is value set at {@code qty}.
      */
-    private synchronized void removeResources(BiElement<Resource, Storage> element, Integer qty) {
+    public synchronized void removeResources(BiElement<Resource, Storage> element, Integer qty) {
         if(qty == 0){
             return;
         }

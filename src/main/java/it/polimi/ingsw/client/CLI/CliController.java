@@ -511,7 +511,8 @@ public class CliController extends ClientController {
 
         for (BiElement<Resource, Storage> res : player.getAllResources().keySet()) {
             if (res.getSecondValue().equals(Storage.WAREHOUSE_SMALL) || res.getSecondValue().equals(Storage.WAREHOUSE_MID) || res.getSecondValue().equals(Storage.WAREHOUSE_LARGE))
-                elem.add(res.getFirstValue());
+                for(int i=0; i< player.getAllResources().get(res); i++)
+                    elem.add(res.getFirstValue());
         }
         cli.showMessage("Choose a storage for each of the following resources:" + elem);
         setRegistrationPhase(true);

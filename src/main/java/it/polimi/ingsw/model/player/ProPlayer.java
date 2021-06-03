@@ -6,6 +6,7 @@ import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.exception.BadStorageException;
 import it.polimi.ingsw.messages.concreteMessages.UpdateMessage;
 import it.polimi.ingsw.misc.BiElement;
+import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.SinglePlayerGame;
@@ -86,6 +87,7 @@ public class ProPlayer extends Player{
     public int getTurnID(){
         return turnID;
     }
+    public Controller getController(){return controller;}
 
     public List<PopePass> getPopePasses(){
         return passes;
@@ -242,28 +244,34 @@ public class ProPlayer extends Player{
                 if (checkLeaderAvailability(leader))
                     leader.applyEffect(this);
             }
-
         for(Resource r : removeFromWar){
             if(resAcquired.contains(r)) {
                 if (warehouse.getSmallInventory() != null && warehouse.getSmallInventory().equals(r)) {
                     warehouse.removeSmall();
                     resAcquired.remove(r);
+                    controller.removeResources(new BiElement<>(r, Storage.WAREHOUSE_SMALL), 1);
                 } else if (warehouse.getMidInventory().contains(r)) {
                     warehouse.removeMid();
                     resAcquired.remove(r);
+                    controller.removeResources(new BiElement<>(r, Storage.WAREHOUSE_MID), 1);
                 } else if (warehouse.getLargeInventory().contains(r)) {
                     warehouse.removeLarge();
                     resAcquired.remove(r);
+                    controller.removeResources(new BiElement<>(r, Storage.WAREHOUSE_LARGE), 1);
                 }
             }
         }
 
         for(Resource r : removeFromLoot){
-            if(lootChest.removeResources(r)){
+            /*if(lootChest.removeResources(r)){
                 if(resAcquired.contains(r))
                     resAcquired.remove(r);
                 else
                     lootChest.addResources(r);
+            }*/
+            if(resAcquired.contains(r) && lootChest.removeResources(r)){
+                resAcquired.remove(r);
+                controller.removeResources(new BiElement<>(r, Storage.LOOTCHEST), 1);
             }
         }
 
@@ -272,6 +280,8 @@ public class ProPlayer extends Player{
                 for(Resource r : fromExtra.get(i)){
                     if(extraStorage.get().get(i).remove(r)){
                         resAcquired.remove(r);
+                        Storage storage = i==1 ? Storage.EXTRA1 : Storage.EXTRA2;
+                        controller.removeResources(new BiElement<>(r, storage), 1);
                     }
                 }
             }
@@ -569,6 +579,15 @@ public class ProPlayer extends Player{
         }
 
     }
+
+    /**
+     *Remove both inputs or throw a {@link BadStorageException}. It updates the controller with the resources
+     * removed using {@code removeResources()} method in {@link Controller}.
+     * @param input1
+     * @param input2
+     * @throws BadStorageException when the input choice is incorrect for the operation and with the player's current
+     * status
+     */
     private void basicProductionFromWarehouse(Resource input1, Resource input2) throws BadStorageException{
         if(!input1.isValidForTrading() || !input2.isValidForTrading()){
             throw new BadStorageException();
@@ -581,28 +600,36 @@ public class ProPlayer extends Player{
             if(midShelf.contains(input1) && midShelf.size()==2){
                 warehouse.removeMid();
                 warehouse.removeMid();
+                controller.removeResources(new BiElement<>(input1, Storage.WAREHOUSE_MID), 2);
                 return;
             }else if(largeShelf.contains(input1) && largeShelf.size()>=2){
                 warehouse.removeLarge();
                 warehouse.removeLarge();
+                controller.removeResources(new BiElement<>(input1, Storage.WAREHOUSE_LARGE), 2);
                 return;
             }else{
                 throw new BadStorageException();
             }
         }
         if(smallShelf.equals(input1) && midShelf.contains(input2) || smallShelf.equals(input2) && midShelf.contains(input1)){
-            warehouse.removeSmall();
-            warehouse.removeMid();
+            Resource resSmol = warehouse.removeSmall();
+            Resource resMid = warehouse.removeMid();
+            controller.removeResources(new BiElement<>(resSmol, Storage.WAREHOUSE_SMALL), 1);
+            controller.removeResources(new BiElement<>(resMid, Storage.WAREHOUSE_MID), 1);
             return;
         }
         if(smallShelf.equals(input1) && largeShelf.contains(input2) || smallShelf.equals(input2) && largeShelf.contains(input1)){
-            warehouse.removeSmall();
-            warehouse.removeLarge();
+            Resource resSmol = warehouse.removeSmall();
+            Resource resTHICC = warehouse.removeLarge();
+            controller.removeResources(new BiElement<>(resSmol, Storage.WAREHOUSE_SMALL), 1);
+            controller.removeResources(new BiElement<>(resTHICC, Storage.WAREHOUSE_LARGE), 1);
             return;
         }
         if(midShelf.contains(input1) && largeShelf.contains(input2) || midShelf.contains(input2) && largeShelf.contains(input1)){
-            warehouse.removeMid();
-            warehouse.removeLarge();
+            Resource resMid = warehouse.removeMid();
+            Resource resTHICC = warehouse.removeLarge();
+            controller.removeResources(new BiElement<>(resMid, Storage.WAREHOUSE_MID), 1);
+            controller.removeResources(new BiElement<>(resTHICC, Storage.WAREHOUSE_LARGE), 1);
             return;
         }
         throw new BadStorageException();
@@ -641,14 +668,17 @@ public class ProPlayer extends Player{
 
         if(smallShelf.equals(input)){
             warehouse.removeSmall();
+            controller.removeResources(new BiElement<>(input, Storage.WAREHOUSE_SMALL), 1);
             return;
         }
         if(midShelf.contains(input)){
             warehouse.removeMid();
+            controller.removeResources(new BiElement<>(input, Storage.WAREHOUSE_MID), 1);
             return;
         }
         if(largeShelf.contains(input)){
             warehouse.removeLarge();
+            controller.removeResources(new BiElement<>(input, Storage.WAREHOUSE_LARGE), 1);
             return;
         }
         throw new BadStorageException();
@@ -767,6 +797,9 @@ public class ProPlayer extends Player{
         }
 
         //Adding all outputs produced
+        for(Resource r : tempProduction){
+            controller.addResources(new BiElement<>(r, Storage.LOOTCHEST), 1);
+        }
         lootChest.addResources(tempProduction);
 
     }
@@ -797,6 +830,8 @@ public class ProPlayer extends Player{
             input1 = fromLoot.get(0);
             input2 = fromLoot.get(1);
             basicProductionFromLootchest(input1, input2);
+            controller.removeResources(new BiElement<>(input1, Storage.LOOTCHEST), 1);
+            controller.removeResources(new BiElement<>(input2, Storage.LOOTCHEST), 1);
         }else if(fromWar.size()==2) {
             input1 = fromWar.get(0);
             input2 = fromWar.get(1);
@@ -805,40 +840,51 @@ public class ProPlayer extends Player{
             input1 = fromExtra.get(0).get(0);
             input2 = fromExtra.get(0).get(1);
             basicProductionFromExtra(input1, input2, 1);
+            controller.removeResources(new BiElement<>(input1, Storage.EXTRA1), 2); //if we're here, input1==input2
         } else if(fromExtra.size()>1 && fromExtra.get(1).size()==2){
             input1 = fromExtra.get(1).get(0);
             input2 = fromExtra.get(1).get(1);
             basicProductionFromExtra(input1, input2, 2);
+            controller.removeResources(new BiElement<>(input1, Storage.EXTRA2), 2);
         }else if(resAsCash.anyFromLootchestTray() && resAsCash.anyFromWarehouseTray()){
             input1 = fromLoot.get(0);
             input2 = fromWar.get(0);
             partialBasicProdFromLoot(input1);
+            controller.removeResources(new BiElement<>(input1, Storage.LOOTCHEST), 1);
             partialBasicProdFromWarehouse(input2);
         }else if(resAsCash.anyFromLootchestTray() && resAsCash.anyFromExtraStorage(0)){
             input1 = fromLoot.get(0);
             input2 = fromExtra.get(0).get(0);
             partialBasicProdFromLoot(input1);
+            controller.removeResources(new BiElement<>(input1, Storage.LOOTCHEST), 1);
             partialBasicProdFromExtra(input2, 1);
+            controller.removeResources(new BiElement<>(input2, Storage.EXTRA1), 1);
         }else if(resAsCash.anyFromLootchestTray() && resAsCash.anyFromExtraStorage(1)){
             input1 = fromLoot.get(0);
             input2 = fromExtra.get(1).get(0);
             partialBasicProdFromLoot(input1);
+            controller.removeResources(new BiElement<>(input1, Storage.LOOTCHEST), 1);
             partialBasicProdFromExtra(input2, 2);
+            controller.removeResources(new BiElement<>(input2, Storage.EXTRA2), 1);
         }else if(resAsCash.anyFromWarehouseTray() && resAsCash.anyFromExtraStorage(0)){
             input1 = fromWar.get(0);
             input2 = fromExtra.get(0).get(0);
             partialBasicProdFromWarehouse(input1);
             partialBasicProdFromExtra(input2, 1);
+            controller.removeResources(new BiElement<>(input2, Storage.EXTRA1), 1);
         }else if(resAsCash.anyFromWarehouseTray() && resAsCash.anyFromExtraStorage(1)){
             input1 = fromWar.get(0);
             input2 = fromExtra.get(1).get(0);
             partialBasicProdFromWarehouse(input1);
             partialBasicProdFromExtra(input2, 2);
+            controller.removeResources(new BiElement<>(input2, Storage.EXTRA2), 1);
         }else if(resAsCash.anyFromExtraStorage(0) && resAsCash.anyFromExtraStorage(1)){
             input1 = fromExtra.get(0).get(0);
             input2 = fromExtra.get(1).get(0);
             partialBasicProdFromExtra(input1, 1);
+            controller.removeResources(new BiElement<>(input1, Storage.EXTRA1), 1);
             partialBasicProdFromExtra(input2, 2);
+            controller.removeResources(new BiElement<>(input2, Storage.EXTRA2), 1);
         }else{
             throw new BadStorageException();
         }
@@ -871,14 +917,18 @@ public class ProPlayer extends Player{
                    removeFromWar.remove(r);
                    warehouse.removeSmall();
                    cost.remove(r);
+                   //for generating UpdateMessage correctly
+                   controller.removeResources(new BiElement<>(r, Storage.WAREHOUSE_SMALL), 1);
                }else if(warehouse.getMidInventory().size() != 0 && warehouse.getMidInventory().contains(r)){
                    removeFromWar.remove(r);
                    warehouse.removeMid();
                    cost.remove(r);
+                   controller.removeResources(new BiElement<>(r, Storage.WAREHOUSE_MID), 1);
                }else if(warehouse.getLargeInventory().size() != 0 && warehouse.getLargeInventory().contains(r)){
                    removeFromWar.remove(r);
                    warehouse.removeLarge();
                    cost.remove(r);
+                   controller.removeResources(new BiElement<>(r, Storage.WAREHOUSE_LARGE), 1);
                }
                else {
                    throw new BadStorageException();
@@ -888,12 +938,14 @@ public class ProPlayer extends Player{
                     removeFromLoot.remove(r);
                     lootChest.removeResources(r);
                     cost.remove(r);
+                    controller.removeResources(new BiElement<>(r, Storage.LOOTCHEST), 1);
                 }
            }else if(fromExtra.size()>0 && extraStorage.isPresent() && extraStorage.get().get(0).getStorageType().equals(r)){
              if(extraStorage.get().get(0).size()>0){
                  fromExtra.get(0).remove(r);
                  extraStorage.get().get(0).remove(r);
                  cost.remove(r);
+                 controller.removeResources(new BiElement<>(r, Storage.EXTRA1), 1);
              }else {
                  throw new BadStorageException();
              }
@@ -903,6 +955,7 @@ public class ProPlayer extends Player{
                    fromExtra.get(1).remove(r);
                    extraStorage.get().get(1).remove(r);
                    cost.remove(r);
+                   controller.removeResources(new BiElement<>(r, Storage.EXTRA2), 1);
                }else {
                    throw new BadStorageException();
                }

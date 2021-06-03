@@ -13,6 +13,7 @@ import it.polimi.ingsw.messages.concreteMessages.PlayersPositionMessage;
 import it.polimi.ingsw.messages.concreteMessages.StoreResourcesMessage;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
+import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.market.Resource;
 import javafx.application.Platform;
@@ -363,6 +364,11 @@ public class GuiController extends ClientController {
 
     @Override
     public void rearrangeWarehouse() {
+
+    }
+
+    @Override
+    public void showLorenzoStatus(ActionToken act) {
 
     }
 

@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.cards.actiontoken;
 import it.polimi.ingsw.model.SinglePlayerGame;
 import it.polimi.ingsw.model.cards.production.ColorEnum;
 import it.polimi.ingsw.model.cards.production.ProductionCard;
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.ProPlayer;
 
 /**
@@ -33,7 +34,7 @@ public class DiscardToken implements ActionToken {
      * @param game the SinglePlayerGame being played
      */
     @Override
-    public void draw(ProPlayer player, SinglePlayerGame game){
+    public void draw(Player player, SinglePlayerGame game){
 
         ProductionCard prod;
 
@@ -55,6 +56,8 @@ public class DiscardToken implements ActionToken {
     public String toString(){
         return "DiscardToken(Type ProductionCard: " + typeProdCard + ")";
     }
+
+    public String print() { return "Lorenzo discarded 2 "+ typeProdCard +" cards.";}
 
     public int getId() {
         return id;

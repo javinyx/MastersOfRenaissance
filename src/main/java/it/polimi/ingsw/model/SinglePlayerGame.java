@@ -108,7 +108,7 @@ public class SinglePlayerGame extends Game implements ModelObserver {
         end(winner);
     }
     public void updatePosition(Player player){
-        //controller.update(MessageID.PLAYERS_POSITION);
+        controller.update(MessageID.PLAYERS_POSITION);
     }
 
     public void updateEndTurn(ProPlayer player){} //do nothing?
@@ -122,6 +122,7 @@ public class SinglePlayerGame extends Game implements ModelObserver {
         if(player.equals(lorenzo)) {
             if (!this.player.isInVaticanReportRange(vaticanReport)) {
                 passes.get(vaticanReport - 1).disable();
+                controller.update(MessageID.VATICAN_REPORT);
                 return;
             }
         }
@@ -169,5 +170,13 @@ public class SinglePlayerGame extends Game implements ModelObserver {
     }
 
     public void end(Player winner){}
+
+    public ActionToken drawActionToken(){
+        ActionToken act;
+
+        act = ((ActionToken)tokenDeck.getFirst());
+        act.draw(lorenzo, this);
+        return act;
+    }
 
 }

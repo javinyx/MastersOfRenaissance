@@ -146,7 +146,7 @@ public class Cli /*extends ViewInterface*/ {
         return resources;
     }
 
-    public List<Integer> chooseLeader(List<LeaderCard> leaders){
+    public List<Integer> chooseInitialLeader(List<LeaderCard> leaders){
 
         List<Integer> lID = new ArrayList<>();
 
@@ -177,6 +177,39 @@ public class Cli /*extends ViewInterface*/ {
             }
         }
 
+        return lID;
+    }
+
+    public List<Integer> chooseLeader(List<LeaderCard> leaders){
+
+        int c = -1;
+        List<Integer> lID = new ArrayList<>();
+        List<LeaderCard> leadBack = new ArrayList<>(leaders);
+
+        for (int i = 0; i < leaders.size(); i++) {
+            OSPrinter.printLeaders(leaders.get(i));
+        }
+
+        System.out.println("Choose the ID of the two card you want:");
+
+        for (int i = 0; i < 2; i++) {
+            boolean lock;
+            do {
+                lock = true;
+                System.out.println("Select the Leader Card you want to use, press 0 to skip selection");
+                c = scanner.nextInt();
+                if (c != 0) {
+                    for (LeaderCard lead : leaders)
+                        if (lead.getId() == c) {
+                            lID.add(lead.getId());
+                            lock = false;
+                            break;
+                        }
+                }
+                else
+                    break;
+            } while (!lock);
+        }
         return lID;
     }
 

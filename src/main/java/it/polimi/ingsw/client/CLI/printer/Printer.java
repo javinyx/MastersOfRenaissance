@@ -255,7 +255,7 @@ switch (choice) {
         for (int i = 0; i < 2; i++) {
             System.out.println(line);
         }
-        line2.append(" ".repeat(12)).append("|").append(wareSmall != null? printRes(wareSmall) : "   None   ").append("|").append(" ".repeat(12)).append("\t").append("|").append(prod.get(0) != null? "     Color: "+printColorprod(prod.get(0))+" Level: "+prod.get(0).getId()+"     ": " ".repeat(34)).append("|").append("\t").append("|").append(prod.get(1) != null? "     Color: "+printColorprod(prod.get(1))+" Level: "+prod.get(1).getId()+"     ": " ".repeat(34)).append("|").append("\t").append("|").append(prod.get(2) != null? "     Color: "+printColorprod(prod.get(2))+" Level: "+prod.get(2).getId()+"     ": " ".repeat(34)).append("|");
+        line2.append(" ".repeat(12)).append("|").append(wareSmall != null? printRes(wareSmall) : "   None   ").append("|").append(" ".repeat(12)).append("\t").append("|").append(prod.get(0) != null? "     Color: "+printColorprod(prod.get(0))+" Level: "+prod.get(0).getLevel()+"     ": " ".repeat(34)).append("|").append("\t").append("|").append(prod.get(1) != null? "     Color: "+printColorprod(prod.get(1))+" Level: "+prod.get(1).getLevel()+"     ": " ".repeat(34)).append("|").append("\t").append("|").append(prod.get(2) != null? "     Color: "+printColorprod(prod.get(2))+" Level: "+prod.get(2).getLevel()+"     ": " ".repeat(34)).append("|");
         System.out.println(line2+Color.RESET);
         for (int i = 0; i < 2; i++) {
             System.out.println(line);
@@ -484,8 +484,8 @@ switch (choice) {
 
     public void printFirstLineGridProdCard(){
         String spaces = " ".repeat(7);
-        System.out.print(spaces + Color.GREEN.escape() + "GREEN " + Color.RESET + spaces + "|");
-        System.out.print(spaces + Color.BLUE.escape() + "BLUE  " + Color.RESET + spaces + "|");
+        System.out.print(spaces + Color.GREEN.escape() +  "GREEN " + Color.RESET + spaces + "|");
+        System.out.print(spaces + Color.BLUE.escape() +   "BLUE  " + Color.RESET + spaces + "|");
         System.out.print(spaces + Color.YELLOW.escape() + "YELLOW" + Color.RESET + spaces + "|");
         System.out.print(spaces + Color.PURPLE.escape() + "PURPLE" + Color.RESET + spaces + "|");
     }

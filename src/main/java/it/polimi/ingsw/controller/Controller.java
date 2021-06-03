@@ -14,6 +14,7 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.MultiPlayerGame;
 import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.SinglePlayerGame;
+import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
 import it.polimi.ingsw.model.cards.leader.*;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
@@ -34,6 +35,7 @@ public class Controller implements Observer<MessageID> {
     private List<LeaderCard> allLeaders = new ArrayList<>();
     private List<ConcreteProductionCard> allProductionCards = new ArrayList<>();
     private List<Observer<MessageEnvelope>> remoteViews;
+    private List<Integer> infoTokenLorenzo = new ArrayList<>();
 
     private ProPlayer playerToAck;
     private int numPlayer;
@@ -177,6 +179,17 @@ public class Controller implements Observer<MessageID> {
             update(MessageID.INFO);
             return;
         }
+        if (game.getTotalPlayers() == 1) {
+            infoTokenLorenzo.clear();
+            ActionToken act = ((SinglePlayerGame) game).drawActionToken();
+
+            infoTokenLorenzo.add(act.getId());
+            infoTokenLorenzo.add(((SinglePlayerGame) game).getLorenzoPosition());
+
+            update(LORENZO_POSITION);
+
+        }
+
         //update(MessageID.CONFIRM_END_TURN);
         //parte nuova
         previousPlayer = game.getCurrPlayer();
@@ -667,6 +680,8 @@ public class Controller implements Observer<MessageID> {
         playerLeaderDoneCtr++;
     }
 
+    private int leaderIDtoSend;
+
     /**
      * @param leaderCard the card to be activated.
      */
@@ -679,7 +694,9 @@ public class Controller implements Observer<MessageID> {
         for (int i = 0; i < ProPlayer.getMaxNumExtraStorage(); i++) {
             if (game.getCurrPlayer().getLeaderCards().get(i).equals(leaderCard)) {
                 if (game.getCurrPlayer().activateLeaderCard(leaderCard)) {
-                    update(MessageID.ACK);
+                    leaderIDtoSend = leaderCard.getId();
+                    update(ACTIVATE_LEADER);
+                    update(ACK);
                     return;
                 } else {
                     update(LEADER_NOT_ACTIVABLE);
@@ -846,7 +863,7 @@ public class Controller implements Observer<MessageID> {
             }
 
             case LORENZO_POSITION -> {
-                MessageEnvelope env = new MessageEnvelope(LORENZO_POSITION, String.valueOf(((SinglePlayerGame) game).getLorenzoPosition()));
+                MessageEnvelope env = new MessageEnvelope(LORENZO_POSITION, infoTokenLorenzo.toString());
                 remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(env);
             }
             case PLAYERS_POSITION -> {
@@ -889,6 +906,9 @@ public class Controller implements Observer<MessageID> {
                     remoteViews.get(pp.getTurnID()-1).update(envelope1);
                 }
             }
+
+            case ACTIVATE_LEADER -> remoteViews.get(getCurrPlayerTurnID() - 1).update(new MessageEnvelope(messageID, String.valueOf(leaderIDtoSend)));
+
 
 
             default -> System.out.println("No no no");

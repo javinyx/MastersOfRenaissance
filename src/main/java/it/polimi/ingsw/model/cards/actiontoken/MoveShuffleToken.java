@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.cards.actiontoken;
 
 import it.polimi.ingsw.model.SinglePlayerGame;
 import it.polimi.ingsw.model.cards.production.ColorEnum;
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.ProPlayer;
 
 /**
@@ -24,7 +25,7 @@ public class MoveShuffleToken implements ActionToken {
      * @param game the SinglePlayerGame being played
      */
     @Override
-    public void draw(ProPlayer player, SinglePlayerGame game){
+    public void draw(Player player, SinglePlayerGame game){
 
         player.moveOnBoard(1);
 
@@ -35,6 +36,8 @@ public class MoveShuffleToken implements ActionToken {
     public String toString(){
         return "Move&Shuffle Token";
     }
+
+    public String print() { return "Lorenzo moved by 1 position. The Token Deck has been shuffled";}
 
     public int getId() {
         return id;

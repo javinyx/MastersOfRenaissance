@@ -117,9 +117,11 @@ public class MessageReceiver implements Runnable{
             case UPDATE -> controller.updateAction(envelope.deserializeUpdateMessage());
             case CONFIRM_END_TURN -> controller.endTurn(gson.fromJson(envelope.getPayload(), EndTurnMessage.class));
 
-            case LORENZO_POSITION -> System.err.println("This message shouldn't have arrived");
+            case LORENZO_POSITION -> controller.upLorenzoToken(envelope.getPayload());
             case VATICAN_REPORT -> controller.infoVaticanReport(gson.fromJson(envelope.getPayload(), VaticanReportMessage.class));
             case PLAYERS_POSITION -> controller.updatePositionAction(gson.fromJson(envelope.getPayload(), PlayersPositionMessage.class));
+
+            case ACTIVATE_LEADER -> controller.activateLeader(Integer.parseInt(envelope.getPayload()));
 
 
             default -> System.err.println("MessageID not recognised Game");

@@ -9,6 +9,10 @@ import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.concreteMessages.*;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
+import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
+import it.polimi.ingsw.model.cards.actiontoken.DiscardToken;
+import it.polimi.ingsw.model.cards.actiontoken.DoubleMoveToken;
+import it.polimi.ingsw.model.cards.actiontoken.MoveShuffleToken;
 import it.polimi.ingsw.model.cards.leader.*;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
@@ -22,14 +26,17 @@ import java.util.stream.Collectors;
 public abstract class ClientController {
 
     private NubPlayer currPlayer;
+    protected int lorenzoPos = 0;
     private Market market;
     protected NubPlayer player;
     protected MessageToServerHandler messageToServerHandler;
     private int count = 0;
+    protected int countPope = 0;
 
     private List<ConcreteProductionCard> allProductionCards;
-    private List<LeaderCard> allLeaders = new ArrayList<>();
     private List<NubPlayer> totalPlayers = new ArrayList<>();
+    private final List<LeaderCard> allLeaders = new ArrayList<>();
+    private final List<ActionToken> allToken = new ArrayList<>();
     protected List<ConcreteProductionCard> availableProductionCard = new ArrayList<>();
     protected List<NubPlayer> otherPlayers = new ArrayList<>();
     protected List<BiElement<Resource, Storage>> storeRes;
@@ -165,9 +172,12 @@ public abstract class ClientController {
     public abstract void updatePositionAction(PlayersPositionMessage msg);
     public abstract void showBoard();
     public abstract void rearrangeWarehouse();
+    public abstract void showLorenzoStatus(ActionToken act);
 
     /**Move Lorenzo on the faith track*/
-    public abstract void moveLorenzo(int currentPosition);
+    public void moveLorenzo(int currentPosition){
+        lorenzoPos += currentPosition;
+    }
 
     /**Show other players what the last player has done in his/her turn once it has been set on the corresponding
      * {@link NubPlayer} object.
@@ -289,6 +299,9 @@ public abstract class ClientController {
     }
 
     public void infoVaticanReport(VaticanReportMessage msg){
+
+        countPope++;
+
         int reportId = msg.getReportId();
         List<BiElement<Integer, Boolean>> playersPopeStatus = msg.getAllPlayerPopeFavorStatus();
         for(BiElement<Integer,Boolean> bi : playersPopeStatus){
@@ -299,11 +312,36 @@ public abstract class ClientController {
                 }
             }
         }
-        //TODO: show on UI who caused the vatican report and the player (client owner) his/her status
+
+        int i = msg.getReportId();
+
+        for(NubPlayer p : totalPlayers){
+            for (BiElement<Integer, Boolean> bi : msg.getAllPlayerPopeFavorStatus()){
+                if(bi.getFirstValue() == p.getTurnNumber())
+                    p.getPopePasses()[i-1] = bi.getSecondValue();
+            }
+        }
+    }
+
+    public void activateLeader(int lID){
+        for (LeaderCard led : player.getLeaders()) {
+            if (led.getId() == lID)
+                led.setStatus(true);
+        }
     }
 
     public void passTurn(){
         messageToServerHandler.generateEnvelope(MessageID.END_TURN, "");
+    }
+
+    public void upLorenzoToken (String msg){
+
+        List<Integer> num = convertStringToListInteger(msg);
+        ActionToken act = convertIdToActionToken(num.get(0));
+
+        lorenzoPos = num.get(1);
+
+        showLorenzoStatus(act);
     }
 
     //---------------------------CONVERTERS---------------------------------
@@ -325,6 +363,15 @@ public abstract class ClientController {
                                                         .collect(Collectors.toList()));
 
         return leaders;
+
+    }
+
+    protected ActionToken convertIdToActionToken(int id){
+        for (ActionToken a : allToken)
+            if (a.getId() == id)
+                return a;
+
+        return null;
 
     }
 
@@ -363,6 +410,15 @@ public abstract class ClientController {
 
         reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(leadBoostPath)));
         allLeaders.addAll(gson.fromJson(reader, new TypeToken<List<BoostAbility>>(){}.getType()));
+
+        reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(tokenDiscardPath)));
+        allToken.addAll(gson.fromJson(reader, new TypeToken<List<DiscardToken>>(){}.getType()));
+
+        reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(tokenDoubleMovePath)));
+        allToken.addAll(gson.fromJson(reader, new TypeToken<List<DoubleMoveToken>>(){}.getType()));
+
+        reader = new InputStreamReader(Objects.requireNonNull(MastersOfRenaissance.class.getResourceAsStream(tokenMoveShufflePath)));
+        allToken.addAll(gson.fromJson(reader, new TypeToken<List<MoveShuffleToken>>(){}.getType()));
     }
 }
 

@@ -10,6 +10,7 @@ import it.polimi.ingsw.messages.concreteMessages.*;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.ResourcesWallet;
+import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
 import it.polimi.ingsw.model.cards.leader.*;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
@@ -160,7 +161,7 @@ public class CliController extends ClientController {
     public void chooseLeadersAction(){
         cli.clearScreen();
         cli.showMessage("Choose 2 leaders among these:");
-        List<Integer> lId = cli.chooseLeader(getPlayer().getLeaders());
+        List<Integer> lId = cli.chooseInitialLeader(getPlayer().getLeaders());
 
         getPlayer().setLeaders(convertIdToLeaderCard(lId));
 
@@ -259,6 +260,16 @@ public class CliController extends ClientController {
                 System.out.println(extra);
                 break;
             }
+        }
+
+        System.out.println("Status of Pope Passes:");
+        for (int i = 1; i < 4; i++) {
+            if(player.getPopePasses()[i-1])
+                System.out.println("Pope Passe n." + i + ": ACTIVE");
+            else if (countPope == i)
+                System.out.println("Pope Passe n." + i + ": ALREADY ACTIVATE BUT NOT FOR YOU");
+            else
+                System.out.println("Pope Passe n." + i + ": NOT ACTIVE");
         }
 
         cli.pressEnter();
@@ -511,8 +522,10 @@ public class CliController extends ClientController {
 
         for (BiElement<Resource, Storage> res : player.getAllResources().keySet()) {
             if (res.getSecondValue().equals(Storage.WAREHOUSE_SMALL) || res.getSecondValue().equals(Storage.WAREHOUSE_MID) || res.getSecondValue().equals(Storage.WAREHOUSE_LARGE))
-                for(int i=0; i< player.getAllResources().get(res); i++)
+                for (int i = 0; i < player.getAllResources().get(res); i++) {
                     elem.add(res.getFirstValue());
+                }
+
         }
         cli.showMessage("Choose a storage for each of the following resources:" + elem);
         setRegistrationPhase(true);
@@ -522,6 +535,15 @@ public class CliController extends ClientController {
         StoreResourcesMessage msg = new StoreResourcesMessage(storeRes, getPlayer().getTurnNumber());
 
         messageToServerHandler.generateEnvelope(MessageID.REARRANGE_WAREHOUSE, gson.toJson(msg, StoreResourcesMessage.class));
+
+    }
+
+    @Override
+    public void showLorenzoStatus(ActionToken act) {
+
+        System.out.println("Lorenzo now is in position: " + lorenzoPos);
+        System.out.println(act.print());
+        cli.pressEnter();
 
     }
 
@@ -579,9 +601,11 @@ public class CliController extends ClientController {
 
     }
 
+
+
     @Override
     public void moveLorenzo(int currentPosition) {
-        if(currentPosition==24){
+        if(currentPosition == 24){
             cli.showMessage("Lorenzo completed the faith track. \nYou lose! :)");
         }
         cli.showMessage("Lorenzo moved. Now he is cell " + currentPosition);

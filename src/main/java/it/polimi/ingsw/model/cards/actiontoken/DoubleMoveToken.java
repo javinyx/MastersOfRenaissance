@@ -1,7 +1,9 @@
 package it.polimi.ingsw.model.cards.actiontoken;
 
 import it.polimi.ingsw.model.SinglePlayerGame;
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.ProPlayer;
+import javafx.application.Platform;
 
 /**
  * The ActionToken with the DoubleMove ability.
@@ -26,7 +28,7 @@ public class DoubleMoveToken implements ActionToken {
      * @param game the SinglePlayerGame being played
      */
     @Override
-    public void draw(ProPlayer player, SinglePlayerGame game){
+    public void draw(Player player, SinglePlayerGame game){
 
         player.moveOnBoard(2);
     }
@@ -35,6 +37,8 @@ public class DoubleMoveToken implements ActionToken {
     public String toString(){
         return "DoubleMove Token";
     }
+
+    public String print() { return "Lorenzo moved by 2 positions.";}
 
     public int getId() {
         return id;

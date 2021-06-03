@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.cards.actiontoken;
 
 import it.polimi.ingsw.model.SinglePlayerGame;
 import it.polimi.ingsw.model.cards.Card;
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.ProPlayer;
 
 /**
@@ -16,6 +17,7 @@ public interface ActionToken extends Card {
      * @param player the player who draws
      * @param game the game that the player is part of
      */
-    public void draw(ProPlayer player, SinglePlayerGame game);
+    public void draw(Player player, SinglePlayerGame game);
     int getId();
+    String print();
 }

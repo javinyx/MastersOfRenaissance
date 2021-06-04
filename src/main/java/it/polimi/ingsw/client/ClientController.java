@@ -40,6 +40,7 @@ public abstract class ClientController {
     protected List<ConcreteProductionCard> availableProductionCard = new ArrayList<>();
     protected List<NubPlayer> otherPlayers = new ArrayList<>();
     protected List<BiElement<Resource, Storage>> storeRes;
+    protected List<Integer> popeStatusGeneral = new ArrayList<>();
 
     private MessageID lastRegistrationMessage;
     private MessageID lastGameMessage;
@@ -207,7 +208,7 @@ public abstract class ClientController {
                 pp.setCurrPos(msg.getPlayerPos());
                 if(pp.equals(player)){
                     //updateFaithTrack();
-                    System.out.println("You're now in position " + player.getCurrPos()); //for debugging
+                    //System.out.println("You're now in position " + player.getCurrPos()); //for debugging
                 }
                 if (boughtProductionCard != null)
                     pp.addProductionCard(boughtProductionCard, msg.getProductionCardId().getSecondValue() - 1);
@@ -223,12 +224,12 @@ public abstract class ClientController {
 
 
                 resources = msg.getRemovedResources();
-                System.out.println("To remove: " + resources);
+                //System.out.println("To remove: " + resources);
 
                 if (resources != null && resources.size()>0) {
                     resources.forEach(pp::removeResources);
                 }
-                System.out.println("After removing: " + pp.getAllResources());
+                //System.out.println("After removing: " + pp.getAllResources());
                 updateOtherPlayer(pp);
                 break;
             }
@@ -262,7 +263,7 @@ public abstract class ClientController {
 
     public void continueTurn(Boolean basicActionDone){
         if (!registrationPhase){
-            System.out.println(basicActionDone);
+            //System.out.println(basicActionDone);
             normalTurn = !basicActionDone;
             startTurnPhase();
         }
@@ -321,6 +322,14 @@ public abstract class ClientController {
                     p.getPopePasses()[i-1] = bi.getSecondValue();
             }
         }
+
+        if(player.getPopePasses()[i-1])
+            popeStatusGeneral.add(0);
+        else if (countPope == i)
+            popeStatusGeneral.add(1);
+        else
+            popeStatusGeneral.add(2);
+
     }
 
     public void activateLeader(int lID){

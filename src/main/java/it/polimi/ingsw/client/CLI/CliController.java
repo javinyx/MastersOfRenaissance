@@ -264,10 +264,12 @@ public class CliController extends ClientController {
 
         System.out.println("Status of Pope Passes:");
         for (int i = 1; i < 4; i++) {
-            if(player.getPopePasses()[i-1])
-                System.out.println("Pope Passe n." + i + ": ACTIVE");
-            else if (countPope == i)
-                System.out.println("Pope Passe n." + i + ": ALREADY ACTIVATE BUT NOT FOR YOU");
+            if (i <= popeStatusGeneral.size())
+                switch (popeStatusGeneral.get(i-1)){
+                    case 0 -> System.out.println("Pope Passe n." + i + ": ACTIVE");
+                    case 1 -> System.out.println("Pope Passe n." + i + ": ALREADY ACTIVATE BUT NOT FOR YOU");
+                    case 2 -> System.out.println("Pope Passe n." + i + ": NOT ACTIVE");
+                }
             else
                 System.out.println("Pope Passe n." + i + ": NOT ACTIVE");
         }
@@ -617,14 +619,16 @@ public class CliController extends ClientController {
 
         for(BiElement<Integer, Integer> pos : msg.getNewPlayersPosition()){
             if(pos.getFirstValue()==0){
-                System.out.println("Lorenzo is at cell " + pos.getSecondValue());
+                //System.out.println("Lorenzo is at cell " + pos.getSecondValue());
             }else{
                 for(NubPlayer p : allPlayers){
                     if(p.getTurnNumber()== pos.getFirstValue() && p.getCurrPos()!=pos.getSecondValue()){
-                        System.out.println(p.getNickname() + " moved. Now is at cell " + pos.getSecondValue());
+                        //System.out.println(p.getNickname() + " moved. Now is at cell " + pos.getSecondValue());
+                        p.setCurrPos(pos.getSecondValue());
                         break;
                     }else if(p.getTurnNumber()==pos.getFirstValue() && p.equals(getPlayer())){
-                        System.out.println("You're in cell " + pos.getSecondValue() +" on the faith track.");
+                        //System.out.println("You're in cell " + pos.getSecondValue() +" on the faith track.");
+                        player.setCurrPos(pos.getSecondValue());
                         break;
                     }
                 }

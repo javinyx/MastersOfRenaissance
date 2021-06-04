@@ -65,7 +65,7 @@ public class MessageReceiver implements Runnable{
     public void readRegistrationMessage(MessageEnvelope envelope){
         controller.setLastRegistrationMessage(envelope.getMessageID());
 
-        System.out.println("REGISTRATION: " + envelope.getMessageID());
+        //System.out.println("REGISTRATION: " + envelope.getMessageID());
 
         switch(envelope.getMessageID()){
             case ACK -> controller.continueTurn(Boolean.parseBoolean(envelope.getPayload()));
@@ -94,7 +94,7 @@ public class MessageReceiver implements Runnable{
     public void readGameMessage(MessageEnvelope envelope) {
         controller.setLastGameMessage(envelope.getMessageID());
 
-        System.out.println("GAME: " + envelope.getMessageID());
+        //System.out.println("GAME: " + envelope.getMessageID());
 
         switch(envelope.getMessageID()){
 

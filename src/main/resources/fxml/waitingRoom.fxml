@@ -3,17 +3,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane id="background" prefHeight="400.0" prefWidth="700.0" xmlns="https://javafx.com/javafx"
+<StackPane id="background" prefHeight="400.0" prefWidth="700.0" xmlns="https://javafx.com/javafx"
             xmlns:fx="https://javafx.com/fxml">
-    <center>
-        <VBox alignment="CENTER" spacing="50" BorderPane.alignment="CENTER">
-            <children>
-                <Label fx:id="waitingRoomLbl" alignment="CENTER" contentDisplay="CENTER" styleClass="greeting"
-                       text="Hello, "/>
-                <Label alignment="CENTER" contentDisplay="CENTER" styleClass="waitLabel"
-                       text="Waiting for other players..."/>
-                <ProgressBar prefHeight="50.0" prefWidth="400.0" id="progressBar" />
-            </children>
+        <VBox alignment="CENTER" spacing="50">
+                <Label fx:id="waitingRoomLbl" styleClass="greeting"/>
+                <Label styleClass="waitLabel" text="Waiting for other players..."/>
+                <ProgressBar prefHeight="50.0" prefWidth="400.0" id="progressBar"/>
         </VBox>
-    </center>
-</BorderPane>
+</StackPane>

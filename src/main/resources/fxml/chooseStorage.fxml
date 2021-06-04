@@ -6,24 +6,22 @@
 
 <AnchorPane id="popUp" fx:id="chooseStrPane" prefHeight="400.0" prefWidth="425.0"
             xmlns="https://javafx.com/javafx" xmlns:fx="https://javafx.com/fxml">
-    <children>
-        <ImageView id="wareHouseImg" fx:id="wareHouseImg" fitHeight="200.0" layoutX="188.0" layoutY="94.0"
-                   pickOnBounds="true" preserveRatio="true">
-            <Image url="@../img/ui/wareHouse.png"/>
-        </ImageView>
 
-        <Region fx:id="shelf1" layoutX="261.0" layoutY="104.0" prefHeight="50.0" prefWidth="50.0"/>
-        <Region fx:id="shelf21" layoutX="235.0" layoutY="164.0" prefHeight="50.0" prefWidth="50.0"/>
-        <Region fx:id="shelf22" layoutX="282.0" layoutY="164.0" prefHeight="50.0" prefWidth="50.0"/>
-        <Region fx:id="shelf31" layoutX="210.0" layoutY="234.0" prefHeight="50.0" prefWidth="50.0"/>
-        <Region fx:id="shelf32" layoutX="260.0" layoutY="234.0" prefHeight="50.0" prefWidth="40.0"/>
-        <Region fx:id="shelf33" layoutX="300.0" layoutY="234.0" prefHeight="50.0" prefWidth="50.0"/>
+    <ImageView id="wareHouseImg" fx:id="wareHouseImg" fitHeight="200.0" layoutX="188.0" layoutY="94.0"
+               preserveRatio="true">
+        <Image url="@../img/ui/wareHouse.png"/>
+    </ImageView>
 
-        <ImageView fx:id="resource1Img" fitHeight="30.0" layoutX="109.0" layoutY="117.0" pickOnBounds="true"
-                   preserveRatio="true" styleClass="resImg"/>
-        <ImageView fx:id="resource2Img" fitHeight="30.0" layoutX="109.0" layoutY="207.0" pickOnBounds="true"
-                   preserveRatio="true" styleClass="resImg"/>
-        <Button fx:id="chooseStorageBtn" layoutX="187.0" layoutY="337.0" mnemonicParsing="false" text="Confirm"
-                styleClass="btn"/>
-    </children>
+    <Region fx:id="shelf1" layoutX="261.0" layoutY="104.0" prefHeight="50.0" prefWidth="50.0"/>
+    <Region fx:id="shelf21" layoutX="235.0" layoutY="164.0" prefHeight="50.0" prefWidth="50.0"/>
+    <Region fx:id="shelf22" layoutX="282.0" layoutY="164.0" prefHeight="50.0" prefWidth="50.0"/>
+    <Region fx:id="shelf31" layoutX="210.0" layoutY="234.0" prefHeight="50.0" prefWidth="50.0"/>
+    <Region fx:id="shelf32" layoutX="260.0" layoutY="234.0" prefHeight="50.0" prefWidth="40.0"/>
+    <Region fx:id="shelf33" layoutX="300.0" layoutY="234.0" prefHeight="50.0" prefWidth="50.0"/>
+
+    <ImageView fx:id="resource1Img" fitHeight="30.0" layoutX="109.0" layoutY="117.0" preserveRatio="true"
+               styleClass="resImg"/>
+    <ImageView fx:id="resource2Img" fitHeight="30.0" layoutX="109.0" layoutY="207.0" preserveRatio="true"
+               styleClass="resImg"/>
+    <Button fx:id="chooseStorageBtn" layoutX="187.0" layoutY="337.0" text="Confirm" styleClass="btn"/>
 </AnchorPane>

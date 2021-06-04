@@ -4,23 +4,15 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="welcomePane" id="background" prefHeight="400.0" prefWidth="700.0" xmlns="https://javafx.com/javafx"
-            xmlns:fx="https://javafx.com/fxml">
-    <center>
-        <VBox alignment="CENTER">
-            <children>
-                <ImageView id="logo" fitWidth="400.0" pickOnBounds="true" preserveRatio="true">
-                    <Image url="@../img/ui/logo_en.png"/>
-                </ImageView>
-                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="40.0">
-                    <children>
-                        <Button fx:id="playBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
-                                styleClass="btn" text="Play"/>
-                        <Button fx:id="quitBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
-                                styleClass="btn" text="Quit"/>
-                    </children>
-                </HBox>
-            </children>
-        </VBox>
-    </center>
-</BorderPane>
+<StackPane id="background" prefHeight="400.0" prefWidth="700.0" xmlns="https://javafx.com/javafx"
+           xmlns:fx="https://javafx.com/fxml">
+    <VBox alignment="CENTER" spacing="50">
+        <ImageView id="logo" fitWidth="400.0" preserveRatio="true">
+            <Image url="@../img/ui/logo_en.png"/>
+        </ImageView>
+        <HBox alignment="CENTER" spacing="40.0">
+            <Button fx:id="playBtn" styleClass="btn" text="Play"/>
+            <Button fx:id="quitBtn" styleClass="btn" text="Quit"/>
+        </HBox>
+    </VBox>
+</StackPane>

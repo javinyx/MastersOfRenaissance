@@ -3,37 +3,24 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane id="backgroundStart" prefHeight="400.0" prefWidth="700.0" xmlns="https://javafx.com/javafx"
-            xmlns:fx="https://javafx.com/fxml">
-    <center>
-        <VBox alignment="CENTER" spacing="40" BorderPane.alignment="CENTER">
-            <children>
-                <VBox alignment="CENTER" spacing="10">
-                    <children>
-                        <Label alignment="CENTER" styleClass="inputLabel" text="Nickname"/>
-                        <TextField fx:id="nickNameField" maxWidth="300.0" minWidth="300.0" promptText="name"
-                                   styleClass="inputArea"/>
-                        <Label fx:id="badNameLbl" alignment="CENTER" styleClass="badNameLabel" text=""/>
-                    </children>
-                </VBox>
-                <VBox alignment="CENTER" spacing="10">
-                    <children>
-                        <Label alignment="CENTER" styleClass="inputLabel" text="Number of Players"/>
-                        <HBox alignment="CENTER" spacing="10">
-                            <children>
-                                <Button fx:id="singlePlayerBtn" mnemonicParsing="false" styleClass="btnSq" text="1"/>
-                                <Button fx:id="twoPlayerBtn" mnemonicParsing="false" styleClass="btnSq" text="2"/>
-                            </children>
-                        </HBox>
-                        <HBox alignment="CENTER" spacing="10">
-                            <children>
-                                <Button fx:id="threePlayerBtn" mnemonicParsing="false" styleClass="btnSq" text="3"/>
-                                <Button fx:id="fourPlayerBtn" mnemonicParsing="false" styleClass="btnSq" text="4"/>
-                            </children>
-                        </HBox>
-                    </children>
-                </VBox>
-            </children>
+<StackPane id="backgroundStart" prefHeight="400.0" prefWidth="700.0" xmlns="https://javafx.com/javafx"
+           xmlns:fx="https://javafx.com/fxml">
+    <VBox alignment="CENTER" spacing="40">
+        <VBox alignment="CENTER" spacing="10">
+            <Label styleClass="inputLabel" text="Nickname"/>
+            <TextField fx:id="nickNameField" maxWidth="300.0" promptText="name" styleClass="inputArea"/>
+            <Label fx:id="badNameLbl" styleClass="badNameLabel"/>
         </VBox>
-    </center>
-</BorderPane>
+        <VBox alignment="CENTER" spacing="10">
+            <Label styleClass="inputLabel" text="Number of Players"/>
+            <HBox alignment="CENTER" spacing="10">
+                <Button fx:id="singlePlayerBtn" styleClass="btnSq" text="1"/>
+                <Button fx:id="twoPlayerBtn" styleClass="btnSq" text="2"/>
+            </HBox>
+            <HBox alignment="CENTER" spacing="10">
+                <Button fx:id="threePlayerBtn" styleClass="btnSq" text="3"/>
+                <Button fx:id="fourPlayerBtn" styleClass="btnSq" text="4"/>
+            </HBox>
+        </VBox>
+    </VBox>
+</StackPane>

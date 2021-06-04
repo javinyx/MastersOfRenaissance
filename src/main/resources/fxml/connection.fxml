@@ -3,29 +3,19 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane id="backgroundStart" prefHeight="400.0" prefWidth="700.0" xmlns="https://javafx.com/javafx"
-            xmlns:fx="https://javafx.com/fxml">
-    <center>
-        <VBox spacing="20" alignment="CENTER" minHeight="400.0" minWidth="300.0" BorderPane.alignment="CENTER">
-            <children>
-                <VBox spacing="10" alignment="CENTER">
-                    <children>
-                        <Label alignment="CENTER" styleClass="inputLabel" text="Server IP"/>
-                        <TextField fx:id="ipField" maxWidth="300.0" minWidth="300.0" promptText="127.0.0.1"
-                                   styleClass="inputArea"/>
-                    </children>
-                </VBox>
-                <VBox spacing="10" alignment="CENTER">
-                    <children>
-                        <Label alignment="CENTER" layoutX="287.0" layoutY="189.0" styleClass="inputLabel" text="Port"/>
-                        <TextField fx:id="portField" layoutX="160.0" layoutY="206.0" maxWidth="300.0" minWidth="300.0"
-                                   promptText="27001" styleClass="inputArea"/>
-                    </children>
-                </VBox>
-                <Button fx:id="connectBtn" mnemonicParsing="false" styleClass="btn" text="Connect"/>
-                <Label alignment="CENTER" layoutX="287.0" layoutY="189.0" styleClass="inputLabelSmall" text="OR"/>
-                <Button fx:id="localModeBtn" mnemonicParsing="false" styleClass="btn" text="Local Mode"/>
-            </children>
+<StackPane id="backgroundStart" prefHeight="400.0" prefWidth="700.0" xmlns="https://javafx.com/javafx"
+           xmlns:fx="https://javafx.com/fxml">
+    <VBox spacing="20" alignment="CENTER">
+        <VBox spacing="10" alignment="CENTER">
+            <Label styleClass="inputLabel" text="Server IP"/>
+            <TextField fx:id="ipField" maxWidth="300" promptText="localhost" styleClass="inputArea"/>
         </VBox>
-    </center>
-</BorderPane>
+        <VBox spacing="10" alignment="CENTER">
+            <Label styleClass="inputLabel" text="Port"/>
+            <TextField fx:id="portField" maxWidth="300" promptText="27001" styleClass="inputArea"/>
+        </VBox>
+        <Button fx:id="connectBtn" styleClass="btn" text="Connect"/>
+        <Label styleClass="inputLabelSmall" text="OR"/>
+        <Button fx:id="localModeBtn" styleClass="btn" text="Local Mode"/>
+    </VBox>
+</StackPane>

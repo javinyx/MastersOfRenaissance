@@ -23,10 +23,8 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
-import javafx.scene.shape.Circle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -37,73 +35,82 @@ import java.util.*;
 import static it.polimi.ingsw.client.GUI.sceneHandlers.ScenesEnum.*;
 
 /**
- * This class is the handler for the welcome, connection, registration, waiting room, leaders choice and resource choice
- * action during the initial phase.
+ * This class is the handler for the welcome, connection, registration, waiting room, leaders choice, resource choice
+ * and storage choice action during the initial phase.
  */
 public class InitialPhaseHandler extends PhaseHandler {
-    private String ip, port;
+    /*** MAIN *********************************************************************************************************/
     private int ctr;
-    private Node target;
-
-    private List<BiElement<Resource, Storage>> initialResourcePlacements = new ArrayList<>();
-
     private Map<ScenesEnum, Scene> sceneMap = new HashMap<>();
 
+    /*** WELCOME SCENE ************************************************************************************************/
     @FXML
-    private Button playBtn, quitBtn, connectBtn, localModeBtn;
+    private Button playBtn, quitBtn;
+
+    /*** CONNECTION SCENE *********************************************************************************************/
+    private String ip, port;
     @FXML
-    private TextField ipField, portField, nickNameField;
+    private Button connectBtn, localModeBtn;
+    @FXML
+    private TextField ipField, portField;
+
+    /*** REGISTRATION SCENE *******************************************************************************************/
     @FXML
     private Button singlePlayerBtn, twoPlayerBtn, threePlayerBtn, fourPlayerBtn;
     @FXML
-    private Label waitingRoomLbl, badNameLbl;
+    private Label badNameLbl;
+    @FXML
+    private TextField nickNameField;
+
+    /*** WAITING ROOM SCENE *******************************************************************************************/
+    @FXML
+    private Label waitingRoomLbl;
+
+    /*** CHOOSE LEADERS SCENE *****************************************************************************************/
     @FXML
     private Button chooseLeadersBtn, chooseResourcesBtn;
     @FXML
     private ToggleButton leader1Toggle, leader2Toggle, leader3Toggle, leader4Toggle;
     @FXML
     private ImageView leader1Img, leader2Img, leader3Img, leader4Img;
+
+    /*** CHOOSE RESOURCES SCENE ***************************************************************************************/
     @FXML
-    private Label chooseResLbl, chooseFaithLbl;
+    private Button stoneSubBtn, stoneAddBtn, servantSubBtn, servantAddBtn, coinSubBtn, coinAddBtn, shieldSubBtn,
+            shieldAddBtn;
     @FXML
-    private Button stoneSubBtn, stoneAddBtn, servantSubBtn, servantAddBtn, coinSubBtn, coinAddBtn, shieldSubBtn, shieldAddBtn;
+    private Label chooseResLbl, chooseFaithLbl, stoneLbl, servantLbl, coinLbl, shieldLbl, resPluralLbl;
     @FXML
-    private Label stoneLbl, servantLbl, coinLbl, shieldLbl, resPluralLbl;
-    @FXML
-    private Pane chooseResPane, chooseStrPane, welcomePane;
-    @FXML
-    private ImageView resource1Img, resource2Img, wareHouseImg;
-    @FXML
-    private Region shelf1, shelf21, shelf22, shelf31, shelf32, shelf33, shelf1PU, shelf21PU, shelf22PU, shelf31PU, shelf32PU, shelf33PU;
-    @FXML
-    private ImageView shelf1MB, shelf21MB, shelf22MB, shelf31MB, shelf32MB, shelf33MB;
+    private Pane chooseResPane;
+
+    /*** CHOOSE STORAGE SCENE *****************************************************************************************/
+    private List<BiElement<Resource, Storage>> initialResourcePlacements = new ArrayList<>();
+    private Node target;
     @FXML
     private Button chooseStorageBtn;
     @FXML
-    private ImageView leader1Show, leader2Show;
+    private ImageView resource1Img, resource2Img, wareHouseImg, shelf1MB, shelf21MB, shelf22MB, shelf31MB,
+            shelf32MB, shelf33MB;
     @FXML
-    private Pane mainBoard;
-    @FXML
-    private GridPane marketMarbles, productionCards;
-    @FXML
-    private Circle extraMarble;
+    private Region shelf1, shelf21, shelf22, shelf31, shelf32, shelf33, shelf1PU, shelf21PU, shelf22PU, shelf31PU,
+            shelf32PU, shelf33PU;
+
 
     public InitialPhaseHandler(GuiController controller, Stage stage) {
         super(controller, stage);
 
-        List<ScenesEnum> allPaths = new ArrayList<>(Arrays.asList(WELCOME, CONNECTION, REGISTRATION, WAITING_ROOM, CHOOSE_LEADERS, CHOOSE_RESOURCES, CHOOSE_STORAGE));
+        List<ScenesEnum> allPaths = new ArrayList<>(Arrays.asList(WELCOME, CONNECTION, REGISTRATION, WAITING_ROOM,
+                CHOOSE_LEADERS, CHOOSE_RESOURCES, CHOOSE_STORAGE));
+
         for (ScenesEnum path : allPaths) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + path.getPath()));
             loader.setController(this);
 
             try {
                 Scene scene = new Scene(loader.load());
-
                 scene.getStylesheets().addAll(this.getClass().getResource("/fxml/style.css").toExternalForm());
                 scene.setCursor(new ImageCursor(new Image("/img/ui/cursor.png"), 5, 5));
-
                 sceneMap.put(path, scene);
-
             } catch (IOException e) {
                 System.err.println("Loader cannot load " + path);
             }
@@ -120,7 +127,7 @@ public class InitialPhaseHandler extends PhaseHandler {
         return true;
     }
 
-    @FXML
+    /*** WELCOME SCENE ************************************************************************************************/
     public void start() {
         playBtn.setOnAction(actionEvent -> {
             try {
@@ -129,16 +136,15 @@ public class InitialPhaseHandler extends PhaseHandler {
                 System.err.println("IOException");
             }
         });
-
         quitBtn.setOnAction(actionEvent -> {
             System.exit(0);
         });
     }
 
+    /*** CONNECTION SCENE *********************************************************************************************/
     /**
      * @return a {@link BiElement} containing the IP as first value and the Port as second.
      */
-    @FXML
     public void retrieveIpAndPort() {
         connectBtn.setOnAction(actionEvent -> {
             if (ipField.getText().length() > 0 && ipField.getText().length() > 0) {
@@ -156,7 +162,7 @@ public class InitialPhaseHandler extends PhaseHandler {
         });
     }
 
-    @FXML
+    /*** REGISTRATION SCENE *******************************************************************************************/
     public void getNickNameAndGameSize() {
         singlePlayerBtn.setOnAction(this::setNickNameAndGameSize);
         twoPlayerBtn.setOnAction(this::setNickNameAndGameSize);
@@ -164,7 +170,6 @@ public class InitialPhaseHandler extends PhaseHandler {
         fourPlayerBtn.setOnAction(this::setNickNameAndGameSize);
     }
 
-    @FXML
     private void setNickNameAndGameSize(ActionEvent event) {
         if (nickNameField.getText().length() > 0 && nickNameField.getText().length() <= 12) {
             String nickname = nickNameField.getText();
@@ -176,18 +181,17 @@ public class InitialPhaseHandler extends PhaseHandler {
         }
     }
 
-    @FXML
+    /*** WAITING ROOM SCENE *******************************************************************************************/
     public void setWaitingRoomName(String nickName) {
         waitingRoomLbl.setText("Hello, " + nickName);
     }
 
-    @FXML
     public void waitStartGame() {
         waitingRoomLbl.setText("The game is about to start!");
         setScene(WAITING_ROOM);
     }
 
-    @FXML
+    /*** CHOOSE LEADERS SCENE *****************************************************************************************/
     public void displayLeaders(List<LeaderCard> availableLeaders) {
         leader1Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(0).getId() + ".png"));
         leader2Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(1).getId() + ".png"));
@@ -195,7 +199,6 @@ public class InitialPhaseHandler extends PhaseHandler {
         leader4Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(3).getId() + ".png"));
     }
 
-    @FXML
     public void chooseLeaders() {
         ctr = 0;
 
@@ -248,16 +251,14 @@ public class InitialPhaseHandler extends PhaseHandler {
         }
     }
 
-    @FXML
+    /*** CHOOSE RESOURCES SCENE ***************************************************************************************/
     public void chooseResources(Integer resources) {
-
         List<Resource> selectedRes = new ArrayList<>();
 
         chooseResLbl.setText(resources.toString());
         if (resources == 2) {
             resPluralLbl.setText("resources");
         }
-
         if (controller.getPlayer().getTurnNumber() == 3 || controller.getPlayer().getTurnNumber() == 4) {
             chooseFaithLbl.setText("You have also received 1 bonus faith point");
         } else {
@@ -316,7 +317,8 @@ public class InitialPhaseHandler extends PhaseHandler {
         });
 
         chooseResourcesBtn.setOnAction(actionEvent -> {
-            if (Integer.parseInt(stoneLbl.getText()) + Integer.parseInt(servantLbl.getText()) + Integer.parseInt(coinLbl.getText()) + Integer.parseInt(shieldLbl.getText()) == resources) {
+            if (Integer.parseInt(stoneLbl.getText()) + Integer.parseInt(servantLbl.getText()) +
+                    Integer.parseInt(coinLbl.getText()) + Integer.parseInt(shieldLbl.getText()) == resources) {
 
                 if (Integer.parseInt(stoneLbl.getText()) == 1) {
                     selectedRes.add(Resource.STONE);
@@ -351,6 +353,7 @@ public class InitialPhaseHandler extends PhaseHandler {
         });
     }
 
+    /*** CHOOSE STORAGE ***********************************************************************************************/
     private void chooseStorage(Pane motherPane, Scene popUpScene, List<Resource> selectedRes) {
         resource1Img.setImage(new Image("img/pawns/" + selectedRes.get(0).toString().toLowerCase() + ".png"));
         if (selectedRes.size() == 1) {
@@ -455,5 +458,4 @@ public class InitialPhaseHandler extends PhaseHandler {
 
         return Resource.valueOf(db.getString());
     }
-
 }

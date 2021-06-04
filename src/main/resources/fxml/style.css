@@ -1,17 +1,16 @@
-/*
- * Global Values
- */
+/*** GLOBAL VALUES ****************************************************************************************************/
 Label {
     -fx-text-fill: #ffffff;
     -fx-font-family: "godofwar";
+    -fx-text-alignment: center;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 5, 0, 0, 0);
 }
 
 Button {
     -fx-text-fill: #ffffff;
     -fx-font-family: "godofwar";
-    -fx-label-padding: -5 0 0 0;
     -fx-text-alignment: center;
+    -fx-label-padding: -5 0 0 0;
     -fx-focus-color: transparent;
     -fx-background-color: transparent;
 }
@@ -64,15 +63,11 @@ ToggleButton {
     -fx-background-image: url("/img/ui/btnSqPressed.png");
 }
 
-/*
- * Welcome Scene
- */
+/*** MAIN SCENE *******************************************************************************************************/
 #logo {
 }
 
-/*
- * Connection Scene
- */
+/*** CONNECTION SCENE *************************************************************************************************/
 .inputLabel {
     -fx-font-size: 20px;
 }
@@ -84,16 +79,12 @@ ToggleButton {
 .inputArea {
 }
 
-/*
- * Registration Scene
- */
+/*** REGISTRATION SCENE ***********************************************************************************************/
 .badNameLabel {
     -fx-font-size: 16px;
 }
 
-/*
- * Waiting Room Scene
- */
+/*** WAITING ROOM SCENE ***********************************************************************************************/
 .greeting {
     -fx-font-size: 35px;
 }
@@ -106,9 +97,7 @@ ToggleButton {
     -fx-padding: 8;
 }
 
-/*
- * Choose Leaders Scene
- */
+/*** CHOOSE LEADERS SCENE *********************************************************************************************/
 .leaderImg {
 }
 
@@ -123,9 +112,7 @@ ToggleButton {
     -fx-effect: dropshadow(one-pass-box, rgba(255, 255, 255, 0.5), 10, 0, 0, 0);
 }
 
-/*
- * Choose Resources Scene
- */
+/*** CHOOSE RESOURCES SCENE *******************************************************************************************/
 .resourceNumLabel {
     -fx-font-size: 30px;
     -fx-padding: 0 5 0 5;
@@ -141,24 +128,18 @@ ToggleButton {
     -fx-background-image: url("/img/ui/btnSqPressed.png");
 }
 
-/*
- * Choose Storage Scene
- */
+/*** CHOOSE STORAGE SCENE *********************************************************************************************/
 .resImg {
-
 }
 
 #wareHouseImg {
-
 }
 
 .shelf {
     -fx-background-color: transparent;
 }
 
-/*
- * Main Board Scene
- */
+/*** MAIN BOARD SCENE *************************************************************************************************/
 #mainBoard {
     -fx-background-color: #2d0f08;
     -fx-padding: 5px;
@@ -179,9 +160,7 @@ ToggleButton {
 .productionCard {
 }
 
-/*
- * Market Board PopUp
- */
+/*** MARKET SCENE *****************************************************************************************************/
 #marketRegion:hover {
     -fx-background-color: rgba(255, 255, 255, 0.1);
     -fx-effect: dropshadow(one-pass-box, rgba(255, 255, 255, 0.80), 50, 0, 0, 0);

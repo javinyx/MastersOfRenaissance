@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<AnchorPane id="popUp" xmlns="https://javafx.com/javafx" xmlns:fx="https://javafx.com/fxml" prefHeight="680"
+            prefWidth="440">
+
+    <ImageView layoutX="20.0" layoutY="20.0" fitWidth="400" preserveRatio="true">
+        <Image url="@../img/ui/market.png"/>
+    </ImageView>
+
+    <Circle fx:id="extraMarblePU" layoutX="220.0" layoutY="110.0" styleClass="marble" radius="20"/>
+    <GridPane fx:id="marketMarblesPU" layoutX="140.0" layoutY="140.0" hgap="2" vgap="2">
+        <Circle styleClass="marble" radius="20" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <Circle styleClass="marble" radius="20" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+        <Circle styleClass="marble" radius="20" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+        <Circle styleClass="marble" radius="20" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+        <Circle styleClass="marble" radius="20" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <Circle styleClass="marble" radius="20" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        <Circle styleClass="marble" radius="20" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+        <Circle styleClass="marble" radius="20" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+        <Circle styleClass="marble" radius="20" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        <Circle styleClass="marble" radius="20" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        <Circle styleClass="marble" radius="20" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+        <Circle styleClass="marble" radius="20" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
+    </GridPane>
+
+    <ImageView fx:id="marketRow1Btn" preserveRatio="true" layoutX="367.0" layoutY="141.0" fitHeight="39" styleClass="hArrow"/>
+    <ImageView fx:id="marketRow2Btn" preserveRatio="true" layoutX="367.0" layoutY="184.0" fitHeight="39" styleClass="hArrow"/>
+    <ImageView fx:id="marketRow3Btn" preserveRatio="true" layoutX="367.0" layoutY="231.0" fitHeight="39" styleClass="hArrow"/>
+
+    <ImageView fx:id="marketCol1Btn" preserveRatio="true" fitWidth="32" layoutX="144.0" layoutY="323.0" styleClass="vArrow"/>
+    <ImageView fx:id="marketCol2Btn" preserveRatio="true" fitWidth="32" layoutX="189.0" layoutY="323.0" styleClass="vArrow"/>
+    <ImageView fx:id="marketCol3Btn" preserveRatio="true" fitWidth="32" layoutX="236.0" layoutY="323.0" styleClass="vArrow"/>
+    <ImageView fx:id="marketCol4Btn" preserveRatio="true" fitWidth="32" layoutX="282.0" layoutY="323.0" styleClass="vArrow"/>
+
+    <VBox alignment="CENTER" spacing="20" layoutX="60.0" layoutY="560.0">
+        <VBox alignment="CENTER">
+            <Label styleClass="inputLabelSmall" text="Click the arrow of the corresponding"/>
+            <Label styleClass="inputLabelSmall" text="column/row that you would like"/>
+            <Label styleClass="inputLabelSmall" text="to purchase"/>
+        </VBox>
+        <Button fx:id="marketBackBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
+                styleClass="btn" text="Back"/>
+    </VBox>
+</AnchorPane>

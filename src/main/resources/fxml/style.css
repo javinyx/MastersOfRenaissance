@@ -38,9 +38,10 @@ ToggleButton {
 }
 
 #popUp {
-    -fx-background-image: url("/img/ui/backgroundStart.jpg");
-    -fx-background-repeat: no-repeat;
-    -fx-background-position: center center;
+    /*-fx-background-image: url("/img/ui/popUp.jpg");
+    -fx-background-repeat: stretch;
+    -fx-background-position: center center;*/
+    -fx-background-color: #1f0404;
 }
 
 .btn {
@@ -67,7 +68,6 @@ ToggleButton {
  * Welcome Scene
  */
 #logo {
-   /* -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);*/
 }
 
 /*
@@ -152,6 +152,10 @@ ToggleButton {
 
 }
 
+.shelf {
+    -fx-background-color: transparent;
+}
+
 /*
  * Main Board Scene
  */
@@ -173,4 +177,28 @@ ToggleButton {
 }
 
 .productionCard {
+}
+
+/*
+ * Market Board PopUp
+ */
+#marketRegion:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-effect: dropshadow(one-pass-box, rgba(255, 255, 255, 0.80), 50, 0, 0, 0);
+}
+
+.vArrow {
+    -fx-image: url("/img/ui/varrow.png");
+}
+
+.vArrow:hover {
+    -fx-effect: dropshadow(one-pass-box, rgba(37, 242, 255, 0.7), 50, 0, 0, 0);
+}
+
+.hArrow{
+    -fx-image: url("/img/ui/harrow.png");
+}
+
+.hArrow:hover {
+    -fx-effect: dropshadow(one-pass-box, rgba(37, 242, 255, 0.7), 50, 0, 0, 0);
 }

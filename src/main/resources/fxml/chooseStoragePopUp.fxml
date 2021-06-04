@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="popUp" fx:id="chooseStrPane" prefHeight="400.0" prefWidth="425.0"
+            xmlns="https://javafx.com/javafx" xmlns:fx="https://javafx.com/fxml">
+    <children>
+        <ImageView id="wareHouseImg" fx:id="wareHouseImg" fitHeight="200.0" layoutX="188.0" layoutY="94.0"
+                   pickOnBounds="true" preserveRatio="true">
+            <Image url="@../img/ui/wareHouse.png"/>
+        </ImageView>
+
+        <Region fx:id="shelf1PU" layoutX="261.0" layoutY="104.0" prefHeight="50.0" prefWidth="50.0"/>
+        <Region fx:id="shelf21PU" layoutX="235.0" layoutY="164.0" prefHeight="50.0" prefWidth="50.0"/>
+        <Region fx:id="shelf22PU" layoutX="282.0" layoutY="164.0" prefHeight="50.0" prefWidth="50.0"/>
+        <Region fx:id="shelf31PU" layoutX="210.0" layoutY="234.0" prefHeight="50.0" prefWidth="50.0"/>
+        <Region fx:id="shelf32PU" layoutX="260.0" layoutY="234.0" prefHeight="50.0" prefWidth="40.0"/>
+        <Region fx:id="shelf33PU" layoutX="300.0" layoutY="234.0" prefHeight="50.0" prefWidth="50.0"/>
+
+        <ImageView fx:id="resource1ImgPU" fitHeight="30.0" layoutX="109.0" layoutY="117.0" pickOnBounds="true"
+                   preserveRatio="true" styleClass="resImg"/>
+    </children>
+</AnchorPane>

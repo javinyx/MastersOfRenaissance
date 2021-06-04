@@ -78,7 +78,9 @@ public class InitialPhaseHandler extends PhaseHandler {
     @FXML
     private ImageView resource1Img, resource2Img, wareHouseImg;
     @FXML
-    private Region shelf1, shelf21, shelf22, shelf31, shelf32, shelf33;
+    private Region shelf1, shelf21, shelf22, shelf31, shelf32, shelf33, shelf1PU, shelf21PU, shelf22PU, shelf31PU, shelf32PU, shelf33PU;
+    @FXML
+    private ImageView shelf1MB, shelf21MB, shelf22MB, shelf31MB, shelf32MB, shelf33MB;
     @FXML
     private Button chooseStorageBtn;
     @FXML
@@ -97,7 +99,7 @@ public class InitialPhaseHandler extends PhaseHandler {
     public InitialPhaseHandler(GuiController controller, Stage stage) {
         super(controller, stage);
 
-        List<ScenesEnum> allPaths = new ArrayList<>(Arrays.asList(WELCOME, CONNECTION, REGISTRATION, WAITING_ROOM, CHOOSE_LEADERS, CHOOSE_RESOURCES, CHOOSE_STORAGE, MAIN_BOARD));
+        List<ScenesEnum> allPaths = new ArrayList<>(Arrays.asList(WELCOME, CONNECTION, REGISTRATION, WAITING_ROOM, CHOOSE_LEADERS, CHOOSE_RESOURCES, CHOOSE_STORAGE));
         for (ScenesEnum path : allPaths) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + path.getPath()));
             loader.setController(this);
@@ -158,9 +160,7 @@ public class InitialPhaseHandler extends PhaseHandler {
         });
 
         localModeBtn.setOnAction(actionEvent -> {
-            ip = "0";
-            port = "0";
-            controller.setIpAndPort(ip, port);
+            controller.startLocalGame();
         });
     }
 
@@ -190,7 +190,7 @@ public class InitialPhaseHandler extends PhaseHandler {
     }
 
     @FXML
-    public void waitStartGame(){
+    public void waitStartGame() {
         waitingRoomLbl.setText("The game is about to start!");
         setScene(WAITING_ROOM);
     }
@@ -462,51 +462,6 @@ public class InitialPhaseHandler extends PhaseHandler {
         event.consume();
 
         return Resource.valueOf(db.getString());
-    }
-
-    public void initiateBoard(List<Integer> chosenLeadersId, List<ConcreteProductionCard> availableProductionCards) {
-        leader1Show.setImage(new Image("img/leaderCards/" + chosenLeadersId.get(0) + ".png"));
-        leader1Show.setEffect(new SepiaTone(0.6));
-        leader2Show.setImage(new Image("img/leaderCards/" + chosenLeadersId.get(1) + ".png"));
-        leader2Show.setEffect(new SepiaTone(0.6));
-
-        extraMarble.setFill(Color.web(controller.getMarket().getExtra().getHexCode()));
-        for (int x = 0; x < 3; x++) {
-            for (int y = 0; y < 4; y++) {
-                setMarbleColor(x, y, marketMarbles, controller.getMarket().getMarketBoard()[x][y].getHexCode());
-            }
-        }
-
-        int i = 0;
-        for (int x = 0; x < 3; x++) {
-            for (int y = 0; y < 4; y++) {
-                setProductionCards(x, y, productionCards, availableProductionCards.get(i).getId());
-                i++;
-            }
-        }
-
-    }
-
-    private void setMarbleColor(int row, int column, GridPane gridPane, String color) {
-        ObservableList<Node> children = gridPane.getChildren();
-
-        for (Node node : children) {
-            if(gridPane.getRowIndex(node) == row && gridPane.getColumnIndex(node) == column) {
-                ((Circle)node).setFill(Color.web(color));
-                break;
-            }
-        }
-    }
-
-    private void setProductionCards(int row, int column, GridPane gridPane, int imgId) {
-        ObservableList<Node> children = gridPane.getChildren();
-
-        for (Node node : children) {
-            if(gridPane.getRowIndex(node) == row && gridPane.getColumnIndex(node) == column) {
-                ((ImageView)node).setImage(new Image("img/productionCardsFront/" + imgId + ".png"));
-                break;
-            }
-        }
     }
 
 }

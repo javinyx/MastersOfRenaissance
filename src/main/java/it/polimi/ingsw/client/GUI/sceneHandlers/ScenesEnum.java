@@ -8,7 +8,9 @@ public enum ScenesEnum {
     CHOOSE_LEADERS("chooseLeaders.fxml"),
     CHOOSE_RESOURCES("chooseResources.fxml"),
     CHOOSE_STORAGE("chooseStorage.fxml"),
-    MAIN_BOARD("mainBoard.fxml");
+    MAIN_BOARD("mainBoard.fxml"),
+    MARKET("marketPopUp.fxml"),
+    STORAGE("chooseStoragePopUp.fxml");
 
     private String path;
 

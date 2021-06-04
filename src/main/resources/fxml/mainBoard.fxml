@@ -1,88 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
+
 <AnchorPane fx:id="mainBoard" xmlns="https://javafx.com/javafx" xmlns:fx="https://javafx.com/fxml">
-    <HBox alignment="CENTER_LEFT" spacing="20" id="enemyBoard" prefWidth="400" prefHeight="80" layoutX="10"
-          layoutY="10">
-        <VBox spacing="10" alignment="CENTER">
-            <Button fx:id="player1Btn" text="" styleClass="btn"/>
+
+    <!-- INFO BOX -->
+    <HBox id="enemyBoard" alignment="CENTER_LEFT" layoutX="10" layoutY="10" prefHeight="80" prefWidth="400"
+          spacing="20">
+        <VBox alignment="CENTER" spacing="10">
+            <Button fx:id="player1Btn" styleClass="btn" text=""/>
             <HBox alignment="CENTER" spacing="3">
                 <ImageView fitWidth="35" preserveRatio="true">
                     <Image url="@../img/pawns/redCrossNew.png"/>
                 </ImageView>
-                <Label fx:id="player1FaithLbl" text="" styleClass="inputLabel"/>
+                <Label fx:id="player1FaithLbl" styleClass="inputLabel" text=""/>
             </HBox>
         </VBox>
-        <VBox spacing="10" alignment="CENTER">
-            <Button fx:id="player2Btn" text="" styleClass="btn"/>
+        <VBox alignment="CENTER" spacing="10">
+            <Button fx:id="player2Btn" styleClass="btn" text=""/>
             <HBox alignment="CENTER" spacing="3">
                 <ImageView fitWidth="35" preserveRatio="true">
                     <Image url="@../img/pawns/redCrossNew.png"/>
                 </ImageView>
-                <Label fx:id="player2FaithLbl" text="" styleClass="inputLabel"/>
+                <Label fx:id="player2FaithLbl" styleClass="inputLabel" text=""/>
             </HBox>
         </VBox>
-        <VBox spacing="10" alignment="CENTER">
-            <Button fx:id="player3Btn" text="" styleClass="btn"/>
+        <VBox alignment="CENTER" spacing="10">
+            <Button fx:id="player3Btn" styleClass="btn" text=""/>
             <HBox alignment="CENTER" spacing="3">
                 <ImageView fitWidth="35" preserveRatio="true">
                     <Image url="@../img/pawns/redCrossNew.png"/>
                 </ImageView>
-                <Label fx:id="player3FaithLbl" text="" styleClass="inputLabel"/>
+                <Label fx:id="player3FaithLbl" styleClass="inputLabel" text=""/>
             </HBox>
         </VBox>
     </HBox>
+
+    <!-- MAIN BOARD -->
     <ImageView fitHeight="600" layoutX="140" layoutY="150" preserveRatio="true">
         <Image url="@../img/ui/mainBoard.png"/>
     </ImageView>
-    <GridPane fx:id="marketMarbles" prefWidth="300" layoutX="1082.0" layoutY="30.0" alignment="CENTER" hgap="2"
-              vgap="2">
-        <Circle styleClass="marble" radius="20" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-        <Circle styleClass="marble" radius="20" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-        <Circle styleClass="marble" radius="20" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
-        <Circle styleClass="marble" radius="20" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
-        <Circle styleClass="marble" radius="20" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-        <Circle styleClass="marble" radius="20" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-        <Circle styleClass="marble" radius="20" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
-        <Circle styleClass="marble" radius="20" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
-        <Circle styleClass="marble" radius="20" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-        <Circle styleClass="marble" radius="20" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-        <Circle styleClass="marble" radius="20" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
-        <Circle styleClass="marble" radius="20" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
+
+    <!-- WAREHOUSE -->
+    <ImageView fx:id="shelf1MB"  fitHeight="30" layoutX="233.0" layoutY="413.0" preserveRatio="true"/>
+    <ImageView fx:id="shelf21MB" fitHeight="30" layoutX="220.0" layoutY="462.0" preserveRatio="true"/>
+    <ImageView fx:id="shelf22MB" fitHeight="30" layoutX="260.0" layoutY="462.0" preserveRatio="true"/>
+    <ImageView fx:id="shelf31MB" fitHeight="30" layoutX="192.0" layoutY="516.0" preserveRatio="true"/>
+    <ImageView fx:id="shelf32MB" fitHeight="30" layoutX="232.0" layoutY="516.0" preserveRatio="true"/>
+    <ImageView fx:id="shelf33MB" fitHeight="30" layoutX="262.0" layoutY="516.0" preserveRatio="true"/>
+
+    <!-- MARKET -->
+    <Circle fx:id="extraMarble" layoutX="1050.0" layoutY="50.0" radius="20" styleClass="marble"/>
+    <GridPane fx:id="marketMarbles" hgap="2" layoutX="1082.0" layoutY="30.0" vgap="2">
+        <Circle radius="20" styleClass="marble" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <Circle radius="20" styleClass="marble" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+        <Circle radius="20" styleClass="marble" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+        <Circle radius="20" styleClass="marble" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+        <Circle radius="20" styleClass="marble" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <Circle radius="20" styleClass="marble" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        <Circle radius="20" styleClass="marble" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+        <Circle radius="20" styleClass="marble" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+        <Circle radius="20" styleClass="marble" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        <Circle radius="20" styleClass="marble" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        <Circle radius="20" styleClass="marble" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+        <Circle radius="20" styleClass="marble" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
     </GridPane>
-    <Circle fx:id="extraMarble" layoutX="1050.0" layoutY="50.0" styleClass="marble" radius="20"/>
-    <GridPane fx:id="productionCards" layoutX="990.0" layoutY="200.0" alignment="CENTER" hgap="2" vgap="2">
-        <ImageView styleClass="productionCard" fitWidth="120" preserveRatio="true" GridPane.columnIndex="0"
+    <Region id="marketRegion" fx:id="marketRegion" layoutX="1020.0" layoutY="20.0" prefHeight="160" prefWidth="250"/>
+
+    <!-- PRODUCTION CARDS -->
+    <GridPane fx:id="productionCards" alignment="CENTER" hgap="2" layoutX="990.0" layoutY="200.0" vgap="2">
+        <ImageView fitWidth="120" preserveRatio="true" styleClass="productionCard" GridPane.columnIndex="0"
                    GridPane.rowIndex="0"/>
-        <ImageView styleClass="productionCard" fitWidth="120" preserveRatio="true" GridPane.columnIndex="1"
+        <ImageView fitWidth="120" preserveRatio="true" styleClass="productionCard" GridPane.columnIndex="1"
                    GridPane.rowIndex="0"/>
-        <ImageView styleClass="productionCard" fitWidth="120" preserveRatio="true" GridPane.columnIndex="2"
+        <ImageView fitWidth="120" preserveRatio="true" styleClass="productionCard" GridPane.columnIndex="2"
                    GridPane.rowIndex="0"/>
-        <ImageView styleClass="productionCard" fitWidth="120" preserveRatio="true" GridPane.columnIndex="3"
+        <ImageView fitWidth="120" preserveRatio="true" styleClass="productionCard" GridPane.columnIndex="3"
                    GridPane.rowIndex="0"/>
-        <ImageView styleClass="productionCard" fitWidth="120" preserveRatio="true" GridPane.columnIndex="0"
+        <ImageView fitWidth="120" preserveRatio="true" styleClass="productionCard" GridPane.columnIndex="0"
                    GridPane.rowIndex="1"/>
-        <ImageView styleClass="productionCard" fitWidth="120" preserveRatio="true" GridPane.columnIndex="1"
+        <ImageView fitWidth="120" preserveRatio="true" styleClass="productionCard" GridPane.columnIndex="1"
                    GridPane.rowIndex="1"/>
-        <ImageView styleClass="productionCard" fitWidth="120" preserveRatio="true" GridPane.columnIndex="2"
+        <ImageView fitWidth="120" preserveRatio="true" styleClass="productionCard" GridPane.columnIndex="2"
                    GridPane.rowIndex="1"/>
-        <ImageView styleClass="productionCard" fitWidth="120" preserveRatio="true" GridPane.columnIndex="3"
+        <ImageView fitWidth="120" preserveRatio="true" styleClass="productionCard" GridPane.columnIndex="3"
                    GridPane.rowIndex="1"/>
-        <ImageView styleClass="productionCard" fitWidth="120" preserveRatio="true" GridPane.columnIndex="0"
+        <ImageView fitWidth="120" preserveRatio="true" styleClass="productionCard" GridPane.columnIndex="0"
                    GridPane.rowIndex="2"/>
-        <ImageView styleClass="productionCard" fitWidth="120" preserveRatio="true" GridPane.columnIndex="1"
+        <ImageView fitWidth="120" preserveRatio="true" styleClass="productionCard" GridPane.columnIndex="1"
                    GridPane.rowIndex="2"/>
-        <ImageView styleClass="productionCard" fitWidth="120" preserveRatio="true" GridPane.columnIndex="2"
+        <ImageView fitWidth="120" preserveRatio="true" styleClass="productionCard" GridPane.columnIndex="2"
                    GridPane.rowIndex="2"/>
-        <ImageView styleClass="productionCard" fitWidth="120" preserveRatio="true" GridPane.columnIndex="3"
+        <ImageView fitWidth="120" preserveRatio="true" styleClass="productionCard" GridPane.columnIndex="3"
                    GridPane.rowIndex="2"/>
     </GridPane>
-    <ImageView fx:id="leader1Show" styleClass="leaderNotActive" preserveRatio="true" fitWidth="120" layoutX="10.0"
-               layoutY="380.0"/>
-    <ImageView fx:id="leader2Show" styleClass="leaderNotActive" preserveRatio="true" fitWidth="120" layoutX="10.0"
-               layoutY="570.0"/>
+
+    <!-- LEADER CARDS -->
+    <ImageView fx:id="leader1Show" fitWidth="120" layoutX="10.0" layoutY="380.0" preserveRatio="true"
+               styleClass="leaderNotActive"/>
+    <ImageView fx:id="leader2Show" fitWidth="120" layoutX="10.0" layoutY="570.0" preserveRatio="true"
+               styleClass="leaderNotActive"/>
+
 </AnchorPane>

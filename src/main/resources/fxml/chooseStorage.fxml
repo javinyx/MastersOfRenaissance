@@ -23,6 +23,7 @@
                    preserveRatio="true" styleClass="resImg"/>
         <ImageView fx:id="resource2Img" fitHeight="30.0" layoutX="109.0" layoutY="207.0" pickOnBounds="true"
                    preserveRatio="true" styleClass="resImg"/>
-        <Button fx:id="chooseStorageBtn" layoutX="187.0" layoutY="337.0" mnemonicParsing="false" text="Confirm" styleClass="btn"/>
+        <Button fx:id="chooseStorageBtn" layoutX="187.0" layoutY="337.0" mnemonicParsing="false" text="Confirm"
+                styleClass="btn"/>
     </children>
 </AnchorPane>

@@ -9,6 +9,7 @@ import it.polimi.ingsw.client.MessageReceiver;
 import it.polimi.ingsw.client.MessageToServerHandler;
 import it.polimi.ingsw.client.model.NubPlayer;
 import it.polimi.ingsw.messages.MessageID;
+import it.polimi.ingsw.messages.concreteMessages.BuyMarketMessage;
 import it.polimi.ingsw.messages.concreteMessages.PlayersPositionMessage;
 import it.polimi.ingsw.messages.concreteMessages.StoreResourcesMessage;
 import it.polimi.ingsw.misc.BiElement;
@@ -17,8 +18,10 @@ import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.market.Resource;
 import javafx.application.Platform;
+import javafx.fxml.FXML;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -28,19 +31,21 @@ import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GuiController extends ClientController {
     protected final Gui gui;
     private final Stage stage;
     private final InitialPhaseHandler initialPhaseHandler;
-    private GamePhaseHandler gamePhaseHandler;
+    private final GamePhaseHandler gamePhaseHandler;
     private final Object lock = new Object();
     List<Integer> chosenLeadersId = new ArrayList<>();
 
     private String nickName;
     private Integer gameSize;
-    private Boolean monke = false;
+    private int monkas;
 
     public final Gson gson = new Gson();
 
@@ -51,6 +56,7 @@ public class GuiController extends ClientController {
 
         this.gui = gui;
         initialPhaseHandler = new InitialPhaseHandler(this, stage);
+        gamePhaseHandler = new GamePhaseHandler(this, stage);
         start();
     }
 
@@ -59,7 +65,6 @@ public class GuiController extends ClientController {
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/img/ui/inkwell.png")));
         stage.setResizable(false);
         stage.setOnCloseRequest(closeEvent -> {
-            //closeEvent.consume();
             //TODO: PopUp asking if the user is sure that they want to exit, maybe use the same popup when they click Esc
             stage.close();
             System.exit(0);
@@ -152,13 +157,11 @@ public class GuiController extends ClientController {
         Platform.runLater(initialPhaseHandler::waitStartGame);
         StoreResourcesMessage msg = new StoreResourcesMessage(placements, getPlayer().getTurnNumber());
         messageToServerHandler.generateEnvelope(MessageID.STORE_RESOURCES, gson.toJson(msg, StoreResourcesMessage.class));
-        //WARNING: don't touch Monke, it will break everything
-        //monke = true;
     }
 
     @Override
     public void startGame() {
-        if(isRegistrationPhase() && gameSize==1){
+        if (isRegistrationPhase() && gameSize == 1) {
             System.out.println("Init singlePlayer start BEFORE WAIT");
             synchronized (lock) {
                 try {
@@ -169,54 +172,37 @@ public class GuiController extends ClientController {
             }
             System.out.println("Init singlePlayer start AFTER WAIT");
             initialGameStart();
-        }else if(isRegistrationPhase() && gameSize!=1){
+        } else if (isRegistrationPhase() && gameSize != 1) {
             System.out.println("Init multiplayer start");
-          initialGameStart();
-        }else {
+            initialGameStart();
+        } else {
             System.out.println("Middle game start");
             middleGameStart();
         }
-
-            /*Screen screen = Screen.getPrimary();
-        Rectangle2D bounds = screen.getVisualBounds();
-        if(/*!monke player.getTurnNumber()==1) {
-            synchronized (lock) {
-                try {
-                    lock.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.MAIN_BOARD));
-        initialPhaseHandler.initiateBoard(chosenLeadersId, availableProductionCard);
-        gamePhaseHandler = new GamePhaseHandler(this, stage);*/
-        //}
-
-        /*stage.setX(bounds.getMinX());
-        stage.setY(bounds.getMinY());
-        stage.setWidth(bounds.getWidth());
-        stage.setHeight(bounds.getHeight());*/
-
-        /*stage.setMaximized(true);
-        stage.centerOnScreen();*/
-        //stage.sizeToScene();*/
     }
 
-    private void middleGameStart(){
+    private void middleGameStart() {
         initialGameStart();
     }
 
-    private void initialGameStart(){
+    private void initialGameStart() {
         setRegistrationPhase(false);
-        Screen screen = Screen.getPrimary();
-        Rectangle2D bounds = screen.getVisualBounds();
 
-        Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.MAIN_BOARD));
-        initialPhaseHandler.initiateBoard(chosenLeadersId, availableProductionCard);
-        gamePhaseHandler = new GamePhaseHandler(this, stage);
-        stage.setMaximized(true);
-        stage.centerOnScreen();
+        Platform.runLater(() -> gamePhaseHandler.setScene(ScenesEnum.MAIN_BOARD));
+
+        gamePhaseHandler.initiateBoard(chosenLeadersId, availableProductionCard);
+        gamePhaseHandler.observePlayerActions();
+    }
+
+    public void sendBuyMarketMessage(char dim, int index) {
+        //TODO: option for active leader
+        BuyMarketMessage msg = new BuyMarketMessage(dim, index, null);
+        messageToServerHandler.generateEnvelope(MessageID.BUY_FROM_MARKET, gson.toJson(msg, BuyMarketMessage.class));
+    }
+
+    public void sendPlaceResourcesMessage(List<BiElement<Resource, Storage>> placements) {
+        StoreResourcesMessage msg = new StoreResourcesMessage(placements, getPlayer().getTurnNumber());
+        messageToServerHandler.generateEnvelope(MessageID.STORE_RESOURCES, gson.toJson(msg, StoreResourcesMessage.class));
     }
 
     @Override
@@ -281,7 +267,8 @@ public class GuiController extends ClientController {
 
     @Override
     public void chooseStorageAfterMarketAction(String s) {
-
+        List<Resource> res = (new ArrayList<>(Arrays.asList(s.substring(1, s.length() - 1).split(", ")))).stream().map(this::convertStringToResource).collect(Collectors.toList());
+        chooseStorageAction(res);
     }
 
     @Override
@@ -298,8 +285,24 @@ public class GuiController extends ClientController {
     }
 
     @Override
-    public void chooseStorageAction(List<Resource> msg) {
+    public void chooseStorageAction(List<Resource> res) {
+        List<Resource> poggersRes =  new ArrayList<>();
 
+        for (Resource r : res) {
+            if (r != null && r != Resource.FAITH) {
+                poggersRes.add(r);
+            }
+        }
+        monkas = 0;
+        Platform.runLater(() -> gamePhaseHandler.chooseStoragePopUp(poggersRes, monkas));
+    }
+
+    public void ontoTheNextResource(List<Resource> poggersRes, int count) {
+        if(count < poggersRes.size() - 1) {
+            count++;
+            monkas = count;
+            Platform.runLater(() -> gamePhaseHandler.chooseStoragePopUp(poggersRes, monkas));
+        }
     }
 
     @Override
@@ -371,5 +374,4 @@ public class GuiController extends ClientController {
     public void showLorenzoStatus(ActionToken act) {
 
     }
-
 }

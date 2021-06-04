@@ -5,7 +5,6 @@ import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
-import it.polimi.ingsw.model.cards.production.ProductionCard;
 import it.polimi.ingsw.model.market.Resource;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,7 +18,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.effect.*;
+import javafx.scene.effect.GaussianBlur;
+import javafx.scene.effect.SepiaTone;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
@@ -174,13 +174,13 @@ public class InitialPhaseHandler extends PhaseHandler {
 
     @FXML
     private void setNickNameAndGameSize(ActionEvent event) {
-        if (nickNameField.getText().length() > 0 && nickNameField.getText().length() <= 25) {
+        if (nickNameField.getText().length() > 0 && nickNameField.getText().length() <= 12) {
             String nickname = nickNameField.getText();
             String gameSize = ((Button) event.getSource()).getText();
             controller.setNickname(nickname);
             controller.setGameSize(gameSize);
         } else {
-            badNameLbl.setText("Your name must be between 1 and 25 characters long");
+            badNameLbl.setText("Your name must be between 1 and 12 characters long");
         }
     }
 

@@ -25,8 +25,8 @@ public class MultiPlayerGame extends Game implements ModelObserver {
 
 
     public MultiPlayerGame(Controller controller){
+        super(new Market());
         players = new ArrayList<>();
-        market = new Market();
         totalPlayers = 0;
         currPlayer = null;
         winner = null;
@@ -198,18 +198,20 @@ public class MultiPlayerGame extends Game implements ModelObserver {
      * @param player player who triggered Vatican Report
      * @param vaticanReport number in range 1-3 that specifies which vatican report is triggered*/
     public void alertVaticanReport(Player player, int vaticanReport){
-        triggerPlayerReport = player;
-        reportTriggered = vaticanReport;
-        //check every player position (even inactive ones in case they rejoin)
-        for(ProPlayer p : players){
-            List<PopePass> passes = p.getPopePasses();
-            if(p.isInVaticanReportRange(vaticanReport)){
-                passes.get(vaticanReport-1).activate();
-            }else{
-                passes.get(vaticanReport-1).disable();
+        if(reportTriggered < vaticanReport) {
+            triggerPlayerReport = player;
+            reportTriggered = vaticanReport;
+            //check every player position (even inactive ones in case they rejoin)
+            for (ProPlayer p : players) {
+                List<PopePass> passes = p.getPopePasses();
+                if (p.isInVaticanReportRange(vaticanReport)) {
+                    passes.get(vaticanReport - 1).activate();
+                } else {
+                    passes.get(vaticanReport - 1).disable();
+                }
             }
+            controller.update(MessageID.VATICAN_REPORT);
         }
-        controller.update(MessageID.VATICAN_REPORT);
     }
 
     /**Add 1 faith point to each active player (except the discarding one).

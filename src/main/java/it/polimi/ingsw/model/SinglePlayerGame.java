@@ -16,22 +16,14 @@ import java.util.stream.Collectors;
 
 
 public class SinglePlayerGame extends Game implements ModelObserver {
-    private Market market;
-
     private ProPlayer player;
     private Player lorenzo;
     private Deck tokenDeck;
     private Player winner;
 
-    /*
-    protected Market market;
-    protected Player winner;
-    protected List<Deck> productionDecks;
-    protected Deck leaderDeck;
-     */
 
     public SinglePlayerGame(Controller controller) {
-        market = new Market();
+        super(new Market());
         player = null;
         lorenzo = new Player("Lorenzo", this);
         winner = null;
@@ -42,27 +34,17 @@ public class SinglePlayerGame extends Game implements ModelObserver {
         this.controller = controller;
     }
 
-/*
-    1 creare il player
-    2 distribuire le carte leader
-    3 inizializzare action token
-    4 inizializzare prodcard
-    5 mercato, gia fatto
-     */
-
     /**
      * Start the game and give the leader cards to players
      */
     public void start(ProPlayer p){
-
         UpdateMessage msg = new UpdateMessage(currPlayer.getTurnID(), currPlayer.getCurrentPosition(), 1,
                 getMarket().getMarketBoard(), getMarket().getExtraMarble(), getBuyableProductionID(),
                 null, null, null, null);
 
         getCurrPlayer().setUpdate(msg);
-
-        //controller.update(MessageID.UPDATE);
     }
+
     /**
      * Create the player
      * @param nickname the nickname of the player
@@ -84,6 +66,7 @@ public class SinglePlayerGame extends Game implements ModelObserver {
         currPlayer = player;
         return true;
     }
+
     public Market getMarket(){
         return market;
     }
@@ -107,6 +90,7 @@ public class SinglePlayerGame extends Game implements ModelObserver {
         winner = this.player;
         end(winner);
     }
+
     public void updatePosition(Player player){
         controller.update(MessageID.PLAYERS_POSITION);
     }
@@ -116,19 +100,21 @@ public class SinglePlayerGame extends Game implements ModelObserver {
     /**Alert the observer that {@code player} has triggered the {@code vaticanReport}.
      * @param vaticanReport must be between 1 and 3. */
     public void alertVaticanReport(Player player, int vaticanReport){
-        triggerPlayerReport = player;
-        reportTriggered = vaticanReport;
-        List<PopePass> passes = this.player.getPopePasses();
-        if(player.equals(lorenzo)) {
-            if (!this.player.isInVaticanReportRange(vaticanReport)) {
-                passes.get(vaticanReport - 1).disable();
-                controller.update(MessageID.VATICAN_REPORT);
-                return;
+        if(reportTriggered < vaticanReport) {
+            triggerPlayerReport = player;
+            reportTriggered = vaticanReport;
+            List<PopePass> passes = this.player.getPopePasses();
+            if (player.equals(lorenzo)) {
+                if (!this.player.isInVaticanReportRange(vaticanReport)) {
+                    passes.get(vaticanReport - 1).disable();
+                    controller.update(MessageID.VATICAN_REPORT);
+                    return;
+                }
             }
-        }
-        passes.get(vaticanReport - 1).activate();
+            passes.get(vaticanReport - 1).activate();
 
-        controller.update(MessageID.VATICAN_REPORT);
+            controller.update(MessageID.VATICAN_REPORT);
+        }
     }
 
     public List<ProPlayer> getPlayers(){

@@ -6,7 +6,7 @@ import it.polimi.ingsw.messages.MessageID;
 
 import java.io.PrintWriter;
 
-public class MessageToServerHandler {
+public class MessageToServerHandler implements MessageDispatchinatorable{
 
     private final Gson gson = new Gson();
     private final PrintWriter toServer;
@@ -17,13 +17,13 @@ public class MessageToServerHandler {
         this.controller = controller;
     }
 
-    protected PrintWriter getToServer(){return toServer;}
-
+    @Override
     public void generateEnvelope(MessageID messageID, String payload){
         MessageEnvelope envelope = new MessageEnvelope(messageID, payload);
         sendMessageToServer(gson.toJson(envelope));
     }
 
+    @Override
     public synchronized void sendMessageToServer(String message){
         try{
             controller.setWaitingServerUpdate(true);
@@ -36,6 +36,7 @@ public class MessageToServerHandler {
     }
 
     // UTILS
+    @Override
     public void manageSurrender(){
         generateEnvelope(MessageID.SURRENDER, "I want to surrender");
     }

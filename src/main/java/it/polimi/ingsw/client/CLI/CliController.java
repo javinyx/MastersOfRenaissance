@@ -636,8 +636,6 @@ public class CliController extends ClientController {
         }
     }
 
-    public void startLocalGame(){};
-
     // ERROR MESSAGE FROM SERVER ---------------------------------------------------------------------------------------
     public void cardNotAvailable(){
         displayMessage("The chosen card is not available");

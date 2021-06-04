@@ -29,7 +29,7 @@ public abstract class ClientController {
     protected int lorenzoPos = 0;
     private Market market;
     protected NubPlayer player;
-    protected MessageToServerHandler messageToServerHandler;
+    protected MessageDispatchinatorable messageToServerHandler;
     private int count = 0;
     protected int countPope = 0;
 
@@ -62,7 +62,7 @@ public abstract class ClientController {
 
 
     // SETTER & GETTER
-    protected MessageToServerHandler getMessageToServerHandler(){return messageToServerHandler;}
+    protected MessageToServerHandler getMessageToServerHandler(){return (MessageToServerHandler) messageToServerHandler;}
 
     public MessageID getLastRegistrationMessage() {return lastRegistrationMessage;}
     public void setLastRegistrationMessage(MessageID lastRegistrationMessage) {this.lastRegistrationMessage = lastRegistrationMessage;}
@@ -110,7 +110,6 @@ public abstract class ClientController {
     // SETUP PHASE -----------------------------------------------------------------------------------------------------
 
     public abstract boolean setup() throws IOException;
-    public abstract void startLocalGame();
     public abstract void askNickname();
     public abstract void askNumberOfPlayers();
     public abstract void startGame();
@@ -142,6 +141,10 @@ public abstract class ClientController {
         player = new NubPlayer(nickName);
         totalPlayers.add(player);
         initAllCards();
+    }
+
+    public void startLocalGame(){
+        messageToServerHandler = new LocalAdapter(this);
     }
 
     // ERROR MESSAGE ACTIONS -------------------------------------------------------------------------------------------
@@ -184,6 +187,10 @@ public abstract class ClientController {
      * {@link NubPlayer} object.
      * @param player the player who played last turn*/
     public abstract void updateOtherPlayer(NubPlayer player);
+
+    protected void playLocally(){
+
+    }
 
     public synchronized void updateAction(UpdateMessage msg){
         if(market==null){

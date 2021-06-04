@@ -23,7 +23,11 @@ public abstract class Game implements ModelObserver {
     protected ProPlayer currPlayer;
     protected Controller controller;
     protected Player triggerPlayerReport;
-    protected int reportTriggered;
+    protected int reportTriggered = 0;
+
+    public Game(Market market){
+        this.market = market;
+    }
 
     // SETUP PHASE ----------------------------------------------
 
@@ -100,7 +104,6 @@ public abstract class Game implements ModelObserver {
         return leaderDeck;
     }
 
-    //public abstract List<LeaderCard> distributeLeaders();
     /**Remove the specified ProductionCard from Production Deck.
      * @param card the one to be removed */
     public int removeFromProdDeck(ConcreteProductionCard card){

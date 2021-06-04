@@ -251,9 +251,6 @@ public class Controller implements Observer<MessageID> {
                     leaderCards.add(game.getCurrPlayer().getLeaderCards().get(1));
 
             }
-            System.out.println("BEFORE small w: " + game.getCurrPlayer().getWarehouse().getSmallInventory());
-            System.out.println("BEFORE mid w: " + game.getCurrPlayer().getWarehouse().getMidInventory());
-            System.out.println("BEFORE large w: " + game.getCurrPlayer().getWarehouse().getLargeInventory());
 
             List<BiElement<Integer, Integer>> cards = new ArrayList<>();
             cards.add(new BiElement<>(card.getId(), buyProdMsg.getStack()));
@@ -293,12 +290,6 @@ public class Controller implements Observer<MessageID> {
                 }
             }*/
             game.getCurrPlayer().buyProductionCard(card, buyProdMsg.getStack(), leaderCards, buyProdMsg.getResourcesWallet());
-
-
-            System.out.println("AFTER small w: " + game.getCurrPlayer().getWarehouse().getSmallInventory());
-            System.out.println("AFTER mid w: " + game.getCurrPlayer().getWarehouse().getMidInventory());
-            System.out.println("AFTER large w: " + game.getCurrPlayer().getWarehouse().getLargeInventory());
-            System.out.println("Removed: " + removedResources);
 
         } catch (BadStorageException e) {
             //player has no resources

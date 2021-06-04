@@ -10,6 +10,7 @@ public enum ScenesEnum {
     CHOOSE_STORAGE("chooseStorage.fxml"),
     MAIN_BOARD("mainBoard.fxml"),
     MARKET("marketPopUp.fxml"),
+    OTHER_PLAYER("playerPopUp.fxml"),
     STORAGE("chooseStoragePopUp.fxml");
 
     private String path;

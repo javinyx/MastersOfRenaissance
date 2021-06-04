@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import com.sun.javafx.scene.control.IntegerField?>
+<StackPane id="popUp" xmlns="https://javafx.com/javafx" xmlns:fx="https://javafx.com/fxml" prefHeight="700"
+           prefWidth="600">
+    <VBox spacing="50" alignment="CENTER">
+        <Label fx:id="opLbl" />
+
+        <HBox spacing="20" alignment="CENTER_LEFT">
+            <Label text="Leaders:" />
+            <ImageView fx:id="opLead1Img" fitWidth="50" preserveRatio="true"/>
+            <ImageView fx:id="opLead2Img" fitWidth="50" preserveRatio="true"/>
+        </HBox>
+
+
+
+        <HBox spacing="20" alignment="TOP_LEFT">
+            <Label text="Warehouse:"/>
+            <VBox>
+                <HBox>
+                    <ImageView fx:id="opShelf1Img" fitWidth="30" preserveRatio="true"/>
+                    <Label fx:id="opQtyShelf1Lbl"/>
+                </HBox>
+                <HBox>
+                    <ImageView fx:id="opShelf2Img" fitWidth="30" preserveRatio="true"/>
+                    <Label fx:id="opQtyShelf2Lbl"/>
+                </HBox>
+                <HBox>
+                    <ImageView fx:id="opShelf3Img" fitWidth="30" preserveRatio="true"/>
+                    <Label fx:id="opQtyShelf3Lbl"/>
+                </HBox>
+            </VBox>
+        </HBox>
+
+        <HBox spacing="20" alignment="CENTER_LEFT">
+            <Label text="Lootchest:"/>
+            <VBox spacing="5" alignment="CENTER">
+                <HBox>
+                    <HBox spacing="5" alignment="CENTER">
+                        <ImageView fitWidth="30" preserveRatio="true">
+                            <Image url="@../img/pawns/stone.png"/>
+                        </ImageView>
+                        <Label fx:id="opQtyStoneLbl" text="x0"/>
+                    </HBox>
+                    <HBox spacing="5" alignment="CENTER">
+                        <ImageView fitWidth="30" preserveRatio="true">
+                            <Image url="@../img/pawns/coin.png"/>
+                        </ImageView>
+                        <Label fx:id="opQtyCoinLbl" text="x0"/>
+                    </HBox>
+                </HBox>
+                <HBox>
+                    <HBox spacing="5" alignment="CENTER">
+                        <ImageView fitWidth="30" preserveRatio="true">
+                            <Image url="@../img/pawns/servant.png"/>
+                        </ImageView>
+                        <Label fx:id="opQtyServantLbl" text="x0"/>
+                    </HBox>
+                    <HBox spacing="5" alignment="CENTER">
+                        <ImageView fitWidth="30" preserveRatio="true">
+                            <Image url="@../img/pawns/shield.png"/>
+                        </ImageView>
+                        <Label fx:id="opQtyShieldLbl" text="x0"/>
+                    </HBox>
+                </HBox>
+            </VBox>
+        </HBox>
+
+        <HBox alignment="CENTER_LEFT" spacing="20">
+            <Label text="Extra storage (if present):"  />
+        </HBox>
+
+        <Button fx:id="opBackBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
+                styleClass="btn" text="Back"/>
+
+    </VBox>
+</StackPane>
+

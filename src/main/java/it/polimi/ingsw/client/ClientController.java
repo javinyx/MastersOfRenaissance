@@ -145,6 +145,7 @@ public abstract class ClientController {
 
     public void startLocalGame(){
         messageToServerHandler = new LocalAdapter(this);
+        askNickname();
     }
 
     // ERROR MESSAGE ACTIONS -------------------------------------------------------------------------------------------

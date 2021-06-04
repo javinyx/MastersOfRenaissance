@@ -1,11 +1,12 @@
 package it.polimi.ingsw.client.GUI.sceneHandlers;
 
 import it.polimi.ingsw.client.GUI.GuiController;
+import it.polimi.ingsw.client.model.NubPlayer;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
+import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
-import it.polimi.ingsw.model.player.Warehouse;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -14,6 +15,7 @@ import javafx.scene.ImageCursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.effect.SepiaTone;
 import javafx.scene.image.Image;
@@ -24,7 +26,6 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -61,6 +62,18 @@ public class GamePhaseHandler extends PhaseHandler {
     private Region shelf1PU, shelf21PU, shelf22PU, shelf31PU, shelf32PU, shelf33PU;
     @FXML
     private ImageView shelf1MB, shelf21MB, shelf22MB, shelf31MB, shelf32MB, shelf33MB;
+    @FXML
+    private Button player1Btn, player2Btn, player3Btn;
+    @FXML
+    private Label player1FaithLbl, player2FaithLbl, player3FaithLbl;
+    @FXML
+    private ImageView player1FaithImg, player2FaithImg, player3FaithImg;
+    @FXML
+    private Label opLbl, opQtyShelf1Lbl, opQtyShelf2Lbl, opQtyShelf3Lbl, opQtyStoneLbl, opQtyCoinLbl, opQtyServantLbl, opQtyShieldLbl;
+    @FXML
+    private ImageView opLead1Img, opLead2Img, opShelf1Img, opShelf2Img, opShelf3Img;
+    @FXML
+    private Button opBackBtn;
 
     //TODO: LORENZOROLLED UNDER PATH 8
     private Map<ScenesEnum, Scene> sceneMap = new HashMap<>();
@@ -68,7 +81,7 @@ public class GamePhaseHandler extends PhaseHandler {
     public GamePhaseHandler(GuiController controller, Stage stage) {
         super(controller, stage);
 
-        List<ScenesEnum> allPaths = new ArrayList<>(Arrays.asList(MAIN_BOARD, MARKET, STORAGE));
+        List<ScenesEnum> allPaths = new ArrayList<>(Arrays.asList(MAIN_BOARD, MARKET, STORAGE, OTHER_PLAYER));
         for (ScenesEnum path : allPaths) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + path.getPath()));
             loader.setController(this);
@@ -111,12 +124,35 @@ public class GamePhaseHandler extends PhaseHandler {
             }
         }
 
-        int i = 0;
-        for (int x = 0; x < 3; x++) {
-            for (int y = 0; y < 4; y++) {
+        for (int x = 0, i=0; x < 3; x++) {
+            for (int y = 0; y < 4; y++, i++) {
                 setProductionCards(x, y, productionCards, availableProductionCards.get(i).getId());
-                i++;
             }
+        }
+        setEnemyBoardBox();
+
+    }
+
+    private void setEnemyBoardBox(){
+        List<Button> playersBtns = new ArrayList<>(Arrays.asList(player1Btn, player2Btn, player3Btn));
+        List<Label> playersFaithLbls = new ArrayList<>(Arrays.asList(player1FaithLbl, player2FaithLbl, player3FaithLbl));
+        List<ImageView> playersCrossesImgs = new ArrayList<>(Arrays.asList(player1FaithImg, player2FaithImg, player3FaithImg));
+
+        int ctr = 0;
+        for(NubPlayer p : controller.getOtherPlayers()){
+            playersBtns.get(ctr).setText(p.getNickname() + "(#" + p.getTurnNumber() + ")");
+            playersFaithLbls.get(ctr).setText(String.valueOf(p.getCurrPos()));
+            ctr++;
+        }
+        //if the game is not of size 4, then hide other buttons
+        while(ctr < 3){
+            playersBtns.get(ctr).setManaged(false);
+            playersBtns.get(ctr).setVisible(false);
+            playersFaithLbls.get(ctr).setVisible(false);
+            playersFaithLbls.get(ctr).setManaged(false);
+            playersCrossesImgs.get(ctr).setVisible(false);
+            playersCrossesImgs.get(ctr).setManaged(false);
+            ctr++;
         }
     }
 
@@ -182,6 +218,68 @@ public class GamePhaseHandler extends PhaseHandler {
             marketPopUp();
         });
 
+        player1Btn.setOnAction(event -> playerPopUp(controller.getOtherPlayers().get(0)));
+        player2Btn.setOnAction(event -> playerPopUp(controller.getOtherPlayers().get(1)));
+        player3Btn.setOnAction(event -> playerPopUp(controller.getOtherPlayers().get(2)));
+
+    }
+
+    private void playerPopUp(NubPlayer player){
+        Stage popUpStage = new Stage(StageStyle.TRANSPARENT);
+        mainBoard.setEffect(new GaussianBlur());
+        popUpStage.initOwner(stage);
+        popUpStage.initModality(Modality.APPLICATION_MODAL);
+        popUpStage.centerOnScreen();
+        popUpStage.setScene(getScene(OTHER_PLAYER));
+        popUpStage.show();
+
+        opLbl.setText("You're viewing " + player.getNickname() + "'s status");
+        System.out.println("leader size: " + player.getLeaders().size());
+        if(player.getLeaders().size()>0) {
+            System.out.println("Setting leaders img 1");
+            LeaderCard lead1 = player.getLeaders().get(0);
+            opLead1Img.setImage(new Image("img/leaderCards/" + (lead1.isActive() ? String.valueOf(lead1.getId()) : "leaderBack") + ".png"));
+        }
+        if(player.getLeaders().size()>1) {
+            LeaderCard lead2 = player.getLeaders().get(1);
+            opLead2Img.setImage(new Image("img/leaderCards/" + (lead2.isActive() ? String.valueOf(lead2.getId()) : "leaderBack") + ".png"));
+        }
+
+
+        //loot
+        Map<BiElement<Resource, Storage>, Integer> loot = player.getLootchest();
+        loot.forEach((x,y) ->{
+            switch(x.getFirstValue()){
+                case COIN -> opQtyCoinLbl.setText("x" + y);
+                case SERVANT -> opQtyServantLbl.setText("x" + y);
+                case SHIELD -> opQtyShieldLbl.setText("x" + y);
+                case STONE -> opQtyStoneLbl.setText("x" + y);
+            }
+        });
+
+        Map<BiElement<Resource, Storage>, Integer> war = player.getWarehouse();
+        war.forEach((x,y) ->{
+            Image img = new Image("img/pawns/" + x.getFirstValue().toString().toLowerCase() + ".png");
+            switch(x.getSecondValue()){
+                case WAREHOUSE_SMALL -> {
+                    opShelf1Img.setImage(img);
+                    opQtyShelf1Lbl.setText("x" + y);
+                }
+                case WAREHOUSE_MID -> {
+                    opShelf2Img.setImage(img);
+                    opQtyShelf2Lbl.setText("x" + y);
+                }
+                case WAREHOUSE_LARGE -> {
+                    opShelf3Img.setImage(img);
+                    opQtyShelf3Lbl.setText("x" + y);
+                }
+            }
+        });
+
+        opBackBtn.setOnAction(event -> {
+            mainBoard.setEffect(null);
+            popUpStage.close();
+        });
     }
 
 

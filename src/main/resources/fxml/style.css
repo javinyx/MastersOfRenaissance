@@ -170,7 +170,7 @@ ToggleButton {
 
 #enemyBoard {
     -fx-background-color: #737777;
-    -fx-padding: 10px;
+    -fx-padding: 20px;
 }
 
 .leaderNotActive {

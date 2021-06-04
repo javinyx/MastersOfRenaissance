@@ -4,9 +4,7 @@ import it.polimi.ingsw.client.GUI.GuiController;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
-import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -19,7 +17,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.effect.GaussianBlur;
-import javafx.scene.effect.SepiaTone;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
@@ -29,7 +26,6 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -91,10 +87,6 @@ public class InitialPhaseHandler extends PhaseHandler {
     private GridPane marketMarbles, productionCards;
     @FXML
     private Circle extraMarble;
-    @FXML
-    private Button player1Btn, player2Btn, player3Btn;
-    @FXML
-    private Label player1FaithLbl, player2FaithLbl, player3FaithLbl;
 
     public InitialPhaseHandler(GuiController controller, Stage stage) {
         super(controller, stage);

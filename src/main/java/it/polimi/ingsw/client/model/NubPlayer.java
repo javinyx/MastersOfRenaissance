@@ -74,24 +74,41 @@ public class NubPlayer implements Comparator<NubPlayer> {
     }
 
     public void removeResources(BiElement<Resource, Storage> resources, Integer qty){
-        //Map<BiElement<Resource, Storage>, Integer> dupe = new HashMap<>(allResources);
         List<BiElement<Resource, Storage>> toRemove = new ArrayList<>();
 
         allResources.forEach((x,y) -> {
             if(x.equals(resources)){
-                System.out.println("Ho trovato una corrispondenza tra " + x + " e " + resources);
                 allResources.compute(x, (k,v) -> v - qty);
                 if(allResources.get(x)<1){
-                    System.out.println("L'elemento " + x + " è da rimuovere");
                     toRemove.add(x);
                 }
             }
         });
-        System.out.println("NubPlayer toRemove: " + toRemove);
 
         for(BiElement<Resource, Storage> x : toRemove){
             allResources.remove(x);
         }
+    }
+
+    public Map<BiElement<Resource, Storage>, Integer> getWarehouse(){
+        Map<BiElement<Resource, Storage>, Integer> war = new HashMap<>();
+        allResources.forEach((x,y) ->{
+            if(x.getSecondValue().equals(Storage.WAREHOUSE_SMALL) || x.getSecondValue().equals(Storage.WAREHOUSE_MID)
+                    || x.getSecondValue().equals(Storage.WAREHOUSE_LARGE)){
+                war.put(x, y);
+            }
+        });
+        return war;
+    }
+
+    public Map<BiElement<Resource, Storage>, Integer> getLootchest(){
+        Map<BiElement<Resource, Storage>, Integer> loot = new HashMap<>();
+        allResources.forEach((x,y) ->{
+            if(x.getSecondValue().equals(Storage.LOOTCHEST)){
+                loot.put(x, y);
+            }
+        });
+        return loot;
     }
 
     public Map<BiElement<Resource,Storage>,Integer> getAllResources(){return allResources;}

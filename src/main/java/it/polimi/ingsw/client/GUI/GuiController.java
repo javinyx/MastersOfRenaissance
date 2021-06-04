@@ -18,12 +18,8 @@ import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.market.Resource;
 import javafx.application.Platform;
-import javafx.fxml.FXML;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -188,9 +184,12 @@ public class GuiController extends ClientController {
     private void initialGameStart() {
         setRegistrationPhase(false);
 
-        Platform.runLater(() -> gamePhaseHandler.setScene(ScenesEnum.MAIN_BOARD));
+        Platform.runLater(() -> {
+            gamePhaseHandler.setScene(ScenesEnum.MAIN_BOARD);
+            gamePhaseHandler.initiateBoard(chosenLeadersId, availableProductionCard);
+        });
 
-        gamePhaseHandler.initiateBoard(chosenLeadersId, availableProductionCard);
+        //Platform.runLater(()->gamePhaseHandler.initiateBoard(chosenLeadersId, availableProductionCard));
         gamePhaseHandler.observePlayerActions();
     }
 

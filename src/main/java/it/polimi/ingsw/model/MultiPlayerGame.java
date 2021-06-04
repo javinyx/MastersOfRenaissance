@@ -7,6 +7,7 @@ import it.polimi.ingsw.messages.concreteMessages.UpdateMessage;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.cards.Deck;
+import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.market.Market;
 import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.player.Player;
@@ -91,9 +92,14 @@ public class MultiPlayerGame extends Game implements ModelObserver {
                 addRes.put(new BiElement<>(r, Storage.WAREHOUSE_LARGE), 1);
         }
 
+        List<BiElement<Integer,Boolean>> leaders = new ArrayList<>();
+        for(LeaderCard l : p.getLeaderCards()){
+            leaders.add(new BiElement<>(l.getId(), l.isActive()));
+        }
+
         UpdateMessage msg = new UpdateMessage(p.getTurnID(), p.getCurrentPosition(), 1,
                 getMarket().getMarketBoard(), getMarket().getExtraMarble(), getBuyableProductionID(),
-                null, null, addRes, null);
+                null, leaders, addRes, null);
 
         msg.setSerializedResources();
 

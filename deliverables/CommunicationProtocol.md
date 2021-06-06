@@ -1,7 +1,7 @@
 # Communication Protocol
 ## Group ID: AM13 - A.Y. 2020/21
 
-This document's aim is to provide a clear overview of Maestri del Rinascimento project's communication protocol. Most relevant and crucial exchanges are going to be highlighted here. All the messages follow the JSON format shown below:
+This document's aim is to provide a clear overview of Maestri del Rinascimento project's communication protocol. Most relevant and crucial exchanges are going to be highlighted here. Each message that goes through the network is a `MesssageEnvelope`class that has been serialized with JSON. So all of them follow the JSON format shown below:
 
 ```
 {
@@ -9,12 +9,22 @@ This document's aim is to provide a clear overview of Maestri del Rinascimento p
 	"payload" : "{message content for the receiver}"
 }
 ```
+And the Java class:
+```Java
+public class MessageEnvelope{
+	MessageID messageId;
+	String payload;
+}
+```
 
-The `messageID` gives information about the type of event that has arisen in the sender, the `payload` field adds useful information for the receiver in order for it to react correctly.
+The `messageID` gives information about the type of event that has arisen in the sender, the `payload` field adds useful information for the receiver in order for it to react correctly. The `payload` could be a simple String or one of the Message class serializd with JSON as well if the `MessageId` has one associated to it (see below).
 <br/>
-When an event occurs inside the ClientView, commands will be created based on the messageID (the effective type of the event), each specific command knows how to serialize the content of the payload so that it can encapsulate everything inside a MessageEnvelope which will be sent, through the outputStream, to the Server.
+Whether it's an event occurred whithin the Client or a Server's response, respective messages will be created. For more complex messages that has to be sent through the network, we use ad hoc Java classes to incapsulate all the information in an organized way.  
 <br/>
-Once the server receives the MessageEnvelope, through a MessageAllocator it maps the messageID to the corresponding Java Message Class so that it can be deserialized correctly into the message object, which will contain all the necessary information for the Model’s public methods’ calls.
+Thanks to the `MessageEnvelope` we always know how to immediately deserialize a package coming from the network; once we have extracted the Json Object into a `MessageEnvelope`Java object, we can deserialize also the payload into a primitive type (i.e. String, Integer) or into one of our `Message` Java object based on the messageID (the effective type of the event).
+<br/>
+We decided to use Json as means of serialization instead of Java serialization because it is universally manageable, allowing us the potential of rewrite the client app in another programming languages in the future.
+
 
 # Table of Contents
 - [Communication Protocol](#communication-protocol)
@@ -42,103 +52,12 @@ Once the server receives the MessageEnvelope, through a MessageAllocator it maps
 
 # Initialization
 ## 1. Player registration
-The connection phase is executed upon the players' insertion of their IP address and port. They will contact the server on the default port (which can be configured through the config.json file), that has the purpose of listening for new incoming players and directing them to a new port that will be dinamically assigned to them for the whole game duration. This expedient has been thought as a way to allow the server to host multiple games at the same time.
+The connection phase is executed upon the players' insertion of their IP address and port. They will contact the server on the default port (which can be configured through the config.json file), that has the purpose of listening for new incoming players. Once the connection is accepted, it submits the respective `ClientSocketConnection` (which implements `Runnable` interface) of that player to a ThreadPool which will be in charge of serving the player throughout the game. This lets the Server keep listening for new connection requests without beign interrupted by players already registered. 
 <br/>
-The client app contains some logic for the correct game initialization. Players have to insert their nickname and choose the type of game they wish to play (_singleplayer mode_ or _multiplayer mode_) after the server checks if the player was already part of a game, otherwise the player is reconnected to that game. The initial registration is as follows:
+Now the ClientConnetionSocket begins the RegistrationPhase by sending the Client some requests of which we report here the respective messageIds: `ASK_NICK`, `PLAYER_NUM` and `CONFIRM_REGISTRATION`.
 
-```
-// Message: client -> server
-{
-	"messageID" : "REGISTER_SINGLE",
-	"payload" : {
-	"nickname" : "Gatto"
-	}
-}
+Once this is done, if the multiplayer option has been chosen, the player is put into a lobby waiting for other players whom would like to play with the same game size. The *waiting lobby* structure is a map (i.e. `Map<String, ClientConnection> threePlayerWait`) in which each entry is the the nickname and the ClientConnection of players waiting to find a group. We keep filling this map as play requests for the same size arrives until the number of players in it equates the lobby capacity (for example, the `threePlayerWait` has a capacity of 3 people). Once it's filled, we clear that map, and move the players to an another map since the game can be finally started. Following the previous example, the new map is a `Map<ClientConnection, List<ClientConnection>> threePlayerPlay` and it has one entry for each player currently in a game of size 3 and, as value, has a list of his/her opponents. This expedient has been thought as a way to allow the server to host multiple games at the same time. In fact, we  allow just one room waiting for a game of size 3 to start as we wish to fill quickly the lobby, but multiple games of size 3 going on at the same time.
 
-// Message: server -> client
-{
-	"messageID" : "SERVER_STATE",
-	"payload" : {
-		"accepted" : true,
-		"starting" : true,
-		"wasInGame" : false
-	}
-}
-```
-If the player wasn’t already part of a game, he will be given the choice of SinglePlayer or MultiPlayer game.
-For the MultiPlayer game, more choices have to be made:
-
-* **(A)** Create a new multiplayer game and specify how large they wish the lobby to be;
-* **(B)** Join an already existing game on hold for other players.
-
-### Case (A):
-
-```
-// Message: client -> server
-{
-	"messageID" : "REGISTER_MULTI",
-	"payload" : {
-		"nickname" : "Gatto",
-		"nPlayers" : 4
-	}
-}
-```
-Players will wait until the the lobby is full. The lobby creator will be the first player once the game starts.
-
-### Case (B):
-
-```
-// Message: client -> server
-{
-	"messageID" : "REQUEST_LOBBY",
-	"payload" : {}
-}
-
-// Message: server -> client
-{
-	"messageID" : "SHOW_LOBBY",
-	"payload" : {
-		{
-			"idLobby" : 1,
-			"nPlayersWaiting": 2,
-			"totPlayers": 4
-		},
-		
-		 ...
-		
-		{
-			"idLobby": n,
-			"nPlayersWaiting": 1,
-			"totPlayers": 3
-		}
-	}
-}
-
-// Message: client -> server
-{
-	"messageID" : "REGISTER_MULTI",
-	"payload" : {
-		"nickname" : "Gatto",
-		"idLobby" : 1,
-	}
-}
-```
-Where `idLobby` indicates which lobby the player wishes to join among those available sent by server.
-<br/>
-Server response for accepting the player:
-```
-// Message: server -> client
-{
-	"messageID" : "SERVER_STATE",
-	"payload" : "{
-		"accepted" : true,
-		"starting" : false
-	}"
-}
-```
-Mind that, in case **(B)**, `accepted` could be false if someone else simultaneously filled the last free spot. In that case, the player should choose another lobby.
-<br/>
-Once a lobby is full, the server sends a `SERVER_STATE` message to all clients waiting for that lobby, stating `"starting" : true`.
  
 ## 2. Game initiation
 
@@ -156,12 +75,30 @@ There are a few things to do upon game initiation:
 	}
 }
 ```
+* Each player needs to choose 2 out of their 4 given LeaderCards, the messages will look as such:
+```
+// Message: server -> client
+{
+	"messageID" : "CHOOSE_LEADER_CARDS",
+	"payload" : {
+		"leaderCards" : [3, 4, 6, 8]
+	}
+}
+
+// Message: client -> server
+{
+	"messageID" : "CHOOSE_LEADER_CARDS",
+	"payload" : {
+		"leaderCardsToKeep" : "[4, 8]"
+	}
+}
+```
 
 * Request players' preferred resources based on their turn order, with messages like the following: 
 ```
 // Message: server -> client
 {
-	"messageID" : "REQUEST_RESOURCE_CHOICE",
+	"messageID" : "CHOOSE_RESOURCE",
 	"payload" : {
 		"quantity": 2
 	}
@@ -177,17 +114,16 @@ There are a few things to do upon game initiation:
 		},
 		{
 			"resource": "COIN",
-			"position": "MediumW"
+			"position": "MidWarehouse"
 		}
 	}
 }
 
+//If the player's requests cannot be processed because malformed
 // Message: server -> client
 {
-	"messageID" : "ACTION_STATUS",
-	"payload" : {
-		"accepted": true
-	}
+	"messageID" : "BAD_STORAGE_REQUEST"
+	"payload"   : {}
 }
 ```
 Every value and faithPoint assignment follows the ruleset in the table below:
@@ -199,32 +135,7 @@ Every value and faithPoint assignment follows the ruleset in the table below:
 |   3rd  |              1             |       1      |
 |   4th  |              2             |       1      |
 
-* Each player needs to choose 2 out of their 4 given LeaderCards, the messages will look as such:
-```
-// Message: server -> client
-{
-	"messageID" : "REQUEST_LEADER_CHOICE",
-	"payload" : {
-		"leaderCards" : [3, 4, 6, 8]
-	}
-}
 
-// Message: client -> server
-{
-	"messageID" : "LEADER_CHOICE",
-	"payload" : {
-		"leaderCardsToKeep" : "[4, 8]"
-	}
-}
-
-// Message: server -> client
-{
-	"messageID" : "ACTION_STATUS",
-	"payload" : {
-		"accepted": true
-	}
-}
-```
 
 # Mid-game messages
 
@@ -234,16 +145,29 @@ Every value and faithPoint assignment follows the ruleset in the table below:
 ### 3.1 Client View Update
 The following messages are sent to each player in the game, because everyone has to see the changes in the model caused by other players as well:
 
-#### Current player notification
-```
-{
-	"messageID" : “CURRENT_PLAYER",
-	"payload" : {
-		"player" : 1
-	}
+#### Update Message
+```Java
+public class UpdateMessage extends SimpleMessage{
+	private final int playerId, playerPos, nextPlayerId;
+    private final Resource[][] marketBoard;
+    private final Resource extraMarble;
+    private final List<Integer> availableProductionCards;
+
+    private final List<BiElement<Integer,Integer>> productionCardsId;
+    private final List<BiElement<Integer, Boolean>> leadersId;
+    private final Map<BiElement<Resource, Storage>, Integer> addedResources, removedResources;
 }
 ```
-This incapsulate the player's id that has to play.
+Usually this message is sent by the server at the end of each player's turn to all the players, but it's occasionally used even in registrationPhase to communicate the initial status. This class is one of the Messages class that will be serialized in JSON and the resulting string will be squished into the `payload` field of `MessageEnvelope`.
+* `playerId`and `playerPos`are the id and current position of the player who has triggered this update message (at the end of the turn);
+* `nextPlayerId`is the id of the player who has to play next;
+* `marketBoard`, `extraMarble` and `availableProductionCards` are included since they're global information that concern every player. In fact, after a market action or a development card's purchasen done by `playerId`, the market state or the cards still available have been through changes that the other must know, so their client status has to be updated as well since the model has changed;
+* `productionCards`is a list of pairs of cardId bought and in which of the 3 stacks on the `playerId` board has been put;
+* `leadersId`is a list of pairs of leadersId and their activation status represeted through a boolean. This can be used to communicate how many leaders the `playerId` has, which are active and which not;
+* `addedResources` and `removedResources` represents the modification that the player storage has been through during his/her turn. So everyone can update their local storage status of `playerId` accordingly by adding those resources specified in `addedresources` and removing those in `removedResources`. The map contains a pair of Resource and Storage type as key and the quantity.
+
+So this message incapsulate the player's id that has to play the next turn as well as the modifications and progression happened last turn.
+
 
 #### Progression onto the _Faith Track_
 ```

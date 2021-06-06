@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.market.Resource;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class NubPlayer implements Comparator<NubPlayer> {
     private final String nickname;
@@ -99,6 +100,30 @@ public class NubPlayer implements Comparator<NubPlayer> {
             }
         });
         return war;
+    }
+
+    public int getQtyInStorage(Resource r, Storage s){
+        if(r==null){
+            return 0;
+        }
+        AtomicInteger qty = new AtomicInteger(0);
+        allResources.forEach((x,y) -> {
+            if(x.getFirstValue().equals(r) && x.getSecondValue().equals(s)){
+                qty.set(y);
+            }
+        });
+        return qty.get();
+    }
+
+    public Resource getResourceFromStorage(Storage type){
+        final Resource[] res = {null};
+        allResources.forEach((x,y) -> {
+            if(x.getSecondValue().equals(type)){
+                res[0] = x.getFirstValue();
+            }
+        });
+
+        return res[0];
     }
 
     public Map<BiElement<Resource, Storage>, Integer> getLootchest(){

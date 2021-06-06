@@ -363,10 +363,10 @@ public abstract class ClientController {
 
     //---------------------------CONVERTERS---------------------------------
 
-    protected List<ConcreteProductionCard> convertIdToProductionCard(List<Integer> ids){
+    public List<ConcreteProductionCard> convertIdToProductionCard(List<Integer> ids){
         return allProductionCards.stream().filter(x -> ids.contains(x.getId())).collect(Collectors.toList());
     }
-    protected ConcreteProductionCard convertIdToProductionCard(int id){
+    public ConcreteProductionCard convertIdToProductionCard(int id){
         for(ConcreteProductionCard pc : allProductionCards){
             if(pc.getId()==id)
                 return pc;
@@ -374,7 +374,7 @@ public abstract class ClientController {
         return null;
     }
 
-    protected List<LeaderCard> convertIdToLeaderCard(List<Integer> ids){
+    public List<LeaderCard> convertIdToLeaderCard(List<Integer> ids){
 
         List <LeaderCard> leaders = (allLeaders.stream().filter(x -> ids.contains(x.getId()))
                                                         .collect(Collectors.toList()));

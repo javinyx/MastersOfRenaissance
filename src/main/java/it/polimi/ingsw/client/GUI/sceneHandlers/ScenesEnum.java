@@ -11,6 +11,7 @@ public enum ScenesEnum {
     MAIN_BOARD("mainBoard.fxml"),
     MARKET("marketPopUp.fxml"),
     OTHER_PLAYERS("playerPopUp.fxml"),
+    CHOOSE_PAYMENT("choosePaymentMethod.fxml"),
     STORAGE("chooseStoragePopUp.fxml");
 
     private String path;

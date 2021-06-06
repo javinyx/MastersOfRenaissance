@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<StackPane xmlns="https://javafx.com/javafx" xmlns:fx="https://javafx.com/fxml">
+    <VBox>
+        <Label text="Please choose the resources to purchase the card"/>
+        <Label fx:id="listCostLbl"/>
+        <Label text="Warehouse"/>
+        <GridPane>
+            <ToggleButton fx:id="shelf1Toggle" styleClass="leaderToggle">
+                <ImageView fx:id="shelf1MB"  fitHeight="30" layoutX="233.0" layoutY="413.0" preserveRatio="true"/>
+            </ToggleButton>
+            <ToggleButton fx:id="shelf21Toggle" styleClass="leaderToggle">
+                <ImageView fx:id="shelf21MB" fitHeight="30" layoutX="220.0" layoutY="462.0" preserveRatio="true"/>
+            </ToggleButton>
+            <ToggleButton fx:id="shelf22Toggle" styleClass="leaderToggle">
+                <ImageView fx:id="shelf22MB" fitHeight="30" layoutX="260.0" layoutY="462.0" preserveRatio="true"/>
+            </ToggleButton>
+            <ToggleButton fx:id="shelf31Toggle" styleClass="leaderToggle">
+                <ImageView fx:id="shelf31MB" fitHeight="30" layoutX="192.0" layoutY="516.0" preserveRatio="true"/>
+            </ToggleButton>
+            <ToggleButton fx:id="shelf32Toggle" styleClass="leaderToggle">
+                <ImageView fx:id="shelf32MB" fitHeight="30" layoutX="232.0" layoutY="516.0" preserveRatio="true"/>
+            </ToggleButton>
+            <ToggleButton fx:id="shelf33Toggle" styleClass="leaderToggle">
+                <ImageView fx:id="shelf33MB" fitHeight="30" layoutX="262.0" layoutY="516.0" preserveRatio="true"/>
+            </ToggleButton>
+        </GridPane>
+
+        <VBox spacing="5" alignment="CENTER">
+            <Label text="Lootchest status:"/>
+            <HBox>
+                <HBox spacing="5" alignment="CENTER">
+                    <ImageView fitWidth="30" preserveRatio="true">
+                        <Image url="@../img/pawns/stone.png"/>
+                    </ImageView>
+                    <Label fx:id="qtyStoneLbl" text="x0"/>
+                </HBox>
+                <HBox spacing="5" alignment="CENTER">
+                    <ImageView fitWidth="30" preserveRatio="true">
+                        <Image url="@../img/pawns/coin.png"/>
+                    </ImageView>
+                    <Label fx:id="qtyCoinLbl" text="x0"/>
+                </HBox>
+            </HBox>
+            <HBox>
+                <HBox spacing="5" alignment="CENTER">
+                    <ImageView fitWidth="30" preserveRatio="true">
+                        <Image url="@../img/pawns/servant.png"/>
+                    </ImageView>
+                    <Label fx:id="qtyServantLbl" text="x0"/>
+                </HBox>
+                <HBox spacing="5" alignment="CENTER">
+                    <ImageView fitWidth="30" preserveRatio="true">
+                        <Image url="@../img/pawns/shield.png"/>
+                    </ImageView>
+                    <Label fx:id="qtyShieldLbl" text="x0"/>
+                </HBox>
+            </HBox>
+            <VBox>
+                <Label text="Choose resources from LootChest"/>
+                <HBox alignment="CENTER" spacing="20">
+                    <VBox alignment="CENTER" spacing="10">
+                        <ImageView fitHeight="120.0" preserveRatio="true">
+                            <Image url="@../img/pawns/stone.png"/>
+                        </ImageView>
+                        <HBox alignment="CENTER" spacing="2">
+                            <Button fx:id="stoneSubBtn" styleClass="btnSqAlt" text="-"/>
+                            <Label fx:id="stoneLbl" styleClass="resourceNumLabel" text="0"/>
+                            <Button fx:id="stoneAddBtn" styleClass="btnSqAlt" text="+"/>
+                        </HBox>
+                    </VBox>
+                    <VBox alignment="CENTER" spacing="10">
+                        <ImageView fitHeight="120.0" preserveRatio="true">
+                            <Image url="@../img/pawns/servant.png"/>
+                        </ImageView>
+                        <HBox alignment="CENTER" spacing="2">
+                            <Button fx:id="servantSubBtn" styleClass="btnSqAlt" text="-"/>
+                            <Label fx:id="servantLbl" styleClass="resourceNumLabel" text="0"/>
+                            <Button fx:id="servantAddBtn" styleClass="btnSqAlt" text="+"/>
+                        </HBox>
+                    </VBox>
+                    <VBox alignment="CENTER" spacing="10">
+                        <ImageView fitHeight="120.0" preserveRatio="true">
+                            <Image url="@../img/pawns/coin.png"/>
+                        </ImageView>
+                        <HBox alignment="CENTER" spacing="2">
+                            <Button fx:id="coinSubBtn" styleClass="btnSqAlt" text="-"/>
+                            <Label fx:id="coinLbl" styleClass="resourceNumLabel" text="0"/>
+                            <Button fx:id="coinAddBtn" styleClass="btnSqAlt" text="+"/>
+                        </HBox>
+                    </VBox>
+                    <VBox alignment="CENTER" spacing="10">
+                        <ImageView fitHeight="120.0" preserveRatio="true">
+                            <Image url="@../img/pawns/shield.png"/>
+                        </ImageView>
+                        <HBox alignment="CENTER" spacing="2">
+                            <Button fx:id="shieldSubBtn" styleClass="btnSqAlt" text="-"/>
+                            <Label fx:id="shieldLbl" styleClass="resourceNumLabel" text="0"/>
+                            <Button fx:id="shieldAddBtn" styleClass="btnSqAlt" text="+"/>
+                        </HBox>
+                    </VBox>
+                </HBox>
+            </VBox>
+        </VBox>
+
+        <Button fx:id="confirmPaymentBtn" text="Confirm"/>
+    </VBox>
+</StackPane>

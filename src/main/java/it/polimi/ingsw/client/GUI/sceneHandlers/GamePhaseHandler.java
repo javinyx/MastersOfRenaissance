@@ -35,12 +35,14 @@ import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static it.polimi.ingsw.client.GUI.sceneHandlers.ScenesEnum.*;
 
 public class GamePhaseHandler extends PhaseHandler {
     /* MAIN ***********************************************************************************************************/
     private Map<ScenesEnum, Scene> sceneMap = new HashMap<>();
+    private final BuyProdCardPhase buyProdCardPhase;
     @FXML
     private AnchorPane mainBoard;
 
@@ -107,6 +109,7 @@ public class GamePhaseHandler extends PhaseHandler {
             }
         }
 
+        buyProdCardPhase = new BuyProdCardPhase(controller, stage);
         buildGeneralSceneMap(sceneMap);
     }
 
@@ -146,7 +149,10 @@ public class GamePhaseHandler extends PhaseHandler {
         player2Btn.setOnAction(event -> otherPlayersPopUp(controller.getOtherPlayers().get(1)));
         player3Btn.setOnAction(event -> otherPlayersPopUp(controller.getOtherPlayers().get(2)));
 
+        //
+
     }
+
 
     /* MARKET & MARKET POPUP ******************************************************************************************/
     private void setMarket() {
@@ -224,6 +230,19 @@ public class GamePhaseHandler extends PhaseHandler {
 
 
     /* PRODUCTION CARDS ***********************************************************************************************/
+    public void buyProductionCardAction(){
+        List<ImageView> buyableCards = productionCards.getChildren().stream().map(x -> (ImageView)x).collect(Collectors.toList());
+
+        buyableCards.forEach(x -> x.setOnMouseClicked(event -> {
+            String cardIDS = x.getImage().getUrl().split("/")[1].split("/")[1].split("\\.")[0];
+            Integer cardId = Integer.parseInt(cardIDS);
+            ConcreteProductionCard card = controller.convertIdToProductionCard(cardId);
+            buyProdCardPhase.setScene(CHOOSE_PAYMENT);
+
+        }));
+
+    }
+
     private void setProductionCards(List<ConcreteProductionCard> availableProductionCards) {
         for (int x = 0, i = 0; x < 3; x++) {
             for (int y = 0; y < 4; y++, i++) {

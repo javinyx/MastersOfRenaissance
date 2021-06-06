@@ -7,7 +7,7 @@
 <StackPane id="backgroundStart" prefHeight="600.0" prefWidth="950.0" xmlns="https://javafx.com/javafx"
            xmlns:fx="https://javafx.com/fxml">
     <VBox alignment="CENTER" spacing="30">
-        <Label styleClass="inputLabel" text="Choose 2 leaders"/>
+        <Label fx:id="chooseLeaderLbl" styleClass="inputLabel" text="Choose 2 leaders"/>
         <HBox alignment="CENTER" spacing="20">
             <ToggleButton fx:id="leader1Toggle" styleClass="leaderToggle">
                 <graphic>

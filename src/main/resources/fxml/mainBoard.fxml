@@ -7,7 +7,7 @@
 
 <AnchorPane fx:id="mainBoard" xmlns="https://javafx.com/javafx" xmlns:fx="https://javafx.com/fxml">
 
-    <!-- INFO BOX -->
+    <!-- ENEMY BOARD -->
     <HBox id="enemyBoard" alignment="CENTER" layoutX="10" layoutY="10" spacing="20">
         <VBox alignment="CENTER" spacing="10">
             <Button fx:id="player1Btn" styleClass="btn"/>

@@ -37,24 +37,24 @@ import static it.polimi.ingsw.client.GUI.sceneHandlers.ScenesEnum.*;
 /**
  * This class is the handler for the welcome, connection, registration, waiting room, leaders choice, resource choice
  * and storage choice action during the initial phase.
- */
+ ***/
 public class InitialPhaseHandler extends PhaseHandler {
-    /*** MAIN *********************************************************************************************************/
+    /* MAIN ***********************************************************************************************************/
     private int ctr;
     private Map<ScenesEnum, Scene> sceneMap = new HashMap<>();
 
-    /*** WELCOME SCENE ************************************************************************************************/
+    /* WELCOME SCENE **************************************************************************************************/
     @FXML
     private Button playBtn, quitBtn;
 
-    /*** CONNECTION SCENE *********************************************************************************************/
+    /* CONNECTION SCENE ***********************************************************************************************/
     private String ip, port;
     @FXML
     private Button connectBtn, localModeBtn;
     @FXML
     private TextField ipField, portField;
 
-    /*** REGISTRATION SCENE *******************************************************************************************/
+    /* REGISTRATION SCENE *********************************************************************************************/
     @FXML
     private Button singlePlayerBtn, twoPlayerBtn, threePlayerBtn, fourPlayerBtn;
     @FXML
@@ -62,11 +62,11 @@ public class InitialPhaseHandler extends PhaseHandler {
     @FXML
     private TextField nickNameField;
 
-    /*** WAITING ROOM SCENE *******************************************************************************************/
+    /* WAITING ROOM SCENE *********************************************************************************************/
     @FXML
     private Label waitingRoomLbl;
 
-    /*** CHOOSE LEADERS SCENE *****************************************************************************************/
+    /* CHOOSE LEADERS SCENE *******************************************************************************************/
     @FXML
     private Button chooseLeadersBtn, chooseResourcesBtn;
     @FXML
@@ -74,7 +74,7 @@ public class InitialPhaseHandler extends PhaseHandler {
     @FXML
     private ImageView leader1Img, leader2Img, leader3Img, leader4Img;
 
-    /*** CHOOSE RESOURCES SCENE ***************************************************************************************/
+    /* CHOOSE RESOURCES SCENE *****************************************************************************************/
     @FXML
     private Button stoneSubBtn, stoneAddBtn, servantSubBtn, servantAddBtn, coinSubBtn, coinAddBtn, shieldSubBtn,
             shieldAddBtn;
@@ -83,7 +83,7 @@ public class InitialPhaseHandler extends PhaseHandler {
     @FXML
     private Pane chooseResPane;
 
-    /*** CHOOSE STORAGE SCENE *****************************************************************************************/
+    /* CHOOSE STORAGE SCENE *******************************************************************************************/
     private List<BiElement<Resource, Storage>> initialResourcePlacements = new ArrayList<>();
     private Node target;
     @FXML
@@ -127,7 +127,7 @@ public class InitialPhaseHandler extends PhaseHandler {
         return true;
     }
 
-    /*** WELCOME SCENE ************************************************************************************************/
+    /* WELCOME SCENE **************************************************************************************************/
     public void start() {
         playBtn.setOnAction(actionEvent -> {
             try {
@@ -141,10 +141,10 @@ public class InitialPhaseHandler extends PhaseHandler {
         });
     }
 
-    /*** CONNECTION SCENE *********************************************************************************************/
+    /* CONNECTION SCENE ***********************************************************************************************/
     /**
      * @return a {@link BiElement} containing the IP as first value and the Port as second.
-     */
+     ***/
     public void retrieveIpAndPort() {
         connectBtn.setOnAction(actionEvent -> {
             if (ipField.getText().length() > 0 && ipField.getText().length() > 0) {
@@ -162,7 +162,7 @@ public class InitialPhaseHandler extends PhaseHandler {
         });
     }
 
-    /*** REGISTRATION SCENE *******************************************************************************************/
+    /* REGISTRATION SCENE *********************************************************************************************/
     public void getNickNameAndGameSize() {
         singlePlayerBtn.setOnAction(this::setNickNameAndGameSize);
         twoPlayerBtn.setOnAction(this::setNickNameAndGameSize);
@@ -181,7 +181,7 @@ public class InitialPhaseHandler extends PhaseHandler {
         }
     }
 
-    /*** WAITING ROOM SCENE *******************************************************************************************/
+    /* WAITING ROOM SCENE *********************************************************************************************/
     public void setWaitingRoomName(String nickName) {
         waitingRoomLbl.setText("Hello, " + nickName);
     }
@@ -191,7 +191,7 @@ public class InitialPhaseHandler extends PhaseHandler {
         setScene(WAITING_ROOM);
     }
 
-    /*** CHOOSE LEADERS SCENE *****************************************************************************************/
+    /* CHOOSE LEADERS SCENE *******************************************************************************************/
     public void displayLeaders(List<LeaderCard> availableLeaders) {
         leader1Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(0).getId() + ".png"));
         leader2Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(1).getId() + ".png"));
@@ -251,7 +251,7 @@ public class InitialPhaseHandler extends PhaseHandler {
         }
     }
 
-    /*** CHOOSE RESOURCES SCENE ***************************************************************************************/
+    /* CHOOSE RESOURCES SCENE *****************************************************************************************/
     public void chooseResources(Integer resources) {
         List<Resource> selectedRes = new ArrayList<>();
 
@@ -353,7 +353,7 @@ public class InitialPhaseHandler extends PhaseHandler {
         });
     }
 
-    /*** CHOOSE STORAGE ***********************************************************************************************/
+    /* CHOOSE STORAGE *************************************************************************************************/
     private void chooseStorage(Pane motherPane, Scene popUpScene, List<Resource> selectedRes) {
         resource1Img.setImage(new Image("img/pawns/" + selectedRes.get(0).toString().toLowerCase() + ".png"));
         if (selectedRes.size() == 1) {
@@ -435,6 +435,7 @@ public class InitialPhaseHandler extends PhaseHandler {
         if (event.getTransferMode() == TransferMode.MOVE) {
             ((Node) event.getSource()).setLayoutX(target.getLayoutX() + 5);
             ((Node) event.getSource()).setLayoutY(target.getLayoutY() + 5);
+            ((Node) event.getSource()).setDisable(true);
         }
 
         event.consume();

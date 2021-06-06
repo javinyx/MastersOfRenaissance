@@ -39,65 +39,74 @@ import java.util.*;
 import static it.polimi.ingsw.client.GUI.sceneHandlers.ScenesEnum.*;
 
 public class GamePhaseHandler extends PhaseHandler {
-
-    private Node target;
-
+    /* MAIN ***********************************************************************************************************/
+    private Map<ScenesEnum, Scene> sceneMap = new HashMap<>();
     @FXML
     private AnchorPane mainBoard;
+
+    /* LEADER CARDS ***************************************************************************************************/
     @FXML
     private ImageView leader1Show, leader2Show;
-    @FXML
-    private GridPane marketMarbles, marketMarblesPU, productionCards;
-    @FXML
-    private Circle extraMarble, extraMarblePU;
-    @FXML
-    private Region marketRegion;
+
+    /* MARKET & MARKET POPUP ******************************************************************************************/
     @FXML
     private Button marketBackBtn;
     @FXML
-    private ImageView marketRow1Btn, marketRow2Btn, marketRow3Btn, marketCol1Btn, marketCol2Btn, marketCol3Btn, marketCol4Btn;
+    private Circle extraMarble, extraMarblePU;
     @FXML
-    private ImageView resource1ImgPU;
+    private GridPane marketMarbles, marketMarblesPU, productionCards;
+    @FXML
+    private ImageView marketRow1Btn, marketRow2Btn, marketRow3Btn, marketCol1Btn, marketCol2Btn, marketCol3Btn,
+            marketCol4Btn;
+    @FXML
+    private Region marketRegion;
+
+    /* WAREHOUSE & CHOOSE RESOURCES POPUP *****************************************************************************/
+    private Node target;
+    @FXML
+    private ImageView resourceImgPU;
     @FXML
     private Region shelf1PU, shelf21PU, shelf22PU, shelf31PU, shelf32PU, shelf33PU;
     @FXML
     private ImageView shelf1MB, shelf21MB, shelf22MB, shelf31MB, shelf32MB, shelf33MB;
+
+    /* ENEMY BOARD ****************************************************************************************************/
     @FXML
     private Button player1Btn, player2Btn, player3Btn;
     @FXML
-    private Label player1FaithLbl, player2FaithLbl, player3FaithLbl;
-    @FXML
     private ImageView player1FaithImg, player2FaithImg, player3FaithImg;
     @FXML
-    private Label opLbl, opQtyShelf1Lbl, opQtyShelf2Lbl, opQtyShelf3Lbl, opQtyStoneLbl, opQtyCoinLbl, opQtyServantLbl, opQtyShieldLbl;
+    private Label player1FaithLbl, player2FaithLbl, player3FaithLbl;
+
+    /* OTHER PLAYERS POPUP ********************************************************************************************/
+    @FXML
+    private Button opBackBtn;
     @FXML
     private ImageView opLead1Img, opLead2Img, opShelf1Img, opShelf2Img, opShelf3Img;
     @FXML
-    private Button opBackBtn;
+    private Label opLbl, opQtyShelf1Lbl, opQtyShelf2Lbl, opQtyShelf3Lbl, opQtyStoneLbl, opQtyCoinLbl, opQtyServantLbl,
+            opQtyShieldLbl;
 
     //TODO: LORENZOROLLED UNDER PATH 8
-    private Map<ScenesEnum, Scene> sceneMap = new HashMap<>();
 
     public GamePhaseHandler(GuiController controller, Stage stage) {
         super(controller, stage);
 
-        List<ScenesEnum> allPaths = new ArrayList<>(Arrays.asList(MAIN_BOARD, MARKET, STORAGE, OTHER_PLAYER));
+        List<ScenesEnum> allPaths = new ArrayList<>(Arrays.asList(MAIN_BOARD, MARKET, STORAGE, OTHER_PLAYERS));
         for (ScenesEnum path : allPaths) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + path.getPath()));
             loader.setController(this);
 
             try {
                 Scene scene = new Scene(loader.load());
-
                 scene.getStylesheets().addAll(this.getClass().getResource("/fxml/style.css").toExternalForm());
                 scene.setCursor(new ImageCursor(new Image("/img/ui/cursor.png"), 5, 5));
-
                 sceneMap.put(path, scene);
-
             } catch (IOException e) {
                 System.err.println("Loader cannot load " + path);
             }
         }
+
         buildGeneralSceneMap(sceneMap);
     }
 
@@ -109,12 +118,38 @@ public class GamePhaseHandler extends PhaseHandler {
         return true;
     }
 
+    /* MAIN BOARD *****************************************************************************************************/
     public void initiateBoard(List<Integer> chosenLeadersId, List<ConcreteProductionCard> availableProductionCards) {
         leader1Show.setImage(new Image("img/leaderCards/" + chosenLeadersId.get(0) + ".png"));
         leader1Show.setEffect(new SepiaTone(0.6));
         leader2Show.setImage(new Image("img/leaderCards/" + chosenLeadersId.get(1) + ".png"));
         leader2Show.setEffect(new SepiaTone(0.6));
 
+        setMarket();
+        setProductionCards(availableProductionCards);
+        setEnemyBoard();
+    }
+
+    private void updateBoard(List<ConcreteProductionCard> availableProductionCards) {
+        setMarket();
+        setProductionCards(availableProductionCards);
+        setEnemyBoard();
+    }
+
+    public void observePlayerActions() {
+        marketRegion.setOnMouseClicked(event -> {
+            mainBoard.setEffect(new GaussianBlur());
+            marketPopUp();
+        });
+
+        player1Btn.setOnAction(event -> otherPlayersPopUp(controller.getOtherPlayers().get(0)));
+        player2Btn.setOnAction(event -> otherPlayersPopUp(controller.getOtherPlayers().get(1)));
+        player3Btn.setOnAction(event -> otherPlayersPopUp(controller.getOtherPlayers().get(2)));
+
+    }
+
+    /* MARKET & MARKET POPUP ******************************************************************************************/
+    private void setMarket() {
         extraMarble.setFill(Color.web(controller.getMarket().getExtra().getHexCode()));
         extraMarblePU.setFill(Color.web(controller.getMarket().getExtra().getHexCode()));
         for (int x = 0; x < 3; x++) {
@@ -122,37 +157,6 @@ public class GamePhaseHandler extends PhaseHandler {
                 setMarbleColor(x, y, marketMarbles, controller.getMarket().getMarketBoard()[x][y].getHexCode());
                 setMarbleColor(x, y, marketMarblesPU, controller.getMarket().getMarketBoard()[x][y].getHexCode());
             }
-        }
-
-        for (int x = 0, i=0; x < 3; x++) {
-            for (int y = 0; y < 4; y++, i++) {
-                setProductionCards(x, y, productionCards, availableProductionCards.get(i).getId());
-            }
-        }
-        setEnemyBoardBox();
-
-    }
-
-    private void setEnemyBoardBox(){
-        List<Button> playersBtns = new ArrayList<>(Arrays.asList(player1Btn, player2Btn, player3Btn));
-        List<Label> playersFaithLbls = new ArrayList<>(Arrays.asList(player1FaithLbl, player2FaithLbl, player3FaithLbl));
-        List<ImageView> playersCrossesImgs = new ArrayList<>(Arrays.asList(player1FaithImg, player2FaithImg, player3FaithImg));
-
-        int ctr = 0;
-        for(NubPlayer p : controller.getOtherPlayers()){
-            playersBtns.get(ctr).setText(p.getNickname() + "(#" + p.getTurnNumber() + ")");
-            playersFaithLbls.get(ctr).setText(String.valueOf(p.getCurrPos()));
-            ctr++;
-        }
-        //if the game is not of size 4, then hide other buttons
-        while(ctr < 3){
-            playersBtns.get(ctr).setManaged(false);
-            playersBtns.get(ctr).setVisible(false);
-            playersFaithLbls.get(ctr).setVisible(false);
-            playersFaithLbls.get(ctr).setManaged(false);
-            playersCrossesImgs.get(ctr).setVisible(false);
-            playersCrossesImgs.get(ctr).setManaged(false);
-            ctr++;
         }
     }
 
@@ -166,122 +170,6 @@ public class GamePhaseHandler extends PhaseHandler {
             }
         }
     }
-
-    private void setProductionCards(int row, int column, GridPane gridPane, int imgId) {
-        ObservableList<Node> children = gridPane.getChildren();
-
-        for (Node node : children) {
-            if (gridPane.getRowIndex(node) == row && gridPane.getColumnIndex(node) == column) {
-                ((ImageView) node).setImage(new Image("img/productionCardsFront/" + imgId + ".png"));
-                break;
-            }
-        }
-    }
-
-    private void updateBoard(List<ConcreteProductionCard> availableProductionCards) {
-        int x, y, i;
-
-        ObservableList<Node> children1 = marketMarbles.getChildren();
-        ObservableList<Node> children2 = productionCards.getChildren();
-
-        extraMarble.setFill(Color.web(controller.getMarket().getExtra().getHexCode()));
-
-        for (x = 0; x < 3; x++) {
-            for (y = 0; y < 4; y++) {
-                for (Node node : children1) {
-                    if (marketMarbles.getRowIndex(node) == x && marketMarbles.getColumnIndex(node) == y) {
-                        ((Circle) node).setFill(Color.web(controller.getMarket().getMarketBoard()[x][y].getHexCode()));
-                        break;
-                    }
-                }
-            }
-        }
-
-        i = 0;
-        for (x = 0; x < 3; x++) {
-            for (y = 0; y < 4; y++) {
-                for (Node node : children2) {
-                    if (productionCards.getRowIndex(node) == x && productionCards.getColumnIndex(node) == y) {
-                        ((ImageView) node).setImage(new Image("img/productionCardsFront/" + availableProductionCards.get(i).getId() + ".png"));
-                        i++;
-                        break;
-                    }
-                }
-            }
-        }
-
-    }
-
-    public void observePlayerActions() {
-        marketRegion.setOnMouseClicked(event -> {
-            mainBoard.setEffect(new GaussianBlur());
-            marketPopUp();
-        });
-
-        player1Btn.setOnAction(event -> playerPopUp(controller.getOtherPlayers().get(0)));
-        player2Btn.setOnAction(event -> playerPopUp(controller.getOtherPlayers().get(1)));
-        player3Btn.setOnAction(event -> playerPopUp(controller.getOtherPlayers().get(2)));
-
-    }
-
-    private void playerPopUp(NubPlayer player){
-        Stage popUpStage = new Stage(StageStyle.TRANSPARENT);
-        mainBoard.setEffect(new GaussianBlur());
-        popUpStage.initOwner(stage);
-        popUpStage.initModality(Modality.APPLICATION_MODAL);
-        popUpStage.centerOnScreen();
-        popUpStage.setScene(getScene(OTHER_PLAYER));
-        popUpStage.show();
-
-        opLbl.setText("You're viewing " + player.getNickname() + "'s status");
-        System.out.println("leader size: " + player.getLeaders().size());
-        if(player.getLeaders().size()>0) {
-            System.out.println("Setting leaders img 1");
-            LeaderCard lead1 = player.getLeaders().get(0);
-            opLead1Img.setImage(new Image("img/leaderCards/" + (lead1.isActive() ? String.valueOf(lead1.getId()) : "leaderBack") + ".png"));
-        }
-        if(player.getLeaders().size()>1) {
-            LeaderCard lead2 = player.getLeaders().get(1);
-            opLead2Img.setImage(new Image("img/leaderCards/" + (lead2.isActive() ? String.valueOf(lead2.getId()) : "leaderBack") + ".png"));
-        }
-
-
-        //loot
-        Map<BiElement<Resource, Storage>, Integer> loot = player.getLootchest();
-        loot.forEach((x,y) ->{
-            switch(x.getFirstValue()){
-                case COIN -> opQtyCoinLbl.setText("x" + y);
-                case SERVANT -> opQtyServantLbl.setText("x" + y);
-                case SHIELD -> opQtyShieldLbl.setText("x" + y);
-                case STONE -> opQtyStoneLbl.setText("x" + y);
-            }
-        });
-
-        Map<BiElement<Resource, Storage>, Integer> war = player.getWarehouse();
-        war.forEach((x,y) ->{
-            Image img = new Image("img/pawns/" + x.getFirstValue().toString().toLowerCase() + ".png");
-            switch(x.getSecondValue()){
-                case WAREHOUSE_SMALL -> {
-                    opShelf1Img.setImage(img);
-                    opQtyShelf1Lbl.setText("x" + y);
-                }
-                case WAREHOUSE_MID -> {
-                    opShelf2Img.setImage(img);
-                    opQtyShelf2Lbl.setText("x" + y);
-                }
-                case WAREHOUSE_LARGE -> {
-                    opShelf3Img.setImage(img);
-                    opQtyShelf3Lbl.setText("x" + y);
-                }
-            }
-        });
-
-        opBackBtn.setOnAction(event -> {
-            mainBoard.setEffect(null);
-            popUpStage.close();
-        });
-    }
-
 
     private void marketPopUp() {
         Stage popUpStage = new Stage(StageStyle.TRANSPARENT);
@@ -334,12 +222,116 @@ public class GamePhaseHandler extends PhaseHandler {
         });
     }
 
+
+    /* PRODUCTION CARDS ***********************************************************************************************/
+    private void setProductionCards(List<ConcreteProductionCard> availableProductionCards) {
+        for (int x = 0, i = 0; x < 3; x++) {
+            for (int y = 0; y < 4; y++, i++) {
+                setProductionCardImg(x, y, productionCards, availableProductionCards.get(i).getId());
+            }
+        }
+    }
+
+    private void setProductionCardImg(int row, int column, GridPane gridPane, int imgId) {
+        ObservableList<Node> children = gridPane.getChildren();
+
+        for (Node node : children) {
+            if (gridPane.getRowIndex(node) == row && gridPane.getColumnIndex(node) == column) {
+                ((ImageView) node).setImage(new Image("img/productionCardsFront/" + imgId + ".png"));
+                break;
+            }
+        }
+    }
+
+    /* ENEMY BOARD ****************************************************************************************************/
+    private void setEnemyBoard() {
+        List<Button> playersBtns = new ArrayList<>(Arrays.asList(player1Btn, player2Btn, player3Btn));
+        List<Label> playersFaithLbls = new ArrayList<>(Arrays.asList(player1FaithLbl, player2FaithLbl,
+                player3FaithLbl));
+        List<ImageView> playersFaithImgs = new ArrayList<>(Arrays.asList(player1FaithImg, player2FaithImg,
+                player3FaithImg));
+
+        int ctr = 0;
+        for (NubPlayer p : controller.getOtherPlayers()) {
+            playersBtns.get(ctr).setText(p.getNickname() + "(#" + p.getTurnNumber() + ")");
+            playersFaithLbls.get(ctr).setText(String.valueOf(p.getCurrPos()));
+            ctr++;
+        }
+        //if the game is not of size 4, then hide other buttons
+        while (ctr < 3) {
+            playersBtns.get(ctr).setManaged(false);
+            playersBtns.get(ctr).setVisible(false);
+            playersFaithLbls.get(ctr).setVisible(false);
+            playersFaithLbls.get(ctr).setManaged(false);
+            playersFaithImgs.get(ctr).setVisible(false);
+            playersFaithImgs.get(ctr).setManaged(false);
+            ctr++;
+        }
+    }
+
+    /* OTHER PLAYERS POPUP ********************************************************************************************/
+    private void otherPlayersPopUp(NubPlayer player) {
+        Stage popUpStage = new Stage(StageStyle.TRANSPARENT);
+        mainBoard.setEffect(new GaussianBlur());
+        popUpStage.initOwner(stage);
+        popUpStage.initModality(Modality.APPLICATION_MODAL);
+        popUpStage.centerOnScreen();
+        popUpStage.setScene(getScene(OTHER_PLAYERS));
+        popUpStage.show();
+
+        opLbl.setText("You're viewing " + player.getNickname() + "'s status");
+        System.out.println("leader size: " + player.getLeaders().size());
+        if (player.getLeaders().size() > 0) {
+            System.out.println("Setting leaders img 1");
+            LeaderCard lead1 = player.getLeaders().get(0);
+            opLead1Img.setImage(new Image("img/leaderCards/" + (lead1.isActive() ? String.valueOf(lead1.getId())
+                    : "leaderBack") + ".png"));
+        }
+        if (player.getLeaders().size() > 1) {
+            LeaderCard lead2 = player.getLeaders().get(1);
+            opLead2Img.setImage(new Image("img/leaderCards/" + (lead2.isActive() ? String.valueOf(lead2.getId())
+                    : "leaderBack") + ".png"));
+        }
+
+        Map<BiElement<Resource, Storage>, Integer> loot = player.getLootchest();
+        loot.forEach((x, y) -> {
+            switch (x.getFirstValue()) {
+                case COIN -> opQtyCoinLbl.setText("x" + y);
+                case SERVANT -> opQtyServantLbl.setText("x" + y);
+                case SHIELD -> opQtyShieldLbl.setText("x" + y);
+                case STONE -> opQtyStoneLbl.setText("x" + y);
+            }
+        });
+
+        Map<BiElement<Resource, Storage>, Integer> war = player.getWarehouse();
+        war.forEach((x, y) -> {
+            Image img = new Image("img/pawns/" + x.getFirstValue().toString().toLowerCase() + ".png");
+            switch (x.getSecondValue()) {
+                case WAREHOUSE_SMALL -> {
+                    opShelf1Img.setImage(img);
+                    opQtyShelf1Lbl.setText("x" + y);
+                }
+                case WAREHOUSE_MID -> {
+                    opShelf2Img.setImage(img);
+                    opQtyShelf2Lbl.setText("x" + y);
+                }
+                case WAREHOUSE_LARGE -> {
+                    opShelf3Img.setImage(img);
+                    opQtyShelf3Lbl.setText("x" + y);
+                }
+            }
+        });
+
+        opBackBtn.setOnAction(event -> {
+            mainBoard.setEffect(null);
+            popUpStage.close();
+        });
+    }
+
+    /* CHOOSE STORAGE POPUP *******************************************************************************************/
     public void chooseStoragePopUp(List<Resource> selectedRes, int i) {
 
-        resource1ImgPU.setImage(new Image("img/pawns/" + selectedRes.get(i).toString().toLowerCase() + ".png"));
-
         mainBoard.setEffect(new GaussianBlur());
-
         Stage popUpStage = new Stage(StageStyle.TRANSPARENT);
         popUpStage.initOwner(stage);
         popUpStage.initModality(Modality.APPLICATION_MODAL);
@@ -347,10 +339,12 @@ public class GamePhaseHandler extends PhaseHandler {
         popUpStage.setScene(getScene(STORAGE));
         popUpStage.show();
 
-        resource1ImgPU.setOnDragDetected(event -> {
+        resourceImgPU.setImage(new Image("img/pawns/" + selectedRes.get(i).toString().toLowerCase() + ".png"));
+
+        resourceImgPU.setOnDragDetected(event -> {
             sourceDragDetected(event, selectedRes.get(0));
         });
-        resource1ImgPU.setOnDragDone(this::sourceDragDone);
+        resourceImgPU.setOnDragDone(this::sourceDragDone);
 
         List<BiElement<Resource, Storage>> resourcePlacement = new ArrayList<>();
 

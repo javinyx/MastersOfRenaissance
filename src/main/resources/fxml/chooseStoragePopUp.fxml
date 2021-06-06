@@ -19,7 +19,7 @@
         <Region fx:id="shelf32PU" layoutX="260.0" layoutY="234.0" prefHeight="50.0" prefWidth="40.0"/>
         <Region fx:id="shelf33PU" layoutX="300.0" layoutY="234.0" prefHeight="50.0" prefWidth="50.0"/>
 
-        <ImageView fx:id="resource1ImgPU" fitHeight="30.0" layoutX="109.0" layoutY="117.0" pickOnBounds="true"
+        <ImageView fx:id="resourceImgPU" fitHeight="30.0" layoutX="109.0" layoutY="117.0" pickOnBounds="true"
                    preserveRatio="true" styleClass="resImg"/>
     </children>
 </AnchorPane>

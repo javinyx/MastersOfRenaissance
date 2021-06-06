@@ -89,8 +89,7 @@ public class InitialPhaseHandler extends PhaseHandler {
     @FXML
     private Button chooseStorageBtn;
     @FXML
-    private ImageView resource1Img, resource2Img, wareHouseImg, shelf1MB, shelf21MB, shelf22MB, shelf31MB,
-            shelf32MB, shelf33MB;
+    private ImageView resource1Img, resource2Img, wareHouseImg;
     @FXML
     private Region shelf1, shelf21, shelf22, shelf31, shelf32, shelf33, shelf1PU, shelf21PU, shelf22PU, shelf31PU,
             shelf32PU, shelf33PU;

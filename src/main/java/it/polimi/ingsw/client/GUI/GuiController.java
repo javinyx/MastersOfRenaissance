@@ -47,21 +47,22 @@ public class GuiController extends ClientController {
 
     public GuiController(Stage stage, Gui gui) {
         this.stage = stage;
+        this.gui = gui;
 
         Font.loadFont(getClass().getResourceAsStream("/fonts/godofwar.ttf"), 14);
-
-        this.gui = gui;
         initialPhaseHandler = new InitialPhaseHandler(this, stage);
         gamePhaseHandler = new GamePhaseHandler(this, stage);
+
         start();
     }
 
+    /* INIT PHASE *****************************************************************************************************/
     private void start() {
         stage.setTitle("Masters of Renaissance");
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/img/ui/inkwell.png")));
         stage.setResizable(false);
         stage.setOnCloseRequest(closeEvent -> {
-            //TODO: PopUp asking if the user is sure that they want to exit, maybe use the same popup when they click Esc
+            //TODO: PopUp asking if the user is sure that they want to exit, maybe use the same popup on Esc
             stage.close();
             System.exit(0);
         });
@@ -70,11 +71,11 @@ public class GuiController extends ClientController {
         initialPhaseHandler.start();
     }
 
+    /* CONNECTION PHASE ***********************************************************************************************/
     @Override
     public boolean setup() throws IOException {
         initialPhaseHandler.setScene(ScenesEnum.CONNECTION);
         initialPhaseHandler.retrieveIpAndPort();
-
         return true;
     }
 
@@ -106,10 +107,7 @@ public class GuiController extends ClientController {
 
     }
 
-    @Override
-    public void setWaitingServerUpdate(boolean b) {
-    }
-
+    /* REGISTRATION PHASE *********************************************************************************************/
     @Override
     public void askNickname() {
         Platform.runLater(() -> stage.setScene(initialPhaseHandler.getScene(ScenesEnum.REGISTRATION)));
@@ -134,27 +132,7 @@ public class GuiController extends ClientController {
         gameSize = Integer.parseInt(size);
     }
 
-    public void setSelectedLeaders(List<Boolean> leadersChoice) {
-        Platform.runLater(initialPhaseHandler::waitStartGame);
-        List<LeaderCard> availableLeaders = getPlayer().getLeaders();
-
-        for (int i = 0; i < leadersChoice.size(); i++) {
-            if (leadersChoice.get(i)) {
-                chosenLeadersId.add(availableLeaders.get(i).getId());
-            }
-        }
-        synchronized (lock) {
-            messageToServerHandler.generateEnvelope(MessageID.CHOOSE_LEADER_CARDS, chosenLeadersId.toString());
-            lock.notifyAll();
-        }
-    }
-
-    public void setInitialResourcePlacements(List<BiElement<Resource, Storage>> placements) {
-        Platform.runLater(initialPhaseHandler::waitStartGame);
-        StoreResourcesMessage msg = new StoreResourcesMessage(placements, getPlayer().getTurnNumber());
-        messageToServerHandler.generateEnvelope(MessageID.STORE_RESOURCES, gson.toJson(msg, StoreResourcesMessage.class));
-    }
-
+    /* START GAME PHASE ***********************************************************************************************/
     @Override
     public void startGame() {
         if (isRegistrationPhase() && gameSize == 1) {
@@ -189,8 +167,81 @@ public class GuiController extends ClientController {
             gamePhaseHandler.initiateBoard(chosenLeadersId, availableProductionCard);
         });
 
-        //Platform.runLater(()->gamePhaseHandler.initiateBoard(chosenLeadersId, availableProductionCard));
         gamePhaseHandler.observePlayerActions();
+    }
+
+    /* GAME INITIAL CHOOSE PHASE **************************************************************************************/
+    @Override
+    public void chooseLeadersAction() {
+        List<LeaderCard> availableLeaders = getPlayer().getLeaders();
+        initialPhaseHandler.displayLeaders(availableLeaders);
+        synchronized (lock) {
+            Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.CHOOSE_LEADERS));
+            initialPhaseHandler.chooseLeaders();
+        }
+    }
+
+    public void setSelectedLeaders(List<Boolean> leadersChoice) {
+        Platform.runLater(initialPhaseHandler::waitStartGame);
+        List<LeaderCard> availableLeaders = getPlayer().getLeaders();
+
+        for (int i = 0; i < leadersChoice.size(); i++) {
+            if (leadersChoice.get(i)) {
+                chosenLeadersId.add(availableLeaders.get(i).getId());
+            }
+        }
+        synchronized (lock) {
+            messageToServerHandler.generateEnvelope(MessageID.CHOOSE_LEADER_CARDS, chosenLeadersId.toString());
+            lock.notifyAll();
+        }
+    }
+
+    @Override
+    public void chooseResourceAction(int quantity) {
+        synchronized (lock) {
+            try {
+                lock.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.CHOOSE_RESOURCES));
+            initialPhaseHandler.chooseResources(quantity);
+        }
+    }
+
+    @Override
+    public void chooseStorageAction(List<Resource> res) {
+        List<Resource> tbdRes = new ArrayList<>();
+
+        for (Resource r : res) {
+            if (r != null && r != Resource.FAITH) {
+                tbdRes.add(r);
+            }
+        }
+        monkas = 0;
+        Platform.runLater(() -> gamePhaseHandler.chooseStoragePopUp(tbdRes, monkas));
+    }
+
+    public void ontoTheNextResource(List<Resource> poggersRes, int count) {
+        if (count < poggersRes.size() - 1) {
+            count++;
+            monkas = count;
+            Platform.runLater(() -> gamePhaseHandler.chooseStoragePopUp(poggersRes, monkas));
+        }
+    }
+
+    public void setInitialResourcePlacements(List<BiElement<Resource, Storage>> placements) {
+        Platform.runLater(initialPhaseHandler::waitStartGame);
+        StoreResourcesMessage msg = new StoreResourcesMessage(placements, getPlayer().getTurnNumber());
+        messageToServerHandler.generateEnvelope(MessageID.STORE_RESOURCES, gson.toJson(msg, StoreResourcesMessage.class));
+    }
+
+    /* MARKET ACTIONS *************************************************************************************************/
+    @Override
+    public void chooseStorageAfterMarketAction(String s) {
+        List<Resource> res = (new ArrayList<>(Arrays.asList(s.substring(1, s.length() - 1).split(", "))))
+                .stream().map(this::convertStringToResource).collect(Collectors.toList());
+        chooseStorageAction(res);
     }
 
     public void sendBuyMarketMessage(char dim, int index) {
@@ -199,14 +250,21 @@ public class GuiController extends ClientController {
         messageToServerHandler.generateEnvelope(MessageID.BUY_FROM_MARKET, gson.toJson(msg, BuyMarketMessage.class));
     }
 
-    public void sendPlaceResourcesMessage(List<BiElement<Resource, Storage>> placements) {
-        StoreResourcesMessage msg = new StoreResourcesMessage(placements, getPlayer().getTurnNumber());
-        messageToServerHandler.generateEnvelope(MessageID.STORE_RESOURCES, gson.toJson(msg, StoreResourcesMessage.class));
+    @Override
+    public void updateMarket() {
+        gamePhaseHandler.setMarket();
     }
 
+    public void sendPlaceResourcesMessage(List<BiElement<Resource, Storage>> placements) {
+        StoreResourcesMessage msg = new StoreResourcesMessage(placements, getPlayer().getTurnNumber());
+        messageToServerHandler.generateEnvelope(MessageID.STORE_RESOURCES, gson.toJson(msg, StoreResourcesMessage
+                .class));
+    }
+
+    /* GENERAL ACTIONS ************************************************************************************************/
     @Override
     public void refreshView() {
-
+        gamePhaseHandler.updateBoard(availableProductionCard);
     }
 
     @Override
@@ -265,63 +323,13 @@ public class GuiController extends ClientController {
     }
 
     @Override
-    public void chooseStorageAfterMarketAction(String s) {
-        List<Resource> res = (new ArrayList<>(Arrays.asList(s.substring(1, s.length() - 1).split(", ")))).stream().map(this::convertStringToResource).collect(Collectors.toList());
-        chooseStorageAction(res);
-    }
-
-    @Override
-    public void chooseResourceAction(int quantity) {
-        synchronized (lock) {
-            try {
-                lock.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.CHOOSE_RESOURCES));
-            initialPhaseHandler.chooseResources(quantity);
-        }
-    }
-
-    @Override
-    public void chooseStorageAction(List<Resource> res) {
-        List<Resource> poggersRes =  new ArrayList<>();
-
-        for (Resource r : res) {
-            if (r != null && r != Resource.FAITH) {
-                poggersRes.add(r);
-            }
-        }
-        monkas = 0;
-        Platform.runLater(() -> gamePhaseHandler.chooseStoragePopUp(poggersRes, monkas));
-    }
-
-    public void ontoTheNextResource(List<Resource> poggersRes, int count) {
-        if(count < poggersRes.size() - 1) {
-            count++;
-            monkas = count;
-            Platform.runLater(() -> gamePhaseHandler.chooseStoragePopUp(poggersRes, monkas));
-        }
-    }
-
-    @Override
-    public void chooseLeadersAction() {
-        List<LeaderCard> availableLeaders = getPlayer().getLeaders();
-        initialPhaseHandler.displayLeaders(availableLeaders);
-        synchronized (lock) {
-            Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.CHOOSE_LEADERS));
-            initialPhaseHandler.chooseLeaders();
-        }
-    }
-
-    @Override
-    public void updateMarket() {
+    public void setWaitingServerUpdate(boolean b) {
 
     }
 
     @Override
     public void updateAvailableProductionCards() {
-
+        gamePhaseHandler.setProductionCards(availableProductionCard);
     }
 
     @Override

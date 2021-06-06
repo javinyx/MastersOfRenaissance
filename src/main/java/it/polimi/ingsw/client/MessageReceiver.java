@@ -94,7 +94,7 @@ public class MessageReceiver implements Runnable{
     public void readGameMessage(MessageEnvelope envelope) {
         controller.setLastGameMessage(envelope.getMessageID());
 
-        //System.out.println("GAME: " + envelope.getMessageID());
+        System.out.println("GAME: " + envelope.getMessageID());
 
         switch(envelope.getMessageID()){
 

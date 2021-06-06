@@ -24,9 +24,7 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Region;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Modality;
@@ -45,6 +43,8 @@ public class GamePhaseHandler extends PhaseHandler {
     private final BuyProdCardPhase buyProdCardPhase;
     @FXML
     private AnchorPane mainBoard;
+    @FXML
+    private Button endTurnBtn;
 
     /* LEADER CARDS ***************************************************************************************************/
     @FXML
@@ -71,6 +71,8 @@ public class GamePhaseHandler extends PhaseHandler {
     private Region shelf1PU, shelf21PU, shelf22PU, shelf31PU, shelf32PU, shelf33PU;
     @FXML
     private ImageView shelf1MB, shelf21MB, shelf22MB, shelf31MB, shelf32MB, shelf33MB;
+    /*@FXML
+    private ImageView shelf1PUImg, shelf21PUImg, shelf22PUImg, shelf31PUImg, shelf32PUImg, shelf33PUImg;*/
 
     /* ENEMY BOARD ****************************************************************************************************/
     @FXML
@@ -123,39 +125,89 @@ public class GamePhaseHandler extends PhaseHandler {
 
     /* MAIN BOARD *****************************************************************************************************/
     public void initiateBoard(List<Integer> chosenLeadersId, List<ConcreteProductionCard> availableProductionCards) {
-        leader1Show.setImage(new Image("img/leaderCards/" + chosenLeadersId.get(0) + ".png"));
-        leader1Show.setEffect(new SepiaTone(0.6));
-        leader2Show.setImage(new Image("img/leaderCards/" + chosenLeadersId.get(1) + ".png"));
-        leader2Show.setEffect(new SepiaTone(0.6));
-
+        setLeaders(chosenLeadersId);
+        setWarehouse();
         setMarket();
         setProductionCards(availableProductionCards);
         setEnemyBoard();
     }
 
-    private void updateBoard(List<ConcreteProductionCard> availableProductionCards) {
+    public void updateBoard(List<ConcreteProductionCard> availableProductionCards) {
+        setWarehouse();
         setMarket();
         setProductionCards(availableProductionCards);
         setEnemyBoard();
     }
 
     public void observePlayerActions() {
-        marketRegion.setOnMouseClicked(event -> {
-            mainBoard.setEffect(new GaussianBlur());
-            marketPopUp();
-        });
+        if (controller.getPlayer().isMyTurn()) {
+            marketRegion.setOnMouseClicked(event -> {
+                mainBoard.setEffect(new GaussianBlur());
+                marketPopUp();
+            });
+
+            endTurnBtn.setOnAction(actionEvent ->{
+                
+            });
+        } else {
+
+        }
 
         player1Btn.setOnAction(event -> otherPlayersPopUp(controller.getOtherPlayers().get(0)));
         player2Btn.setOnAction(event -> otherPlayersPopUp(controller.getOtherPlayers().get(1)));
         player3Btn.setOnAction(event -> otherPlayersPopUp(controller.getOtherPlayers().get(2)));
+    }
 
         //
 
+    private void setLeaders(List<Integer> chosenLeadersId) {
+        leader1Show.setImage(new Image("img/leaderCards/" + chosenLeadersId.get(0) + ".png"));
+        leader1Show.setEffect(new SepiaTone(0.6));
+        leader2Show.setImage(new Image("img/leaderCards/" + chosenLeadersId.get(1) + ".png"));
+        leader2Show.setEffect(new SepiaTone(0.6));
+    }
+
+    private void setWarehouse() {
+        Map<BiElement<Resource, Storage>, Integer> wh = controller.getPlayer().getWarehouse();
+        wh.forEach((x, y) -> {
+            Image img = new Image("img/pawns/" + x.getFirstValue().toString().toLowerCase() + ".png");
+            switch (x.getSecondValue()) {
+                case WAREHOUSE_SMALL -> {
+                    if (y == 1) {
+                        shelf1MB.setImage(img);
+                        shelf1PU.setBackground(new Background(new BackgroundImage(img, null, null, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                        shelf1PU.setDisable(true);
+                        /*shelf1PUImg.setImage(img);
+                        shelf1PUImg.setLayoutX(shelf1PU.getLayoutX() + 5);
+                        shelf1PUImg.setLayoutY(shelf1PU.getLayoutY() + 5);*/
+                    }
+                }
+                case WAREHOUSE_MID -> {
+                    if (y == 1) {
+                        shelf21MB.setImage(img);
+                    }
+                    if (y == 2) {
+                        shelf22MB.setImage(img);
+                    }
+                }
+                case WAREHOUSE_LARGE -> {
+                    if (y == 1) {
+                        shelf31MB.setImage(img);
+                    }
+                    if (y == 2) {
+                        shelf32MB.setImage(img);
+                    }
+                    if (y == 3) {
+                        shelf33MB.setImage(img);
+                    }
+                }
+            }
+        });
     }
 
 
     /* MARKET & MARKET POPUP ******************************************************************************************/
-    private void setMarket() {
+    public void setMarket() {
         extraMarble.setFill(Color.web(controller.getMarket().getExtra().getHexCode()));
         extraMarblePU.setFill(Color.web(controller.getMarket().getExtra().getHexCode()));
         for (int x = 0; x < 3; x++) {
@@ -243,7 +295,7 @@ public class GamePhaseHandler extends PhaseHandler {
 
     }
 
-    private void setProductionCards(List<ConcreteProductionCard> availableProductionCards) {
+    public void setProductionCards(List<ConcreteProductionCard> availableProductionCards) {
         for (int x = 0, i = 0; x < 3; x++) {
             for (int y = 0; y < 4; y++, i++) {
                 setProductionCardImg(x, y, productionCards, availableProductionCards.get(i).getId());

@@ -135,7 +135,7 @@ public class GuiController extends ClientController {
     /* START GAME PHASE ***********************************************************************************************/
     @Override
     public void startGame() {
-        if (isRegistrationPhase() && gameSize == 1) {
+        if (isRegistrationPhase() && gameSize == 1 && !localGame) {
             System.out.println("Init singlePlayer start BEFORE WAIT");
             synchronized (lock) {
                 try {
@@ -146,7 +146,7 @@ public class GuiController extends ClientController {
             }
             System.out.println("Init singlePlayer start AFTER WAIT");
             initialGameStart();
-        } else if (isRegistrationPhase() && gameSize != 1) {
+        } else if (isRegistrationPhase() && gameSize != 1 || localGame) {
             System.out.println("Init multiplayer start");
             initialGameStart();
         } else {

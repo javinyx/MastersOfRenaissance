@@ -32,6 +32,7 @@ public abstract class ClientController {
     protected MessageDispatchinatorable messageToServerHandler;
     private int count = 0;
     protected int countPope = 0;
+    protected boolean localGame = false;
 
     private List<ConcreteProductionCard> allProductionCards;
     private List<NubPlayer> totalPlayers = new ArrayList<>();
@@ -106,6 +107,8 @@ public abstract class ClientController {
     public NubPlayer getCurrPlayer() {return currPlayer;}
     public void setCurrPlayer(NubPlayer currPlayer) {this.currPlayer = currPlayer;}
 
+    public boolean isLocalGame(){return localGame;}
+
 
     // SETUP PHASE -----------------------------------------------------------------------------------------------------
 
@@ -144,6 +147,7 @@ public abstract class ClientController {
     }
 
     public void startLocalGame(){
+        localGame = true;
         messageToServerHandler = new LocalAdapter(this);
         askNickname();
     }
@@ -189,9 +193,6 @@ public abstract class ClientController {
      * @param player the player who played last turn*/
     public abstract void updateOtherPlayer(NubPlayer player);
 
-    protected void playLocally(){
-
-    }
 
     public synchronized void updateAction(UpdateMessage msg){
         if(market==null){
@@ -210,6 +211,7 @@ public abstract class ClientController {
             boughtProductionCard = convertIdToProductionCard(msg.getProductionCardId().getFirstValue());
 
         //modifica: da for(NubPlayer pp: otherPLayers) a for(NubPlayer pp: totalPlayers)
+        System.out.println(player.getNickname() + " " + player.getTurnNumber());
         for (NubPlayer pp : totalPlayers) {
             //update last player state for this client
             if (pp.getTurnNumber() == msg.getPlayerId()) { //search player
@@ -239,19 +241,27 @@ public abstract class ClientController {
                 }
                 //System.out.println("After removing: " + pp.getAllResources());
                 updateOtherPlayer(pp);
-                break;
             }
+
+            if(pp.getTurnNumber() == msg.getNextPlayerId()){
+                pp.setMyTurn(true);
+                currPlayer = pp;
+            }else{
+                pp.setMyTurn(false);
+            }
+
         }
         updateMarket();
         updateAvailableProductionCards();
 
-        for(NubPlayer p : totalPlayers){
+        /*for(NubPlayer p : totalPlayers){
             if(p.getTurnNumber() == msg.getNextPlayerId())
                 currPlayer = p;
-        }
+        }*/
 
-        if(!isRegistrationPhase() || totalPlayers.size() == 1)
+        if(!isRegistrationPhase() || (totalPlayers.size() == 1 && !localGame)) {
             startGame();
+        }
         else
             refreshView();
 

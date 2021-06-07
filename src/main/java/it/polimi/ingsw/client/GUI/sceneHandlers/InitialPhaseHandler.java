@@ -164,9 +164,16 @@ public class InitialPhaseHandler extends PhaseHandler {
     /* REGISTRATION SCENE *********************************************************************************************/
     public void getNickNameAndGameSize() {
         singlePlayerBtn.setOnAction(this::setNickNameAndGameSize);
-        twoPlayerBtn.setOnAction(this::setNickNameAndGameSize);
-        threePlayerBtn.setOnAction(this::setNickNameAndGameSize);
-        fourPlayerBtn.setOnAction(this::setNickNameAndGameSize);
+        if(controller.isLocalGame()){
+            twoPlayerBtn.setDisable(true);
+            threePlayerBtn.setDisable(true);
+            fourPlayerBtn.setDisable(true);
+            controller.setGameSize(String.valueOf(1));
+        }else {
+            twoPlayerBtn.setOnAction(this::setNickNameAndGameSize);
+            threePlayerBtn.setOnAction(this::setNickNameAndGameSize);
+            fourPlayerBtn.setOnAction(this::setNickNameAndGameSize);
+        }
     }
 
     private void setNickNameAndGameSize(ActionEvent event) {

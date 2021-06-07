@@ -146,9 +146,7 @@ public class GamePhaseHandler extends PhaseHandler {
                 marketPopUp();
             });
 
-            endTurnBtn.setOnAction(actionEvent ->{
-                
-            });
+            endTurnBtn.setOnAction(actionEvent -> controller.passTurn());
         } else {
 
         }

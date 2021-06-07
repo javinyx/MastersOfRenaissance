@@ -809,6 +809,15 @@ public class Cli /*extends MessageDispatchinatorable*/ {
 
     public void showPlayerBoard(){ OSPrinter.printBoard(controller.getPlayer(), controller.getMarket()); }
 
+    public String askNick(){
+        String nick;
+        do {
+            nick = scanner.next();
+        } while (nick.length() > 12);
+
+        return nick;
+    }
+
     //--------------------------------------------------------------------------------------------------------------------
 
     public void showMessage(String str){

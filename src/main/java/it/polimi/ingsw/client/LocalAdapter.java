@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client;
 
 import com.google.gson.Gson;
+import it.polimi.ingsw.client.CLI.CliController;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
@@ -30,6 +31,11 @@ public class LocalAdapter implements Observer<MessageEnvelope>, MessageDispatchi
      */
     @Override
     public void update(MessageEnvelope envelope) {
+
+        viewController.setLastRegistrationMessage(envelope.getMessageID());
+        viewController.setLastGameMessage(envelope.getMessageID());
+
+
         switch(envelope.getMessageID()){
             case ACK -> viewController.continueTurn(Boolean.parseBoolean(envelope.getPayload()));
 
@@ -53,7 +59,11 @@ public class LocalAdapter implements Observer<MessageEnvelope>, MessageDispatchi
             case WRONG_LEVEL_REQUEST -> viewController.wrongLevelRequest();
 
             case STORE_RESOURCES -> viewController.chooseStorageAfterMarketAction(envelope.getPayload());
-            case UPDATE -> viewController.updateAction(envelope.deserializeUpdateMessage());
+            case UPDATE -> {
+                viewController.updateAction(envelope.deserializeUpdateMessage());
+                //if(viewController.isRegistrationPhase())
+                  //  viewController.startGame();
+            }
 
             case LORENZO_POSITION -> viewController.upLorenzoToken(envelope.getPayload());
             case PLAYERS_POSITION -> viewController.updatePositionAction(gson.fromJson(envelope.getPayload(), PlayersPositionMessage.class));
@@ -75,7 +85,7 @@ public class LocalAdapter implements Observer<MessageEnvelope>, MessageDispatchi
 
             case CHOOSE_LEADER_CARDS -> {
                 controller.chooseLeaderCards(payload, viewController.getPlayer().getNickname());
-                update(new MessageEnvelope(MessageID.START_INITIAL_GAME, ""));
+                //update(new MessageEnvelope(MessageID.START_INITIAL_GAME, ""));
             }
 
             case BUY_FROM_MARKET -> controller.buyFromMarAction(gson.fromJson(payload, BuyMarketMessage.class));

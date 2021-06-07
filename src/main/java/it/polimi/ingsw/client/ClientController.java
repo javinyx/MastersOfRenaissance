@@ -146,11 +146,7 @@ public abstract class ClientController {
         initAllCards();
     }
 
-    public void startLocalGame(){
-        localGame = true;
-        messageToServerHandler = new LocalAdapter(this);
-        askNickname();
-    }
+    public abstract void startLocalGame();
 
     // ERROR MESSAGE ACTIONS -------------------------------------------------------------------------------------------
 
@@ -259,7 +255,7 @@ public abstract class ClientController {
                 currPlayer = p;
         }*/
 
-        if(!isRegistrationPhase() || (totalPlayers.size() == 1 && !localGame)) {
+        if(!isRegistrationPhase() || (totalPlayers.size() == 1)) {
             startGame();
         }
         else

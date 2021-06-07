@@ -5,6 +5,7 @@ import it.polimi.ingsw.client.ClientController;
 import it.polimi.ingsw.client.GUI.sceneHandlers.GamePhaseHandler;
 import it.polimi.ingsw.client.GUI.sceneHandlers.InitialPhaseHandler;
 import it.polimi.ingsw.client.GUI.sceneHandlers.ScenesEnum;
+import it.polimi.ingsw.client.LocalAdapter;
 import it.polimi.ingsw.client.MessageReceiver;
 import it.polimi.ingsw.client.MessageToServerHandler;
 import it.polimi.ingsw.client.model.NubPlayer;
@@ -135,18 +136,18 @@ public class GuiController extends ClientController {
     /* START GAME PHASE ***********************************************************************************************/
     @Override
     public void startGame() {
-        if (isRegistrationPhase() && gameSize == 1 && !localGame) {
+        if (isRegistrationPhase() && gameSize == 1 ) {
             System.out.println("Init singlePlayer start BEFORE WAIT");
-            synchronized (lock) {
+            /*synchronized (lock) {
                 try {
                     lock.wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            }
+            }*/
             System.out.println("Init singlePlayer start AFTER WAIT");
             initialGameStart();
-        } else if (isRegistrationPhase() && gameSize != 1 || localGame) {
+        } else if (isRegistrationPhase() && gameSize != 1 ) {
             System.out.println("Init multiplayer start");
             initialGameStart();
         } else {
@@ -265,6 +266,13 @@ public class GuiController extends ClientController {
     @Override
     public void refreshView() {
         gamePhaseHandler.updateBoard(availableProductionCard);
+    }
+
+    @Override
+    public void startLocalGame() {
+        localGame = true;
+        messageToServerHandler = new LocalAdapter(this);
+        askNickname();
     }
 
     @Override

@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.CLI;
 
 import com.google.gson.Gson;
 import it.polimi.ingsw.client.ClientController;
+import it.polimi.ingsw.client.LocalAdapter;
 import it.polimi.ingsw.client.MessageReceiver;
 import it.polimi.ingsw.client.MessageToServerHandler;
 import it.polimi.ingsw.client.model.NubPlayer;
@@ -91,10 +92,6 @@ public class CliController extends ClientController {
         if(!isActive())
             return;
         if(input.equals("/ff") || input.equals("/surrender")){
-            /*if(game.getPlayersInGame().size()==0){
-                cli.showMessage("It's too early to surrender!");
-                return;
-            }*/
             messageToServerHandler.manageSurrender();
             setActive(false);
             return;
@@ -687,6 +684,26 @@ public class CliController extends ClientController {
         startTurnPhase();
     }
 
+    //Local mode -------------------------------------------------------------------------------
+
+    public void startLocalGame(){
+        localGame = true;
+        messageToServerHandler = new LocalAdapter(this);
+
+        if (!cli.initialScreen())
+            return;
+
+        askNickname();
+        messageToServerHandler.sendMessageToServer(cli.askNick());
+        try {
+            Thread t0 = cli.startContinuousRead();
+            t0.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public void normalProcedure(){
         cli.clearScreen();
         System.out.println("This game was created by: \nOttavia\nAlessio\nJavin\nYou can find our name in the initial ascii art too.");
@@ -699,6 +716,4 @@ public class CliController extends ClientController {
         cli.pressEnter();
         startTurnPhase();
     }
-
-
 }

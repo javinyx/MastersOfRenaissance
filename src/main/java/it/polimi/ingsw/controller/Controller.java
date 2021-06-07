@@ -103,12 +103,16 @@ public class Controller implements Observer<MessageID> {
         //Leader choice
         envelope = new MessageEnvelope(MessageID.CHOOSE_LEADER_CARDS, String.valueOf(game.leaderDistribution()));
         remoteViews.get(0).update(envelope);
+    }
 
+    public void continueStart(){
+        MessageEnvelope envelope;
         game.start(game.getCurrPlayer());
+        game.getCurrPlayer().setInitializationPhase(false);
+
         envelope = new MessageEnvelope(MessageID.UPDATE, game.getCurrPlayer().getUpdate());
         remoteViews.get(game.getCurrPlayer().getTurnID()-1).update(envelope);
 
-        game.getCurrPlayer().setInitializationPhase(false);
         initializationPhase = false;
     }
 
@@ -669,6 +673,7 @@ public class Controller implements Observer<MessageID> {
             update(START_INITIAL_GAME);
         }
         playerLeaderDoneCtr++;
+        continueStart();
     }
 
     private int leaderIDtoSend;

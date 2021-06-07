@@ -7,13 +7,10 @@ import java.util.List;
 
 public class EndTurnMessage extends SimpleMessage {
     private final Integer nextPlayerId;
-    private final List<Integer> buyableProdCards;
 
-    public EndTurnMessage(Integer nextPlayerId, List<Integer> buyableProdCards){
+    public EndTurnMessage(Integer nextPlayerId){
         this.nextPlayerId = nextPlayerId;
-        this.buyableProdCards = new ArrayList<>(buyableProdCards);
     }
 
     public Integer getNextPlayerId(){return nextPlayerId;}
-    public List<Integer> getBuyableProdCardsIds(){return buyableProdCards;}
 }

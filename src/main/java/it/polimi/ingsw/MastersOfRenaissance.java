@@ -20,7 +20,12 @@ public class MastersOfRenaissance {
             } catch (IOException e) {
                 e.printStackTrace();
             }*/
-            controller.startLocalGame();
+            //controller.startLocalGame();
+            try {
+                playAgain = controller.setup();
+            }catch(IOException e ){
+                e.printStackTrace();
+            }
             break;
 
         }

@@ -99,6 +99,7 @@ public class MessageReceiver implements Runnable{
         switch(envelope.getMessageID()){
 
             case START_INITIAL_GAME -> controller.startInitialGame();
+            case CONFIRM_REGISTRATION -> controller.endTurn(gson.fromJson(envelope.getPayload(), EndTurnMessage.class));
 
             case ACK -> controller.continueTurn(Boolean.parseBoolean(envelope.getPayload()));
             case CARD_NOT_AVAILABLE -> controller.cardNotAvailable();

@@ -196,10 +196,11 @@ public class Controller implements Observer<MessageID> {
 
         //update(MessageID.CONFIRM_END_TURN);
         //parte nuova
-        previousPlayer = game.getCurrPlayer();
-        game.updateEndTurn(previousPlayer);
+        //previousPlayer = game.getCurrPlayer();
+        //game.updateEndTurn(previousPlayer);
+        update(CONFIRM_END_TURN);
         //fine
-        update(MessageID.UPDATE);
+        //update(MessageID.UPDATE);
         addedResources.clear();
         removedResources.clear();
         boughtCard = Optional.empty();
@@ -315,6 +316,7 @@ public class Controller implements Observer<MessageID> {
 
         basicActionDone = true;
         playerToAck = game.getCurrPlayer();
+        update(UPDATE);
         update(MessageID.ACK);
     }
 
@@ -416,6 +418,7 @@ public class Controller implements Observer<MessageID> {
         }
 
         basicActionDone = true;
+        update(UPDATE);
         update(MessageID.ACK);
     }
 
@@ -545,9 +548,11 @@ public class Controller implements Observer<MessageID> {
         }
 
         mustChoosePlacements = false;
-        if(!playerToAck.isInitializationPhase())
+
+        if(!playerToAck.isInitializationPhase()) {
+            update(UPDATE);
             update(MessageID.ACK);
-        else{
+        }else{
             game.start(playerToAck);
             MessageEnvelope envelope = new MessageEnvelope(MessageID.UPDATE, playerToAck.getUpdate());
             for(ProPlayer pp : ((MultiPlayerGame) game).getActivePlayers()){
@@ -651,6 +656,7 @@ public class Controller implements Observer<MessageID> {
                 }
             }
         }
+        update(UPDATE);
         update(MessageID.ACK);
     }
 
@@ -779,7 +785,7 @@ public class Controller implements Observer<MessageID> {
         previousPlayer = game.getCurrPlayer();
         game.updateEndTurn(previousPlayer);
 
-        return new EndTurnMessage(game.getCurrPlayer().getTurnID(), game.getBuyableProductionID());
+        return new EndTurnMessage(game.getCurrPlayer().getTurnID());
     }
 
     /**
@@ -787,6 +793,10 @@ public class Controller implements Observer<MessageID> {
      * the (new) currentPlayer, some information retrieved from model, {@code addedResources} and {@code removedResources}.
      */
     private synchronized UpdateMessage generateUpdateMessage() {
+        //for first update in mid game
+        if(previousPlayer==null){
+            previousPlayer = game.getCurrPlayer();
+        }
         List<BiElement<Integer, Boolean>> thisPlayerActiveLeaders = new ArrayList<>();
 
         //production card bought set by: buyProductionCardAction
@@ -803,6 +813,7 @@ public class Controller implements Observer<MessageID> {
                 boughtCard.orElse(null), thisPlayerActiveLeaders, addedResources, removedResources);
 
         msg.setSerializedResources();
+        boughtCard = Optional.empty();
 
         return msg;
     }
@@ -817,10 +828,11 @@ public class Controller implements Observer<MessageID> {
 
             case ACK -> remoteViews.get(playerToAck.getTurnID() - 1).update(new MessageEnvelope(messageID, String.valueOf(basicActionDone)));
             case CONFIRM_END_TURN -> {
-                System.err.println("CONFIRM_END_TURN: non dovremmo più essere qui");
                 EndTurnMessage msg = generateEndTurnMessage();
                 String payload = gson.toJson(msg, EndTurnMessage.class);
-                remoteViews.get(previousPlayer.getTurnID() - 1).update(new MessageEnvelope(messageID, payload));
+                for(Observer<MessageEnvelope> obs : remoteViews) {
+                    obs.update(new MessageEnvelope(messageID, payload));
+                }
             }
 
             //INITIALIZATION
@@ -843,11 +855,6 @@ public class Controller implements Observer<MessageID> {
             case STORE_RESOURCES -> remoteViews.get(playerToAck.getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));
 
             case UPDATE -> {
-                /*if (initializationPhase) {
-                    remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getUpdate()));
-                } else {*/
-                /*WARNING : in order to generate correctly an UpdateMessage with generateUpdateMessage(), a CONFIRM_END_TURN must be
-                 *  sent because it causes a generateEndTurnMessage() that updates the previousPlayer and the currentPlayer */
                 UpdateMessage msg = generateUpdateMessage();
                 MessageEnvelope envelope = new MessageEnvelope(MessageID.UPDATE, gson.toJson(msg, UpdateMessage.class));
                 for (Observer<MessageEnvelope> obs : remoteViews) {

@@ -38,6 +38,7 @@ public class LocalAdapter implements Observer<MessageEnvelope>, MessageDispatchi
 
         switch(envelope.getMessageID()){
             case ACK -> viewController.continueTurn(Boolean.parseBoolean(envelope.getPayload()));
+            case CONFIRM_END_TURN -> viewController.endTurn(gson.fromJson(envelope.getPayload(), EndTurnMessage.class));
 
             //INITIALIZATION
             case TURN_NUMBER -> viewController.setTotalPlayers(gson.fromJson(envelope.getPayload(), TurnNumberMessage.class));

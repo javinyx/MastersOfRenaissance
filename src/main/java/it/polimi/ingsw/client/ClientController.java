@@ -255,7 +255,7 @@ public abstract class ClientController {
                 currPlayer = p;
         }*/
 
-        if(!isRegistrationPhase() || (totalPlayers.size() == 1)) {
+        if(isRegistrationPhase() && totalPlayers.size() == 1) {
             startGame();
         }
         else
@@ -277,7 +277,6 @@ public abstract class ClientController {
 
     public void continueTurn(Boolean basicActionDone){
         if (!registrationPhase){
-            //System.out.println(basicActionDone);
             normalTurn = !basicActionDone;
             startTurnPhase();
         }
@@ -289,18 +288,29 @@ public abstract class ClientController {
 
     public synchronized void endTurn(EndTurnMessage msg){
 
-        for (BiElement<Resource, Storage> elem : storeRes)
+        /*for (BiElement<Resource, Storage> elem : storeRes)
             player.addResources(elem, 1);
-        storeRes.clear();
-
-        player.setMyTurn(false);
+        storeRes.clear();*/
 
         this.currPlayer = totalPlayers.get(msg.getNextPlayerId()-1);
-        this.availableProductionCard = convertIdToProductionCard(msg.getBuyableProdCardsIds());
 
-        showBoard();
+        normalTurn=true;
 
-        if (player.getTurnNumber() == currPlayer.getTurnNumber()) {
+        for(NubPlayer pp : totalPlayers){
+            if(pp.getTurnNumber() == msg.getNextPlayerId()){
+                pp.setMyTurn(true);
+                if(pp.equals(player)){
+                    startTurnPhase();
+                }
+            }else{
+                pp.setMyTurn(false);
+                if(pp.equals(player)){
+                    showCurrentTurn(currPlayer.getNickname());
+                }
+            }
+        }
+
+        /*if (player.getTurnNumber() == currPlayer.getTurnNumber()) {
             getPlayer().setMyTurn(true);
             normalTurn = true;
             startTurnPhase();
@@ -309,7 +319,7 @@ public abstract class ClientController {
                 if (p.getTurnNumber() == 1)
                     showCurrentTurn(p.getNickname());
             }
-        }
+        }*/
 
     }
 

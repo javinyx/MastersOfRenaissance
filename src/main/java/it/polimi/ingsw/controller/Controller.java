@@ -66,6 +66,8 @@ public class Controller implements Observer<MessageID> {
 
     // GETTER & SETTER --------------------------------------------------------------------------------------
 
+    public List<Observer<MessageEnvelope>> getRemoteViews() {return remoteViews;}
+
     public String getCurrPlayerNick() {return game.getCurrPlayer().getNickname();}
 
     public int getCurrPlayerTurnID() {return game.getCurrPlayer().getTurnID();}
@@ -850,6 +852,7 @@ public class Controller implements Observer<MessageID> {
                     WRONG_STACK_CHOICE,
                     LEADER_NOT_ACTIVABLE,
                     BAD_REARRANGE_REQUEST,
+                    BAD_STORAGE_REQUEST,
                     WRONG_LEVEL_REQUEST -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, ""));
 
             case STORE_RESOURCES -> remoteViews.get(playerToAck.getTurnID() - 1).update(new MessageEnvelope(messageID, game.getCurrPlayer().getResAcquired().toString()));

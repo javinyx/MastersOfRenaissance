@@ -87,6 +87,12 @@ public class RemoteView extends View {
 
         if (messageToSend.getMessageID() != null && (messageToSend.getMessageID().equals(MessageID.PLAYER_WIN)
                 || messageToSend.getMessageID().equals(MessageID.ABORT_GAME))) {
+            for (int i = 0; i <  controller.getRemoteViews().size(); i++) {
+                if (!controller.getRemoteViews().get(i).equals(this)) {
+                    MessageEnvelope msg = new MessageEnvelope(MessageID.ABORT_GAME, "");
+                    controller.getRemoteViews().get(i).update(msg);
+                }
+            }
             clientConnection.setActive(false);
         }
     }

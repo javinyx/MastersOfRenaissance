@@ -40,7 +40,7 @@ public class Server {
      * @param c the connection that will be removed
      */
     public synchronized void deregisterConnection(ClientConnection c) {
-        if (singlePlayerPlay.equals(c))
+        if (singlePlayerPlay != null && singlePlayerPlay.equals(c))
             deregFromSinglePlayerGame(c);
         else if (twoPlayerPlay.containsKey(c))
             deregFromTwoPlayerGame(c);
@@ -209,10 +209,10 @@ public class Server {
         List<String> keys = new ArrayList<>(singlePlayerWait.keySet());
         ClientConnection c1 = singlePlayerWait.get(keys.get(0));
         String p1 = keys.get(0);
+        singlePlayerPlay = c1;
 
         createGame(new ArrayList<>(Arrays.asList(c1)), new ArrayList<>(Arrays.asList(p1)));
 
-        singlePlayerPlay = c1;
         singlePlayerWait.clear();
     }
 
@@ -226,10 +226,11 @@ public class Server {
         String p1 = keys.get(0);
         String p2 = keys.get(1);
 
-        createGame(new ArrayList<>(Arrays.asList(c1, c2)), new ArrayList<>(Arrays.asList(p1, p2)));
-
         twoPlayerPlay.put(c1, c2);
         twoPlayerPlay.put(c2, c1);
+
+        createGame(new ArrayList<>(Arrays.asList(c1, c2)), new ArrayList<>(Arrays.asList(p1, p2)));
+
         twoPlayerWait.clear();
     }
 
@@ -245,11 +246,12 @@ public class Server {
         String p2 = keys.get(1);
         String p3 = keys.get(2);
 
-        createGame(new ArrayList<>(Arrays.asList(c1, c2, c3)), new ArrayList<>(Arrays.asList(p1, p2, p3)));
-
         threePlayerPlay.put(c1, new ArrayList<>(Arrays.asList(c2, c3)));
         threePlayerPlay.put(c2, new ArrayList<>(Arrays.asList(c1, c3)));
         threePlayerPlay.put(c3, new ArrayList<>(Arrays.asList(c1, c2)));
+
+        createGame(new ArrayList<>(Arrays.asList(c1, c2, c3)), new ArrayList<>(Arrays.asList(p1, p2, p3)));
+
         threePlayerWait.clear();
     }
 
@@ -267,12 +269,13 @@ public class Server {
         String p3 = keys.get(2);
         String p4 = keys.get(3);
 
-        createGame(new ArrayList<>(Arrays.asList(c1, c2, c3, c4)), new ArrayList<>(Arrays.asList(p1, p2, p3, p4)));
-
         fourPlayerPlay.put(c1, new ArrayList<>(Arrays.asList(c2, c3, c4)));
         fourPlayerPlay.put(c2, new ArrayList<>(Arrays.asList(c1, c3, c4)));
         fourPlayerPlay.put(c3, new ArrayList<>(Arrays.asList(c1, c2, c4)));
         fourPlayerPlay.put(c4, new ArrayList<>(Arrays.asList(c1, c2, c3)));
+
+        createGame(new ArrayList<>(Arrays.asList(c1, c2, c3, c4)), new ArrayList<>(Arrays.asList(p1, p2, p3, p4)));
+
         fourPlayerWait.clear();
     }
 

@@ -33,6 +33,7 @@ public abstract class ClientController {
     private int count = 0;
     protected int countPope = 0;
     protected boolean localGame = false;
+    protected int prodCardCounter = 0;
 
     private List<ConcreteProductionCard> allProductionCards;
     private List<NubPlayer> totalPlayers = new ArrayList<>();
@@ -178,8 +179,10 @@ public abstract class ClientController {
     public abstract void showBoard();
     public abstract void rearrangeWarehouse();
     public abstract void showLorenzoStatus(ActionToken act);
+    public abstract void startGameNotEndTurn();
 
-    /**Move Lorenzo on the faith track*/
+
+        /**Move Lorenzo on the faith track*/
     public void moveLorenzo(int currentPosition){
         lorenzoPos += currentPosition;
     }
@@ -216,8 +219,10 @@ public abstract class ClientController {
                     //updateFaithTrack();
                     //System.out.println("You're now in position " + player.getCurrPos()); //for debugging
                 }
-                if (boughtProductionCard != null)
+                if (boughtProductionCard != null) {
                     pp.addProductionCard(boughtProductionCard, msg.getProductionCardId().getSecondValue() - 1);
+                    prodCardCounter++;
+                }
 
                 if (msg.getLeadersId() != null && !msg.getLeadersId().isEmpty())
                     pp.setLeaders(convertIdToLeaderCard(msg.getLeadersId()));
@@ -364,7 +369,10 @@ public abstract class ClientController {
     }
 
     public void passTurn(){
-        messageToServerHandler.generateEnvelope(MessageID.END_TURN, "");
+        if (!normalTurn)
+            messageToServerHandler.generateEnvelope(MessageID.END_TURN, "");
+        else
+            startGameNotEndTurn();
     }
 
     public void upLorenzoToken (String msg){
@@ -376,6 +384,12 @@ public abstract class ClientController {
 
         showLorenzoStatus(act);
     }
+
+    public void abortGame(){
+        winner("None");
+    }
+
+    protected abstract void winner(String winner);
 
     //---------------------------CONVERTERS---------------------------------
 

@@ -198,6 +198,12 @@ public class CliController extends ClientController {
         }
     }
 
+    public void startGameNotEndTurn(){
+        System.out.println("You can't skip the turn.");
+        cli.pressEnter();
+        startTurnPhase();
+    }
+
     @Override
     public void refreshView() {
         displayMessage("Wait other player to join.");
@@ -211,7 +217,6 @@ public class CliController extends ClientController {
             cli.displayTurnOption();
         else
             cli.displayLightTurnOption();
-
     }
 
     public void showBoard(){
@@ -682,6 +687,16 @@ public class CliController extends ClientController {
     public void leaderNotActivable(){
         displayMessage("This leader is not activable, you don't have enough resources.");
         startTurnPhase();
+    }
+
+    @Override
+    public void winner(String win) {
+        setGameOver(true);
+
+        cli.showMessage(player.getNickname().equals(win)
+                ? "Congratulations, you have won the match!"
+                : win + " has won the match");
+        setActive(false);
     }
 
     //Local mode -------------------------------------------------------------------------------

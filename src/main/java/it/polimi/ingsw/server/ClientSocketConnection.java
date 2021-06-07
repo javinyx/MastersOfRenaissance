@@ -67,10 +67,6 @@ public class ClientSocketConnection extends Observable<String> implements Client
         }
     }
 
-    /*@Override
-    public void addObserver(Observer<String> observer) {
-    }*/
-
     /**
      * Calls {@link ClientConnection#closeConnection()} and deregisters the client from the server.
      */

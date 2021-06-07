@@ -346,6 +346,11 @@ public class GuiController extends ClientController {
     }
 
     @Override
+    protected void winner(String winner) {
+
+    }
+
+    @Override
     public void moveLorenzo(int currentPosition) {
 
     }
@@ -387,6 +392,11 @@ public class GuiController extends ClientController {
 
     @Override
     public void showLorenzoStatus(ActionToken act) {
+
+    }
+
+    @Override
+    public void startGameNotEndTurn() {
 
     }
 }

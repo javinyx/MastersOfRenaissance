@@ -206,6 +206,7 @@ public class Controller implements Observer<MessageID> {
         addedResources.clear();
         removedResources.clear();
         boughtCard = Optional.empty();
+        previousPlayer = game.getCurrPlayer();
     }
 
     // TURN STRUCTURE --------------------------------------------------------------------------------------------------

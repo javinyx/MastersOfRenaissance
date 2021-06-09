@@ -459,6 +459,7 @@ public class InitialPhaseHandler extends PhaseHandler {
     private Resource targetDragDropped(DragEvent event) {
         Dragboard db = event.getDragboard();
         target = (Node) event.getSource();
+        ((Node) event.getSource()).setDisable(true);
 
         event.setDropCompleted(true);
         event.consume();

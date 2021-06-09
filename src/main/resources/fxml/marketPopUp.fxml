@@ -44,7 +44,6 @@
             <Label styleClass="inputLabelSmall" text="column/row that you would like"/>
             <Label styleClass="inputLabelSmall" text="to purchase"/>
         </VBox>
-        <Button fx:id="marketBackBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
-                styleClass="btn" text="Back"/>
+        <Button fx:id="marketBackBtn" styleClass="btn" text="Back"/>
     </VBox>
 </AnchorPane>

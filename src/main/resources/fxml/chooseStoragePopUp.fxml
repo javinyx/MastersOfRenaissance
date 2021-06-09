@@ -4,22 +4,35 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="popUp" fx:id="chooseStrPane" prefHeight="400.0" prefWidth="425.0"
+<AnchorPane id="popUp" fx:id="chooseStoragePU" prefHeight="400.0" prefWidth="425.0"
             xmlns="https://javafx.com/javafx" xmlns:fx="https://javafx.com/fxml">
-    <children>
-        <ImageView id="wareHouseImg" fx:id="wareHouseImg" fitHeight="200.0" layoutX="188.0" layoutY="94.0"
-                   pickOnBounds="true" preserveRatio="true">
-            <Image url="@../img/ui/wareHouse.png"/>
-        </ImageView>
+    <ImageView id="wareHouseImg" fx:id="wareHouseImg" fitHeight="200.0" layoutX="188.0" layoutY="94.0"
+               preserveRatio="true">
+        <Image url="@../img/ui/wareHouse.png"/>
+    </ImageView>
 
-        <Region fx:id="shelf1PU" layoutX="261.0" layoutY="104.0" prefHeight="50.0" prefWidth="50.0"/>
-        <Region fx:id="shelf21PU" layoutX="235.0" layoutY="164.0" prefHeight="50.0" prefWidth="50.0"/>
-        <Region fx:id="shelf22PU" layoutX="282.0" layoutY="164.0" prefHeight="50.0" prefWidth="50.0"/>
-        <Region fx:id="shelf31PU" layoutX="210.0" layoutY="234.0" prefHeight="50.0" prefWidth="50.0"/>
-        <Region fx:id="shelf32PU" layoutX="260.0" layoutY="234.0" prefHeight="50.0" prefWidth="40.0"/>
-        <Region fx:id="shelf33PU" layoutX="300.0" layoutY="234.0" prefHeight="50.0" prefWidth="50.0"/>
+    <Region fx:id="shelf1PU" layoutX="261.0" layoutY="104.0" prefHeight="50.0" prefWidth="50.0"/>
+    <Region fx:id="shelf21PU" layoutX="235.0" layoutY="164.0" prefHeight="50.0" prefWidth="50.0"/>
+    <Region fx:id="shelf22PU" layoutX="282.0" layoutY="164.0" prefHeight="50.0" prefWidth="50.0"/>
+    <Region fx:id="shelf31PU" layoutX="210.0" layoutY="234.0" prefHeight="50.0" prefWidth="50.0"/>
+    <Region fx:id="shelf32PU" layoutX="260.0" layoutY="234.0" prefHeight="50.0" prefWidth="40.0"/>
+    <Region fx:id="shelf33PU" layoutX="300.0" layoutY="234.0" prefHeight="50.0" prefWidth="50.0"/>
 
-        <ImageView fx:id="resourceImgPU" fitHeight="30.0" layoutX="109.0" layoutY="117.0" pickOnBounds="true"
-                   preserveRatio="true" styleClass="resImg"/>
-    </children>
+    <ImageView fx:id="shelf1ImgPU" fitHeight="30.0" preserveRatio="true" styleClass="resImg"/>
+    <ImageView fx:id="shelf21ImgPU" fitHeight="30.0" preserveRatio="true" styleClass="resImg"/>
+    <ImageView fx:id="shelf22ImgPU" fitHeight="30.0" preserveRatio="true" styleClass="resImg"/>
+    <ImageView fx:id="shelf31ImgPU" fitHeight="30.0" preserveRatio="true" styleClass="resImg"/>
+    <ImageView fx:id="shelf32ImgPU" fitHeight="30.0" preserveRatio="true" styleClass="resImg"/>
+    <ImageView fx:id="shelf33ImgPU" fitHeight="30.0" preserveRatio="true" styleClass="resImg"/>
+
+    <ImageView fx:id="resource1ImgPU" fitHeight="30.0" layoutX="109.0" layoutY="117.0" preserveRatio="true"
+               styleClass="resImg"/>
+    <ImageView fx:id="resource2ImgPU" fitHeight="30.0" layoutX="109.0" layoutY="177.0" preserveRatio="true"
+               styleClass="resImg"/>
+    <ImageView fx:id="resource3ImgPU" fitHeight="30.0" layoutX="109.0" layoutY="237.0" preserveRatio="true"
+               styleClass="resImg"/>
+    <ImageView fx:id="resource4ImgPU" fitHeight="30.0" layoutX="109.0" layoutY="297.0" preserveRatio="true"
+               styleClass="resImg"/>
+
+    <Button fx:id="chooseStorageBtnPU" layoutX="187.0" layoutY="337.0" text="Confirm" styleClass="btn"/>
 </AnchorPane>

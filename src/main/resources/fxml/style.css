@@ -16,7 +16,7 @@ Button {
 }
 
 Button:hover {
-    -fx-effect: dropshadow(one-pass-box, rgba(255, 255, 255, 0.5), 10, 0, 0, 0);
+    -fx-effect: dropshadow(one-pass-box, rgba(255, 255, 255, 0.5), 20, 0, 0, 0);
 }
 
 ToggleButton {
@@ -109,7 +109,7 @@ ToggleButton {
 }
 
 .leaderToggle:hover {
-    -fx-effect: dropshadow(one-pass-box, rgba(255, 255, 255, 0.5), 10, 0, 0, 0);
+    -fx-effect: dropshadow(one-pass-box, rgba(255, 255, 255, 0.5), 20, 0, 0, 0);
 }
 
 /* CHOOSE RESOURCES SCENE *********************************************************************************************/
@@ -157,9 +157,6 @@ ToggleButton {
 .leaderNotActive {
 }
 
-.productionCard {
-}
-
 /* MARKET SCENE *******************************************************************************************************/
 #marketRegion:hover {
     -fx-background-color: rgba(255, 255, 255, 0.1);
@@ -180,4 +177,12 @@ ToggleButton {
 
 .hArrow:hover {
     -fx-effect: dropshadow(one-pass-box, rgba(37, 242, 255, 0.7), 50, 0, 0, 0);
+}
+
+/* PRODUCTION CARDS ***************************************************************************************************/
+.productionCard {
+}
+
+.productionCard:hover{
+    -fx-effect: dropshadow(one-pass-box, rgba(255, 255, 255, 0.5), 20, 0, 0, 0);
 }

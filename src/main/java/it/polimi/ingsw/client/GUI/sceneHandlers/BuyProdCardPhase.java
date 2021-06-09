@@ -13,25 +13,28 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.util.*;
 
-import static it.polimi.ingsw.client.GUI.sceneHandlers.ScenesEnum.CHOOSE_LEADERS;
-import static it.polimi.ingsw.client.GUI.sceneHandlers.ScenesEnum.CHOOSE_PAYMENT;
+import static it.polimi.ingsw.client.GUI.sceneHandlers.ScenesEnum.*;
 import static it.polimi.ingsw.model.market.Resource.*;
 import static it.polimi.ingsw.misc.Storage.*;
 
 public class BuyProdCardPhase extends PhaseHandler{
     private Map<ScenesEnum, Scene> sceneMap = new HashMap<>();
-
     private ResourcesWallet wallet = new ResourcesWallet();
 
     @FXML
-    private Label listCostLbl, qtyStoneLbl, qtyShieldLbl, qtyCoinLbl, qtyServantLbl, stoneLbl, servantLbl, coinLbl, shieldLbl;
+    private Label listCostLbl, qtyStoneLbl, qtyShieldLbl, qtyCoinLbl, qtyServantLbl, stoneLbl, servantLbl, coinLbl,
+            shieldLbl;
     @FXML
     private Button stoneSubBtn, stoneAddBtn, servantSubBtn, servantAddBtn, coinSubBtn, coinAddBtn, shieldSubBtn,
             shieldAddBtn, confirmPaymentBtn;
@@ -70,9 +73,17 @@ public class BuyProdCardPhase extends PhaseHandler{
         return true;
     }
 
-    public void choosePayment(){
+    public void choosePayment(int cardId, int stack) {
+        Stage popUpStage = new Stage(StageStyle.TRANSPARENT);
+        popUpStage.initOwner(stage);
+        popUpStage.initModality(Modality.APPLICATION_MODAL);
+        popUpStage.centerOnScreen();
+        popUpStage.setScene(getScene(CHOOSE_PAYMENT));
+        popUpStage.show();
+
         NubPlayer player = controller.getPlayer();
         Map<BiElement<Resource, Storage>, Integer> loot = player.getLootchest();
+
         //showing loot status
         loot.forEach((x, y) -> {
             switch (x.getFirstValue()) {
@@ -85,72 +96,75 @@ public class BuyProdCardPhase extends PhaseHandler{
 
         //set Images in war
         Resource res = player.getResourceFromStorage(WAREHOUSE_SMALL);
-        if(res!=null) {
+        if (res != null) {
             shelf1MB.setImage(new Image("/img/pawns/" + res + ".png"));
-        }else{
+        } else {
             shelf1Toggle.setDisable(true);
         }
+
         res = player.getResourceFromStorage(WAREHOUSE_MID);
         int qty = player.getQtyInStorage(res, WAREHOUSE_MID);
-        if(res!=null && qty==2){
+
+        if (res != null && qty == 2) {
             shelf21MB.setImage(new Image("/img/pawns/" + res + ".png"));
             shelf22MB.setImage(new Image("/img/pawns/" + res + ".png"));
-        }else if(res!=null && qty==1){
+        } else if (res != null && qty == 1) {
             shelf21MB.setImage(new Image("/img/pawns/" + res + ".png"));
             shelf22MB.setDisable(true);
-        }else{
+        } else {
             shelf21MB.setDisable(true);
             shelf22MB.setDisable(true);
         }
+
         res = player.getResourceFromStorage(WAREHOUSE_LARGE);
         qty = player.getQtyInStorage(res, WAREHOUSE_LARGE);
-        if(res!=null) {
+
+        if (res != null) {
             if (qty == 3) {
                 shelf31MB.setImage(new Image("/img/pawns/" + res + ".png"));
                 shelf32MB.setImage(new Image("/img/pawns/" + res + ".png"));
                 shelf33MB.setImage(new Image("/img/pawns/" + res + ".png"));
-            } else if (qty==2){
+            } else if (qty==2) {
                 shelf31MB.setImage(new Image("/img/pawns/" + res + ".png"));
                 shelf32MB.setImage(new Image("/img/pawns/" + res + ".png"));
                 shelf33MB.setDisable(true);
-            }else{
+            } else {
                 shelf31MB.setImage(new Image("/img/pawns/" + res + ".png"));
                 shelf32MB.setDisable(true);
                 shelf33MB.setDisable(true);
             }
-        }else{
+        } else {
             shelf31MB.setDisable(true);
             shelf32MB.setDisable(true);
             shelf33MB.setDisable(true);
         }
 
-
-
         //choose from war
         List<Resource> fromWar = new ArrayList<>();
         List<ToggleButton> resWarMidToggles = new ArrayList<>(Arrays.asList(shelf21Toggle,shelf22Toggle));
-        List<ToggleButton> resWarLargeToggles = new ArrayList<>(Arrays.asList(shelf31Toggle, shelf32Toggle, shelf33Toggle));
+        List<ToggleButton> resWarLargeToggles = new ArrayList<>(Arrays.asList(shelf31Toggle, shelf32Toggle,
+                shelf33Toggle));
 
         shelf1Toggle.setOnAction(event ->{
-            if(shelf1Toggle.isSelected()){
+            if (shelf1Toggle.isSelected()) {
                 fromWar.add(player.getResourceFromStorage(WAREHOUSE_SMALL));
-            }else{
+            } else {
                 fromWar.remove(player.getResourceFromStorage(WAREHOUSE_SMALL));
             }
         });
 
         resWarMidToggles.forEach(x -> x.setOnAction(event -> {
-            if(x.isSelected()){
+            if (x.isSelected()) {
                 fromWar.add(player.getResourceFromStorage(WAREHOUSE_MID));
-            }else{
+            } else {
                 fromWar.remove(player.getResourceFromStorage(WAREHOUSE_MID));
             }
         }));
 
         resWarLargeToggles.forEach(x -> x.setOnAction(event -> {
-            if(x.isSelected()){
+            if (x.isSelected()) {
                 fromWar.add(player.getResourceFromStorage(WAREHOUSE_LARGE));
-            }else{
+            } else {
                 fromWar.remove(player.getResourceFromStorage(WAREHOUSE_LARGE));
             }
         }));
@@ -205,8 +219,9 @@ public class BuyProdCardPhase extends PhaseHandler{
             wallet.setLootchestTray(fromLoot);
             wallet.setWarehouseTray(fromWar);
 
-            setScene(CHOOSE_LEADERS);
-            chooseLeader();
+            stage.close();
+
+            controller.buyProductionCard(cardId, stack, null, wallet);
         });
     }
 

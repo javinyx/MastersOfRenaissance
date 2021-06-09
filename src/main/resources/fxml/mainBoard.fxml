@@ -43,7 +43,7 @@
         <Image url="@../img/ui/mainBoard.png"/>
     </ImageView>
 
-    <Button fx:id="endTurnBtn" layoutX="1182.0" layoutY="50.0" styleClass="btn" text="End Turn"/>
+    <Button fx:id="endTurnBtn" layoutX="1282.0" layoutY="50.0" styleClass="btn" text="End Turn"/>
 
     <!-- WAREHOUSE -->
     <ImageView fx:id="shelf1MB"  fitHeight="30" layoutX="233.0" layoutY="413.0" preserveRatio="true"/>
@@ -72,32 +72,7 @@
     <Region id="marketRegion" fx:id="marketRegion" layoutX="1020.0" layoutY="20.0" prefHeight="160" prefWidth="250"/>
 
     <!-- PRODUCTION CARDS -->
-    <GridPane fx:id="productionCards" alignment="CENTER" hgap="2" layoutX="990.0" layoutY="200.0" vgap="2">
-        <ImageView fitWidth="120" preserveRatio="true" styleClass="productionCard" GridPane.columnIndex="0"
-                   GridPane.rowIndex="0"/>
-        <ImageView fitWidth="120" preserveRatio="true" styleClass="productionCard" GridPane.columnIndex="1"
-                   GridPane.rowIndex="0"/>
-        <ImageView fitWidth="120" preserveRatio="true" styleClass="productionCard" GridPane.columnIndex="2"
-                   GridPane.rowIndex="0"/>
-        <ImageView fitWidth="120" preserveRatio="true" styleClass="productionCard" GridPane.columnIndex="3"
-                   GridPane.rowIndex="0"/>
-        <ImageView fitWidth="120" preserveRatio="true" styleClass="productionCard" GridPane.columnIndex="0"
-                   GridPane.rowIndex="1"/>
-        <ImageView fitWidth="120" preserveRatio="true" styleClass="productionCard" GridPane.columnIndex="1"
-                   GridPane.rowIndex="1"/>
-        <ImageView fitWidth="120" preserveRatio="true" styleClass="productionCard" GridPane.columnIndex="2"
-                   GridPane.rowIndex="1"/>
-        <ImageView fitWidth="120" preserveRatio="true" styleClass="productionCard" GridPane.columnIndex="3"
-                   GridPane.rowIndex="1"/>
-        <ImageView fitWidth="120" preserveRatio="true" styleClass="productionCard" GridPane.columnIndex="0"
-                   GridPane.rowIndex="2"/>
-        <ImageView fitWidth="120" preserveRatio="true" styleClass="productionCard" GridPane.columnIndex="1"
-                   GridPane.rowIndex="2"/>
-        <ImageView fitWidth="120" preserveRatio="true" styleClass="productionCard" GridPane.columnIndex="2"
-                   GridPane.rowIndex="2"/>
-        <ImageView fitWidth="120" preserveRatio="true" styleClass="productionCard" GridPane.columnIndex="3"
-                   GridPane.rowIndex="2"/>
-    </GridPane>
+    <Button fx:id="productionCardsOpen" layoutX="1100.0" layoutY="200.0" styleClass="btn" text="View&#10;Production&#10;Cards"/>
 
     <!-- LEADER CARDS -->
     <ImageView fx:id="leader1Show" fitWidth="120" layoutX="10.0" layoutY="380.0" preserveRatio="true"

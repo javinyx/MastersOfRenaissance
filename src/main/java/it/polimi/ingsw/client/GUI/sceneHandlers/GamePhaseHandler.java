@@ -20,10 +20,7 @@ import javafx.scene.effect.GaussianBlur;
 import javafx.scene.effect.SepiaTone;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -44,7 +41,7 @@ public class GamePhaseHandler extends PhaseHandler {
     @FXML
     private AnchorPane mainBoard;
     @FXML
-    private Button endTurnBtn;
+    private Button endTurnBtn, productionCardsOpen;
 
     /* LEADER CARDS ***************************************************************************************************/
     @FXML
@@ -66,13 +63,16 @@ public class GamePhaseHandler extends PhaseHandler {
     /* WAREHOUSE & CHOOSE RESOURCES POPUP *****************************************************************************/
     private Node target;
     @FXML
-    private ImageView resourceImgPU;
+    private Button chooseStorageBtnPU;
+    @FXML
+    private ImageView resource1ImgPU, resource2ImgPU, resource3ImgPU, resource4ImgPU;
     @FXML
     private Region shelf1PU, shelf21PU, shelf22PU, shelf31PU, shelf32PU, shelf33PU;
     @FXML
-    private ImageView shelf1MB, shelf21MB, shelf22MB, shelf31MB, shelf32MB, shelf33MB;
-    /*@FXML
-    private ImageView shelf1PUImg, shelf21PUImg, shelf22PUImg, shelf31PUImg, shelf32PUImg, shelf33PUImg;*/
+    private ImageView shelf1MB, shelf21MB, shelf22MB, shelf31MB, shelf32MB, shelf33MB,
+            shelf1ImgPU, shelf21ImgPU, shelf22ImgPU, shelf31ImgPU, shelf32ImgPU, shelf33ImgPU;
+    @FXML
+    private AnchorPane chooseStoragePU;
 
     /* ENEMY BOARD ****************************************************************************************************/
     @FXML
@@ -91,12 +91,14 @@ public class GamePhaseHandler extends PhaseHandler {
     private Label opLbl, opQtyShelf1Lbl, opQtyShelf2Lbl, opQtyShelf3Lbl, opQtyStoneLbl, opQtyCoinLbl, opQtyServantLbl,
             opQtyShieldLbl;
 
-    //TODO: LORENZOROLLED UNDER PATH 8
+    /* PRODUCTION CARDS POPUP *****************************************************************************************/
+    @FXML
+    private Button productionCardBackBtn;
 
     public GamePhaseHandler(GuiController controller, Stage stage) {
         super(controller, stage);
 
-        List<ScenesEnum> allPaths = new ArrayList<>(Arrays.asList(MAIN_BOARD, MARKET, STORAGE, OTHER_PLAYERS));
+        List<ScenesEnum> allPaths = new ArrayList<>(Arrays.asList(MAIN_BOARD, MARKET, STORAGE, OTHER_PLAYERS, PRODUCTION_CARDS));
         for (ScenesEnum path : allPaths) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + path.getPath()));
             loader.setController(this);
@@ -147,16 +149,16 @@ public class GamePhaseHandler extends PhaseHandler {
             });
 
             endTurnBtn.setOnAction(actionEvent -> controller.passTurn());
-        } else {
-
         }
+
+        productionCardsOpen.setOnAction(actionEvent -> {
+            productionCardsPopup();
+        });
 
         player1Btn.setOnAction(event -> otherPlayersPopUp(controller.getOtherPlayers().get(0)));
         player2Btn.setOnAction(event -> otherPlayersPopUp(controller.getOtherPlayers().get(1)));
         player3Btn.setOnAction(event -> otherPlayersPopUp(controller.getOtherPlayers().get(2)));
     }
-
-        //
 
     private void setLeaders(List<Integer> chosenLeadersId) {
         leader1Show.setImage(new Image("img/leaderCards/" + chosenLeadersId.get(0) + ".png"));
@@ -173,30 +175,49 @@ public class GamePhaseHandler extends PhaseHandler {
                 case WAREHOUSE_SMALL -> {
                     if (y == 1) {
                         shelf1MB.setImage(img);
-                        shelf1PU.setBackground(new Background(new BackgroundImage(img, null, null, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         shelf1PU.setDisable(true);
-                        /*shelf1PUImg.setImage(img);
-                        shelf1PUImg.setLayoutX(shelf1PU.getLayoutX() + 5);
-                        shelf1PUImg.setLayoutY(shelf1PU.getLayoutY() + 5);*/
+                        shelf1ImgPU.setLayoutX(shelf1PU.getLayoutX() + 5);
+                        shelf1ImgPU.setLayoutY(shelf1PU.getLayoutY() + 5);
+                        shelf1ImgPU.setImage(img);
                     }
                 }
                 case WAREHOUSE_MID -> {
-                    if (y == 1) {
+                    if (y >= 1) {
                         shelf21MB.setImage(img);
+                        shelf21PU.setDisable(true);
+                        shelf21ImgPU.setLayoutX(shelf21PU.getLayoutX() + 5);
+                        shelf21ImgPU.setLayoutY(shelf21PU.getLayoutY() + 5);
+                        shelf21ImgPU.setImage(img);
                     }
                     if (y == 2) {
                         shelf22MB.setImage(img);
+                        shelf22PU.setDisable(true);
+                        shelf22ImgPU.setLayoutX(shelf22PU.getLayoutX() + 5);
+                        shelf22ImgPU.setLayoutY(shelf22PU.getLayoutY() + 5);
+                        shelf22ImgPU.setImage(img);
                     }
                 }
                 case WAREHOUSE_LARGE -> {
-                    if (y == 1) {
+                    if (y >= 1) {
                         shelf31MB.setImage(img);
+                        shelf31PU.setDisable(true);
+                        shelf31ImgPU.setLayoutX(shelf31PU.getLayoutX() + 5);
+                        shelf31ImgPU.setLayoutY(shelf31PU.getLayoutY() + 5);
+                        shelf31ImgPU.setImage(img);
                     }
-                    if (y == 2) {
+                    if (y >= 2) {
                         shelf32MB.setImage(img);
+                        shelf32PU.setDisable(true);
+                        shelf32ImgPU.setLayoutX(shelf32PU.getLayoutX() + 5);
+                        shelf32ImgPU.setLayoutY(shelf32PU.getLayoutY() + 5);
+                        shelf32ImgPU.setImage(img);
                     }
                     if (y == 3) {
                         shelf33MB.setImage(img);
+                        shelf33PU.setDisable(true);
+                        shelf33ImgPU.setLayoutX(shelf33PU.getLayoutX() + 5);
+                        shelf33ImgPU.setLayoutY(shelf33PU.getLayoutY() + 5);
+                        shelf33ImgPU.setImage(img);
                     }
                 }
             }
@@ -205,6 +226,7 @@ public class GamePhaseHandler extends PhaseHandler {
 
 
     /* MARKET & MARKET POPUP ******************************************************************************************/
+    //TODO: Select Leader
     public void setMarket() {
         extraMarble.setFill(Color.web(controller.getMarket().getExtra().getHexCode()));
         extraMarblePU.setFill(Color.web(controller.getMarket().getExtra().getHexCode()));
@@ -280,17 +302,37 @@ public class GamePhaseHandler extends PhaseHandler {
 
 
     /* PRODUCTION CARDS ***********************************************************************************************/
-    public void buyProductionCardAction(){
-        List<ImageView> buyableCards = productionCards.getChildren().stream().map(x -> (ImageView)x).collect(Collectors.toList());
+    private void productionCardsPopup() {
+        Stage popUpStage = new Stage(StageStyle.TRANSPARENT);
+        mainBoard.setEffect(new GaussianBlur());
+        popUpStage.initOwner(stage);
+        popUpStage.initModality(Modality.APPLICATION_MODAL);
+        popUpStage.centerOnScreen();
+        popUpStage.setScene(getScene(PRODUCTION_CARDS));
+        popUpStage.show();
 
-        buyableCards.forEach(x -> x.setOnMouseClicked(event -> {
-            String cardIDS = x.getImage().getUrl().split("/")[1].split("/")[1].split("\\.")[0];
-            Integer cardId = Integer.parseInt(cardIDS);
-            ConcreteProductionCard card = controller.convertIdToProductionCard(cardId);
-            buyProdCardPhase.setScene(CHOOSE_PAYMENT);
+        productionCards.setOnMouseClicked(this::clickGrid);
 
-        }));
+        productionCardBackBtn.setOnAction(actionEvent -> {
+            mainBoard.setEffect(null);
+            popUpStage.close();
+        });
+    }
 
+    private void clickGrid(MouseEvent event) {
+        Node clickedNode = event.getPickResult().getIntersectedNode();
+        if (clickedNode != productionCards) {
+            String url = ((ImageView) clickedNode).getImage().getUrl();
+            String cardIdS = url.substring(url.lastIndexOf("/") + 1).split("\\.")[0];
+            Integer cardId = Integer.parseInt(cardIdS);
+            Integer stack = askStack();
+
+            buyProdCardPhase.choosePayment(cardId, stack);
+        }
+    }
+
+    private Integer askStack() {
+        return 1;
     }
 
     public void setProductionCards(List<ConcreteProductionCard> availableProductionCards) {
@@ -351,7 +393,6 @@ public class GamePhaseHandler extends PhaseHandler {
         opLbl.setText("You're viewing " + player.getNickname() + "'s status");
         System.out.println("leader size: " + player.getLeaders().size());
         if (player.getLeaders().size() > 0) {
-            System.out.println("Setting leaders img 1");
             LeaderCard lead1 = player.getLeaders().get(0);
             opLead1Img.setImage(new Image("img/leaderCards/" + (lead1.isActive() ? String.valueOf(lead1.getId())
                     : "leaderBack") + ".png"));
@@ -392,13 +433,14 @@ public class GamePhaseHandler extends PhaseHandler {
         });
 
         opBackBtn.setOnAction(event -> {
-            mainBoard.setEffect(null);
-            popUpStage.close();
+
         });
     }
 
     /* CHOOSE STORAGE POPUP *******************************************************************************************/
-    public void chooseStoragePopUp(List<Resource> selectedRes, int i) {
+    public void chooseStoragePopUp(List<Resource> selectedRes) {
+
+        //TODO: add discard option...
 
         mainBoard.setEffect(new GaussianBlur());
         Stage popUpStage = new Stage(StageStyle.TRANSPARENT);
@@ -408,65 +450,114 @@ public class GamePhaseHandler extends PhaseHandler {
         popUpStage.setScene(getScene(STORAGE));
         popUpStage.show();
 
-        resourceImgPU.setImage(new Image("img/pawns/" + selectedRes.get(i).toString().toLowerCase() + ".png"));
+        List<BiElement<Resource, Storage>> tbdResourcePlacement = new ArrayList<>();
 
-        resourceImgPU.setOnDragDetected(event -> {
+        if (selectedRes.size() >= 1)
+            resource1ImgPU.setImage(new Image("img/pawns/" + selectedRes.get(0).toString().toLowerCase() + ".png"));
+        if (selectedRes.size() >= 2)
+            resource2ImgPU.setImage(new Image("img/pawns/" + selectedRes.get(1).toString().toLowerCase() + ".png"));
+        if (selectedRes.size() >= 3)
+            resource3ImgPU.setImage(new Image("img/pawns/" + selectedRes.get(2).toString().toLowerCase() + ".png"));
+        if (selectedRes.size() == 4)
+            resource4ImgPU.setImage(new Image("img/pawns/" + selectedRes.get(3).toString().toLowerCase() + ".png"));
+
+        resource1ImgPU.setOnDragDetected(event -> {
             sourceDragDetected(event, selectedRes.get(0));
         });
-        resourceImgPU.setOnDragDone(this::sourceDragDone);
+        resource1ImgPU.setOnDragDone(this::sourceDragDone);
 
-        List<BiElement<Resource, Storage>> resourcePlacement = new ArrayList<>();
+        resource2ImgPU.setOnDragDetected(event -> {
+            sourceDragDetected(event, selectedRes.get(1));
+        });
+        resource2ImgPU.setOnDragDone(this::sourceDragDone);
+
+        resource3ImgPU.setOnDragDetected(event -> {
+            sourceDragDetected(event, selectedRes.get(2));
+        });
+        resource3ImgPU.setOnDragDone(this::sourceDragDone);
+
+        resource4ImgPU.setOnDragDetected(event -> {
+            sourceDragDetected(event, selectedRes.get(3));
+        });
+        resource4ImgPU.setOnDragDone(this::sourceDragDone);
 
         shelf1PU.setOnDragOver(this::targetDragOver);
         shelf1PU.setOnDragDropped(event -> {
-            resourcePlacement.add(new BiElement<>(targetDragDropped(event), Storage.WAREHOUSE_SMALL));
-            controller.sendPlaceResourcesMessage(resourcePlacement);
-            popUpStage.close();
-            mainBoard.setEffect(null);
-            controller.ontoTheNextResource(selectedRes, i);
+            tbdResourcePlacement.add(new BiElement<>(targetDragDropped(event), Storage.WAREHOUSE_SMALL));
         });
 
         shelf21PU.setOnDragOver(this::targetDragOver);
         shelf21PU.setOnDragDropped(event -> {
-            resourcePlacement.add(new BiElement<>(targetDragDropped(event), Storage.WAREHOUSE_MID));
-            controller.sendPlaceResourcesMessage(resourcePlacement);
-            popUpStage.close();
-            mainBoard.setEffect(null);
-            controller.ontoTheNextResource(selectedRes, i);
+            tbdResourcePlacement.add(new BiElement<>(targetDragDropped(event), Storage.WAREHOUSE_MID));
         });
         shelf22PU.setOnDragOver(this::targetDragOver);
         shelf22PU.setOnDragDropped(event -> {
-            resourcePlacement.add(new BiElement<>(targetDragDropped(event), Storage.WAREHOUSE_MID));
-            controller.sendPlaceResourcesMessage(resourcePlacement);
-            popUpStage.close();
-            mainBoard.setEffect(null);
-            controller.ontoTheNextResource(selectedRes, i);
+            tbdResourcePlacement.add(new BiElement<>(targetDragDropped(event), Storage.WAREHOUSE_MID));
         });
 
         shelf31PU.setOnDragOver(this::targetDragOver);
         shelf31PU.setOnDragDropped(event -> {
-            resourcePlacement.add(new BiElement<>(targetDragDropped(event), Storage.WAREHOUSE_LARGE));
-            controller.sendPlaceResourcesMessage(resourcePlacement);
-            popUpStage.close();
-            mainBoard.setEffect(null);
-            controller.ontoTheNextResource(selectedRes, i);
+            tbdResourcePlacement.add(new BiElement<>(targetDragDropped(event), Storage.WAREHOUSE_LARGE));
         });
+
         shelf32PU.setOnDragOver(this::targetDragOver);
         shelf32PU.setOnDragDropped(event -> {
-            resourcePlacement.add(new BiElement<>(targetDragDropped(event), Storage.WAREHOUSE_LARGE));
-            controller.sendPlaceResourcesMessage(resourcePlacement);
-            popUpStage.close();
-            mainBoard.setEffect(null);
-            controller.ontoTheNextResource(selectedRes, i);
+            tbdResourcePlacement.add(new BiElement<>(targetDragDropped(event), Storage.WAREHOUSE_LARGE));
         });
+
         shelf33PU.setOnDragOver(this::targetDragOver);
         shelf33PU.setOnDragDropped(event -> {
-            resourcePlacement.add(new BiElement<>(targetDragDropped(event), Storage.WAREHOUSE_LARGE));
-            controller.sendPlaceResourcesMessage(resourcePlacement);
-            popUpStage.close();
-            mainBoard.setEffect(null);
-            controller.ontoTheNextResource(selectedRes, i);
+            tbdResourcePlacement.add(new BiElement<>(targetDragDropped(event), Storage.WAREHOUSE_LARGE));
         });
+
+        chooseStorageBtnPU.setOnAction(actionEvent -> {
+            if (tbdResourcePlacement.size() == selectedRes.size()) {
+                mainBoard.setEffect(null);
+                popUpStage.close();
+                resetStoragePopUp();
+
+                // PRINT RESOURCE AND WAREHOUSE
+                for (int i = 0; i < tbdResourcePlacement.size(); i++) {
+                    System.out.println(tbdResourcePlacement.get(i));
+                }
+                controller.sendPlaceResourcesMessage(tbdResourcePlacement);
+            }
+        });
+    }
+
+    public void resetStoragePopUp() {
+        resource1ImgPU.setLayoutX(109);
+        resource1ImgPU.setLayoutY(117);
+        resource1ImgPU.setDisable(false);
+        resource1ImgPU.setImage(null);
+        resource2ImgPU.setLayoutX(109);
+        resource2ImgPU.setLayoutY(177);
+        resource2ImgPU.setDisable(false);
+        resource2ImgPU.setImage(null);
+        resource3ImgPU.setLayoutX(109);
+        resource3ImgPU.setLayoutY(237);
+        resource3ImgPU.setDisable(false);
+        resource3ImgPU.setImage(null);
+        resource4ImgPU.setLayoutX(109);
+        resource4ImgPU.setLayoutY(297);
+        resource4ImgPU.setDisable(false);
+        resource4ImgPU.setImage(null);
+
+        shelf1PU.setDisable(false);
+        shelf21PU.setDisable(false);
+        shelf22PU.setDisable(false);
+        shelf31PU.setDisable(false);
+        shelf32PU.setDisable(false);
+        shelf33PU.setDisable(false);
+
+        shelf1ImgPU.setImage(null);
+        shelf21ImgPU.setImage(null);
+        shelf22ImgPU.setImage(null);
+        shelf31ImgPU.setImage(null);
+        shelf32ImgPU.setImage(null);
+        shelf33ImgPU.setImage(null);
+
+        setWarehouse();
     }
 
     private void sourceDragDetected(Event event, Resource resource) {
@@ -474,7 +565,6 @@ public class GamePhaseHandler extends PhaseHandler {
         ClipboardContent content = new ClipboardContent();
         content.putString(resource.toString());
         db.setContent(content);
-
         event.consume();
     }
 
@@ -482,8 +572,8 @@ public class GamePhaseHandler extends PhaseHandler {
         if (event.getTransferMode() == TransferMode.MOVE) {
             ((Node) event.getSource()).setLayoutX(target.getLayoutX() + 5);
             ((Node) event.getSource()).setLayoutY(target.getLayoutY() + 5);
+            ((Node) event.getSource()).setDisable(true);
         }
-
         event.consume();
     }
 
@@ -492,14 +582,13 @@ public class GamePhaseHandler extends PhaseHandler {
                 event.getDragboard().hasString()) {
             event.acceptTransferModes(TransferMode.MOVE);
         }
-
         event.consume();
     }
 
     private Resource targetDragDropped(DragEvent event) {
         Dragboard db = event.getDragboard();
         target = (Node) event.getSource();
-
+        ((Node) event.getSource()).setDisable(true);
         event.setDropCompleted(true);
         event.consume();
 

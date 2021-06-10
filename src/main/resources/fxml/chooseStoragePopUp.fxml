@@ -27,12 +27,16 @@
 
     <ImageView fx:id="resource1ImgPU" fitHeight="30.0" layoutX="109.0" layoutY="117.0" preserveRatio="true"
                styleClass="resImg"/>
-    <ImageView fx:id="resource2ImgPU" fitHeight="30.0" layoutX="109.0" layoutY="177.0" preserveRatio="true"
+    <ImageView fx:id="resource2ImgPU" fitHeight="30.0" layoutX="109.0" layoutY="167.0" preserveRatio="true"
                styleClass="resImg"/>
-    <ImageView fx:id="resource3ImgPU" fitHeight="30.0" layoutX="109.0" layoutY="237.0" preserveRatio="true"
+    <ImageView fx:id="resource3ImgPU" fitHeight="30.0" layoutX="109.0" layoutY="217.0" preserveRatio="true"
                styleClass="resImg"/>
-    <ImageView fx:id="resource4ImgPU" fitHeight="30.0" layoutX="109.0" layoutY="297.0" preserveRatio="true"
+    <ImageView fx:id="resource4ImgPU" fitHeight="30.0" layoutX="109.0" layoutY="267.0" preserveRatio="true"
                styleClass="resImg"/>
+
+    <ImageView fx:id="bin" fitHeight="50.0" layoutX="31.0" layoutY="325.0" preserveRatio="true">
+        <Image url="@../img/ui/bin.png"/>
+    </ImageView>
 
     <Button fx:id="chooseStorageBtnPU" layoutX="187.0" layoutY="337.0" text="Confirm" styleClass="btn"/>
 </AnchorPane>

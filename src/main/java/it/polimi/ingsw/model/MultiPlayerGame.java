@@ -231,9 +231,9 @@ public class MultiPlayerGame extends Game implements ModelObserver {
         for(ProPlayer p : activePlayers){
             if(!p.equals(player)){
                 p.addFaithPoints(1);
-                controller.update(MessageID.PLAYERS_POSITION);
             }
         }
+        controller.update(MessageID.PLAYERS_POSITION);
     }
 
     public void alertDiscardResource(Player player, int quantity){

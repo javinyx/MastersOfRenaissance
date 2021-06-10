@@ -125,6 +125,9 @@ public class MessageReceiver implements Runnable{
             case ACTIVATE_LEADER -> controller.activateLeader(Integer.parseInt(envelope.getPayload()));
 
             case ABORT_GAME -> controller.abortGame();
+
+            case PLAYER_WIN -> controller.winner(envelope.getPayload());
+
             default -> System.err.println("MessageID not recognised Game");
         }
 

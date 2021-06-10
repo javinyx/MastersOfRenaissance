@@ -228,7 +228,7 @@ public class Cli /*extends MessageDispatchinatorable*/ {
         do {
             System.out.println("Select a number:");
             choice = scanner.nextInt();
-        } while (choice < 1 || (choice > 10 && choice != 42));
+        } while (choice < 1 || (choice > 9 && choice != 42));
 
         switch (choice) {
             case 1 -> controller.buyFromMarket();
@@ -240,7 +240,7 @@ public class Cli /*extends MessageDispatchinatorable*/ {
             case 7 -> controller.viewYourInfo();
             case 8 -> controller.viewProductionCard();
             case 9 -> controller.rearrangeWarehouse();
-            case 10 -> controller.passTurn();
+            //case 10 -> controller.passTurn();
             case 42 -> controller.normalProcedure();
         }
 

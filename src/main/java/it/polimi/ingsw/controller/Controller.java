@@ -38,6 +38,7 @@ public class Controller implements Observer<MessageID> {
     private List<Integer> infoTokenLorenzo = new ArrayList<>();
 
     private ProPlayer playerToAck;
+    private ProPlayer winner;
     private int numPlayer;
     private int startCounter = 0;
     private int playerLeaderDoneCtr = 0;
@@ -263,40 +264,6 @@ public class Controller implements Observer<MessageID> {
             List<BiElement<Integer, Integer>> cards = new ArrayList<>();
             cards.add(new BiElement<>(card.getId(), buyProdMsg.getStack()));
             boughtCard = Optional.of(cards);
-            /*ResourcesWallet wallet = buyProdMsg.getResourcesWallet();
-            BiElement<Resource, Storage> elem;
-            if (wallet.anyFromLootchestTray()) {
-                for (Resource r : wallet.getLootchestTray()) {
-                    elem = new BiElement<>(r, Storage.LOOTCHEST);
-                    removeResources(elem, 1);
-                }
-            }
-            if (wallet.anyFromWarehouseTray()) {
-                Warehouse w = game.getCurrPlayer().getWarehouse();
-                Storage s = null;
-                for (Resource r : wallet.getWarehouseTray()) {
-                    if(r.equals(w.getSmallInventory())){
-                        s = Storage.WAREHOUSE_SMALL;
-                    }else if(w.getMidInventory().contains(r)){
-                        s = Storage.WAREHOUSE_MID;
-                    }else if(w.getLargeInventory().contains(r)){
-                        s = Storage.WAREHOUSE_LARGE;
-                    }
-                    if(s!=null) {
-                        elem = new BiElement<>(r, s);
-                        removeResources(elem, 1);
-                    }
-                }
-            }
-            if (wallet.anyFromExtraStorage()) {
-                for (int index = wallet.extraStorageSize() - 1; index >= 0; index--) {
-                    Storage extra = index == 0 ? Storage.EXTRA1 : Storage.EXTRA2;
-                    for (Resource r : wallet.getExtraStorage(index)) {
-                        elem = new BiElement<>(r, extra);
-                        removeResources(elem, 1);
-                    }
-                }
-            }*/
             game.getCurrPlayer().buyProductionCard(card, buyProdMsg.getStack(), leaderCards, buyProdMsg.getResourcesWallet());
 
         } catch (BadStorageException e) {
@@ -916,7 +883,12 @@ public class Controller implements Observer<MessageID> {
 
             case ACTIVATE_LEADER -> remoteViews.get(getCurrPlayerTurnID() - 1).update(new MessageEnvelope(messageID, String.valueOf(leaderIDtoSend)));
 
-
+            case PLAYER_WIN -> {
+                MessageEnvelope envelope = new MessageEnvelope(PLAYER_WIN, winner.getNickname());
+                for (ProPlayer pp : ((MultiPlayerGame) game).getActivePlayers()) {
+                    remoteViews.get(pp.getTurnID() - 1).update(envelope);
+                }
+            }
 
             default -> System.out.println("No no no");
         }

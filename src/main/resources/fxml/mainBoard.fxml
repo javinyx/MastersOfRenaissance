@@ -43,7 +43,7 @@
         <Image url="@../img/ui/mainBoard.png"/>
     </ImageView>
 
-    <Button fx:id="endTurnBtn" layoutX="1282.0" layoutY="50.0" styleClass="btn" text="End Turn"/>
+    <Button fx:id="endTurnBtn" layoutX="1106.0" layoutY="330.0" styleClass="btn" text="End Turn" />
 
     <!-- WAREHOUSE -->
     <ImageView fx:id="shelf1MB"  fitHeight="30" layoutX="233.0" layoutY="413.0" preserveRatio="true"/>

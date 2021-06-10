@@ -60,12 +60,12 @@ public class GamePhaseHandler extends PhaseHandler {
     @FXML
     private Region marketRegion;
 
-    /* WAREHOUSE & CHOOSE RESOURCES POPUP *****************************************************************************/
+    /* WAREHOUSE & CHOOSE STORAGE POPUP *****************************************************************************/
     private Node target;
     @FXML
     private Button chooseStorageBtnPU;
     @FXML
-    private ImageView resource1ImgPU, resource2ImgPU, resource3ImgPU, resource4ImgPU;
+    private ImageView resource1ImgPU, resource2ImgPU, resource3ImgPU, resource4ImgPU, bin;
     @FXML
     private Region shelf1PU, shelf21PU, shelf22PU, shelf31PU, shelf32PU, shelf33PU;
     @FXML
@@ -510,6 +510,11 @@ public class GamePhaseHandler extends PhaseHandler {
             tbdResourcePlacement.add(new BiElement<>(targetDragDropped(event), Storage.WAREHOUSE_LARGE));
         });
 
+        bin.setOnDragOver(this::targetDragOver);
+        bin.setOnDragDropped(event -> {
+            tbdResourcePlacement.add(new BiElement<>(discardDragDropped(event), Storage.DISCARD));
+        });
+
         chooseStorageBtnPU.setOnAction(actionEvent -> {
             if (tbdResourcePlacement.size() == selectedRes.size()) {
                 mainBoard.setEffect(null);
@@ -531,15 +536,15 @@ public class GamePhaseHandler extends PhaseHandler {
         resource1ImgPU.setDisable(false);
         resource1ImgPU.setImage(null);
         resource2ImgPU.setLayoutX(109);
-        resource2ImgPU.setLayoutY(177);
+        resource2ImgPU.setLayoutY(167);
         resource2ImgPU.setDisable(false);
         resource2ImgPU.setImage(null);
         resource3ImgPU.setLayoutX(109);
-        resource3ImgPU.setLayoutY(237);
+        resource3ImgPU.setLayoutY(217);
         resource3ImgPU.setDisable(false);
         resource3ImgPU.setImage(null);
         resource4ImgPU.setLayoutX(109);
-        resource4ImgPU.setLayoutY(297);
+        resource4ImgPU.setLayoutY(267);
         resource4ImgPU.setDisable(false);
         resource4ImgPU.setImage(null);
 
@@ -589,6 +594,15 @@ public class GamePhaseHandler extends PhaseHandler {
         Dragboard db = event.getDragboard();
         target = (Node) event.getSource();
         ((Node) event.getSource()).setDisable(true);
+        event.setDropCompleted(true);
+        event.consume();
+
+        return Resource.valueOf(db.getString());
+    }
+
+    private Resource discardDragDropped(DragEvent event) {
+        Dragboard db = event.getDragboard();
+        target = (Node) event.getSource();
         event.setDropCompleted(true);
         event.consume();
 

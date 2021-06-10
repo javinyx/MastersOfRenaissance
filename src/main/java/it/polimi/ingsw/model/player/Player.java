@@ -13,7 +13,7 @@ public class Player implements Observable {
 
     public Player(String nickname, Game game){
         this.nickname = nickname;
-        currPos = 0;
+        currPos = 22;
         this.game = game;
         observer = game;
     }

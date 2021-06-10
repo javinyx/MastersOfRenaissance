@@ -83,12 +83,15 @@ public class SinglePlayerGame extends Game implements ModelObserver {
         //lorenzo got to the end of the board before the player
         if(player.equals(lorenzo)){
             winner = lorenzo;
-            end(winner);
-            return;
         }
         this.player.getVictoryPoints();
         winner = this.player;
-        end(winner);
+        //end(winner);
+        controller.initEndPhase(winner.getNickname().equals("lorenzo") ? 0 : 1);
+    }
+
+    public Player countFinalPointsAndWinner(){
+        return winner;
     }
 
     public void updatePosition(Player player){

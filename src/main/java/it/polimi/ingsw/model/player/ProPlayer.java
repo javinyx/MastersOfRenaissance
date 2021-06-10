@@ -297,6 +297,10 @@ public class ProPlayer extends Player{
         game.removeFromProdDeck(card);
         prodStack.addFirst(card);
 
+        if(prodCards1.size() + prodCards2.size() + prodCards3.size() == 7){
+            game.updateEnd(this);
+        }
+
     }
 //----------------------------------------MARKET-------------------------------
     /**Obtains the resources chosen from market by column or row.

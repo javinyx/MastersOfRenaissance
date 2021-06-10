@@ -159,9 +159,12 @@ public class MultiPlayerGame extends Game implements ModelObserver {
     public void updateEnd(Player player){
         int currID = ((ProPlayer)player).getTurnID();
         if(currID!=totalPlayers){
-            currID++;
             //method to let all the left players play their last turn
+            controller.initEndPhase(currID);
         }
+    }
+
+    public Player countFinalPointsAndWinner(){
         int maxPoints = 0;
         List<ProPlayer> possibleWinners = new ArrayList<>();
         int points;
@@ -177,7 +180,7 @@ public class MultiPlayerGame extends Game implements ModelObserver {
         }
         if(possibleWinners.size()==1){
             winner = possibleWinners.get(0);
-            return;
+            return winner;
         }
         //draw: the winner is the one with more resources between the candidates
         int maxRes = 0;
@@ -186,8 +189,10 @@ public class MultiPlayerGame extends Game implements ModelObserver {
             if(res>maxRes){
                 maxRes = res;
                 winner = p;
+                return winner;
             }
         }
+        return null;
     }
     public void updatePosition(Player player){
         controller.update(MessageID.PLAYERS_POSITION);

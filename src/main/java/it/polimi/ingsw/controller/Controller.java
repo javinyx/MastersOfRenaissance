@@ -18,6 +18,7 @@ import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
 import it.polimi.ingsw.model.cards.leader.*;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.ProPlayer;
 import it.polimi.ingsw.model.player.Warehouse;
 
@@ -38,7 +39,9 @@ public class Controller implements Observer<MessageID> {
     private List<Integer> infoTokenLorenzo = new ArrayList<>();
 
     private ProPlayer playerToAck;
-    private ProPlayer winner;
+    private Player winner;
+    private boolean endPhase = false;
+    private int playersLeftToPlay = 0;
     private int numPlayer;
     private int startCounter = 0;
     private int playerLeaderDoneCtr = 0;
@@ -70,6 +73,8 @@ public class Controller implements Observer<MessageID> {
     public List<Observer<MessageEnvelope>> getRemoteViews() {return remoteViews;}
 
     public String getCurrPlayerNick() {return game.getCurrPlayer().getNickname();}
+
+    public boolean isEndPhase(){return endPhase;}
 
     public int getCurrPlayerTurnID() {return game.getCurrPlayer().getTurnID();}
 
@@ -186,6 +191,16 @@ public class Controller implements Observer<MessageID> {
             update(MessageID.INFO);
             return;
         }
+
+        if(endPhase && playersLeftToPlay>0){
+            playersLeftToPlay--;
+            System.out.println("END TURN 1: " + playersLeftToPlay);
+        }else if(endPhase){
+            winner = game.countFinalPointsAndWinner();
+            System.out.println("END TURN 2");
+            update(PLAYER_WIN);
+            return;
+        }
         if (game.getTotalPlayers() == 1) {
             infoTokenLorenzo.clear();
             ActionToken act = ((SinglePlayerGame) game).drawActionToken();
@@ -194,7 +209,6 @@ public class Controller implements Observer<MessageID> {
             infoTokenLorenzo.add(((SinglePlayerGame) game).getLorenzoPosition());
 
             update(LORENZO_POSITION);
-
         }
 
         //update(MessageID.CONFIRM_END_TURN);
@@ -683,7 +697,6 @@ public class Controller implements Observer<MessageID> {
      * Let the player discard a leader.
      */
     public synchronized void discardLeader(String s) {
-        System.out.println("discardin'n'pimpin \n" + s);
         playerToAck = game.getCurrPlayer();
         List<LeaderCard> leaders = playerToAck.getLeaderCards();
         for (LeaderCard card : leaders) {
@@ -744,6 +757,14 @@ public class Controller implements Observer<MessageID> {
     }
 
     // END TURN UTILITIES ----------------------------------------------------------------------------------------------
+
+    public void initEndPhase(int playerTriggerID){
+        if(!endPhase) {
+            System.out.println("INIT END PHASE");
+            endPhase = true;
+            playersLeftToPlay = game.getTotalPlayers() - playerTriggerID;
+        }
+    }
 
     /**
      * Generate an {@link EndTurnMessage} by setting the player that has just terminated the turn as {@code previousPlayer}
@@ -885,8 +906,8 @@ public class Controller implements Observer<MessageID> {
 
             case PLAYER_WIN -> {
                 MessageEnvelope envelope = new MessageEnvelope(PLAYER_WIN, winner.getNickname());
-                for (ProPlayer pp : ((MultiPlayerGame) game).getActivePlayers()) {
-                    remoteViews.get(pp.getTurnID() - 1).update(envelope);
+                for(Observer<MessageEnvelope> obs : remoteViews){
+                    obs.update(envelope);
                 }
             }
 

@@ -576,9 +576,6 @@ public class CliController extends ClientController {
 
         storeRes = cli.storeResources(res);
 
-        /*for (BiElement<Resource, Storage> sr : storeRes)
-            player.addResources(sr, 1);*/
-
         StoreResourcesMessage msg = new StoreResourcesMessage(storeRes, getPlayer().getTurnNumber());
 
         messageToServerHandler.generateEnvelope(MessageID.STORE_RESOURCES, gson.toJson(msg, StoreResourcesMessage.class));

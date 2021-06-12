@@ -1,7 +1,6 @@
 package it.polimi.ingsw.client;
 
 import com.google.gson.Gson;
-import it.polimi.ingsw.client.CLI.CliController;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
@@ -57,14 +56,11 @@ public class LocalAdapter implements Observer<MessageEnvelope>, MessageDispatchi
             case WRONG_STACK_CHOICE -> viewController.wrongStackRequest();
             case LEADER_NOT_ACTIVABLE -> viewController.leaderNotActivable();
             case BAD_REARRANGE_REQUEST -> viewController.badRearrangeRequest();
+            case BAD_STORAGE_REQUEST -> viewController.badStorageRequest();
             case WRONG_LEVEL_REQUEST -> viewController.wrongLevelRequest();
 
             case STORE_RESOURCES -> viewController.chooseStorageAfterMarketAction(envelope.getPayload());
-            case UPDATE -> {
-                viewController.updateAction(envelope.deserializeUpdateMessage());
-                //if(viewController.isRegistrationPhase())
-                  //  viewController.startGame();
-            }
+            case UPDATE -> viewController.updateAction(envelope.deserializeUpdateMessage());
 
             case LORENZO_POSITION -> viewController.upLorenzoToken(envelope.getPayload());
             case PLAYERS_POSITION -> viewController.updatePositionAction(gson.fromJson(envelope.getPayload(), PlayersPositionMessage.class));
@@ -74,7 +70,9 @@ public class LocalAdapter implements Observer<MessageEnvelope>, MessageDispatchi
 
             case ACTIVATE_LEADER -> viewController.activateLeader(Integer.parseInt(envelope.getPayload()));
 
-            default -> System.err.println("MessageID" + envelope.getMessageID() + " not recognised in class " + this.getClass());
+            case PLAYER_WIN -> viewController.winner(envelope.getPayload());
+
+            default -> System.err.println("MessageID " + envelope.getMessageID() + " not recognised in class " + this.getClass());
         }
     }
 
@@ -108,7 +106,7 @@ public class LocalAdapter implements Observer<MessageEnvelope>, MessageDispatchi
 
             case REARRANGE_WAREHOUSE -> controller.rearrangeWarehouse(gson.fromJson(payload, StoreResourcesMessage.class));
 
-            default -> System.err.println("MessageID" + messageID + " not recognised in class " + this.getClass());
+            default -> System.err.println("MessageID " + messageID + " not recognised in class " + this.getClass());
         }
     }
 
@@ -117,7 +115,6 @@ public class LocalAdapter implements Observer<MessageEnvelope>, MessageDispatchi
         MessageEnvelope env = new MessageEnvelope(MessageID.CONFIRM_REGISTRATION, nickname);
         update(env);
         controller.createSinglePlayerGame(nickname);
-        //update(new MessageEnvelope(MessageID.START_INITIAL_GAME, ""));
     }
 
     @Override

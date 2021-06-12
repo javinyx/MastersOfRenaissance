@@ -1017,6 +1017,10 @@ public class ProPlayer extends Player{
         }
     }
 
+    public void resetExtraStorage(List<StorageAbility> s){
+        this.extraStorage = Optional.ofNullable(s);
+    }
+
 //--------------------------------------TOKENS----------------------------------
     public void drawActionToken (){
         ((ActionToken)((SinglePlayerGame)game).getTokenDeck().getFirst()).draw(this, (SinglePlayerGame)game);

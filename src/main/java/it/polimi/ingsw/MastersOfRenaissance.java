@@ -15,13 +15,13 @@ public class MastersOfRenaissance {
             /*if (graphicOption.equals("CLI"))*/
             controller = new CliController();
             //else return;
-            try {
+            /*try {
                 playAgain = controller.setup();
             } catch (IOException e) {
                 e.printStackTrace();
-            }
-            /*controller.startLocalGame();
-            break;*/
+            }*/
+            controller.startLocalGame();
+            break;
 
         }
     }

@@ -18,10 +18,12 @@ import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
 import it.polimi.ingsw.model.cards.leader.*;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
+import it.polimi.ingsw.model.player.LootChest;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.ProPlayer;
 import it.polimi.ingsw.model.player.Warehouse;
 
+import javax.swing.*;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.*;
@@ -460,6 +462,10 @@ public class Controller implements Observer<MessageID> {
 
         addedResources.clear();
         removedResources.clear();
+        Warehouse warBackUp = new Warehouse(playerToAck.getWarehouse());
+        List<StorageAbility> storeBackUp = new ArrayList<>(playerToAck.getExtraStorage());
+
+
 
         int discarding = 0;
 
@@ -471,6 +477,7 @@ public class Controller implements Observer<MessageID> {
                     } else {
                         addedResources.clear();
                         mustChoosePlacements = true;
+                        playerToAck.setWarehouse(warBackUp);
                         update(MessageID.BAD_STORAGE_REQUEST);
                         return;
                     }
@@ -481,6 +488,7 @@ public class Controller implements Observer<MessageID> {
                     } else {
                         addedResources.clear();
                         mustChoosePlacements = true;
+                        playerToAck.setWarehouse(warBackUp);
                         update(MessageID.BAD_STORAGE_REQUEST);
                         return;
                     }
@@ -491,6 +499,7 @@ public class Controller implements Observer<MessageID> {
                     } else {
                         addedResources.clear();
                         mustChoosePlacements = true;
+                        playerToAck.setWarehouse(warBackUp);
                         update(MessageID.BAD_STORAGE_REQUEST);
                         return;
                     }
@@ -501,6 +510,7 @@ public class Controller implements Observer<MessageID> {
                     } else {
                         addedResources.clear();
                         mustChoosePlacements = true;
+                        playerToAck.resetExtraStorage(storeBackUp);
                         update(MessageID.BAD_STORAGE_REQUEST);
                         return;
                     }
@@ -511,6 +521,7 @@ public class Controller implements Observer<MessageID> {
                     } else {
                         addedResources.clear();
                         mustChoosePlacements = true;
+                        playerToAck.resetExtraStorage(storeBackUp);
                         update(MessageID.BAD_STORAGE_REQUEST);
                         return;
                     }

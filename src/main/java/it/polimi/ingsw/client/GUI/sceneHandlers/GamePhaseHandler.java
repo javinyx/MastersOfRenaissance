@@ -640,86 +640,86 @@ public class GamePhaseHandler extends PhaseHandler {
                     controller.sendPlaceResourcesMessage(tbdResourcePlacement);
                 }
             }
-            });
-        }
-
-        public void resetStoragePopUp () {
-            resource1ImgPU.setLayoutX(109);
-            resource1ImgPU.setLayoutY(117);
-            resource1ImgPU.setDisable(false);
-            resource1ImgPU.setImage(null);
-            resource2ImgPU.setLayoutX(109);
-            resource2ImgPU.setLayoutY(167);
-            resource2ImgPU.setDisable(false);
-            resource2ImgPU.setImage(null);
-            resource3ImgPU.setLayoutX(109);
-            resource3ImgPU.setLayoutY(217);
-            resource3ImgPU.setDisable(false);
-            resource3ImgPU.setImage(null);
-            resource4ImgPU.setLayoutX(109);
-            resource4ImgPU.setLayoutY(267);
-            resource4ImgPU.setDisable(false);
-            resource4ImgPU.setImage(null);
-
-            shelf1PU.setDisable(false);
-            shelf21PU.setDisable(false);
-            shelf22PU.setDisable(false);
-            shelf31PU.setDisable(false);
-            shelf32PU.setDisable(false);
-            shelf33PU.setDisable(false);
-
-            shelf1ImgPU.setImage(null);
-            shelf21ImgPU.setImage(null);
-            shelf22ImgPU.setImage(null);
-            shelf31ImgPU.setImage(null);
-            shelf32ImgPU.setImage(null);
-            shelf33ImgPU.setImage(null);
-
-            setWarehouse();
-        }
-
-        private void sourceDragDetected (Event event, Resource resource){
-            Dragboard db = ((Node) event.getSource()).startDragAndDrop(TransferMode.ANY);
-            ClipboardContent content = new ClipboardContent();
-            content.putString(resource.toString());
-            db.setContent(content);
-            event.consume();
-        }
-
-        private void sourceDragDone (DragEvent event){
-            if (event.getTransferMode() == TransferMode.MOVE) {
-                ((Node) event.getSource()).setLayoutX(target.getLayoutX() + 5);
-                ((Node) event.getSource()).setLayoutY(target.getLayoutY() + 5);
-                ((Node) event.getSource()).setDisable(true);
-            }
-            event.consume();
-        }
-
-        private void targetDragOver (DragEvent event){
-            if (event.getGestureSource() != event.getSource() &&
-                    event.getDragboard().hasString()) {
-                event.acceptTransferModes(TransferMode.MOVE);
-            }
-            event.consume();
-        }
-
-        private Resource targetDragDropped (DragEvent event){
-            Dragboard db = event.getDragboard();
-            target = (Node) event.getSource();
-            ((Node) event.getSource()).setDisable(true);
-            event.setDropCompleted(true);
-            event.consume();
-
-            return Resource.valueOf(db.getString());
-        }
-
-        private Resource discardDragDropped (DragEvent event){
-            Dragboard db = event.getDragboard();
-            target = (Node) event.getSource();
-            event.setDropCompleted(true);
-            event.consume();
-
-            return Resource.valueOf(db.getString());
-        }
-
+        });
     }
+
+    public void resetStoragePopUp() {
+        resource1ImgPU.setLayoutX(109);
+        resource1ImgPU.setLayoutY(117);
+        resource1ImgPU.setDisable(false);
+        resource1ImgPU.setImage(null);
+        resource2ImgPU.setLayoutX(109);
+        resource2ImgPU.setLayoutY(167);
+        resource2ImgPU.setDisable(false);
+        resource2ImgPU.setImage(null);
+        resource3ImgPU.setLayoutX(109);
+        resource3ImgPU.setLayoutY(217);
+        resource3ImgPU.setDisable(false);
+        resource3ImgPU.setImage(null);
+        resource4ImgPU.setLayoutX(109);
+        resource4ImgPU.setLayoutY(267);
+        resource4ImgPU.setDisable(false);
+        resource4ImgPU.setImage(null);
+
+        shelf1PU.setDisable(false);
+        shelf21PU.setDisable(false);
+        shelf22PU.setDisable(false);
+        shelf31PU.setDisable(false);
+        shelf32PU.setDisable(false);
+        shelf33PU.setDisable(false);
+
+        shelf1ImgPU.setImage(null);
+        shelf21ImgPU.setImage(null);
+        shelf22ImgPU.setImage(null);
+        shelf31ImgPU.setImage(null);
+        shelf32ImgPU.setImage(null);
+        shelf33ImgPU.setImage(null);
+
+        setWarehouse();
+    }
+
+    private void sourceDragDetected(Event event, Resource resource) {
+        Dragboard db = ((Node) event.getSource()).startDragAndDrop(TransferMode.ANY);
+        ClipboardContent content = new ClipboardContent();
+        content.putString(resource.toString());
+        db.setContent(content);
+        event.consume();
+    }
+
+    private void sourceDragDone(DragEvent event) {
+        if (event.getTransferMode() == TransferMode.MOVE) {
+            ((Node) event.getSource()).setLayoutX(target.getLayoutX() + 5);
+            ((Node) event.getSource()).setLayoutY(target.getLayoutY() + 5);
+            ((Node) event.getSource()).setDisable(true);
+        }
+        event.consume();
+    }
+
+    private void targetDragOver(DragEvent event) {
+        if (event.getGestureSource() != event.getSource() &&
+                event.getDragboard().hasString()) {
+            event.acceptTransferModes(TransferMode.MOVE);
+        }
+        event.consume();
+    }
+
+    private Resource targetDragDropped(DragEvent event) {
+        Dragboard db = event.getDragboard();
+        target = (Node) event.getSource();
+        ((Node) event.getSource()).setDisable(true);
+        event.setDropCompleted(true);
+        event.consume();
+
+        return Resource.valueOf(db.getString());
+    }
+
+    private Resource discardDragDropped(DragEvent event) {
+        Dragboard db = event.getDragboard();
+        target = (Node) event.getSource();
+        event.setDropCompleted(true);
+        event.consume();
+
+        return Resource.valueOf(db.getString());
+    }
+
+}

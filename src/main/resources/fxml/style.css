@@ -37,9 +37,6 @@ ToggleButton {
 }
 
 #popUp {
-    /*-fx-background-image: url("/img/ui/popUp.jpg");
-    -fx-background-repeat: stretch;
-    -fx-background-position: center center;***/
     -fx-background-color: #1f0404;
 }
 
@@ -157,6 +154,15 @@ ToggleButton {
 .leaderNotActive {
 }
 
+.text-area {
+    -fx-background-color: #000000;
+    -fx-text-fill: #ffffff;
+}
+
+.text-area .scroll-pane, .text-area .scroll-pane .viewport, .text-area .scroll-pane .content {
+    -fx-background-color: transparent;
+}
+
 /* MARKET SCENE *******************************************************************************************************/
 #marketRegion:hover {
     -fx-background-color: rgba(255, 255, 255, 0.1);
@@ -171,7 +177,7 @@ ToggleButton {
     -fx-effect: dropshadow(one-pass-box, rgba(37, 242, 255, 0.7), 50, 0, 0, 0);
 }
 
-.hArrow{
+.hArrow {
     -fx-image: url("/img/ui/harrow.png");
 }
 
@@ -183,6 +189,6 @@ ToggleButton {
 .productionCard {
 }
 
-.productionCard:hover{
+.productionCard:hover {
     -fx-effect: dropshadow(one-pass-box, rgba(255, 255, 255, 0.5), 20, 0, 0, 0);
 }

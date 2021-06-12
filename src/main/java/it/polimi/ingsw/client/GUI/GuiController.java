@@ -43,7 +43,6 @@ public class GuiController extends ClientController {
     private final BuyProdCardPhase buyProdCardPhase;
     private final Object lock = new Object();
     List<Integer> chosenLeadersId = new ArrayList<>();
-    List<Resource> tmpRes = new ArrayList<>();
 
     private String nickName;
     private Integer gameSize;
@@ -242,8 +241,7 @@ public class GuiController extends ClientController {
             }
         }
 
-        tmpRes.addAll(tbdRes);
-        Platform.runLater(() -> gamePhaseHandler.chooseStoragePopUp(tbdRes));
+        Platform.runLater(() -> gamePhaseHandler.chooseStoragePopUp(tbdRes, false));
     }
 
     public void sendBuyMarketMessage(char dim, int index) {
@@ -278,7 +276,7 @@ public class GuiController extends ClientController {
     /* ERROR REQUESTS *************************************************************************************************/
     @Override
     public void badStorageRequest() {
-        Platform.runLater(() -> gamePhaseHandler.chooseStoragePopUp(tmpRes));
+        Platform.runLater(() -> gamePhaseHandler.chooseStoragePopUp(null, true));
     }
 
     @Override

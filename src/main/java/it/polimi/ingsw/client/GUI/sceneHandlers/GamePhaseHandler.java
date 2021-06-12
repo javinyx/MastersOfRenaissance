@@ -16,6 +16,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.effect.SepiaTone;
 import javafx.scene.image.Image;
@@ -62,6 +63,7 @@ public class GamePhaseHandler extends PhaseHandler {
 
     /* WAREHOUSE & CHOOSE STORAGE POPUP *****************************************************************************/
     private Node target;
+    private List<Resource> tmpRes = new ArrayList<>();
     @FXML
     private Button chooseStorageBtnPU;
     @FXML
@@ -90,6 +92,15 @@ public class GamePhaseHandler extends PhaseHandler {
     @FXML
     private Label opLbl, opQtyShelf1Lbl, opQtyShelf2Lbl, opQtyShelf3Lbl, opQtyStoneLbl, opQtyCoinLbl, opQtyServantLbl,
             opQtyShieldLbl;
+
+    /* MESSAGE BOARD **************************************************************************************************/
+    @FXML
+    private TextArea msgBoard;
+
+    /* FAITH TRACK ****************************************************************************************************/
+    private List<BiElement<Double, Double>> faithCoords;
+    @FXML
+    private ImageView redCross;
 
     /* PRODUCTION CARDS POPUP *****************************************************************************************/
     @FXML
@@ -132,6 +143,16 @@ public class GamePhaseHandler extends PhaseHandler {
         setMarket();
         setProductionCards(availableProductionCards);
         setEnemyBoard();
+        initiateFaithTrack();
+        setFaithTrack();
+
+        if (controller.getPlayer().isMyTurn()) {
+            sendToMsgBoard("It is now your turn, please either buy from market, buy production cards or" +
+                    " activate production.");
+        } else {
+            sendToMsgBoard("It is not your turn yet, please wait for the other players.");
+        }
+
     }
 
     public void updateBoard(List<ConcreteProductionCard> availableProductionCards) {
@@ -139,6 +160,7 @@ public class GamePhaseHandler extends PhaseHandler {
         setMarket();
         setProductionCards(availableProductionCards);
         setEnemyBoard();
+        setFaithTrack();
     }
 
     public void observePlayerActions() {
@@ -148,7 +170,10 @@ public class GamePhaseHandler extends PhaseHandler {
                 marketPopUp();
             });
 
-            endTurnBtn.setOnAction(actionEvent -> controller.passTurn());
+            endTurnBtn.setOnAction(actionEvent -> {
+                tmpRes.clear();
+                controller.passTurn();
+            });
         }
 
         productionCardsOpen.setOnAction(actionEvent -> {
@@ -165,6 +190,41 @@ public class GamePhaseHandler extends PhaseHandler {
         leader1Show.setEffect(new SepiaTone(0.6));
         leader2Show.setImage(new Image("img/leaderCards/" + chosenLeadersId.get(1) + ".png"));
         leader2Show.setEffect(new SepiaTone(0.6));
+    }
+
+    private void initiateFaithTrack() {
+        double x = 177;
+        double y = 272;
+
+        faithCoords = new ArrayList<>();
+        faithCoords.add(new BiElement(x, y)); //Pos 0
+
+        for (int i = 0; i <= 24; i++) {
+            switch (i) {
+                case 1, 2, 5, 6, 7, 8, 9, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24 -> {
+                    // Move Right from previous cell
+                    x = x + 40;
+                    faithCoords.add(new BiElement(x, y));
+                }
+                case 3, 4, 17, 18 -> {
+                    // Move Up from previous cell
+                    y = y - 40;
+                    faithCoords.add(new BiElement(x, y));
+                }
+                case 10, 11 -> {
+                    // Move Down from previous cell
+                    y = y + 40;
+                    faithCoords.add(new BiElement(x, y));
+                }
+            }
+        }
+    }
+
+    private void setFaithTrack() {
+        int currPos = controller.getPlayer().getCurrPos();
+        redCross.setLayoutX(faithCoords.get(currPos).getFirstValue());
+        redCross.setLayoutY(faithCoords.get(currPos).getSecondValue());
+        //TODO: Pope Favours
     }
 
     private void setWarehouse() {
@@ -437,11 +497,13 @@ public class GamePhaseHandler extends PhaseHandler {
         });
     }
 
+    /* MESSAGE BOARD **************************************************************************************************/
+    private void sendToMsgBoard(String message) {
+        msgBoard.appendText(message + '\n');
+    }
+
     /* CHOOSE STORAGE POPUP *******************************************************************************************/
-    public void chooseStoragePopUp(List<Resource> selectedRes) {
-
-        //TODO: add discard option...
-
+    public void chooseStoragePopUp(List<Resource> selectedRes, boolean isBadStorageRequest) {
         mainBoard.setEffect(new GaussianBlur());
         Stage popUpStage = new Stage(StageStyle.TRANSPARENT);
         popUpStage.initOwner(stage);
@@ -452,34 +514,71 @@ public class GamePhaseHandler extends PhaseHandler {
 
         List<BiElement<Resource, Storage>> tbdResourcePlacement = new ArrayList<>();
 
-        if (selectedRes.size() >= 1)
-            resource1ImgPU.setImage(new Image("img/pawns/" + selectedRes.get(0).toString().toLowerCase() + ".png"));
-        if (selectedRes.size() >= 2)
-            resource2ImgPU.setImage(new Image("img/pawns/" + selectedRes.get(1).toString().toLowerCase() + ".png"));
-        if (selectedRes.size() >= 3)
-            resource3ImgPU.setImage(new Image("img/pawns/" + selectedRes.get(2).toString().toLowerCase() + ".png"));
-        if (selectedRes.size() == 4)
-            resource4ImgPU.setImage(new Image("img/pawns/" + selectedRes.get(3).toString().toLowerCase() + ".png"));
+        if (!isBadStorageRequest) {
+            tmpRes.addAll(selectedRes);
 
-        resource1ImgPU.setOnDragDetected(event -> {
-            sourceDragDetected(event, selectedRes.get(0));
-        });
-        resource1ImgPU.setOnDragDone(this::sourceDragDone);
+            if (selectedRes.size() >= 1)
+                resource1ImgPU.setImage(new Image("img/pawns/" + selectedRes.get(0).toString().toLowerCase() +
+                        ".png"));
+            if (selectedRes.size() >= 2)
+                resource2ImgPU.setImage(new Image("img/pawns/" + selectedRes.get(1).toString().toLowerCase() +
+                        ".png"));
+            if (selectedRes.size() >= 3)
+                resource3ImgPU.setImage(new Image("img/pawns/" + selectedRes.get(2).toString().toLowerCase() +
+                        ".png"));
+            if (selectedRes.size() == 4)
+                resource4ImgPU.setImage(new Image("img/pawns/" + selectedRes.get(3).toString().toLowerCase() +
+                        ".png"));
 
-        resource2ImgPU.setOnDragDetected(event -> {
-            sourceDragDetected(event, selectedRes.get(1));
-        });
-        resource2ImgPU.setOnDragDone(this::sourceDragDone);
+            resource1ImgPU.setOnDragDetected(event -> {
+                sourceDragDetected(event, selectedRes.get(0));
+            });
+            resource1ImgPU.setOnDragDone(this::sourceDragDone);
 
-        resource3ImgPU.setOnDragDetected(event -> {
-            sourceDragDetected(event, selectedRes.get(2));
-        });
-        resource3ImgPU.setOnDragDone(this::sourceDragDone);
+            resource2ImgPU.setOnDragDetected(event -> {
+                sourceDragDetected(event, selectedRes.get(1));
+            });
+            resource2ImgPU.setOnDragDone(this::sourceDragDone);
 
-        resource4ImgPU.setOnDragDetected(event -> {
-            sourceDragDetected(event, selectedRes.get(3));
-        });
-        resource4ImgPU.setOnDragDone(this::sourceDragDone);
+            resource3ImgPU.setOnDragDetected(event -> {
+                sourceDragDetected(event, selectedRes.get(2));
+            });
+            resource3ImgPU.setOnDragDone(this::sourceDragDone);
+
+            resource4ImgPU.setOnDragDetected(event -> {
+                sourceDragDetected(event, selectedRes.get(3));
+            });
+            resource4ImgPU.setOnDragDone(this::sourceDragDone);
+        } else {
+            if (tmpRes.size() >= 1)
+                resource1ImgPU.setImage(new Image("img/pawns/" + tmpRes.get(0).toString().toLowerCase() + ".png"));
+            if (tmpRes.size() >= 2)
+                resource2ImgPU.setImage(new Image("img/pawns/" + tmpRes.get(1).toString().toLowerCase() + ".png"));
+            if (tmpRes.size() >= 3)
+                resource3ImgPU.setImage(new Image("img/pawns/" + tmpRes.get(2).toString().toLowerCase() + ".png"));
+            if (tmpRes.size() == 4)
+                resource4ImgPU.setImage(new Image("img/pawns/" + tmpRes.get(3).toString().toLowerCase() + ".png"));
+
+            resource1ImgPU.setOnDragDetected(event -> {
+                sourceDragDetected(event, tmpRes.get(0));
+            });
+            resource1ImgPU.setOnDragDone(this::sourceDragDone);
+
+            resource2ImgPU.setOnDragDetected(event -> {
+                sourceDragDetected(event, tmpRes.get(1));
+            });
+            resource2ImgPU.setOnDragDone(this::sourceDragDone);
+
+            resource3ImgPU.setOnDragDetected(event -> {
+                sourceDragDetected(event, tmpRes.get(2));
+            });
+            resource3ImgPU.setOnDragDone(this::sourceDragDone);
+
+            resource4ImgPU.setOnDragDetected(event -> {
+                sourceDragDetected(event, tmpRes.get(3));
+            });
+            resource4ImgPU.setOnDragDone(this::sourceDragDone);
+        }
 
         shelf1PU.setOnDragOver(this::targetDragOver);
         shelf1PU.setOnDragDropped(event -> {
@@ -516,97 +615,111 @@ public class GamePhaseHandler extends PhaseHandler {
         });
 
         chooseStorageBtnPU.setOnAction(actionEvent -> {
-            if (tbdResourcePlacement.size() == selectedRes.size()) {
-                mainBoard.setEffect(null);
-                popUpStage.close();
-                resetStoragePopUp();
+            if (!isBadStorageRequest) {
+                if (tbdResourcePlacement.size() == selectedRes.size()) {
+                    mainBoard.setEffect(null);
+                    popUpStage.close();
+                    resetStoragePopUp();
 
-                // PRINT RESOURCE AND WAREHOUSE
-                for (int i = 0; i < tbdResourcePlacement.size(); i++) {
-                    System.out.println(tbdResourcePlacement.get(i));
+                    // PRINT RESOURCE AND WAREHOUSE
+                    for (int i = 0; i < tbdResourcePlacement.size(); i++) {
+                        System.out.println(tbdResourcePlacement.get(i));
+                    }
+                    controller.sendPlaceResourcesMessage(tbdResourcePlacement);
                 }
-                controller.sendPlaceResourcesMessage(tbdResourcePlacement);
+            } else {
+                if (tbdResourcePlacement.size() == tmpRes.size()) {
+                    mainBoard.setEffect(null);
+                    popUpStage.close();
+                    resetStoragePopUp();
+
+                    // PRINT RESOURCE AND WAREHOUSE
+                    for (int i = 0; i < tbdResourcePlacement.size(); i++) {
+                        System.out.println(tbdResourcePlacement.get(i));
+                    }
+                    controller.sendPlaceResourcesMessage(tbdResourcePlacement);
+                }
             }
-        });
-    }
+            });
+        }
 
-    public void resetStoragePopUp() {
-        resource1ImgPU.setLayoutX(109);
-        resource1ImgPU.setLayoutY(117);
-        resource1ImgPU.setDisable(false);
-        resource1ImgPU.setImage(null);
-        resource2ImgPU.setLayoutX(109);
-        resource2ImgPU.setLayoutY(167);
-        resource2ImgPU.setDisable(false);
-        resource2ImgPU.setImage(null);
-        resource3ImgPU.setLayoutX(109);
-        resource3ImgPU.setLayoutY(217);
-        resource3ImgPU.setDisable(false);
-        resource3ImgPU.setImage(null);
-        resource4ImgPU.setLayoutX(109);
-        resource4ImgPU.setLayoutY(267);
-        resource4ImgPU.setDisable(false);
-        resource4ImgPU.setImage(null);
+        public void resetStoragePopUp () {
+            resource1ImgPU.setLayoutX(109);
+            resource1ImgPU.setLayoutY(117);
+            resource1ImgPU.setDisable(false);
+            resource1ImgPU.setImage(null);
+            resource2ImgPU.setLayoutX(109);
+            resource2ImgPU.setLayoutY(167);
+            resource2ImgPU.setDisable(false);
+            resource2ImgPU.setImage(null);
+            resource3ImgPU.setLayoutX(109);
+            resource3ImgPU.setLayoutY(217);
+            resource3ImgPU.setDisable(false);
+            resource3ImgPU.setImage(null);
+            resource4ImgPU.setLayoutX(109);
+            resource4ImgPU.setLayoutY(267);
+            resource4ImgPU.setDisable(false);
+            resource4ImgPU.setImage(null);
 
-        shelf1PU.setDisable(false);
-        shelf21PU.setDisable(false);
-        shelf22PU.setDisable(false);
-        shelf31PU.setDisable(false);
-        shelf32PU.setDisable(false);
-        shelf33PU.setDisable(false);
+            shelf1PU.setDisable(false);
+            shelf21PU.setDisable(false);
+            shelf22PU.setDisable(false);
+            shelf31PU.setDisable(false);
+            shelf32PU.setDisable(false);
+            shelf33PU.setDisable(false);
 
-        shelf1ImgPU.setImage(null);
-        shelf21ImgPU.setImage(null);
-        shelf22ImgPU.setImage(null);
-        shelf31ImgPU.setImage(null);
-        shelf32ImgPU.setImage(null);
-        shelf33ImgPU.setImage(null);
+            shelf1ImgPU.setImage(null);
+            shelf21ImgPU.setImage(null);
+            shelf22ImgPU.setImage(null);
+            shelf31ImgPU.setImage(null);
+            shelf32ImgPU.setImage(null);
+            shelf33ImgPU.setImage(null);
 
-        setWarehouse();
-    }
+            setWarehouse();
+        }
 
-    private void sourceDragDetected(Event event, Resource resource) {
-        Dragboard db = ((Node) event.getSource()).startDragAndDrop(TransferMode.ANY);
-        ClipboardContent content = new ClipboardContent();
-        content.putString(resource.toString());
-        db.setContent(content);
-        event.consume();
-    }
+        private void sourceDragDetected (Event event, Resource resource){
+            Dragboard db = ((Node) event.getSource()).startDragAndDrop(TransferMode.ANY);
+            ClipboardContent content = new ClipboardContent();
+            content.putString(resource.toString());
+            db.setContent(content);
+            event.consume();
+        }
 
-    private void sourceDragDone(DragEvent event) {
-        if (event.getTransferMode() == TransferMode.MOVE) {
-            ((Node) event.getSource()).setLayoutX(target.getLayoutX() + 5);
-            ((Node) event.getSource()).setLayoutY(target.getLayoutY() + 5);
+        private void sourceDragDone (DragEvent event){
+            if (event.getTransferMode() == TransferMode.MOVE) {
+                ((Node) event.getSource()).setLayoutX(target.getLayoutX() + 5);
+                ((Node) event.getSource()).setLayoutY(target.getLayoutY() + 5);
+                ((Node) event.getSource()).setDisable(true);
+            }
+            event.consume();
+        }
+
+        private void targetDragOver (DragEvent event){
+            if (event.getGestureSource() != event.getSource() &&
+                    event.getDragboard().hasString()) {
+                event.acceptTransferModes(TransferMode.MOVE);
+            }
+            event.consume();
+        }
+
+        private Resource targetDragDropped (DragEvent event){
+            Dragboard db = event.getDragboard();
+            target = (Node) event.getSource();
             ((Node) event.getSource()).setDisable(true);
+            event.setDropCompleted(true);
+            event.consume();
+
+            return Resource.valueOf(db.getString());
         }
-        event.consume();
-    }
 
-    private void targetDragOver(DragEvent event) {
-        if (event.getGestureSource() != event.getSource() &&
-                event.getDragboard().hasString()) {
-            event.acceptTransferModes(TransferMode.MOVE);
+        private Resource discardDragDropped (DragEvent event){
+            Dragboard db = event.getDragboard();
+            target = (Node) event.getSource();
+            event.setDropCompleted(true);
+            event.consume();
+
+            return Resource.valueOf(db.getString());
         }
-        event.consume();
+
     }
-
-    private Resource targetDragDropped(DragEvent event) {
-        Dragboard db = event.getDragboard();
-        target = (Node) event.getSource();
-        ((Node) event.getSource()).setDisable(true);
-        event.setDropCompleted(true);
-        event.consume();
-
-        return Resource.valueOf(db.getString());
-    }
-
-    private Resource discardDragDropped(DragEvent event) {
-        Dragboard db = event.getDragboard();
-        target = (Node) event.getSource();
-        event.setDropCompleted(true);
-        event.consume();
-
-        return Resource.valueOf(db.getString());
-    }
-
-}

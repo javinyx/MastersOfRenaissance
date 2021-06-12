@@ -28,25 +28,34 @@
             </HBox>
         </VBox>
         <VBox alignment="CENTER" spacing="10">
-            <Button fx:id="player3Btn" styleClass="btn" />
+            <Button fx:id="player3Btn" styleClass="btn"/>
             <HBox alignment="CENTER" spacing="3">
                 <ImageView fx:id="player3FaithImg" fitWidth="35" preserveRatio="true">
                     <Image url="@../img/pawns/redCrossNew.png"/>
                 </ImageView>
-                <Label fx:id="player3FaithLbl" styleClass="inputLabel" />
+                <Label fx:id="player3FaithLbl" styleClass="inputLabel"/>
             </HBox>
         </VBox>
     </HBox>
+
+    <!-- MESSAGE BOARD -->
+    <TextArea fx:id="msgBoard" editable="false" layoutX="460.0" layoutY="20.0" prefHeight="100.0" prefWidth="520.0"
+              text="&#10;" wrapText="true"/>
 
     <!-- MAIN BOARD -->
     <ImageView fitHeight="600" layoutX="140" layoutY="150" preserveRatio="true">
         <Image url="@../img/ui/mainBoard.png"/>
     </ImageView>
 
-    <Button fx:id="endTurnBtn" layoutX="1106.0" layoutY="330.0" styleClass="btn" text="End Turn" />
+    <Button fx:id="endTurnBtn" layoutX="1106.0" layoutY="330.0" styleClass="btn" text="End Turn"/>
+
+    <!-- FAITH TRACK -->
+    <ImageView fx:id="redCross" fitWidth="30" layoutX="177.0" layoutY="272.0" preserveRatio="true">
+        <Image url="@../img/pawns/redCrossNew.png" />
+    </ImageView>
 
     <!-- WAREHOUSE -->
-    <ImageView fx:id="shelf1MB"  fitHeight="30" layoutX="233.0" layoutY="413.0" preserveRatio="true"/>
+    <ImageView fx:id="shelf1MB" fitHeight="30" layoutX="233.0" layoutY="413.0" preserveRatio="true"/>
     <ImageView fx:id="shelf21MB" fitHeight="30" layoutX="220.0" layoutY="462.0" preserveRatio="true"/>
     <ImageView fx:id="shelf22MB" fitHeight="30" layoutX="260.0" layoutY="462.0" preserveRatio="true"/>
     <ImageView fx:id="shelf31MB" fitHeight="30" layoutX="192.0" layoutY="516.0" preserveRatio="true"/>
@@ -72,7 +81,8 @@
     <Region id="marketRegion" fx:id="marketRegion" layoutX="1020.0" layoutY="20.0" prefHeight="160" prefWidth="250"/>
 
     <!-- PRODUCTION CARDS -->
-    <Button fx:id="productionCardsOpen" layoutX="1100.0" layoutY="200.0" styleClass="btn" text="View&#10;Production&#10;Cards"/>
+    <Button fx:id="productionCardsOpen" layoutX="1100.0" layoutY="200.0" styleClass="btn"
+            text="View&#10;Production&#10;Cards"/>
 
     <!-- LEADER CARDS -->
     <ImageView fx:id="leader1Show" fitWidth="120" layoutX="10.0" layoutY="380.0" preserveRatio="true"

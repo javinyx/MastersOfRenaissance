@@ -270,7 +270,9 @@ public class GuiController extends ClientController {
     /* GENERAL ACTIONS ************************************************************************************************/
     @Override
     public void refreshView() {
-        gamePhaseHandler.updateBoard(availableProductionCard);
+        if(!isRegistrationPhase()) {
+            Platform.runLater(() -> gamePhaseHandler.updateBoard(availableProductionCard));
+        }
     }
 
     /* ERROR REQUESTS *************************************************************************************************/

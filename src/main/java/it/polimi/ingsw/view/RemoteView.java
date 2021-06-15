@@ -42,6 +42,7 @@ public class RemoteView extends View {
      * @param envelope
      */
     public void readMessageFromClient(MessageEnvelope envelope) {
+        System.out.println(envelope.getMessageID());
 
         switch (envelope.getMessageID()) {
 

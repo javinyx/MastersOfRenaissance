@@ -18,12 +18,10 @@ import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
 import it.polimi.ingsw.model.cards.leader.*;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
-import it.polimi.ingsw.model.player.LootChest;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.ProPlayer;
 import it.polimi.ingsw.model.player.Warehouse;
 
-import javax.swing.*;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.*;
@@ -908,8 +906,8 @@ public class Controller implements Observer<MessageID> {
             case INFO -> remoteViews.get(getCurrPlayerTurnID() - 1).update(new MessageEnvelope(messageID, "Invalid operation now"));
             case START_INITIAL_GAME -> {
                 MessageEnvelope envelope1 = new MessageEnvelope(MessageID.START_INITIAL_GAME, "");
-                for(ProPlayer pp : ((MultiPlayerGame) game).getActivePlayers()){
-                    remoteViews.get(pp.getTurnID()-1).update(envelope1);
+                for(Observer<MessageEnvelope> obs : remoteViews){
+                    obs.update(envelope1);
                 }
             }
 

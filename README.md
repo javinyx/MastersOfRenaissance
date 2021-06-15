@@ -22,8 +22,8 @@ Professor: Alessandro Margara
 
 | Feature       | Status        |
 |---------------|:---------------:|
-|Command Line Interface| Almost Done |
+|Command Line Interface| Done |
 |Graphing User Interface| Implementing|
-|Local Game     | Implementing|
+|Local Game     | Done|
 |Multiple Games | Done|
-|Disconnection Resilience| Almost done|
+|Disconnection Resilience| Probably dropped|

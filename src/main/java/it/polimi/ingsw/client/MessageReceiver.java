@@ -33,18 +33,21 @@ public class MessageReceiver implements Runnable{
 
         Thread pong = getPingPongSystem();
         pong.start();
+        int i = 0;
 
         try {
             while (controller.isActive()) {
+                System.out.println(++i);
                 String inputObject = (String)socketIn.readObject();
                 controller.setWaitingServerUpdate(false);
                 MessageEnvelope envelope = gson.fromJson(inputObject, MessageEnvelope.class);
+                System.out.println("Last message read: " + envelope.getMessageID());
                 if(envelope.getMessageID().equals(MessageID.PING)){
                     synchronized (pongLock){
                         try {
                             pongLock.notifyAll();
                         }catch(Exception e){
-                            System.out.println("qui");
+                            System.out.println("Pong notify Exception");
                         }
                     }
                 }else {
@@ -65,7 +68,7 @@ public class MessageReceiver implements Runnable{
     public void readRegistrationMessage(MessageEnvelope envelope){
         controller.setLastRegistrationMessage(envelope.getMessageID());
 
-        //System.out.println("REGISTRATION: " + envelope.getMessageID());
+        System.out.println("REGISTRATION: " + envelope.getMessageID());
 
         switch(envelope.getMessageID()){
             case ACK -> controller.continueTurn(Boolean.parseBoolean(envelope.getPayload()));

@@ -296,10 +296,10 @@ public class Server {
         else
             controller.createSinglePlayerGame(playerNames.get(0));
 
-        for(ClientConnection cc : connectionList){
+        /*for(ClientConnection cc : connectionList){
             Thread pingPong = cc.getPingPongSystem();
             pingPong.start();
-        }
+        }*/
     }
 
 

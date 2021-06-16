@@ -333,7 +333,7 @@ public class Server {
      * @param port the port on which the server will run
      */
     public Server(int port) throws IOException {
-        if (port != -1) PORT = port;
+        if (port>=1024 && port<=65535) PORT = port;
         this.serverSocket = new ServerSocket(PORT);
     }
 

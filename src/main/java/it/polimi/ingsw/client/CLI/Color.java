@@ -1,11 +1,12 @@
 package it.polimi.ingsw.client.CLI;
 
+/**
+ * Contains the ANSI escape code for cli mode colors
+ */
 public enum Color {
 
     GREEN ("\u001B[32m"),
     PURPLE ("\u001B[35m"),
-    CYAN ("\u001B[36m"),
-    WHITE ("\u001B[37m"),
     RED("\u001B[31m"),
     YELLOW("\u001B[33m"),
     GRAY("\u001B[0;37m"),

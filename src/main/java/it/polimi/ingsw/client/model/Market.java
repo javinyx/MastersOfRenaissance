@@ -2,6 +2,9 @@ package it.polimi.ingsw.client.model;
 
 import it.polimi.ingsw.model.market.Resource;
 
+/**
+ * Representation of the model Market in client
+ */
 public class Market {
     private Resource[][] marketBoard;
     private Resource extra;

@@ -21,6 +21,9 @@ import java.net.Socket;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ *  Class that manage the phases of the game in cli mode
+ */
 public class CliController extends ClientController {
 
     private final Cli cli;
@@ -30,6 +33,10 @@ public class CliController extends ClientController {
         this.cli = new Cli(this);
     }
 
+    /**
+     * Setup the cli, start the message receiver thread and the input from keyboard thread
+     * @return true if the setup isn't crash
+     */
     public boolean setup() throws IOException {
 
         if (!cli.initialScreen())
@@ -88,6 +95,9 @@ public class CliController extends ClientController {
         return true;
     }
 
+    /**
+     * Check the user input and allow it only if the player is in his turn
+     */
     public void checkInput(String input ) {
         if(!isActive())
             return;
@@ -99,8 +109,6 @@ public class CliController extends ClientController {
         if (!canPlay()) return;
         if (isRegistrationPhase())
             checkInputRegistrationPhase(input);
-        else
-            checkInputGamePhase(input);
     }
     /**
      * Checks messages during registration phase, based on the current action, sends message to socket
@@ -132,10 +140,6 @@ public class CliController extends ClientController {
         }
         messageToServerHandler.sendMessageToServer(input);
     }
-    private void checkInputGamePhase(String input) {
-
-
-    }
 
     // REGISTRATION PHASE --------------------------------------------------------------------------------------------
 
@@ -151,9 +155,14 @@ public class CliController extends ClientController {
         cli.showMessage("Hello " + nickname + "! Registration has been completed successfully.");
     }
 
-
+    public synchronized void nickError(){
+        cli.showMessage("The chosen Nickname can't be used in this game");
+    }
     // SETUP PHASE -----------------------------------------------------------------------------------------------------
 
+    /**
+     * Let the player choose the initial 2 leader cards
+     */
     @Override
     public void chooseLeadersAction(){
         cli.clearScreen();
@@ -165,6 +174,9 @@ public class CliController extends ClientController {
         messageToServerHandler.generateEnvelope(MessageID.CHOOSE_LEADER_CARDS, lId.toString());
     }
 
+    /**
+     * Let the player choose the initial resource if possible
+     */
     @Override
     public void chooseResourceAction(int quantity) {
         List<Resource> res;
@@ -179,6 +191,9 @@ public class CliController extends ClientController {
         chooseStorageAction(res);
     }
 
+    /**
+     * Set the turn of the player or display the player that is playing
+     */
     @Override
     public synchronized void startGame() {
         if(isRegistrationPhase()) {
@@ -198,20 +213,29 @@ public class CliController extends ClientController {
         }
     }
 
+    /**
+     * Don't allow the player to skip the turn
+     */
     public void startGameNotEndTurn(){
         System.out.println("You can't skip the turn.");
         cli.pressEnter();
         startTurnPhase();
     }
 
+    /**
+     * Tell to the player that other players have to join before start the game
+     */
     @Override
-    public void refreshView() {
+    public void displayWaitMessage() {
         displayMessage("Wait other player to join.");
         setWaitingServerUpdate(true);
     }
 
     // GAME PHASES -----------------------------------------------------------------------------------------------------
 
+    /**
+     * Display the turn options
+     */
     public synchronized void startTurnPhase(){
         if (normalTurn)
             cli.displayTurnOption();
@@ -230,6 +254,9 @@ public class CliController extends ClientController {
         startTurnPhase();
     }
 
+    /**
+     * Display the information of the player
+     */
     public void viewYourInfo(){
         List<Resource> extra = new ArrayList<>();
         int shield = 0, stone = 0, ser = 0, coin = 0;
@@ -330,7 +357,6 @@ public class CliController extends ClientController {
     }
 
     public void startProduction(){
-
         /*List<Resource> cost = new ArrayList<>();
         cost.add(Resource.SHIELD);cost.add(Resource.SERVANT);cost.add(Resource.STONE);
         List<Resource> reqRes = new ArrayList<>();
@@ -339,8 +365,6 @@ public class CliController extends ClientController {
         prod11.add(Resource.SERVANT);
         ConcreteProductionCard prod = new ConcreteProductionCard(5,2, ColorEnum.GREEN,1, cost, reqRes, prod11);
         player.addProductionCard(prod, 0);*/
-
-
 
         List<ConcreteProductionCard> prodCard;
         List<LeaderCard> leadCard = null;
@@ -354,54 +378,66 @@ public class CliController extends ClientController {
         boolean basic = false;
         ResourcesWallet resWal = new ResourcesWallet();
 
-        System.out.println("Select the Development Card you want to use");
-        prodCard = cli.selectProdCard();
+        if (player.getProductionStacks().get(0).size() != 0 && player.getProductionStacks().get(1).size() != 0 && player.getProductionStacks().get(2).size() != 0){
+            System.out.println("Select the Development Card you want to use");
+            prodCard = cli.selectProdCard();
 
-        System.out.println("Select the resources you want to use for the Development Card");
+            System.out.println("Select the resources you want to use for the Development Card");
 
-        boolean a, b, c, d;
-        do{
+            boolean a, b, c, d;
+            do {
 
-            cli.selectWalletForProduction(prodCard, fromWare, fromLoot, fromLeader1, fromLeader2);
+                cli.selectWalletForProduction(prodCard, fromWare, fromLoot, fromLeader1, fromLeader2);
 
-            a = resWal.setWarehouseTray(fromWare);
-            b = resWal.setLootchestTray(fromLoot);
-            c = resWal.setExtraStorage(fromLeader1, 0);
-            d = resWal.setExtraStorage(fromLeader2, 1);
+                a = resWal.setWarehouseTray(fromWare);
+                b = resWal.setLootchestTray(fromLoot);
+                c = resWal.setExtraStorage(fromLeader1, 0);
+                d = resWal.setExtraStorage(fromLeader2, 1);
 
-            if ((!a && !resWal.getWarehouseTray().isEmpty()) || (!b && !resWal.getLootchestTray().isEmpty()) || (!c && !resWal.getExtraStorage(0).isEmpty()) || (!d && !resWal.getExtraStorage(1).isEmpty()))
-                System.out.println("An error occur in the selection of the Resources");
+                if ((!a && !resWal.getWarehouseTray().isEmpty()) || (!b && !resWal.getLootchestTray().isEmpty()) || (!c && !resWal.getExtraStorage(0).isEmpty()) || (!d && !resWal.getExtraStorage(1).isEmpty()))
+                    System.out.println("An error occur in the selection of the Resources");
 
-        }while ((!a && !resWal.getWarehouseTray().isEmpty()) || (!b && !resWal.getLootchestTray().isEmpty()) || (!c && !resWal.getExtraStorage(0).isEmpty()) || (!d && !resWal.getExtraStorage(1).isEmpty()));
+            } while ((!a && !resWal.getWarehouseTray().isEmpty()) || (!b && !resWal.getLootchestTray().isEmpty()) || (!c && !resWal.getExtraStorage(0).isEmpty()) || (!d && !resWal.getExtraStorage(1).isEmpty()));
 
-        if(cli.wantPlayLeader()) {
-            for (LeaderCard led : getPlayer().getLeaders())
-                if (led instanceof BoostAbility && led.isActive()) {
-                    System.out.println("Select the leader you want to produce");
-                    leadCard = convertIdToLeaderCard(cli.chooseLeader(getPlayer().getLeaders()));
-                    betterLeaderCard = leadCard.stream().map(x -> (BoostAbility) x).collect(Collectors.toList());
-                    leadOut = cli.chooseLeaderOut(leadCard);
-                    System.out.println("Select the resources you want to use for the Leader Card");
-                    cli.selectLeadWalletProd((BoostAbility) led, fromWare, fromLoot, fromLeader1, fromLeader2);
-                }
+            if (cli.wantPlayLeader()) {
+                for (LeaderCard led : getPlayer().getLeaders())
+                    if (led instanceof BoostAbility && led.isActive()) {
+                        System.out.println("Select the leader you want to produce");
+                        leadCard = convertIdToLeaderCard(cli.chooseLeader(getPlayer().getLeaders()));
+                        betterLeaderCard = leadCard.stream().map(x -> (BoostAbility) x).collect(Collectors.toList());
+                        leadOut = cli.chooseLeaderOut(leadCard);
+                        System.out.println("Select the resources you want to use for the Leader Card");
+                        cli.selectLeadWalletProd((BoostAbility) led, fromWare, fromLoot, fromLeader1, fromLeader2);
+                    }
+            }
+
+            basicIn = cli.doBasicProd1(fromWare, fromLoot, fromLeader1, fromLeader2);
+            if (basicIn != null) {
+                basic = true;
+                basicOut = cli.doBasicProd2();
+            }
+
+            resWal.setWarehouseTray(fromWare);
+            resWal.setLootchestTray(fromLoot);
+            resWal.setExtraStorage(fromLeader1, 0);
+            resWal.setExtraStorage(fromLeader2, 1);
+
+            ProduceMessage msg = new ProduceMessage(prodCard, resWal, betterLeaderCard, leadOut, basic, basicOut, basicIn);
+
+            messageToServerHandler.generateEnvelope(MessageID.PRODUCE, gson.toJson(msg));
         }
 
-        basicIn = cli.doBasicProd1(fromWare, fromLoot, fromLeader1, fromLeader2);
-        if(basicIn != null) {
-            basic = true;
-            basicOut = cli.doBasicProd2();
+        else{
+            displayMessage("You have no leader cards");
+            cli.pressEnter();
+            startTurnPhase();
         }
-
-        resWal.setWarehouseTray(fromWare);
-        resWal.setLootchestTray(fromLoot);
-        resWal.setExtraStorage(fromLeader1, 0);
-        resWal.setExtraStorage(fromLeader2, 1);
-
-        ProduceMessage msg = new ProduceMessage(prodCard, resWal, betterLeaderCard, leadOut, basic, basicOut, basicIn);
-
-        messageToServerHandler.generateEnvelope(MessageID.PRODUCE, gson.toJson(msg));
 
     }
+
+    /**
+     * Display the situation of the other players
+     */
     public void viewOpponents(){
 
         if(otherPlayers.size() == 0)
@@ -422,7 +458,6 @@ public class CliController extends ClientController {
     }
 
     public void discardLeader(){
-
 
         if(!getPlayer().getLeaders().get(0).isActive() || !getPlayer().getLeaders().get(1).isActive()) {
             List<LeaderCard> leaderCards = new ArrayList<>();
@@ -569,6 +604,9 @@ public class CliController extends ClientController {
         chooseStorageAction(res);
     }
 
+    /**
+     * Let the player choose in what storage he want to put his resources
+     */
     @Override
     public void chooseStorageAction(List<Resource> res){
 
@@ -602,8 +640,9 @@ public class CliController extends ClientController {
 
     }
 
-
-
+    /**
+     * Show the position of Lorenzo on the track
+     */
     @Override
     public void moveLorenzo(int currentPosition) {
         if(currentPosition == 24){
@@ -686,6 +725,9 @@ public class CliController extends ClientController {
         startTurnPhase();
     }
 
+    /**
+     * Show the win message
+     */
     @Override
     public void winner(String win) {
         setGameOver(true);
@@ -698,6 +740,9 @@ public class CliController extends ClientController {
 
     //Local mode -------------------------------------------------------------------------------
 
+    /**
+     * Setup the game for local mode
+     */
     public void startLocalGame(){
         localGame = true;
         messageToServerHandler = new LocalAdapter(this);

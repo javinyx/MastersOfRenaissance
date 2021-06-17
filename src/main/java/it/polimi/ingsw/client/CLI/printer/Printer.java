@@ -15,7 +15,9 @@ import it.polimi.ingsw.model.market.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Class that handles the screen printing on the cli intreface
+ */
 public class Printer {
 
     public void clearScreen() {
@@ -30,7 +32,10 @@ public class Printer {
         System.out.println(builder);
     }
 
-
+    /**
+     * Print the leader cards
+     * @param card the leader card you want to print
+     */
     public void printLeaders(LeaderCard card) {
 
         List<Buyable> cost = card.getCost();
@@ -294,6 +299,9 @@ public class Printer {
 
     }
 
+    /**
+     * Print the resource whit their own color
+     */
     public String printRes (Resource res){
         String s = null;
         switch (res){
@@ -306,6 +314,9 @@ public class Printer {
         }
         return s;
     }
+    /**
+     * Print the Development card color with their own color
+     */
     public String printColorprod (ConcreteProductionCard p){
         String s = null;
         switch (p.getColor()){

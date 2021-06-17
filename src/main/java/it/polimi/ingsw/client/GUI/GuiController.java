@@ -269,7 +269,7 @@ public class GuiController extends ClientController {
 
     /* GENERAL ACTIONS ************************************************************************************************/
     @Override
-    public void refreshView() {
+    public void displayWaitMessage() {
         if(!isRegistrationPhase()) {
             Platform.runLater(() -> gamePhaseHandler.updateBoard(availableProductionCard));
         }
@@ -328,6 +328,11 @@ public class GuiController extends ClientController {
 
     @Override
     public void displayMessage(String str) {
+
+    }
+
+    @Override
+    public void nickError() {
 
     }
 

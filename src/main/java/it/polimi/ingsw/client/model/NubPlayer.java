@@ -10,6 +10,9 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Class that contains all the information that the client logic need
+ */
 public class NubPlayer implements Comparator<NubPlayer> {
     private final String nickname;
     private int currPos;
@@ -34,10 +37,6 @@ public class NubPlayer implements Comparator<NubPlayer> {
         this.turnNumber = turnNumber;
     }
 
-    public int getTurnNumber() {
-        return turnNumber;
-    }
-
     public Boolean[] getPopePasses(){return popePasses;}
 
     /**
@@ -49,6 +48,9 @@ public class NubPlayer implements Comparator<NubPlayer> {
     }
 
     public String getNickname(){return nickname;}
+    public int getTurnNumber() {
+        return turnNumber;
+    }
     public int getCurrPos(){return currPos;}
     public boolean isMyTurn(){return myTurn;}
     public List<Deque<ConcreteProductionCard>> getProductionStacks(){return productionStacks;}
@@ -57,9 +59,17 @@ public class NubPlayer implements Comparator<NubPlayer> {
         return productionStacks.get(index);
     }
 
+    /**
+     * Set true if is the player current turn
+     */
     public void setMyTurn(boolean status){myTurn = status;}
     public void setCurrPos(int pos){currPos = pos;}
 
+    /**
+     * Add a resources to the player
+     * @param resources The resoure and the place that he want to store it
+     * @param qty how many resource he want to store
+     */
     public void addResources(BiElement<Resource,Storage> resources, Integer qty){
         AtomicBoolean found = new AtomicBoolean(false);
         allResources.forEach((x,y) -> {
@@ -74,6 +84,11 @@ public class NubPlayer implements Comparator<NubPlayer> {
         }
     }
 
+    /**
+     * Remove a resources to the player
+     * @param resources The resoure and the place that he want to store it
+     * @param qty how many resource he want to store
+     */
     public void removeResources(BiElement<Resource, Storage> resources, Integer qty){
         List<BiElement<Resource, Storage>> toRemove = new ArrayList<>();
 
@@ -91,6 +106,9 @@ public class NubPlayer implements Comparator<NubPlayer> {
         }
     }
 
+    /**
+     * @return the elements in the warehouse of the player
+     */
     public Map<BiElement<Resource, Storage>, Integer> getWarehouse(){
         Map<BiElement<Resource, Storage>, Integer> war = new HashMap<>();
         allResources.forEach((x,y) ->{
@@ -102,6 +120,9 @@ public class NubPlayer implements Comparator<NubPlayer> {
         return war;
     }
 
+    /**
+     * @return the number of a certain resource r in the storage s
+     */
     public int getQtyInStorage(Resource r, Storage s){
         if(r==null){
             return 0;
@@ -115,6 +136,9 @@ public class NubPlayer implements Comparator<NubPlayer> {
         return qty.get();
     }
 
+    /**
+     * @return the type of the resource that is in a certain storage
+     */
     public Resource getResourceFromStorage(Storage type){
         final Resource[] res = {null};
         allResources.forEach((x,y) -> {
@@ -147,13 +171,15 @@ public class NubPlayer implements Comparator<NubPlayer> {
     }
 
     /**@param card is the card to add to the player's stack
-     * @param stackIndex is the index [from 0 to size()-1] of the stack in which the card goes*/
+     * @param stackIndex is the index [from 0 to size()-1] of the stack in which the card goes
+     */
     public boolean addProductionCard(ConcreteProductionCard card, int stackIndex){
         if(stackIndex>=productionStacks.size())
             return false;
         productionStacks.get(stackIndex).addFirst(card);
         return true;
     }
+
     public void setProductionStacks(List<Deque<ConcreteProductionCard>> productionStacks){
         this.productionStacks = productionStacks;
     }
@@ -163,6 +189,12 @@ public class NubPlayer implements Comparator<NubPlayer> {
     }
 
     //---------------------COMPARATOR---------------
+
+    /**
+     * Comparator needed to order players by increasing turn number
+     * @param o1 player 1
+     * @param o2 player 2
+     */
     @Override
     public int compare(NubPlayer o1, NubPlayer o2) {
         if(o1.getTurnNumber() < o2.getTurnNumber()){

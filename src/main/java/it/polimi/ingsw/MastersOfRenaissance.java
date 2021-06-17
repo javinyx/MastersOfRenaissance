@@ -1,6 +1,7 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.client.CLI.CliController;
+import it.polimi.ingsw.client.GUI.Gui;
 
 import java.io.IOException;
 
@@ -19,8 +20,8 @@ public class MastersOfRenaissance {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            //controller.startLocalGame();
-            break;
+            /*controller.startLocalGame();
+            break;*/
 
         }
     }

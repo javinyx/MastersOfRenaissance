@@ -19,6 +19,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.*;
 
+/**
+ * Class that handle all the input that a user has to insert in the teminal
+ */
+
 public class Cli /*extends MessageDispatchinatorable*/ {
     private final Scanner scanner = new Scanner(System.in);
     private CliController controller;
@@ -127,12 +131,13 @@ public class Cli /*extends MessageDispatchinatorable*/ {
 
     // SETUP PHASE -----------------------------------------------------------------------------------------------------
 
+    /**
+     * Allow user to choose a resource
+     * @param quantity number of resources to choose
+     */
     public List<Resource> chooseResources(int quantity){
-        //List<BiElement<Resource, Storage>> resources = new ArrayList<>();
         List<Resource> resources = new ArrayList<>();
         String res;
-        int pos;
-        Storage stor = null;
 
         for (int i = 0; i < quantity; i++){
             do {
@@ -146,6 +151,10 @@ public class Cli /*extends MessageDispatchinatorable*/ {
         return resources;
     }
 
+    /**
+     * Let the user choose the two initial leader of the game
+     * @param leaders the list of the 4 selectable leaders
+     */
     public List<Integer> chooseInitialLeader(List<LeaderCard> leaders){
 
         List<Integer> lID = new ArrayList<>();
@@ -180,6 +189,10 @@ public class Cli /*extends MessageDispatchinatorable*/ {
         return lID;
     }
 
+    /**
+     * Let the user choose a leader by type its ID
+     * @param leaders the list of the selectable leaders
+     */
     public List<Integer> chooseLeader(List<LeaderCard> leaders){
 
         int c = -1;
@@ -272,6 +285,9 @@ public class Cli /*extends MessageDispatchinatorable*/ {
 
     }
 
+    /**
+     * Like a C System("Pause") statement
+     */
     public void pressEnter(){
         System.out.print("Press enter to continue.");
         try {
@@ -305,6 +321,9 @@ public class Cli /*extends MessageDispatchinatorable*/ {
         return -1;
     }
 
+    /**
+     * Let the user select a development card
+     */
     public List<ConcreteProductionCard> selectProdCard(){
 
         List<ConcreteProductionCard> card = new ArrayList<>();
@@ -336,6 +355,10 @@ public class Cli /*extends MessageDispatchinatorable*/ {
         return retCard;
     }
 
+    /**
+     * Let the user select the resources tht he want to use for a generic action
+     * the parameters are the pointer of the lists that arrive from the CliController
+     */
     public void selectResWalletProd(List<ConcreteProductionCard> prodCard, List<Resource> fromWare, List<Resource> fromLoot, List<Resource> fromLeader1, List<Resource> fromLeader2){
         int c, numLeader = -1, lock;
         List<StorageAbility> storeLead = new ArrayList<>();
@@ -378,6 +401,10 @@ public class Cli /*extends MessageDispatchinatorable*/ {
         }
     }
 
+    /**
+     * Let the user select the resources tht he want to use for a Development card purchase action
+     * the parameters are the pointer of the lists that arrive from the CliController
+     */
     public void selectWalletForProduction(List<ConcreteProductionCard> prodCard, List<Resource> fromWare, List<Resource> fromLoot, List<Resource> fromLeader1, List<Resource> fromLeader2){
         int c, numLeader = -1, lock;
         List<StorageAbility> storeLead = new ArrayList<>();
@@ -457,6 +484,10 @@ public class Cli /*extends MessageDispatchinatorable*/ {
         return new BiElement<>(convertStringToResource(res), c);
     }
 
+    /**
+     * Let the user select the resources tht he want to use for a Leader action
+     * the parameters are the pointer of the lists that arrive from the CliController
+     */
     public void selectLeadWalletProd(BoostAbility card, List<Resource> fromWare, List<Resource> fromLoot, List<Resource> fromLeader1, List<Resource> fromLeader2){
         int c, numLeader = -1, lock;
         List<StorageAbility> storeLead = new ArrayList<>();
@@ -492,6 +523,10 @@ public class Cli /*extends MessageDispatchinatorable*/ {
     }
 
 
+    /**
+     * Part 1 of the basic Production process
+     * @return the resources you want to spend
+     */
     public List<Resource> doBasicProd1(List<Resource> fromWare, List<Resource> fromLoot, List<Resource> fromLeader1, List<Resource> fromLeader2) {
 
         String c, res;
@@ -548,7 +583,10 @@ public class Cli /*extends MessageDispatchinatorable*/ {
             return null;
     }
 
-
+    /**
+     * Part 1 of the basic Production process
+     * @return the resources you want to produce
+     */
     public Resource doBasicProd2(){
 
         String res;
@@ -563,6 +601,9 @@ public class Cli /*extends MessageDispatchinatorable*/ {
 
     }
 
+    /**
+     * @return the resources you want to produce from a leader card
+     */
     public List<Resource> chooseLeaderOut(List<LeaderCard> leaderCards){
         List<Resource> resRet = new ArrayList<>();
         String res;
@@ -580,6 +621,9 @@ public class Cli /*extends MessageDispatchinatorable*/ {
         return resRet;
     }
 
+    /**
+     * @return true if the player want to play a leader during an action
+     */
     public boolean wantPlayLeader(){
         String c;
 
@@ -593,6 +637,9 @@ public class Cli /*extends MessageDispatchinatorable*/ {
 
     }
 
+    /**
+     * Let the player choose row or column
+     */
     public String marketDimChoose() {
         String dim;
         do {
@@ -603,6 +650,9 @@ public class Cli /*extends MessageDispatchinatorable*/ {
         return dim;
 
     }
+    /**
+     * Let the player choose the index
+     */
     public int marketIntChoose(int upperBound, int lowerBound) {
         int index;
         do{
@@ -616,7 +666,11 @@ public class Cli /*extends MessageDispatchinatorable*/ {
         System.out.println("How many for this card?\n" + card);
         return scanner.nextInt();
     }
-    
+
+    /**
+     * Let the player choose where he want to put the resources that has arrived from
+     * @param res
+     */
     public List<BiElement<Resource, Storage>> storeResources(List<Resource> res){
         int c;
         Storage s = null;
@@ -650,6 +704,9 @@ public class Cli /*extends MessageDispatchinatorable*/ {
         return pos;
     }
 
+    /**
+     * Let the player activate a leader
+     */
     public int activeLeaderFromId(List<LeaderCard> activable){
         int id, lock;
         for (int i = 0; i < activable.size(); i++) {
@@ -820,6 +877,9 @@ public class Cli /*extends MessageDispatchinatorable*/ {
 
     //--------------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Print a message in the terminal
+     */
     public void showMessage(String str){
         System.out.println(str);
     }

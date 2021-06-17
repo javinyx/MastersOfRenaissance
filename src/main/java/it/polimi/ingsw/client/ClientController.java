@@ -118,8 +118,12 @@ public abstract class ClientController {
     public abstract void askNumberOfPlayers();
     public abstract void startGame();
 
-    public abstract void refreshView();
+    public abstract void displayWaitMessage();
 
+    /**
+     * Initiate all the player and put them in a list that contains all the players in that game
+     * @param msg message containing all the player information
+     */
     public void setTotalPlayers(TurnNumberMessage msg){
         for (int i = 0; i < msg.getTurnAss().size(); i++) {
             if (!msg.getTurnAss().get(i).getFirstValue().equals(player.getNickname())){
@@ -135,12 +139,20 @@ public abstract class ClientController {
         totalPlayers.sort(NubPlayer.getComparator());
     }
 
+    /**
+     * Set the leaders that a player can choose
+     * @param leaders
+     */
     public void setLeaderAvailable(String leaders){
         player.setLeaders(new ArrayList<>(convertIdToLeaderCard(convertStringToListInteger(leaders))));
 
         chooseLeadersAction();
     }
 
+    /**
+     * Create and set the player and do {@code initAllCards()}
+     * @param nickName the nickname of the player
+     */
     public void confirmRegistration(String nickName){
         player = new NubPlayer(nickName);
         totalPlayers.add(player);
@@ -162,6 +174,7 @@ public abstract class ClientController {
     public abstract void leaderNotActivable();
     public abstract boolean ackConfirmed (String msg);
     public abstract void displayMessage(String str);
+    public abstract void nickError();
 
     //---------------------------------ACTIONS: behaviours caused by Messages--------------------------
 
@@ -182,14 +195,18 @@ public abstract class ClientController {
     public abstract void startGameNotEndTurn();
 
 
-        /**Move Lorenzo on the faith track*/
+    /**
+     * Move Lorenzo on the faith track
+     */
     public void moveLorenzo(int currentPosition){
         lorenzoPos += currentPosition;
     }
 
-    /**Show other players what the last player has done in his/her turn once it has been set on the corresponding
+    /**
+     * Show other players what the last player has done in his/her turn once it has been set on the corresponding
      * {@link NubPlayer} object.
-     * @param player the player who played last turn*/
+     * @param player the player who played last turn
+     */
     public abstract void updateOtherPlayer(NubPlayer player);
 
 
@@ -264,7 +281,7 @@ public abstract class ClientController {
             startGame();
         }
         else
-            refreshView();
+            displayWaitMessage();
 
         count++;
 
@@ -279,7 +296,10 @@ public abstract class ClientController {
         }*/
     }
 
-
+    /**
+     * If an action is performed and the turn is not finished continue the turn
+     * @param basicActionDone if it's true show only the minor actions a player can do
+     */
     public void continueTurn(Boolean basicActionDone){
         if (!registrationPhase){
             normalTurn = !basicActionDone;
@@ -291,11 +311,11 @@ public abstract class ClientController {
         startGame();
     }
 
+    /**
+     * Manage the end turn phase. If it's your turn let the player turn
+     * @param msg message from the server with all the player information
+     */
     public synchronized void endTurn(EndTurnMessage msg){
-
-        /*for (BiElement<Resource, Storage> elem : storeRes)
-            player.addResources(elem, 1);
-        storeRes.clear();*/
 
         this.currPlayer = totalPlayers.get(msg.getNextPlayerId()-1);
 
@@ -314,20 +334,12 @@ public abstract class ClientController {
                 }
             }
         }
-
-        /*if (player.getTurnNumber() == currPlayer.getTurnNumber()) {
-            getPlayer().setMyTurn(true);
-            normalTurn = true;
-            startTurnPhase();
-        } else {
-            for (NubPlayer p : totalPlayers) {
-                if (p.getTurnNumber() == 1)
-                    showCurrentTurn(p.getNickname());
-            }
-        }*/
-
     }
 
+    /**
+     * Manage the vatican report triggered by the server
+     * @param msg message from the server with all the information
+     */
     public void infoVaticanReport(VaticanReportMessage msg){
 
         countPope++;
@@ -368,6 +380,9 @@ public abstract class ClientController {
         }
     }
 
+    /**
+     * Trigger the end turn when a player want to pass its turn
+     */
     public void passTurn(){
         if (!normalTurn)
             messageToServerHandler.generateEnvelope(MessageID.END_TURN, "");
@@ -375,6 +390,10 @@ public abstract class ClientController {
             startGameNotEndTurn();
     }
 
+    /**
+     * Update Lorenzo situation and show the token that he has drawn
+     * @param msg message from the server with all the Lorenzo's information
+     */
     public void upLorenzoToken (String msg){
 
         List<Integer> num = convertStringToListInteger(msg);
@@ -439,6 +458,9 @@ public abstract class ClientController {
         return null;
     }
 
+    /**
+     * Set all the card reading the information from JSON files
+     */
     private void initAllCards() {
         Gson gson = new Gson();
         Reader reader;

@@ -7,6 +7,10 @@ import it.polimi.ingsw.model.market.Resource;
 
 import java.io.IOException;
 
+/**
+ * Class that specify the right command for Windows based consoles
+ */
+
 public class WindowsPrinter extends Printer{
     @Override
     public void clearScreen() {

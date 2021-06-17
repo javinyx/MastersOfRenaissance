@@ -88,6 +88,8 @@ public class MessageReceiver implements Runnable{
 
             case START_INITIAL_GAME -> controller.startInitialGame();
 
+            case NICK_ERR -> controller.nickError();
+
             default -> System.err.println("MessageID not recognised Registration");
         }
 

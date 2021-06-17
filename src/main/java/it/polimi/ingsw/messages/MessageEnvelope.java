@@ -35,6 +35,9 @@ public class MessageEnvelope {
         return payload;
     }
 
+    /**
+     * @return the correct version of the update message serialized with {@link UpdateMessage#setSerializedResources()}
+     */
     public UpdateMessage deserializeUpdateMessage() {
 
         Gson gson = new Gson();
@@ -46,6 +49,9 @@ public class MessageEnvelope {
         return updateMessageDeserializer.deserialize(jsonObject, UpdateMessage.class, null);
     }
 
+    /**
+     * Class that deserialize in the correct way the map of Bielement used for the update message
+     */
     class UpdateMessageDeserializer implements JsonDeserializer<UpdateMessage> {
 
         public UpdateMessage deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {

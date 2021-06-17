@@ -17,6 +17,11 @@ public class MessageToServerHandler implements MessageDispatchinatorable{
         this.controller = controller;
     }
 
+    /**
+     * Automatically generate the message to send to the server by passing to it
+     * @param messageID The corresponding Message ID
+     * @param payload the payload you want to send
+     */
     @Override
     public void generateEnvelope(MessageID messageID, String payload){
         MessageEnvelope envelope = new MessageEnvelope(messageID, payload);

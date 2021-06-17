@@ -11,8 +11,10 @@ import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import java.util.ArrayList;
 import java.util.List;
 
-/**Adapter for a local single game. No network between {@link ClientController} and {@link Controller}.
- * iT's the mean of communication between the pseudo-server and pseudo-client.*/
+/**
+ * Adapter for a local single game. No network between {@link ClientController} and {@link Controller}.
+ * It's the mean of communication between the pseudo-server and pseudo-client.
+ * */
 public class LocalAdapter implements Observer<MessageEnvelope>, MessageDispatchinatorable {
     private final ClientController viewController;
     private final Controller controller;
@@ -77,6 +79,9 @@ public class LocalAdapter implements Observer<MessageEnvelope>, MessageDispatchi
     }
 
 
+    /**
+     * Accept request from client and redirect them to the controller
+     */
     @Override
     public void generateEnvelope(MessageID messageID, String payload) {
         switch(messageID){
@@ -84,7 +89,6 @@ public class LocalAdapter implements Observer<MessageEnvelope>, MessageDispatchi
 
             case CHOOSE_LEADER_CARDS -> {
                 controller.chooseLeaderCards(payload, viewController.getPlayer().getNickname());
-                //update(new MessageEnvelope(MessageID.START_INITIAL_GAME, ""));
             }
 
             case BUY_FROM_MARKET -> controller.buyFromMarAction(gson.fromJson(payload, BuyMarketMessage.class));

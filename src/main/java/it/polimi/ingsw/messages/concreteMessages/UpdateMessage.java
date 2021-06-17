@@ -97,6 +97,9 @@ public class UpdateMessage extends SimpleMessage {
         return removedResources;
     }
 
+    /**
+     * Serialize correctly the map of BiElement that is used in the Update Message
+     */
     public void setSerializedResources(){
         GsonBuilder builder = new GsonBuilder();
 

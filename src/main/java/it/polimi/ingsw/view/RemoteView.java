@@ -98,6 +98,9 @@ public class RemoteView extends View {
         }
     }
 
+    /**
+     * Read the incoming message from the client and redirect them to {@link #readMessageFromClient}
+     */
     private class InputMessageHandler implements Observer<String> {
         private Gson gson = new Gson();
 

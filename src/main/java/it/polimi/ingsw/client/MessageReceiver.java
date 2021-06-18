@@ -15,7 +15,6 @@ public class MessageReceiver implements Runnable{
     protected final ClientController controller;
     protected static final Gson gson = new Gson();
     private final ObjectInputStream socketIn;
-
     private volatile Object pongLock = new Object();
 
     public MessageReceiver(ObjectInputStream socketIn, ClientController controller){
@@ -31,32 +30,32 @@ public class MessageReceiver implements Runnable{
     @Override
     public void run() {
 
-        Thread pong = getPingPongSystem();
-        pong.start();
-        int i = 0;
+        /*Thread pong = getPingPongSystem();
+        pong.start();*/
 
         try {
             while (controller.isActive()) {
-                System.out.println(++i);
                 String inputObject = (String)socketIn.readObject();
                 controller.setWaitingServerUpdate(false);
                 MessageEnvelope envelope = gson.fromJson(inputObject, MessageEnvelope.class);
-                System.out.println("Last message read: " + envelope.getMessageID());
-                if(envelope.getMessageID().equals(MessageID.PING)){
+                System.out.println("message incoming: " + envelope.getMessageID());
+                /*if(envelope.getMessageID().equals(MessageID.PING)){
                     synchronized (pongLock){
                         try {
                             pongLock.notifyAll();
                         }catch(Exception e){
-                            System.out.println("Pong notify Exception");
+                            System.err.println("Pong notify Exception");
                         }
-                    }
+                    }*/
+                    //executor.execute(this::pongBack);
+                //}else {
+                controller.setWaitingServerUpdate(false);
+                if (controller.isRegistrationPhase()) {
+                    readRegistrationMessage(envelope);
                 }else {
-                    controller.setWaitingServerUpdate(false);
-                    if (controller.isRegistrationPhase())
-                        readRegistrationMessage(envelope);
-                    else
-                        readGameMessage(envelope);
+                    readGameMessage(envelope);
                 }
+                //}
             }
         } catch (Exception e){
             controller.connectionError();
@@ -71,7 +70,7 @@ public class MessageReceiver implements Runnable{
     public void readRegistrationMessage(MessageEnvelope envelope){
         controller.setLastRegistrationMessage(envelope.getMessageID());
 
-        //System.out.println("REGISTRATION: " + envelope.getMessageID());
+        System.out.println("REGISTRATION: " + envelope.getMessageID());
 
         switch(envelope.getMessageID()){
             case ACK -> controller.continueTurn(Boolean.parseBoolean(envelope.getPayload()));
@@ -92,6 +91,7 @@ public class MessageReceiver implements Runnable{
             case START_INITIAL_GAME -> controller.startInitialGame();
 
             case NICK_ERR -> controller.nickError();
+            case REJOIN_UPDATE -> System.out.println("REJOINING");
 
             default -> System.err.println("MessageID not recognised Registration");
         }
@@ -139,6 +139,7 @@ public class MessageReceiver implements Runnable{
             case ABORT_GAME -> controller.abortGame();
 
             case PLAYER_WIN -> controller.winner(envelope.getPayload());
+            case REJOIN_UPDATE -> System.out.println("REJOINING");
 
             default -> System.err.println("MessageID not recognised Game");
         }
@@ -161,7 +162,6 @@ public class MessageReceiver implements Runnable{
                     }
                     MessageEnvelope pongEnvelope = new MessageEnvelope(MessageID.PONG, "");
                     msgHandler.sendMessageToServer(gson.toJson(pongEnvelope, MessageEnvelope.class));
-
                 }
             }
         });

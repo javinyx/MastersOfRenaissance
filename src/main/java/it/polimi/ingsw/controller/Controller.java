@@ -88,7 +88,7 @@ public class Controller implements Observer<MessageID> {
     synchronized boolean isGameOver() {return gameOver;}
 
     /**
-     * sets the game as ended
+     * Sets the game as ended
      */
     synchronized void gameOver() {gameOver = true;}
 
@@ -251,16 +251,14 @@ public class Controller implements Observer<MessageID> {
         try {
             ConcreteProductionCard card = null;
             List<LeaderCard> leaderCards = new ArrayList<>();
-            //boolean found = false;
 
             for (int i = 0; i < 12; i++) {
                 if (game.getBuyableProductionCards().get(i).getId() == buyProdMsg.getProdCardId()) {
-                    //found = true;
                     card = game.getBuyableProductionCards().get(i);
                 }
             }
 
-            if(card==null/*!found*/){
+            if(card==null){
                 update(CARD_NOT_AVAILABLE);
                 return;
             }
@@ -553,7 +551,6 @@ public class Controller implements Observer<MessageID> {
             }
             addedResources.clear();
             removedResources.clear();
-            //remoteViews.get(playerToAck.getTurnID()-1).update(envelope);
             playerToAck.setInitializationPhase(false);
             startCounter++;
             if(startCounter == game.getTotalPlayers()-1 && game.getTotalPlayers() != 1 && playerLeaderDoneCtr==game.getTotalPlayers()){
@@ -657,18 +654,25 @@ public class Controller implements Observer<MessageID> {
 
         List<Integer> leadersIds = convertStringToListInteger(ids);
         List<LeaderCard> leaders = convertIdToLeaderCard(leadersIds);
-        List<ProPlayer> allP;
-        allP = game.getPlayers();
-        ProPlayer brutto =null;
+        List<ProPlayer> allP = game.getPlayers();
+        ProPlayer choosingPlayer = null;
 
         for(ProPlayer p : allP){
             if(p.getNickname().equals(nick)){
-                brutto = p;
+                choosingPlayer = p;
                 p.chooseLeaders(leaders);
                 break;
             }
         }
-        if(playerLeaderDoneCtr == game.getTotalPlayers()-1 && game.getTotalPlayers()!=1 && brutto!=null && brutto.getTurnID()==1 && startCounter==game.getTotalPlayers()-1){
+
+        if(choosingPlayer!=null && choosingPlayer.getTurnID()==1 &&  game.getTotalPlayers()>1){
+            System.out.println("Player 1 leaders: " + choosingPlayer.getLeaderCards().size());
+            System.out.println("Sending leader choice for player 1 to everyone");
+            game.start(choosingPlayer);
+            MessageEnvelope env = new MessageEnvelope(UPDATE, choosingPlayer.getUpdate());
+            updateBroadCast(env);
+        }
+        if(playerLeaderDoneCtr == game.getTotalPlayers()-1 && game.getTotalPlayers()!=1 && choosingPlayer!=null && choosingPlayer.getTurnID()==1 && startCounter==game.getTotalPlayers()-1){
             update(START_INITIAL_GAME);
         }
         playerLeaderDoneCtr++;
@@ -712,7 +716,7 @@ public class Controller implements Observer<MessageID> {
             if (card.getId() == Integer.parseInt(s)) {
                 if (playerToAck.discardLeaderCard(card)) {
                     update(MessageID.PLAYERS_POSITION);
-                    System.out.println(basicActionDone);
+                    System.out.println("Basic action done: " + basicActionDone);
                     update(MessageID.ACK);
                 }else{
                     update(MessageID.CARD_NOT_AVAILABLE);
@@ -740,6 +744,23 @@ public class Controller implements Observer<MessageID> {
 
         if(!found.get()){
             addedResources.put(element, qty);
+        }
+    }
+
+    private void setTempRes(BiElement<Resource,Storage> element, Integer qty, Map<BiElement<Resource,Storage>, Integer> deposit){
+        if (qty == 0) {
+            return;
+        }
+        AtomicBoolean found = new AtomicBoolean(false);
+        deposit.forEach((x,y) -> {
+            if (x.equals(element)) {
+                found.set(true);
+                deposit.compute(x, (k,v) -> v + qty);
+            }
+        });
+
+        if(!found.get()){
+            deposit.put(element, qty);
         }
     }
 
@@ -812,7 +833,7 @@ public class Controller implements Observer<MessageID> {
                 game.getMarket().getMarketBoard(), game.getMarket().getExtraMarble(), game.getBuyableProductionID(),
                 boughtCard.orElse(null), thisPlayerActiveLeaders, addedResources, removedResources);
 
-        msg.setSerializedResources();
+        //msg.setSerializedResources();
         boughtCard = Optional.empty();
 
         return msg;
@@ -827,12 +848,12 @@ public class Controller implements Observer<MessageID> {
         switch (messageID) {
 
             case ACK -> remoteViews.get(playerToAck.getTurnID() - 1).update(new MessageEnvelope(messageID, String.valueOf(basicActionDone)));
+
             case CONFIRM_END_TURN -> {
                 EndTurnMessage msg = generateEndTurnMessage();
                 String payload = gson.toJson(msg, EndTurnMessage.class);
-                for(Observer<MessageEnvelope> obs : remoteViews) {
-                    obs.update(new MessageEnvelope(messageID, payload));
-                }
+                MessageEnvelope envelope = new MessageEnvelope(messageID, payload);
+                updateBroadCast(envelope);
             }
 
             //INITIALIZATION
@@ -858,18 +879,14 @@ public class Controller implements Observer<MessageID> {
             case UPDATE -> {
                 UpdateMessage msg = generateUpdateMessage();
                 MessageEnvelope envelope = new MessageEnvelope(MessageID.UPDATE, gson.toJson(msg, UpdateMessage.class));
-                for (Observer<MessageEnvelope> obs : remoteViews) {
-                    //modifica: sostituzione updateFrom -> update normale
-                    obs.update(envelope);
-                    //obs.updateFrom(envelope, previousPlayer.getNickname());
-                }
-                // }
+                updateBroadCast(envelope);
             }
 
             case LORENZO_POSITION -> {
                 MessageEnvelope env = new MessageEnvelope(LORENZO_POSITION, infoTokenLorenzo.toString());
                 remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(env);
             }
+
             case PLAYERS_POSITION -> {
                 List<ProPlayer> players = game.getPlayers();
                 List<BiElement<Integer, Integer>> positions = new ArrayList<>();
@@ -882,11 +899,9 @@ public class Controller implements Observer<MessageID> {
                 }
                 PlayersPositionMessage msg = new PlayersPositionMessage(positions);
                 String payload = gson.toJson(msg, PlayersPositionMessage.class);
-                MessageEnvelope env = new MessageEnvelope(MessageID.PLAYERS_POSITION, payload);
+                MessageEnvelope envelope = new MessageEnvelope(MessageID.PLAYERS_POSITION, payload);
 
-                for (Observer<MessageEnvelope> obs : remoteViews) {
-                    obs.update(env);
-                }
+                updateBroadCast(envelope);
             }
 
             case VATICAN_REPORT -> {
@@ -899,28 +914,30 @@ public class Controller implements Observer<MessageID> {
                         numReport, vaticanReportStatus);
                 String paylaod = gson.toJson(msg, VaticanReportMessage.class);
                 MessageEnvelope envelope = new MessageEnvelope(VATICAN_REPORT, paylaod);
-                for(Observer<MessageEnvelope> obs : remoteViews){
-                    obs.update(envelope);
-                }
+                updateBroadCast(envelope);
             }
+
             case INFO -> remoteViews.get(getCurrPlayerTurnID() - 1).update(new MessageEnvelope(messageID, "Invalid operation now"));
+
             case START_INITIAL_GAME -> {
-                MessageEnvelope envelope1 = new MessageEnvelope(MessageID.START_INITIAL_GAME, "");
-                for(Observer<MessageEnvelope> obs : remoteViews){
-                    obs.update(envelope1);
-                }
+                MessageEnvelope envelope = new MessageEnvelope(MessageID.START_INITIAL_GAME, "");
+                updateBroadCast(envelope);
             }
 
             case ACTIVATE_LEADER -> remoteViews.get(getCurrPlayerTurnID() - 1).update(new MessageEnvelope(messageID, String.valueOf(leaderIDtoSend)));
 
             case PLAYER_WIN -> {
                 MessageEnvelope envelope = new MessageEnvelope(PLAYER_WIN, winner.getNickname());
-                for(Observer<MessageEnvelope> obs : remoteViews){
-                    obs.update(envelope);
-                }
+                updateBroadCast(envelope);
             }
 
             default -> System.out.println("No no no");
+        }
+    }
+
+    private void updateBroadCast(MessageEnvelope envelope){
+        for(Observer<MessageEnvelope> obs : remoteViews){
+            obs.update(envelope);
         }
     }
 
@@ -977,6 +994,7 @@ public class Controller implements Observer<MessageID> {
      * Let the player with this {@code nickname} rejoin the multiplayer game he/she was in before a disconnection.
      */
     public void rejoin(MultiPlayerGame game, String nickname) {
+        System.out.println("Rejoining");
         List<ProPlayer> allPlayers = game.getPlayers();
         int turnId = 0;
         ProPlayer player = null;
@@ -988,8 +1006,9 @@ public class Controller implements Observer<MessageID> {
                 break;
             }
         }
+
         if (player == null) {
-            throw new RuntimeException("Why???");
+            throw new RuntimeException("Rejoin multiplayer error: player not found");
         }
 
         List<BiElement<Integer, Integer>> prodCards = new ArrayList<>();
@@ -997,24 +1016,22 @@ public class Controller implements Observer<MessageID> {
         prodCards.addAll(player.getProdCards2().stream().map(x -> new BiElement<>(x.getId(), 2)).collect(Collectors.toList()));
         prodCards.addAll(player.getProdCards3().stream().map(x -> new BiElement<>(x.getId(), 3)).collect(Collectors.toList()));
 
-        if (!mustChoosePlacements) {
-            addedResources.clear();
-        }
+        Map<BiElement<Resource, Storage>, Integer> tempAddRes = new HashMap<>();
         Resource resource;
         if ((resource = player.getWarehouse().getSmallInventory()) != null) {
-            addResources(new BiElement<>(resource, Storage.WAREHOUSE_SMALL), 1);
+            setTempRes(new BiElement<>(resource, Storage.WAREHOUSE_SMALL), 1, tempAddRes);
         }
         for (Resource res : player.getWarehouse().getMidInventory()) {
-            addResources(new BiElement<>(res, Storage.WAREHOUSE_MID), 1);
+            setTempRes(new BiElement<>(res, Storage.WAREHOUSE_MID), 1, tempAddRes);
         }
         for (Resource res : player.getWarehouse().getLargeInventory()) {
-            addResources(new BiElement<>(res, Storage.WAREHOUSE_LARGE), 1);
+            setTempRes(new BiElement<>(res, Storage.WAREHOUSE_LARGE), 1, tempAddRes);
         }
         Map<Resource, Integer> inventory = player.getLootChest().getInventory();
-        addResources(new BiElement<>(Resource.SERVANT, Storage.LOOTCHEST), inventory.get(Resource.SERVANT));
-        addResources(new BiElement<>(Resource.COIN, Storage.LOOTCHEST), inventory.get(Resource.COIN));
-        addResources(new BiElement<>(Resource.SHIELD, Storage.LOOTCHEST), inventory.get(Resource.SHIELD));
-        addResources(new BiElement<>(Resource.STONE, Storage.LOOTCHEST), inventory.get(Resource.STONE));
+        setTempRes(new BiElement<>(Resource.SERVANT, Storage.LOOTCHEST), inventory.get(Resource.SERVANT), tempAddRes);
+        setTempRes(new BiElement<>(Resource.COIN, Storage.LOOTCHEST), inventory.get(Resource.COIN), tempAddRes);
+        setTempRes(new BiElement<>(Resource.SHIELD, Storage.LOOTCHEST), inventory.get(Resource.SHIELD), tempAddRes);
+        setTempRes(new BiElement<>(Resource.STONE, Storage.LOOTCHEST), inventory.get(Resource.STONE), tempAddRes);
 
 
         List<LeaderCard> leaders = player.getLeaderCards();
@@ -1031,7 +1048,10 @@ public class Controller implements Observer<MessageID> {
 
         UpdateMessage msg = new UpdateMessage(turnId, player.getCurrentPosition(), getCurrPlayerTurnID(),
                 game.getMarket().getMarketBoard(), game.getMarket().getExtraMarble(), game.getBuyableProductionID(),
-                prodCards, leadersIds, addedResources, removedResources);
+                prodCards, leadersIds, tempAddRes, null);
+        MessageEnvelope env = new MessageEnvelope(REJOIN_UPDATE, gson.toJson(msg, UpdateMessage.class));
+
+        updateBroadCast(env);
 
         //TODO: ha creato il messaggio di update ma come glielo mandiamo? Con il metodo update
     }

@@ -101,7 +101,7 @@ public class MultiPlayerGame extends Game implements ModelObserver {
                 getMarket().getMarketBoard(), getMarket().getExtraMarble(), getBuyableProductionID(),
                 null, leaders, addRes, null);
 
-        msg.setSerializedResources();
+        //msg.setSerializedResources();
 
         p.setUpdate(msg);
         //controller.update(MessageID.UPDATE);

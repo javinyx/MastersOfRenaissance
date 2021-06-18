@@ -13,6 +13,7 @@ public class Observable<T> {
     public synchronized void removeObserver(Observer<T> observer){
         this.obs.remove(observer);
     }
+
     public synchronized void notify(T note){
         for(Observer<T> o : obs){
             o.update(note);

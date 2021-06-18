@@ -17,9 +17,10 @@ import java.util.List;
 
 public class RemoteView extends View {
 
-    Controller controller;
+    private Controller controller;
     Gson gson = new Gson();
-    ClientConnection clientConnection;
+    private ClientConnection clientConnection;
+    private Thread ping;
 
     public RemoteView(String playerNickname, List<String> playerNames, ClientConnection clientConnection, Controller controller) {
         super(playerNickname);

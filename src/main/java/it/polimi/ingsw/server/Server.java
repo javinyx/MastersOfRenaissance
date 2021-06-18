@@ -42,13 +42,16 @@ public class Server {
     public synchronized void deregisterConnection(ClientConnection c) {
         if (singlePlayerPlay != null && singlePlayerPlay.equals(c))
             deregFromSinglePlayerGame(c);
-        else if (twoPlayerPlay.containsKey(c))
-            deregFromTwoPlayerGame(c);
-        else if (threePlayerPlay.containsKey(c))
-            deregFromThreePlayerGame(c);
-        else if (fourPlayerPlay.containsKey(c))
-            deregFromFourPlayerGame(c);
-
+        else if (twoPlayerPlay.containsKey(c)) {
+            twoPlayerPlay.remove(c);
+            //deregFromTwoPlayerGame(c);
+        }else if (threePlayerPlay.containsKey(c)) {
+            threePlayerPlay.remove(c);
+            //deregFromThreePlayerGame(c);
+        }else if (fourPlayerPlay.containsKey(c)) {
+            fourPlayerPlay.remove(c);
+            //deregFromFourPlayerGame(c);
+        }
         Iterator<String> iterator;
 
         iterator = singlePlayerWait.keySet().iterator();
@@ -158,43 +161,44 @@ public class Server {
                         SinglePlayerGame rejoinGame = singlePlayerRejoiningRoom.get(name);
                         controller.rejoin(rejoinGame, name);
                         singlePlayerRejoiningRoom.remove(name);
-                        break;
+                    }else {
+                        singlePlayerWait.put(name, c);
+                        createSinglePlayerGame();
                     }
-                    singlePlayerWait.put(name, c);
-                    createSinglePlayerGame();
                 }
                 case 2 -> {
                     if(twoPlayerRejoiningRoom.containsKey(name)){
+                        System.out.println(name + " is rejoining tow player game");
                         MultiPlayerGame rejoinGame = twoPlayerRejoiningRoom.get(name);
                         controller.rejoin(rejoinGame, name);
                         twoPlayerRejoiningRoom.remove(name);
-                        break;
+                    }else {
+                        twoPlayerWait.put(name, c);
+                        if (twoPlayerWait.size() == 2)
+                            createTwoPlayerGame();
                     }
-                    twoPlayerWait.put(name, c);
-                    if (twoPlayerWait.size() == 2)
-                        createTwoPlayerGame();
                 }
                 case 3 -> {
                     if(threePlayerRejoiningRoom.containsKey(name)){
                         MultiPlayerGame rejoinGame = threePlayerRejoiningRoom.get(name);
                         controller.rejoin(rejoinGame, name);
                         threePlayerRejoiningRoom.remove(name);
-                        break;
+                    }else {
+                        threePlayerWait.put(name, c);
+                        if (threePlayerWait.size() == 3)
+                            createThreePlayerGame();
                     }
-                    threePlayerWait.put(name, c);
-                    if (threePlayerWait.size() == 3)
-                        createThreePlayerGame();
                 }
                 case 4 -> {
-                    if(fourPlayerRejoiningRoom.containsKey(name)){
+                    if (fourPlayerRejoiningRoom.containsKey(name)) {
                         MultiPlayerGame rejoinGame = fourPlayerRejoiningRoom.get(name);
                         controller.rejoin(rejoinGame, name);
                         fourPlayerRejoiningRoom.remove(name);
-                        break;
+                    } else {
+                        fourPlayerWait.put(name, c);
+                        if (fourPlayerWait.size() == 4)
+                            createFourPlayerGame();
                     }
-                    fourPlayerWait.put(name, c);
-                    if (fourPlayerWait.size() == 4)
-                        createFourPlayerGame();
                 }
             }
         } catch (IllegalArgumentException e) {

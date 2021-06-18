@@ -128,6 +128,10 @@ public class ClientSocketConnection extends Observable<String> implements Client
             e.printStackTrace();
             send(gson.toJson(new MessageEnvelope(MessageID.INFO, "player SURRENDER")));
         } finally {
+            if(active) {
+                System.err.println("PLAYER CRASHED");
+                server.playerCrashed(this, readName, gameSize);
+            }
             close();
         }
     }
@@ -138,19 +142,21 @@ public class ClientSocketConnection extends Observable<String> implements Client
         stillConnected = true;
         Thread pingPong = new Thread(() -> {
             while(!socket.isClosed() && stillConnected){
+                System.out.println("PING");
                 MessageEnvelope pingEnvelope = new MessageEnvelope(MessageID.PING, "");
                 send(gson.toJson(pingEnvelope, MessageEnvelope.class));
                 synchronized (stillConnected) {
                     stillConnected = false;
                 }
                 try {
-                    sleep(300000000);
+                    sleep(10000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
             //if we're here, then the socket has been closed because hasn't received any PONG back
             //inform model and close socket
+            System.err.println("Ping not matched");
             server.playerCrashed(this, readName, gameSize);
             try {
                 socket.close();

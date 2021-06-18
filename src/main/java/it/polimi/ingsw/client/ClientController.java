@@ -226,8 +226,6 @@ public abstract class ClientController {
         if(msg.getProductionCardId() != null)
             boughtProductionCard = convertIdToProductionCard(msg.getProductionCardId().getFirstValue());
 
-        //modifica: da for(NubPlayer pp: otherPLayers) a for(NubPlayer pp: totalPlayers)
-        System.out.println(player.getNickname() + " " + player.getTurnNumber());
         for (NubPlayer pp : totalPlayers) {
             //update last player state for this client
             if (pp.getTurnNumber() == msg.getPlayerId()) { //search player
@@ -236,6 +234,7 @@ public abstract class ClientController {
                     //updateFaithTrack();
                     //System.out.println("You're now in position " + player.getCurrPos()); //for debugging
                 }
+
                 if (boughtProductionCard != null) {
                     pp.addProductionCard(boughtProductionCard, msg.getProductionCardId().getSecondValue() - 1);
                     prodCardCounter++;
@@ -252,12 +251,10 @@ public abstract class ClientController {
 
 
                 resources = msg.getRemovedResources();
-                //System.out.println("To remove: " + resources);
 
                 if (resources != null && resources.size()>0) {
                     resources.forEach(pp::removeResources);
                 }
-                //System.out.println("After removing: " + pp.getAllResources());
                 updateOtherPlayer(pp);
             }
 
@@ -271,11 +268,6 @@ public abstract class ClientController {
         }
         updateMarket();
         updateAvailableProductionCards();
-
-        /*for(NubPlayer p : totalPlayers){
-            if(p.getTurnNumber() == msg.getNextPlayerId())
-                currPlayer = p;
-        }*/
 
         if(isRegistrationPhase() && totalPlayers.size() == 1) {
             startGame();

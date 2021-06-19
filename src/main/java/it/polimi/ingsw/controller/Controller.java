@@ -267,6 +267,7 @@ public class Controller implements Observer<MessageID> {
             for (int i = 0; i < 12; i++) {
                 if (game.getBuyableProductionCards().get(i).getId() == buyProdMsg.getProdCardId()) {
                     card = game.getBuyableProductionCards().get(i);
+                    System.out.println("level: " + card.getLevel());
                 }
             }
 
@@ -304,6 +305,7 @@ public class Controller implements Observer<MessageID> {
             update(MessageID.WRONG_STACK_CHOICE);
         } catch (RuntimeException e) {
             //prodcard has wrong level
+            System.out.println("card id: " + buyProdMsg.getProdCardId());
             removedResources.clear();
             update(MessageID.WRONG_LEVEL_REQUEST);
         }

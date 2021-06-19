@@ -76,8 +76,7 @@
             <Label text="Extra storage (if present):"  />
         </HBox>
 
-        <Button fx:id="opBackBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
-                styleClass="btn" text="Back"/>
+        <Button fx:id="opBackBtn" alignment="CENTER" contentDisplay="CENTER" styleClass="btn" text="Back"/>
 
     </VBox>
 </StackPane>

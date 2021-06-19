@@ -2,7 +2,6 @@ package it.polimi.ingsw.client.GUI;
 
 import com.google.gson.Gson;
 import it.polimi.ingsw.client.ClientController;
-import it.polimi.ingsw.client.GUI.sceneHandlers.BuyProdCardPhase;
 import it.polimi.ingsw.client.GUI.sceneHandlers.GamePhaseHandler;
 import it.polimi.ingsw.client.GUI.sceneHandlers.InitialPhaseHandler;
 import it.polimi.ingsw.client.GUI.sceneHandlers.ScenesEnum;
@@ -20,6 +19,7 @@ import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
+import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
@@ -40,7 +40,6 @@ public class GuiController extends ClientController {
     private final Stage stage;
     private final InitialPhaseHandler initialPhaseHandler;
     private final GamePhaseHandler gamePhaseHandler;
-    private final BuyProdCardPhase buyProdCardPhase;
     private final Object lock = new Object();
     List<Integer> chosenLeadersId = new ArrayList<>();
 
@@ -56,7 +55,6 @@ public class GuiController extends ClientController {
         Font.loadFont(getClass().getResourceAsStream("/fonts/godofwar.ttf"), 14);
         initialPhaseHandler = new InitialPhaseHandler(this, stage);
         gamePhaseHandler = new GamePhaseHandler(this, stage);
-        buyProdCardPhase = new BuyProdCardPhase(this, stage);
 
         start();
     }
@@ -207,8 +205,6 @@ public class GuiController extends ClientController {
             gamePhaseHandler.setScene(ScenesEnum.MAIN_BOARD);
             gamePhaseHandler.initiateBoard(chosenLeadersId, availableProductionCard);
         });
-
-        gamePhaseHandler.observePlayerActions();
     }
 
     @Override
@@ -262,17 +258,24 @@ public class GuiController extends ClientController {
     }
 
     /* PRODUCTION CARDS ***********************************************************************************************/
-    public void buyProductionCard(int cardId, int stack, List<Integer> leaderIds, ResourcesWallet res) {
-        BuyProductionMessage msg = new BuyProductionMessage(cardId, stack, leaderIds, res);
+    public void buyProductionCard(int cardId, int stack, List<Integer> leaderIds, ResourcesWallet wallet) {
+        BuyProductionMessage msg = new BuyProductionMessage(cardId, stack, leaderIds, wallet);
+        System.out.println("Warehouse: " + wallet.getWarehouseTray());
+        System.out.println("Resource Tray: " + wallet.getLootchestTray());
+        System.out.println("Card Id: " + cardId);
+        System.out.println("Stack: " + stack);
+        System.out.println("Leader Id: " +leaderIds);
         messageToServerHandler.generateEnvelope(MessageID.BUY_PRODUCTION_CARD, gson.toJson(msg));
+    }
+
+    public List<ConcreteProductionCard> getAvailableProductionCards () {
+        return availableProductionCard;
     }
 
     /* GENERAL ACTIONS ************************************************************************************************/
     @Override
     public void displayWaitMessage() {
-        if(!isRegistrationPhase()) {
-            Platform.runLater(() -> gamePhaseHandler.updateBoard(availableProductionCard));
-        }
+        Platform.runLater(() -> gamePhaseHandler.updateBoard(availableProductionCard));
     }
 
     /* ERROR REQUESTS *************************************************************************************************/
@@ -308,7 +311,7 @@ public class GuiController extends ClientController {
 
     @Override
     public void wrongStackRequest() {
-
+        gamePhaseHandler.sendToMsgBoard("The stack you have chosen is incorrect.");
     }
 
     @Override

@@ -6,44 +6,44 @@
 <StackPane id="popUp" xmlns="https://javafx.com/javafx" xmlns:fx="https://javafx.com/fxml">
     <VBox alignment="CENTER" spacing="10">
         <Label text="Please choose the resources to purchase the card"/>
-        <Label fx:id="listCostLbl"/>
+        <Label fx:id="listCostLblCP"/>
         <Label text="Warehouse"/>
         <VBox alignment="CENTER" spacing="10">
-            <ToggleButton fx:id="shelf1Toggle" styleClass="leaderToggle">
+            <ToggleButton fx:id="shelf1ToggleCP" styleClass="leaderToggle">
                 <graphic>
-                    <ImageView fx:id="shelf1MB" fitHeight="30" layoutX="233.0" layoutY="413.0" preserveRatio="true"/>
+                    <ImageView fx:id="shelf1CP" fitHeight="30" layoutX="233.0" layoutY="413.0" preserveRatio="true"/>
                 </graphic>
             </ToggleButton>
             <HBox alignment="CENTER" spacing="20">
-                <ToggleButton fx:id="shelf21Toggle" styleClass="leaderToggle">
+                <ToggleButton fx:id="shelf21ToggleCP" styleClass="leaderToggle">
                     <graphic>
-                        <ImageView fx:id="shelf21MB" fitHeight="30" layoutX="220.0" layoutY="462.0"
+                        <ImageView fx:id="shelf21CP" fitHeight="30" layoutX="220.0" layoutY="462.0"
                                    preserveRatio="true"/>
                     </graphic>
                 </ToggleButton>
-                <ToggleButton fx:id="shelf22Toggle" styleClass="leaderToggle">
+                <ToggleButton fx:id="shelf22ToggleCP" styleClass="leaderToggle">
                     <graphic>
-                        <ImageView fx:id="shelf22MB" fitHeight="30" layoutX="260.0" layoutY="462.0"
+                        <ImageView fx:id="shelf22CP" fitHeight="30" layoutX="260.0" layoutY="462.0"
                                    preserveRatio="true"/>
                     </graphic>
                 </ToggleButton>
             </HBox>
             <HBox alignment="CENTER" spacing="20">
-                <ToggleButton fx:id="shelf31Toggle" styleClass="leaderToggle">
+                <ToggleButton fx:id="shelf31ToggleCP" styleClass="leaderToggle">
                     <graphic>
-                        <ImageView fx:id="shelf31MB" fitHeight="30" layoutX="192.0" layoutY="516.0"
+                        <ImageView fx:id="shelf31CP" fitHeight="30" layoutX="192.0" layoutY="516.0"
                                    preserveRatio="true"/>
                     </graphic>
                 </ToggleButton>
-                <ToggleButton fx:id="shelf32Toggle" styleClass="leaderToggle">
+                <ToggleButton fx:id="shelf32ToggleCP" styleClass="leaderToggle">
                     <graphic>
-                        <ImageView fx:id="shelf32MB" fitHeight="30" layoutX="232.0" layoutY="516.0"
+                        <ImageView fx:id="shelf32CP" fitHeight="30" layoutX="232.0" layoutY="516.0"
                                    preserveRatio="true"/>
                     </graphic>
                 </ToggleButton>
-                <ToggleButton fx:id="shelf33Toggle" styleClass="leaderToggle">
+                <ToggleButton fx:id="shelf33ToggleCP" styleClass="leaderToggle">
                     <graphic>
-                        <ImageView fx:id="shelf33MB" fitHeight="30" layoutX="262.0" layoutY="516.0"
+                        <ImageView fx:id="shelf33CP" fitHeight="30" layoutX="262.0" layoutY="516.0"
                                    preserveRatio="true"/>
                     </graphic>
                 </ToggleButton>
@@ -57,13 +57,13 @@
                     <ImageView fitWidth="30" preserveRatio="true">
                         <Image url="@../img/pawns/stone.png"/>
                     </ImageView>
-                    <Label fx:id="qtyStoneLbl" text="x0"/>
+                    <Label fx:id="qtyStoneLblCP" text="x0"/>
                 </HBox>
                 <HBox spacing="5" alignment="CENTER">
                     <ImageView fitWidth="30" preserveRatio="true">
                         <Image url="@../img/pawns/coin.png"/>
                     </ImageView>
-                    <Label fx:id="qtyCoinLbl" text="x0"/>
+                    <Label fx:id="qtyCoinLblCP" text="x0"/>
                 </HBox>
             </HBox>
             <HBox>
@@ -71,13 +71,13 @@
                     <ImageView fitWidth="30" preserveRatio="true">
                         <Image url="@../img/pawns/servant.png"/>
                     </ImageView>
-                    <Label fx:id="qtyServantLbl" text="x0"/>
+                    <Label fx:id="qtyServantLblCP" text="x0"/>
                 </HBox>
                 <HBox spacing="5" alignment="CENTER">
                     <ImageView fitWidth="30" preserveRatio="true">
                         <Image url="@../img/pawns/shield.png"/>
                     </ImageView>
-                    <Label fx:id="qtyShieldLbl" text="x0"/>
+                    <Label fx:id="qtyShieldLblCP" text="x0"/>
                 </HBox>
             </HBox>
             <VBox>
@@ -88,9 +88,9 @@
                             <Image url="@../img/pawns/stone.png"/>
                         </ImageView>
                         <HBox alignment="CENTER" spacing="2">
-                            <Button fx:id="stoneSubBtn" styleClass="btnSqAlt" text="-"/>
-                            <Label fx:id="stoneLbl" styleClass="resourceNumLabel" text="0"/>
-                            <Button fx:id="stoneAddBtn" styleClass="btnSqAlt" text="+"/>
+                            <Button fx:id="stoneSubBtnCP" styleClass="btnSqAlt" text="-"/>
+                            <Label fx:id="stoneLblCP" styleClass="resourceNumLabel" text="0"/>
+                            <Button fx:id="stoneAddBtnCP" styleClass="btnSqAlt" text="+"/>
                         </HBox>
                     </VBox>
                     <VBox alignment="CENTER" spacing="10">
@@ -98,9 +98,9 @@
                             <Image url="@../img/pawns/servant.png"/>
                         </ImageView>
                         <HBox alignment="CENTER" spacing="2">
-                            <Button fx:id="servantSubBtn" styleClass="btnSqAlt" text="-"/>
-                            <Label fx:id="servantLbl" styleClass="resourceNumLabel" text="0"/>
-                            <Button fx:id="servantAddBtn" styleClass="btnSqAlt" text="+"/>
+                            <Button fx:id="servantSubBtnCP" styleClass="btnSqAlt" text="-"/>
+                            <Label fx:id="servantLblCP" styleClass="resourceNumLabel" text="0"/>
+                            <Button fx:id="servantAddBtnCP" styleClass="btnSqAlt" text="+"/>
                         </HBox>
                     </VBox>
                     <VBox alignment="CENTER" spacing="10">
@@ -108,9 +108,9 @@
                             <Image url="@../img/pawns/coin.png"/>
                         </ImageView>
                         <HBox alignment="CENTER" spacing="2">
-                            <Button fx:id="coinSubBtn" styleClass="btnSqAlt" text="-"/>
-                            <Label fx:id="coinLbl" styleClass="resourceNumLabel" text="0"/>
-                            <Button fx:id="coinAddBtn" styleClass="btnSqAlt" text="+"/>
+                            <Button fx:id="coinSubBtnCP" styleClass="btnSqAlt" text="-"/>
+                            <Label fx:id="coinLblCP" styleClass="resourceNumLabel" text="0"/>
+                            <Button fx:id="coinAddBtnCP" styleClass="btnSqAlt" text="+"/>
                         </HBox>
                     </VBox>
                     <VBox alignment="CENTER" spacing="10">
@@ -118,15 +118,22 @@
                             <Image url="@../img/pawns/shield.png"/>
                         </ImageView>
                         <HBox alignment="CENTER" spacing="2">
-                            <Button fx:id="shieldSubBtn" styleClass="btnSqAlt" text="-"/>
-                            <Label fx:id="shieldLbl" styleClass="resourceNumLabel" text="0"/>
-                            <Button fx:id="shieldAddBtn" styleClass="btnSqAlt" text="+"/>
+                            <Button fx:id="shieldSubBtnCP" styleClass="btnSqAlt" text="-"/>
+                            <Label fx:id="shieldLblCP" styleClass="resourceNumLabel" text="0"/>
+                            <Button fx:id="shieldAddBtnCP" styleClass="btnSqAlt" text="+"/>
                         </HBox>
                     </VBox>
                 </HBox>
             </VBox>
         </VBox>
 
-        <Button fx:id="confirmPaymentBtn" text="Confirm"/>
+        <HBox alignment="CENTER" spacing="20">
+            <Button fx:id="stack1Btn" styleClass="btn" text="Stack 1"/>
+            <Button fx:id="stack2Btn" styleClass="btn" text="Stack 2"/>
+            <Button fx:id="stack3Btn" styleClass="btn" text="Stack 3"/>
+        </HBox>
+
+        <Button fx:id="backPaymentBtnCP" styleClass="btn" text="Back"/>
+
     </VBox>
 </StackPane>

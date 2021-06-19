@@ -49,9 +49,22 @@
 
     <Button fx:id="endTurnBtn" layoutX="1106.0" layoutY="330.0" styleClass="btn" text="End Turn"/>
 
+    <!-- PRODUCTION CARDS -->
+    <ImageView fx:id="productionStack11" fitWidth="140" layoutX="468.0" layoutY="470.0" preserveRatio="true"/>
+    <ImageView fx:id="productionStack12" fitWidth="140" layoutX="468.0" layoutY="430.0" preserveRatio="true"/>
+    <ImageView fx:id="productionStack13" fitWidth="140" layoutX="468.0" layoutY="390.0" preserveRatio="true"/>
+
+    <ImageView fx:id="productionStack21" fitWidth="140" layoutX="628.0" layoutY="470.0" preserveRatio="true"/>
+    <ImageView fx:id="productionStack22" fitWidth="140" layoutX="628.0" layoutY="430.0" preserveRatio="true"/>
+    <ImageView fx:id="productionStack23" fitWidth="140" layoutX="628.0" layoutY="390.0" preserveRatio="true"/>
+
+    <ImageView fx:id="productionStack31" fitWidth="140" layoutX="796.0" layoutY="470.0" preserveRatio="true"/>
+    <ImageView fx:id="productionStack32" fitWidth="140" layoutX="796.0" layoutY="430.0" preserveRatio="true"/>
+    <ImageView fx:id="productionStack33" fitWidth="140" layoutX="796.0" layoutY="390.0" preserveRatio="true"/>
+
     <!-- FAITH TRACK -->
     <ImageView fx:id="redCross" fitWidth="30" layoutX="177.0" layoutY="272.0" preserveRatio="true">
-        <Image url="@../img/pawns/redCrossNew.png" />
+        <Image url="@../img/pawns/redCrossNew.png"/>
     </ImageView>
 
     <!-- WAREHOUSE -->

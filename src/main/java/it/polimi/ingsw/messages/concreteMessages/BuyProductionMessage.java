@@ -6,10 +6,10 @@ import java.util.List;
 
 public class BuyProductionMessage {
 
-    private int prodCardId;
-    private int stack;
-    private List<Integer> leaderId;
-    private ResourcesWallet resourcesWallet;
+    private final int prodCardId;
+    private final int stack;
+    private final List<Integer> leaderId;
+    private final ResourcesWallet resourcesWallet;
 
     public BuyProductionMessage(int prodCardId, int stack, List<Integer> leaderId, ResourcesWallet resourcesWallet) {
         this.prodCardId = prodCardId;

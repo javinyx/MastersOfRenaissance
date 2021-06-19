@@ -4,6 +4,7 @@ import it.polimi.ingsw.client.GUI.GuiController;
 import it.polimi.ingsw.client.model.NubPlayer;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
+import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
@@ -17,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.effect.SepiaTone;
 import javafx.scene.image.Image;
@@ -34,15 +36,24 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static it.polimi.ingsw.client.GUI.sceneHandlers.ScenesEnum.*;
+import static it.polimi.ingsw.misc.Storage.*;
+import static it.polimi.ingsw.misc.Storage.WAREHOUSE_LARGE;
+import static it.polimi.ingsw.model.market.Resource.*;
+import static it.polimi.ingsw.model.market.Resource.SHIELD;
 
 public class GamePhaseHandler extends PhaseHandler {
     /* MAIN ***********************************************************************************************************/
     private Map<ScenesEnum, Scene> sceneMap = new HashMap<>();
-    private final BuyProdCardPhase buyProdCardPhase;
     @FXML
     private AnchorPane mainBoard;
     @FXML
     private Button endTurnBtn, productionCardsOpen;
+    @FXML
+    private ImageView productionStack11, productionStack12, productionStack13, productionStack21, productionStack22,
+            productionStack23, productionStack31, productionStack32, productionStack33;
+    private List<ImageView> productionStacks = new ArrayList<>(Arrays.asList(productionStack11, productionStack12,
+            productionStack13, productionStack21, productionStack22, productionStack23, productionStack31,
+            productionStack32, productionStack33));
 
     /* LEADER CARDS ***************************************************************************************************/
     @FXML
@@ -61,7 +72,7 @@ public class GamePhaseHandler extends PhaseHandler {
     @FXML
     private Region marketRegion;
 
-    /* WAREHOUSE & CHOOSE STORAGE POPUP *****************************************************************************/
+    /* WAREHOUSE & CHOOSE STORAGE POPUP *******************************************************************************/
     private Node target;
     private List<Resource> tmpRes = new ArrayList<>();
     @FXML
@@ -104,12 +115,23 @@ public class GamePhaseHandler extends PhaseHandler {
 
     /* PRODUCTION CARDS POPUP *****************************************************************************************/
     @FXML
-    private Button productionCardBackBtn;
+    private Label listCostLblCP, qtyStoneLblCP, qtyShieldLblCP, qtyCoinLblCP, qtyServantLblCP, stoneLblCP, servantLblCP,
+            coinLblCP, shieldLblCP;
+    @FXML
+    private Button productionCardBackBtn, stoneSubBtnCP, stoneAddBtnCP, servantSubBtnCP, servantAddBtnCP, coinSubBtnCP,
+            coinAddBtnCP, shieldSubBtnCP, shieldAddBtnCP, backPaymentBtnCP, stack1Btn, stack2Btn,
+            stack3Btn;
+    @FXML
+    private ImageView shelf1CP, shelf21CP, shelf22CP, shelf31CP, shelf32CP, shelf33CP;
+    @FXML
+    private ToggleButton shelf1ToggleCP, shelf21ToggleCP, shelf22ToggleCP, shelf31ToggleCP, shelf32ToggleCP,
+            shelf33ToggleCP;
 
     public GamePhaseHandler(GuiController controller, Stage stage) {
         super(controller, stage);
 
-        List<ScenesEnum> allPaths = new ArrayList<>(Arrays.asList(MAIN_BOARD, MARKET, STORAGE, OTHER_PLAYERS, PRODUCTION_CARDS));
+        List<ScenesEnum> allPaths = new ArrayList<>(Arrays.asList(MAIN_BOARD, MARKET, STORAGE, OTHER_PLAYERS,
+                PRODUCTION_CARDS, CHOOSE_PAYMENT, CHOOSE_LEADERS));
         for (ScenesEnum path : allPaths) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + path.getPath()));
             loader.setController(this);
@@ -124,7 +146,6 @@ public class GamePhaseHandler extends PhaseHandler {
             }
         }
 
-        buyProdCardPhase = new BuyProdCardPhase(controller, stage);
         buildGeneralSceneMap(sceneMap);
     }
 
@@ -145,6 +166,7 @@ public class GamePhaseHandler extends PhaseHandler {
         setEnemyBoard();
         initiateFaithTrack();
         setFaithTrack();
+        observePlayerActions();
 
         if (controller.getPlayer().isMyTurn()) {
             sendToMsgBoard("It is now your turn, please either buy from market, buy production cards or" +
@@ -161,6 +183,8 @@ public class GamePhaseHandler extends PhaseHandler {
         setProductionCards(availableProductionCards);
         setEnemyBoard();
         setFaithTrack();
+        setStacks();
+        observePlayerActions();
     }
 
     public void observePlayerActions() {
@@ -177,6 +201,7 @@ public class GamePhaseHandler extends PhaseHandler {
         }
 
         productionCardsOpen.setOnAction(actionEvent -> {
+            setProductionCards(controller.getAvailableProductionCards());
             productionCardsPopup();
         });
 
@@ -284,6 +309,18 @@ public class GamePhaseHandler extends PhaseHandler {
         });
     }
 
+    private void setStacks() {
+        List<ConcreteProductionCard> tstack;
+
+        for (int i = 0; i < 3; i++){
+            tstack = new ArrayList<>(controller.getPlayer().getProductionStacks().get(i));
+            for (int j = 0, curr = (i*3)+j; j < tstack.size(); j++, curr++) {
+                productionStacks.get(curr).setImage(new Image ("img/productionCardsFront/" + tstack.get(j).getId()
+                        + ".png"));
+            }
+        }
+    }
+
 
     /* MARKET & MARKET POPUP ******************************************************************************************/
     //TODO: Select Leader
@@ -360,60 +397,6 @@ public class GamePhaseHandler extends PhaseHandler {
         });
     }
 
-
-    /* PRODUCTION CARDS ***********************************************************************************************/
-    private void productionCardsPopup() {
-        Stage popUpStage = new Stage(StageStyle.TRANSPARENT);
-        mainBoard.setEffect(new GaussianBlur());
-        popUpStage.initOwner(stage);
-        popUpStage.initModality(Modality.APPLICATION_MODAL);
-        popUpStage.centerOnScreen();
-        popUpStage.setScene(getScene(PRODUCTION_CARDS));
-        popUpStage.show();
-
-        productionCards.setOnMouseClicked(this::clickGrid);
-
-        productionCardBackBtn.setOnAction(actionEvent -> {
-            mainBoard.setEffect(null);
-            popUpStage.close();
-        });
-    }
-
-    private void clickGrid(MouseEvent event) {
-        Node clickedNode = event.getPickResult().getIntersectedNode();
-        if (clickedNode != productionCards) {
-            String url = ((ImageView) clickedNode).getImage().getUrl();
-            String cardIdS = url.substring(url.lastIndexOf("/") + 1).split("\\.")[0];
-            Integer cardId = Integer.parseInt(cardIdS);
-            Integer stack = askStack();
-
-            buyProdCardPhase.choosePayment(cardId, stack);
-        }
-    }
-
-    private Integer askStack() {
-        return 1;
-    }
-
-    public void setProductionCards(List<ConcreteProductionCard> availableProductionCards) {
-        for (int x = 0, i = 0; x < 3; x++) {
-            for (int y = 0; y < 4; y++, i++) {
-                setProductionCardImg(x, y, productionCards, availableProductionCards.get(i).getId());
-            }
-        }
-    }
-
-    private void setProductionCardImg(int row, int column, GridPane gridPane, int imgId) {
-        ObservableList<Node> children = gridPane.getChildren();
-
-        for (Node node : children) {
-            if (gridPane.getRowIndex(node) == row && gridPane.getColumnIndex(node) == column) {
-                ((ImageView) node).setImage(new Image("img/productionCardsFront/" + imgId + ".png"));
-                break;
-            }
-        }
-    }
-
     /* ENEMY BOARD ****************************************************************************************************/
     private void setEnemyBoard() {
         List<Button> playersBtns = new ArrayList<>(Arrays.asList(player1Btn, player2Btn, player3Btn));
@@ -451,7 +434,6 @@ public class GamePhaseHandler extends PhaseHandler {
         popUpStage.show();
 
         opLbl.setText("You're viewing " + player.getNickname() + "'s status");
-        System.out.println("leader size: " + player.getLeaders().size());
         if (player.getLeaders().size() > 0) {
             LeaderCard lead1 = player.getLeaders().get(0);
             opLead1Img.setImage(new Image("img/leaderCards/" + (lead1.isActive() ? String.valueOf(lead1.getId())
@@ -493,12 +475,13 @@ public class GamePhaseHandler extends PhaseHandler {
         });
 
         opBackBtn.setOnAction(event -> {
-
+            mainBoard.setEffect(null);
+            popUpStage.close();
         });
     }
 
     /* MESSAGE BOARD **************************************************************************************************/
-    private void sendToMsgBoard(String message) {
+    public void sendToMsgBoard(String message) {
         msgBoard.appendText(message + '\n');
     }
 
@@ -720,6 +703,255 @@ public class GamePhaseHandler extends PhaseHandler {
         event.consume();
 
         return Resource.valueOf(db.getString());
+    }
+
+    /* PRODUCTION CARDS ***********************************************************************************************/
+    private void productionCardsPopup() {
+        Stage popUpStage = new Stage(StageStyle.TRANSPARENT);
+        mainBoard.setEffect(new GaussianBlur());
+        popUpStage.initOwner(stage);
+        popUpStage.initModality(Modality.APPLICATION_MODAL);
+        popUpStage.centerOnScreen();
+        popUpStage.setScene(getScene(PRODUCTION_CARDS));
+        popUpStage.show();
+
+        productionCards.setOnMouseClicked(mouseEvent -> {
+            clickGrid(mouseEvent, popUpStage);
+        });
+
+        productionCardBackBtn.setOnAction(actionEvent -> {
+            mainBoard.setEffect(null);
+            popUpStage.close();
+        });
+    }
+
+    private void clickGrid(MouseEvent event, Stage popUpStage) {
+        Node clickedNode = event.getPickResult().getIntersectedNode();
+        if (clickedNode != productionCards) {
+            String url = ((ImageView) clickedNode).getImage().getUrl();
+            String cardIdS = url.substring(url.lastIndexOf("/") + 1).split("\\.")[0];
+            Integer cardId = Integer.parseInt(cardIdS);
+            Integer stack = askStack();
+
+            popUpStage.close();
+            choosePaymentPopUp(cardId, stack);
+        }
+    }
+
+    private Integer askStack() {
+        return 1;
+    }
+
+    public void setProductionCards(List<ConcreteProductionCard> availableProductionCards) {
+        for (int x = 0, i = 0; x < 3; x++) {
+            for (int y = 0; y < 4; y++, i++) {
+                setProductionCardImg(x, y, productionCards, availableProductionCards.get(i).getId());
+            }
+        }
+    }
+
+    private void setProductionCardImg(int row, int column, GridPane gridPane, int imgId) {
+        ObservableList<Node> children = gridPane.getChildren();
+
+        for (Node node : children) {
+            if (gridPane.getRowIndex(node) == row && gridPane.getColumnIndex(node) == column) {
+                ((ImageView) node).setImage(new Image("img/productionCardsFront/" + imgId + ".png"));
+                break;
+            }
+        }
+    }
+
+    public void choosePaymentPopUp(int cardId, int stack) {
+        Stage popUpStage = new Stage(StageStyle.TRANSPARENT);
+        popUpStage.initOwner(stage);
+        popUpStage.initModality(Modality.APPLICATION_MODAL);
+        popUpStage.centerOnScreen();
+        popUpStage.setScene(getScene(CHOOSE_PAYMENT));
+        popUpStage.show();
+
+        NubPlayer player = controller.getPlayer();
+        Map<BiElement<Resource, Storage>, Integer> loot = player.getLootchest();
+        ResourcesWallet wallet = new ResourcesWallet();
+
+        //showing loot status
+        loot.forEach((x, y) -> {
+            switch (x.getFirstValue()) {
+                case COIN -> qtyCoinLblCP.setText("x" + y);
+                case SERVANT -> qtyServantLblCP.setText("x" + y);
+                case SHIELD -> qtyShieldLblCP.setText("x" + y);
+                case STONE -> qtyStoneLblCP.setText("x" + y);
+            }
+        });
+
+        //set Images in war
+        Resource res = player.getResourceFromStorage(WAREHOUSE_SMALL);
+        if (res != null) {
+            shelf1CP.setImage(new Image("/img/pawns/" + res + ".png"));
+        } else {
+            shelf1ToggleCP.setDisable(true);
+        }
+
+        res = player.getResourceFromStorage(WAREHOUSE_MID);
+        int qty = player.getQtyInStorage(res, WAREHOUSE_MID);
+
+        if (res != null && qty == 2) {
+            shelf21CP.setImage(new Image("/img/pawns/" + res + ".png"));
+            shelf22CP.setImage(new Image("/img/pawns/" + res + ".png"));
+        } else if (res != null && qty == 1) {
+            shelf21CP.setImage(new Image("/img/pawns/" + res + ".png"));
+            shelf22CP.setDisable(true);
+        } else {
+            shelf21CP.setDisable(true);
+            shelf22CP.setDisable(true);
+        }
+
+        res = player.getResourceFromStorage(WAREHOUSE_LARGE);
+        qty = player.getQtyInStorage(res, WAREHOUSE_LARGE);
+
+        if (res != null) {
+            if (qty == 3) {
+                shelf31CP.setImage(new Image("/img/pawns/" + res + ".png"));
+                shelf32CP.setImage(new Image("/img/pawns/" + res + ".png"));
+                shelf33CP.setImage(new Image("/img/pawns/" + res + ".png"));
+            } else if (qty == 2) {
+                shelf31CP.setImage(new Image("/img/pawns/" + res + ".png"));
+                shelf32CP.setImage(new Image("/img/pawns/" + res + ".png"));
+                shelf33CP.setDisable(true);
+            } else {
+                shelf31CP.setImage(new Image("/img/pawns/" + res + ".png"));
+                shelf32CP.setDisable(true);
+                shelf33CP.setDisable(true);
+            }
+        } else {
+            shelf31CP.setDisable(true);
+            shelf32CP.setDisable(true);
+            shelf33CP.setDisable(true);
+        }
+
+        //choose from warehouse
+        List<Resource> fromWar = new ArrayList<>();
+
+        shelf1ToggleCP.setOnAction(event -> {
+            if (shelf1ToggleCP.isSelected()) {
+                fromWar.add(player.getResourceFromStorage(WAREHOUSE_SMALL));
+            } else {
+                fromWar.remove(player.getResourceFromStorage(WAREHOUSE_SMALL));
+            }
+        });
+        shelf21ToggleCP.setOnAction(event -> {
+            if (shelf21ToggleCP.isSelected()) {
+                fromWar.add(player.getResourceFromStorage(WAREHOUSE_MID));
+            } else {
+                fromWar.remove(player.getResourceFromStorage(WAREHOUSE_MID));
+            }
+        });
+        shelf22ToggleCP.setOnAction(event -> {
+            if (shelf22ToggleCP.isSelected()) {
+                fromWar.add(player.getResourceFromStorage(WAREHOUSE_MID));
+            } else {
+                fromWar.remove(player.getResourceFromStorage(WAREHOUSE_MID));
+            }
+        });
+        shelf31ToggleCP.setOnAction(event -> {
+            if (shelf31ToggleCP.isSelected()) {
+                fromWar.add(player.getResourceFromStorage(WAREHOUSE_LARGE));
+            } else {
+                fromWar.remove(player.getResourceFromStorage(WAREHOUSE_LARGE));
+            }
+        });
+        shelf32ToggleCP.setOnAction(event -> {
+            if (shelf32ToggleCP.isSelected()) {
+                fromWar.add(player.getResourceFromStorage(WAREHOUSE_LARGE));
+            } else {
+                fromWar.remove(player.getResourceFromStorage(WAREHOUSE_LARGE));
+            }
+        });
+        shelf33ToggleCP.setOnAction(event -> {
+            if (shelf33ToggleCP.isSelected()) {
+                fromWar.add(player.getResourceFromStorage(WAREHOUSE_LARGE));
+            } else {
+                fromWar.remove(player.getResourceFromStorage(WAREHOUSE_LARGE));
+            }
+        });
+
+        //choose from loot
+        List<Resource> fromLoot = new ArrayList<>();
+        stoneAddBtnCP.setOnAction(actionEvent -> {
+            stoneLblCP.setText(String.valueOf((Integer.parseInt(stoneLblCP.getText()) + 1)));
+            fromLoot.add(STONE);
+        });
+        stoneSubBtnCP.setOnAction(actionEvent -> {
+            if (Integer.parseInt(stoneLblCP.getText()) != 0) {
+                stoneLblCP.setText(String.valueOf((Integer.parseInt(stoneLblCP.getText()) - 1)));
+                fromLoot.remove(STONE);
+            }
+        });
+        servantAddBtnCP.setOnAction(actionEvent -> {
+            servantLblCP.setText(String.valueOf((Integer.parseInt(servantLblCP.getText()) + 1)));
+            fromLoot.add(SERVANT);
+        });
+        servantSubBtnCP.setOnAction(actionEvent -> {
+            if (Integer.parseInt(servantLblCP.getText()) != 0) {
+                servantLblCP.setText(String.valueOf((Integer.parseInt(servantLblCP.getText()) - 1)));
+                fromLoot.remove(SERVANT);
+            }
+        });
+        coinAddBtnCP.setOnAction(actionEvent -> {
+            coinLblCP.setText(String.valueOf((Integer.parseInt(coinLblCP.getText()) + 1)));
+            fromLoot.add(COIN);
+        });
+        coinSubBtnCP.setOnAction(actionEvent -> {
+            if (Integer.parseInt(coinLblCP.getText()) != 0) {
+                coinLblCP.setText(String.valueOf((Integer.parseInt(coinLblCP.getText()) - 1)));
+                fromLoot.remove(COIN);
+            }
+        });
+        shieldAddBtnCP.setOnAction(actionEvent -> {
+            shieldLblCP.setText(String.valueOf((Integer.parseInt(shieldLblCP.getText()) + 1)));
+            fromLoot.add(SHIELD);
+        });
+        shieldSubBtnCP.setOnAction(actionEvent -> {
+            if (Integer.parseInt(shieldLblCP.getText()) != 0) {
+                shieldLblCP.setText(String.valueOf((Integer.parseInt(shieldLblCP.getText()) - 1)));
+                fromLoot.remove(SHIELD);
+            }
+        });
+
+        //choose stack
+        stack1Btn.setOnAction(actionEvent -> {
+            wallet.setLootchestTray(fromLoot);
+            wallet.setWarehouseTray(fromWar);
+
+            controller.buyProductionCard(cardId, 1, null, wallet);
+
+            mainBoard.setEffect(null);
+            popUpStage.close();
+        });
+
+        stack2Btn.setOnAction(actionEvent -> {
+            wallet.setLootchestTray(fromLoot);
+            wallet.setWarehouseTray(fromWar);
+
+            controller.buyProductionCard(cardId, 2, null, wallet);
+
+            mainBoard.setEffect(null);
+            popUpStage.close();
+        });
+
+        stack3Btn.setOnAction(actionEvent -> {
+            wallet.setLootchestTray(fromLoot);
+            wallet.setWarehouseTray(fromWar);
+
+            controller.buyProductionCard(cardId, 3, null, wallet);
+
+            mainBoard.setEffect(null);
+            popUpStage.close();
+        });
+
+        backPaymentBtnCP.setOnAction(actionEvent -> {
+            mainBoard.setEffect(null);
+            popUpStage.close();
+        });
     }
 
 }

@@ -94,6 +94,10 @@ public class Controller implements Observer<MessageID> {
 
     // GAME INITIALIZATION -------------------------------------------------------------------------------
 
+    /**
+     * Create a single player game and the player, assign the player his turn number and let him choose the leaders
+     * @param nickName the nick of the player
+     */
     public void createSinglePlayerGame(String nickName) {
         MessageEnvelope envelope;
 
@@ -113,6 +117,10 @@ public class Controller implements Observer<MessageID> {
         remoteViews.get(0).update(envelope);
     }
 
+    /**
+     * After {@link #createSinglePlayerGame(String)} create the update message and send it to the player.
+     * Then terminate the initialization phase.
+     */
     public void continueStart(){
         MessageEnvelope envelope;
         game.start(game.getCurrPlayer());
@@ -124,6 +132,11 @@ public class Controller implements Observer<MessageID> {
         initializationPhase = false;
     }
 
+    /**
+     * Create a multiplayer game and the players, assign all the player the respective turn number and let him choose the leaders,
+     * then he receive the update message of all the other player to update the first leader and resources choice
+     * @param players the list of the nicks' players
+     */
     public synchronized void createMultiplayerGame(List<String> players) {
 
         this.numPlayer = players.size();
@@ -170,7 +183,6 @@ public class Controller implements Observer<MessageID> {
                 remoteViews.get(curr).update(envelope);
             }
         }
-        //TODO: Gli altri 3 devono essere aggiornati
     }
 
     // END GAME INITIALIZATION -----------------------------------------------------------------------------------------
@@ -650,6 +662,11 @@ public class Controller implements Observer<MessageID> {
         update(MessageID.ACK);
     }
 
+    /**
+     * Register the leader that a player choose in model
+     * @param ids IDs of the leaders
+     * @param nick the player that has made the choice
+     */
     public synchronized void chooseLeaderCards(String ids, String nick) {
 
         List<Integer> leadersIds = convertStringToListInteger(ids);
@@ -682,6 +699,7 @@ public class Controller implements Observer<MessageID> {
     private int leaderIDtoSend;
 
     /**
+     * Active a leader
      * @param leaderCard the card to be activated.
      */
     public synchronized void activateLeader(LeaderCard leaderCard) {
@@ -788,6 +806,10 @@ public class Controller implements Observer<MessageID> {
 
     // END TURN UTILITIES ----------------------------------------------------------------------------------------------
 
+    /**
+     * Start the last phase of the game by letting the others players make their last turn
+     * @param playerTriggerID player that has trigger the win action
+     */
     public void initEndPhase(int playerTriggerID){
         if(!endPhase) {
             System.out.println("INIT END PHASE");
@@ -842,6 +864,10 @@ public class Controller implements Observer<MessageID> {
     // ENVELOPE CREATOR ------------------------------------------------------------------------------------------------
 
 
+    /**
+     * Send the message to the respective remoteview using the right parameter for every message
+     * @param messageID the message ID of the message to send
+     */
     @Override
     public synchronized void update(MessageID messageID) {
         System.out.println(messageID);
@@ -1064,6 +1090,9 @@ public class Controller implements Observer<MessageID> {
         return game;
     }
 
+    /**
+     * Initialize all the card from the JSON file
+     */
 
     private void initAllCards() {
 

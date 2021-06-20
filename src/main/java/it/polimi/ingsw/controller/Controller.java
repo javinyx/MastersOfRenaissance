@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import it.polimi.ingsw.MastersOfRenaissance;
 import it.polimi.ingsw.exception.BadStorageException;
+import it.polimi.ingsw.exception.WrongLevelException;
 import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.concreteMessages.*;
@@ -303,7 +304,7 @@ public class Controller implements Observer<MessageID> {
             //stack < 1 || stack > 3
             removedResources.clear();
             update(MessageID.WRONG_STACK_CHOICE);
-        } catch (RuntimeException e) {
+        } catch (WrongLevelException e) {
             //prodcard has wrong level
             System.out.println("card id: " + buyProdMsg.getProdCardId());
             removedResources.clear();

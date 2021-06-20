@@ -4,6 +4,7 @@ package it.polimi.ingsw.model.player;
 import com.google.gson.Gson;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.exception.BadStorageException;
+import it.polimi.ingsw.exception.WrongLevelException;
 import it.polimi.ingsw.messages.concreteMessages.UpdateMessage;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
@@ -190,7 +191,7 @@ public class ProPlayer extends Player{
      * @param leaders LeaderCards: just DiscountAbility might have an effect here
      * @param resourcesWallet resources distributed among different types of storage as the player wish to spend them*/
     public void buyProductionCard(ConcreteProductionCard card, int stack, List<LeaderCard> leaders, ResourcesWallet resourcesWallet)
-            throws BadStorageException {
+            throws BadStorageException, WrongLevelException {
 
         List<ConcreteProductionCard> availableProdCards = game.getBuyableProductionCards();
         Warehouse warBackup = new Warehouse(warehouse);
@@ -213,20 +214,16 @@ public class ProPlayer extends Player{
         if(!availableProdCards.contains(card)){
             throw new IllegalArgumentException();
         }
-        Deque<ConcreteProductionCard> prodStack;
-
-        switch(stack){
-            case 1: prodStack = prodCards1;
-                break;
-            case 2: prodStack = prodCards2;
-                break;
-            case 3: prodStack = prodCards3;
-                break;
-            default : throw new IndexOutOfBoundsException("Stack parameter must be between 1 and 3");
-        }
+        Deque<ConcreteProductionCard> prodStack = switch (stack) {
+            case 1 -> prodCards1;
+            case 2 -> prodCards2;
+            case 3 -> prodCards3;
+            default -> throw new IndexOutOfBoundsException("Stack parameter must be between 1 and 3");
+        };
 
         if((prodStack.isEmpty() && card.getLevel()!=1) || (!prodStack.isEmpty() && card.getLevel()!= prodStack.peekFirst().getLevel()+1)){
-            throw new RuntimeException("Cannot buy this card because of its level");
+            //throw new RuntimeException("Cannot buy this card because of its level");
+            throw new WrongLevelException();
         }
 
         turnType = 'b';

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.exception.WrongLevelException;
 import it.polimi.ingsw.model.cards.leader.BoostAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.StorageAbility;
@@ -89,7 +90,7 @@ class ProPlayerTest extends PlayerTest {
         wallet.setLootchestTray(productionCard.getCost());
         try {
             p.buyProductionCard(productionCard, 1, null, wallet);
-        }catch(BadStorageException e){
+        }catch(BadStorageException | WrongLevelException e) {
             e.printStackTrace();
         }
         assertEquals(productionCard, p.getProdCards1().peekFirst());
@@ -108,7 +109,7 @@ class ProPlayerTest extends PlayerTest {
         wallet1.setLootchestTray(productionCard1.getCost());
         try {
             p.buyProductionCard(productionCard1, 2, null, wallet1);
-        } catch (BadStorageException e) {
+        } catch (BadStorageException | WrongLevelException e) {
             e.printStackTrace();
         }
         assertEquals(productionCard1, p.getProdCards2().peekFirst());
@@ -127,7 +128,7 @@ class ProPlayerTest extends PlayerTest {
 
         try {
             p.buyProductionCard(productionCard, 3, null, wallet);
-        } catch (BadStorageException e) {
+        } catch (BadStorageException | WrongLevelException e) {
             e.printStackTrace();
         }
         assertEquals(productionCard, p.getProdCards3().peekFirst());

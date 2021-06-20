@@ -51,9 +51,6 @@ public class GamePhaseHandler extends PhaseHandler {
     @FXML
     private ImageView productionStack11, productionStack12, productionStack13, productionStack21, productionStack22,
             productionStack23, productionStack31, productionStack32, productionStack33;
-    private List<ImageView> productionStacks = new ArrayList<>(Arrays.asList(productionStack11, productionStack12,
-            productionStack13, productionStack21, productionStack22, productionStack23, productionStack31,
-            productionStack32, productionStack33));
 
     /* LEADER CARDS ***************************************************************************************************/
     @FXML
@@ -158,11 +155,11 @@ public class GamePhaseHandler extends PhaseHandler {
     }
 
     /* MAIN BOARD *****************************************************************************************************/
-    public void initiateBoard(List<Integer> chosenLeadersId, List<ConcreteProductionCard> availableProductionCards) {
+    public void initiateBoard(List<Integer> chosenLeadersId) {
         setLeaders(chosenLeadersId);
         setWarehouse();
         setMarket();
-        setProductionCards(availableProductionCards);
+        setProductionCards(controller.getAvailableProductionCards());
         setEnemyBoard();
         initiateFaithTrack();
         setFaithTrack();
@@ -177,10 +174,10 @@ public class GamePhaseHandler extends PhaseHandler {
 
     }
 
-    public void updateBoard(List<ConcreteProductionCard> availableProductionCards) {
+    public void updateBoard() {
         setWarehouse();
         setMarket();
-        setProductionCards(availableProductionCards);
+        setProductionCards(controller.getAvailableProductionCards());
         setEnemyBoard();
         setFaithTrack();
         setStacks();
@@ -264,6 +261,10 @@ public class GamePhaseHandler extends PhaseHandler {
                         shelf1ImgPU.setLayoutX(shelf1PU.getLayoutX() + 5);
                         shelf1ImgPU.setLayoutY(shelf1PU.getLayoutY() + 5);
                         shelf1ImgPU.setImage(img);
+                    } else {
+                        shelf1MB.setImage(null);
+                        shelf1PU.setDisable(false);
+                        shelf1ImgPU.setImage(null);
                     }
                 }
                 case WAREHOUSE_MID -> {
@@ -273,6 +274,10 @@ public class GamePhaseHandler extends PhaseHandler {
                         shelf21ImgPU.setLayoutX(shelf21PU.getLayoutX() + 5);
                         shelf21ImgPU.setLayoutY(shelf21PU.getLayoutY() + 5);
                         shelf21ImgPU.setImage(img);
+                    } else {
+                        shelf21MB.setImage(null);
+                        shelf21PU.setDisable(false);
+                        shelf21ImgPU.setImage(null);
                     }
                     if (y == 2) {
                         shelf22MB.setImage(img);
@@ -280,6 +285,10 @@ public class GamePhaseHandler extends PhaseHandler {
                         shelf22ImgPU.setLayoutX(shelf22PU.getLayoutX() + 5);
                         shelf22ImgPU.setLayoutY(shelf22PU.getLayoutY() + 5);
                         shelf22ImgPU.setImage(img);
+                    } else {
+                        shelf22MB.setImage(null);
+                        shelf22PU.setDisable(false);
+                        shelf22ImgPU.setImage(null);
                     }
                 }
                 case WAREHOUSE_LARGE -> {
@@ -289,6 +298,10 @@ public class GamePhaseHandler extends PhaseHandler {
                         shelf31ImgPU.setLayoutX(shelf31PU.getLayoutX() + 5);
                         shelf31ImgPU.setLayoutY(shelf31PU.getLayoutY() + 5);
                         shelf31ImgPU.setImage(img);
+                    } else {
+                        shelf31MB.setImage(null);
+                        shelf31PU.setDisable(false);
+                        shelf31ImgPU.setImage(null);
                     }
                     if (y >= 2) {
                         shelf32MB.setImage(img);
@@ -296,6 +309,10 @@ public class GamePhaseHandler extends PhaseHandler {
                         shelf32ImgPU.setLayoutX(shelf32PU.getLayoutX() + 5);
                         shelf32ImgPU.setLayoutY(shelf32PU.getLayoutY() + 5);
                         shelf32ImgPU.setImage(img);
+                    } else {
+                        shelf32MB.setImage(null);
+                        shelf32PU.setDisable(false);
+                        shelf32ImgPU.setImage(null);
                     }
                     if (y == 3) {
                         shelf33MB.setImage(img);
@@ -303,6 +320,10 @@ public class GamePhaseHandler extends PhaseHandler {
                         shelf33ImgPU.setLayoutX(shelf33PU.getLayoutX() + 5);
                         shelf33ImgPU.setLayoutY(shelf33PU.getLayoutY() + 5);
                         shelf33ImgPU.setImage(img);
+                    } else {
+                        shelf33MB.setImage(null);
+                        shelf33PU.setDisable(false);
+                        shelf33ImgPU.setImage(null);
                     }
                 }
             }
@@ -312,11 +333,29 @@ public class GamePhaseHandler extends PhaseHandler {
     private void setStacks() {
         List<ConcreteProductionCard> tstack;
 
-        for (int i = 0; i < 3; i++){
+        for (int i = 0; i < 3; i++) {
             tstack = new ArrayList<>(controller.getPlayer().getProductionStacks().get(i));
-            for (int j = 0, curr = (i*3)+j; j < tstack.size(); j++, curr++) {
-                productionStacks.get(curr).setImage(new Image ("img/productionCardsFront/" + tstack.get(j).getId()
-                        + ".png"));
+            for (int j = 0, curr = (i * 3) + j; j < tstack.size(); j++, curr++) {
+                switch (curr) {
+                    case 0 -> productionStack11.setImage(new Image("img/productionCardsFront/" +
+                            tstack.get(j).getId() + ".png"));
+                    case 1 -> productionStack12.setImage(new Image("img/productionCardsFront/" +
+                            tstack.get(j).getId() + ".png"));
+                    case 2 -> productionStack13.setImage(new Image("img/productionCardsFront/" +
+                            tstack.get(j).getId() + ".png"));
+                    case 3 -> productionStack21.setImage(new Image("img/productionCardsFront/" +
+                            tstack.get(j).getId() + ".png"));
+                    case 4 -> productionStack22.setImage(new Image("img/productionCardsFront/" +
+                            tstack.get(j).getId() + ".png"));
+                    case 5 -> productionStack23.setImage(new Image("img/productionCardsFront/" +
+                            tstack.get(j).getId() + ".png"));
+                    case 6 -> productionStack31.setImage(new Image("img/productionCardsFront/" +
+                            tstack.get(j).getId() + ".png"));
+                    case 7 -> productionStack32.setImage(new Image("img/productionCardsFront/" +
+                            tstack.get(j).getId() + ".png"));
+                    case 8 -> productionStack33.setImage(new Image("img/productionCardsFront/" +
+                            tstack.get(j).getId() + ".png"));
+                }
             }
         }
     }
@@ -772,6 +811,7 @@ public class GamePhaseHandler extends PhaseHandler {
         NubPlayer player = controller.getPlayer();
         Map<BiElement<Resource, Storage>, Integer> loot = player.getLootchest();
         ResourcesWallet wallet = new ResourcesWallet();
+        List<Integer> leaderIds = new ArrayList<>();
 
         //showing loot status
         loot.forEach((x, y) -> {
@@ -922,7 +962,7 @@ public class GamePhaseHandler extends PhaseHandler {
             wallet.setLootchestTray(fromLoot);
             wallet.setWarehouseTray(fromWar);
 
-            controller.buyProductionCard(cardId, 1, null, wallet);
+            controller.buyProductionCard(cardId, 1, leaderIds, wallet);
 
             mainBoard.setEffect(null);
             popUpStage.close();
@@ -932,7 +972,7 @@ public class GamePhaseHandler extends PhaseHandler {
             wallet.setLootchestTray(fromLoot);
             wallet.setWarehouseTray(fromWar);
 
-            controller.buyProductionCard(cardId, 2, null, wallet);
+            controller.buyProductionCard(cardId, 2, leaderIds, wallet);
 
             mainBoard.setEffect(null);
             popUpStage.close();
@@ -942,7 +982,7 @@ public class GamePhaseHandler extends PhaseHandler {
             wallet.setLootchestTray(fromLoot);
             wallet.setWarehouseTray(fromWar);
 
-            controller.buyProductionCard(cardId, 3, null, wallet);
+            controller.buyProductionCard(cardId, 3, leaderIds, wallet);
 
             mainBoard.setEffect(null);
             popUpStage.close();

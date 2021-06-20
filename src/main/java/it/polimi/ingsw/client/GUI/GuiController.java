@@ -203,7 +203,7 @@ public class GuiController extends ClientController {
 
         Platform.runLater(() -> {
             gamePhaseHandler.setScene(ScenesEnum.MAIN_BOARD);
-            gamePhaseHandler.initiateBoard(chosenLeadersId, availableProductionCard);
+            gamePhaseHandler.initiateBoard(chosenLeadersId);
         });
     }
 
@@ -260,11 +260,6 @@ public class GuiController extends ClientController {
     /* PRODUCTION CARDS ***********************************************************************************************/
     public void buyProductionCard(int cardId, int stack, List<Integer> leaderIds, ResourcesWallet wallet) {
         BuyProductionMessage msg = new BuyProductionMessage(cardId, stack, leaderIds, wallet);
-        System.out.println("Warehouse: " + wallet.getWarehouseTray());
-        System.out.println("Resource Tray: " + wallet.getLootchestTray());
-        System.out.println("Card Id: " + cardId);
-        System.out.println("Stack: " + stack);
-        System.out.println("Leader Id: " +leaderIds);
         messageToServerHandler.generateEnvelope(MessageID.BUY_PRODUCTION_CARD, gson.toJson(msg));
     }
 
@@ -275,7 +270,7 @@ public class GuiController extends ClientController {
     /* GENERAL ACTIONS ************************************************************************************************/
     @Override
     public void displayWaitMessage() {
-        Platform.runLater(() -> gamePhaseHandler.updateBoard(availableProductionCard));
+        Platform.runLater(() -> gamePhaseHandler.updateBoard());
     }
 
     /* ERROR REQUESTS *************************************************************************************************/
@@ -371,7 +366,7 @@ public class GuiController extends ClientController {
 
     @Override
     public void startTurnPhase() {
-
+        Platform.runLater(() -> gamePhaseHandler.updateBoard());
     }
 
     @Override

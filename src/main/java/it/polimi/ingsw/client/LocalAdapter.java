@@ -15,7 +15,7 @@ import java.util.List;
  * Adapter for a local single game. No network between {@link ClientController} and {@link Controller}.
  * It's the mean of communication between the pseudo-server and pseudo-client.
  * */
-public class LocalAdapter implements Observer<MessageEnvelope>, MessageDispatchinatorable {
+public class LocalAdapter implements Observer<MessageEnvelope>, MessageDispatcher {
     private final ClientController viewController;
     private final Controller controller;
     private final Gson gson = new Gson();

@@ -23,7 +23,7 @@ import java.util.*;
  * Class that handle all the input that a user has to insert in the teminal
  */
 
-public class Cli /*extends MessageDispatchinatorable*/ {
+public class Cli /*extends MessageDispatcher*/ {
     private final Scanner scanner = new Scanner(System.in);
     private CliController controller;
     private final Printer OSPrinter;

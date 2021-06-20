@@ -6,7 +6,7 @@ import it.polimi.ingsw.messages.MessageID;
 
 import java.io.PrintWriter;
 
-public class MessageToServerHandler implements MessageDispatchinatorable{
+public class MessageToServerHandler implements MessageDispatcher {
 
     private final Gson gson = new Gson();
     private final PrintWriter toServer;

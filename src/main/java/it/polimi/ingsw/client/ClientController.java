@@ -29,7 +29,7 @@ public abstract class ClientController {
     protected int lorenzoPos = 0;
     private Market market;
     protected NubPlayer player;
-    protected MessageDispatchinatorable messageToServerHandler;
+    protected MessageDispatcher messageToServerHandler;
     private int count = 0;
     protected int countPope = 0;
     protected boolean localGame = false;

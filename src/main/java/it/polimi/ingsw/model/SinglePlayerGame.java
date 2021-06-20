@@ -67,6 +67,12 @@ public class SinglePlayerGame extends Game implements ModelObserver {
         return true;
     }
 
+    public ProPlayer getPlayerFromNickname(String nickname){
+        if(player.getNickname().equals(nickname))
+            return player;
+        return null;
+    }
+
     public Market getMarket(){
         return market;
     }

@@ -60,6 +60,14 @@ public class MultiPlayerGame extends Game implements ModelObserver {
         return true;
     }
 
+    public ProPlayer getPlayerFromNickname(String nickname){
+        for(ProPlayer p : activePlayers){
+            if(p.getNickname().equals(nickname))
+                return p;
+        }
+        return null;
+    }
+
     /**Let the player choose an extra resource to add during initialization phase.*/
     public void chooseResource(){
         //wait for the player to choose a resource
@@ -113,13 +121,13 @@ public class MultiPlayerGame extends Game implements ModelObserver {
     }
     public List<ProPlayer> getActivePlayers(){return activePlayers;}
 
-    public void removeFromActivePlayers(String nickname){
-        for(ProPlayer p : activePlayers){
-            if(p.getNickname().equals(nickname)){
-                activePlayers.remove(p);
-                return;
-            }
-        }
+
+    /**
+     * Remove the player from active players pool.
+     * @param playerToRemove player that has to be removed from the active pool
+     */
+    public void removeFromActivePlayers(ProPlayer playerToRemove){
+        activePlayers.remove(playerToRemove);
     }
 
     public Market getMarket(){

@@ -304,7 +304,7 @@ public abstract class ClientController {
     }
 
     /**
-     * Manage the end turn phase. If it's your turn let the player turn
+     * Manage the end turn phase. If it's your turn let the player play.
      * @param msg message from the server with all the player information
      */
     public synchronized void endTurn(EndTurnMessage msg){
@@ -322,6 +322,31 @@ public abstract class ClientController {
             }else{
                 pp.setMyTurn(false);
                 if(pp.equals(player)){
+                    showCurrentTurn(currPlayer.getNickname());
+                }
+            }
+        }
+    }
+
+    /**
+     * In case of a player's disconnection, set the player which {@code turnNumber} matches with {@code nextPlayerId}.
+     * If the latter is the one to whom the client app belongs, then start the regular turn. But if he/she is already
+     * in the middle of the turn, continue without restarting it.
+     * @param nextPlayerId id of the player which has to play the current turn
+     */
+    public void playerCrashed(int nextPlayerId){
+        for(NubPlayer p : totalPlayers){
+            if(p.getTurnNumber() == nextPlayerId){
+                boolean oldStatus = p.isMyTurn();
+                p.setMyTurn(true);
+                currPlayer = p;
+                if(p.equals(player) && !oldStatus){
+                    normalTurn = true;
+                    startTurnPhase();
+                }
+            }else{
+                p.setMyTurn(false);
+                if(p.equals(player)){
                     showCurrentTurn(currPlayer.getNickname());
                 }
             }

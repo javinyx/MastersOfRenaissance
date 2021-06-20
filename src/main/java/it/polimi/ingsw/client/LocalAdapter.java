@@ -74,6 +74,8 @@ public class LocalAdapter implements Observer<MessageEnvelope>, MessageDispatche
 
             case PLAYER_WIN -> viewController.winner(envelope.getPayload());
 
+            case PLAYER_CRASHED -> viewController.playerCrashed(gson.fromJson(envelope.getPayload(), EndTurnMessage.class).getNextPlayerId());
+
             default -> System.err.println("MessageID " + envelope.getMessageID() + " not recognised in class " + this.getClass());
         }
     }

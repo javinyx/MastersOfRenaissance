@@ -56,6 +56,7 @@ public enum MessageID {
     ASK_NICK,
     NICK_ERR,
 
+    PLAYER_CRASHED,
     REJOIN_UPDATE,
     UPDATE //to inform other players of the updates in the model
 

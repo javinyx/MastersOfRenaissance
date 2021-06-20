@@ -46,6 +46,7 @@ public abstract class Game implements ModelObserver {
 
     //------------------GETTERS------------------
     public Controller getControllerObserver(){return controller;}
+    public abstract ProPlayer getPlayerFromNickname(String nickname);
     public Market getMarket(){
         return market;
     }

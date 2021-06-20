@@ -224,10 +224,6 @@ public class Controller implements Observer<MessageID> {
             update(LORENZO_POSITION);
         }
 
-        //update(MessageID.CONFIRM_END_TURN);
-        //parte nuova
-        //previousPlayer = game.getCurrPlayer();
-        //game.updateEndTurn(previousPlayer);
         update(CONFIRM_END_TURN);
         //fine
         //update(MessageID.UPDATE);
@@ -960,6 +956,12 @@ public class Controller implements Observer<MessageID> {
                 updateBroadCast(envelope);
             }
 
+            case PLAYER_CRASHED -> {
+                EndTurnMessage msg = new EndTurnMessage(game.getCurrPlayer().getTurnID());
+                MessageEnvelope envelope = new MessageEnvelope(PLAYER_CRASHED, gson.toJson(msg, EndTurnMessage.class));
+                updateBroadCast(envelope);
+            }
+
             default -> System.out.println("No no no");
         }
     }
@@ -1011,8 +1013,21 @@ public class Controller implements Observer<MessageID> {
     // REJOIN PART ---------------------------------------------------------
 
     public void setInactivePlayer(String playerName) {
+        ProPlayer crashedP;
+
         if (game instanceof MultiPlayerGame) {
-            ((MultiPlayerGame) game).removeFromActivePlayers(playerName);
+            crashedP = game.getPlayerFromNickname(playerName);
+            if(crashedP!=null){
+                if(crashedP.getTurnID() == game.getCurrPlayer().getTurnID()){
+                    game.updateEndTurn(crashedP);
+                    basicActionDone = false;
+                    addedResources.clear();
+                    removedResources.clear();
+                    boughtCard = Optional.empty();
+                }
+                ((MultiPlayerGame)game).removeFromActivePlayers(crashedP);
+                update(PLAYER_CRASHED);
+            }
         } else {
             //do nothing, unless we want reset the game instead of leaving it pending
             //disconnect?

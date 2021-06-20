@@ -139,6 +139,7 @@ public class MessageReceiver implements Runnable{
             case ABORT_GAME -> controller.abortGame();
 
             case PLAYER_WIN -> controller.winner(envelope.getPayload());
+            case PLAYER_CRASHED -> controller.playerCrashed(gson.fromJson(envelope.getPayload(), EndTurnMessage.class).getNextPlayerId());
             case REJOIN_UPDATE -> System.out.println("REJOINING");
 
             default -> System.err.println("MessageID not recognised Game");

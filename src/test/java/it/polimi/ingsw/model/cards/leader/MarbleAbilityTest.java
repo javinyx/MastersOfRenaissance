@@ -2,9 +2,14 @@ package it.polimi.ingsw.model.cards.leader;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.MultiPlayerGame;
+import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.player.ProPlayer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+import java.util.ArrayList;
+import java.util.List;
 
 class MarbleAbilityTest {
 
@@ -42,8 +47,24 @@ class MarbleAbilityTest {
 
     @Test
     void applyEffect() {
+        MarbleAbility l = null;
         while (!((LeaderCard)(game).getLeaderDeckNew().getFirst()).getNameNew().equals("MarbleAbility"))
-            game.getLeaderDeckNew().getFirst();
+            if (((LeaderCard)(game).getLeaderDeckNew().peekFirst()).getNameNew().equals("MarbleAbility")) {
+                l = (MarbleAbility) game.getLeaderDeckNew().getFirst();
+                break;
+            }
+        List<Resource> marble = new ArrayList<>();
+        marble.add(Resource.SERVANT);
+        marble.add(Resource.BLANK);
+        marble.add(Resource.STONE);
+        marble.add(Resource.BLANK);
+
+        bubu.setResAcquired(marble);
+        bubu.setTurnType('m');
+        l.applyEffect(bubu);
+        l.applyEffect(bubu);
+        assertEquals(l.getReplacingResource(), marble.get(2));
+        assertEquals(l.getReplacingResource(), marble.get(3));
 
     }
 

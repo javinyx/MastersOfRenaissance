@@ -126,8 +126,9 @@ public class ProPlayer extends Player{
     public void setWarehouse(Warehouse war){
         this.warehouse = war;
     }
-
-//-------------------------------VICTORY POINTS---------------------------------
+    public void setResAcquired(List<Resource> resAcquired) { this.resAcquired = resAcquired; }
+    public void setTurnType(char turnType) { this.turnType = turnType; }
+    //-------------------------------VICTORY POINTS---------------------------------
     /**Returns the sum of player's victory points taking in consideration:
      * <li>productionCards (hidden or not); </li>
      * <li>leaderCards if active;</li>

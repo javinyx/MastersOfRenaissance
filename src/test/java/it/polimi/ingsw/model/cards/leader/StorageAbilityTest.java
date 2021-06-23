@@ -2,9 +2,11 @@ package it.polimi.ingsw.model.cards.leader;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.MultiPlayerGame;
+import it.polimi.ingsw.model.market.Resource;
 import it.polimi.ingsw.model.player.ProPlayer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 class StorageAbilityTest {
 
@@ -38,8 +40,14 @@ class StorageAbilityTest {
 
     @Test
     void applyEffect() {
-        while (!((LeaderCard)(game).getLeaderDeckNew().getFirst()).getNameNew().equals("StorageAbility"))
-            game.getLeaderDeckNew().getFirst();
+        StorageAbility l = null;
+        while (!((LeaderCard)(game).getLeaderDeckNew().getFirst()).getNameNew().equals("StorageAbility")) {
+            if (((LeaderCard) (game).getLeaderDeckNew().peekFirst()).getNameNew().equals("StorageAbility")) {
+                l = (StorageAbility) game.getLeaderDeckNew().getFirst();
+                break;
+            }
+        }
+
 
     }
 

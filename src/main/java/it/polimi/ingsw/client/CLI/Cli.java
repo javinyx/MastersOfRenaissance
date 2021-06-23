@@ -768,13 +768,16 @@ public class Cli /*extends MessageDispatcher*/ {
             System.out.println("There are no Development card");
         else {
             int i = 1;
+            int total = 0;
             for (Deque d : prodStack) {
                 if (d.size() != 0) {
                     System.out.println("In the stuck number " + i + " there is: ");
                     OSPrinter.printProductionCard(prodStack.get(i - 1).peekFirst());
                     i++;
+                    total += d.size();
                 }
             }
+            System.out.println("Player has " + total +" development card in total.");
         }
     }
 

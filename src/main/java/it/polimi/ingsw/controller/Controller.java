@@ -9,6 +9,7 @@ import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.concreteMessages.*;
 import it.polimi.ingsw.misc.BiElement;
+import it.polimi.ingsw.misc.Observable;
 import it.polimi.ingsw.misc.Observer;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.Game;
@@ -33,7 +34,7 @@ import static it.polimi.ingsw.messages.MessageID.*;
 
 public class Controller implements Observer<MessageID> {
 
-    private Game game;
+    protected Game game;
     private List<LeaderCard> allLeaders = new ArrayList<>();
     private List<ConcreteProductionCard> allProductionCards = new ArrayList<>();
     private List<Observer<MessageEnvelope>> remoteViews;

@@ -1,22 +1,23 @@
 package it.polimi.ingsw.model.cards.actiontoken;
 
-import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.SinglePlayerGame;
 import it.polimi.ingsw.model.player.ProPlayer;
+import it.polimi.ingsw.model.stub.ControllerStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DoubleMoveTokenTest {
 
     SinglePlayerGame game;
     ProPlayer player;
-    Controller controller = new Controller();
+    ControllerStub controller = new ControllerStub();
 
     @BeforeEach
     public void testSetUp(){
         game = new SinglePlayerGame(controller);
+        controller.registerGame(game);
         player = new ProPlayer("ale", 1, game);
     }
 

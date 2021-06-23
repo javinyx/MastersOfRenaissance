@@ -1,7 +1,10 @@
 # Communication Protocol
 ## Group ID: AM13 - A.Y. 2020/21
 
-This document's aim is to provide a clear overview of Maestri del Rinascimento project's communication protocol. Most relevant and crucial exchanges are going to be highlighted here. Each message that goes through the network is a `MesssageEnvelope`class that has been serialized with JSON. So all of them follow the JSON format shown below:
+This document's aim is to provide a clear overview of *Maestri del Rinascimento* project's communication protocol. Most relevant and crucial exchanges are going to be highlighted here. 
+<br>
+
+Each message that goes through the network is a `MesssageEnvelope` class that has been serialized with JSON. So all of them follow the JSON format shown below:
 
 ```
 {
@@ -19,11 +22,14 @@ public class MessageEnvelope{
 
 The `messageID` gives information about the type of event that has arisen in the sender, the `payload` field adds useful information for the receiver in order for it to react correctly. The `payload` could be a simple String or one of the Message class serializd with JSON as well if the `MessageId` has one associated to it (see below).
 <br/>
+
 Whether it's an event occurred whithin the Client or a Server's response, respective messages will be created. For more complex messages that has to be sent through the network, we use ad hoc Java classes to incapsulate all the information in an organized way.  
 <br/>
-Thanks to the `MessageEnvelope` we always know how to immediately deserialize a package coming from the network; once we have extracted the Json Object into a `MessageEnvelope`Java object, we can deserialize also the payload into a primitive type (i.e. String, Integer) or into one of our `Message` Java object based on the messageID (the effective type of the event).
+
+Thanks to the `MessageEnvelope` we always know how to immediately deserialize a package coming from the network. Once we have extracted the Json Object into a `MessageEnvelope` Java object, we can deserialize also the payload into a "primitive" type (i.e. String, Integer) or into one of our `Message` Java object based on the messageID (the effective type of the event).
 <br/>
-We decided to use Json as means of serialization instead of Java serialization because it is universally manageable, allowing us the potential of rewrite the client app in another programming languages in the future.
+
+We decided to use Json as means of serialization instead of Java serialization because it is universally manageable, allowing us the potential of rewrite the client app in another programming languages in the future. Furthermore is readable, easing the debug process for us.
 
 
 # Table of Contents
@@ -338,3 +344,18 @@ blank marbles collected from the market.
 * `fromExtraStorage1` and `fromExtraStorage2` indicate the resource that should be taken from the extra storage supplied by an active leader card of StorageAbility.
 * `discountAbility` indicates the leader cards of Discount type that the player wants
 to use during this phase.
+
+## Message classes mapping to MessageIDs
+Most important messages are reported below. Mind that some error messages are not included in the list since they don't have any `Payload` associeted to them and are self-explanatory.
+
+Furthermore, some messages are used 
+
+| MessageID | Payload | Meaning |
+|-----------|:---------:|:-------|
+|ASK_NICK |String|
+|PLAYER_NUM | Integer| The size the player wants the game to be|
+|CONFIRM_REGISTRATION|| Player is now registered correctly in the server|
+|UPDATE| UpdateMessage| Used to show the status of a player or just the changes between turns|
+|CHOOSE_LEADER_CARD| List\<Integer\>| List of 4 leaders to choose and the 2 in response
+|ACK | Boolean | Player's request has been fullfilled by the server. `True` if the action is a major one (that can be done just once per turn), `False` otherwise.|
+|

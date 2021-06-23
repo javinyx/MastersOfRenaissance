@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.cards.leader;
 
 import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.market.Resource;
+import it.polimi.ingsw.model.stub.ControllerStub;
 import it.polimi.ingsw.model.stub.MultiPlayerGameStub;
 import it.polimi.ingsw.model.stub.ProPlayerStub;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +21,9 @@ class BoostAbilityTest {
 
     @BeforeEach
     public void testSetUp(){
-        game = new MultiPlayerGameStub();
+        ControllerStub c = new ControllerStub();
+        game = new MultiPlayerGameStub(c);
+        c.registerGame(game);
         bubu = new ProPlayerStub("Bubu", 1, game);
         deckClone = game.getLeaderDeckNew();
 

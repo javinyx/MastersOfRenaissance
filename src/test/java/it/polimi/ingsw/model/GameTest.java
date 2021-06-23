@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.production.ColorEnum;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.player.ProPlayer;
+import it.polimi.ingsw.model.stub.ControllerStub;
 import it.polimi.ingsw.model.stub.MultiPlayerGameStub;
 import it.polimi.ingsw.model.stub.SinglePlayerGameStub;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,8 +21,12 @@ class GameTest{
 
     @BeforeEach
     void setUp(){
-       gs1 = new SinglePlayerGameStub();
-       gm1 = new MultiPlayerGameStub();
+        ControllerStub c1= new ControllerStub();
+        ControllerStub c2 = new ControllerStub();
+       gs1 = new SinglePlayerGameStub(c1);
+       c1.registerGame(gs1);
+       gm1 = new MultiPlayerGameStub(c2);
+       c2.registerGame(gm1);
     }
 
     @Test

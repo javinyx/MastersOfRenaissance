@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.exception.BadStorageException;
 import it.polimi.ingsw.exception.WrongLevelException;
 import it.polimi.ingsw.model.cards.leader.BoostAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
@@ -8,8 +9,8 @@ import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.cards.production.ProductionCard;
 import it.polimi.ingsw.model.market.Buyable;
 import it.polimi.ingsw.model.market.Resource;
-import it.polimi.ingsw.exception.BadStorageException;
 import it.polimi.ingsw.model.player.ProPlayer;
+import it.polimi.ingsw.model.stub.ControllerStub;
 import it.polimi.ingsw.model.stub.MultiPlayerGameStub;
 import it.polimi.ingsw.model.stub.ProPlayerStub;
 import it.polimi.ingsw.model.stub.SinglePlayerGameStub;
@@ -31,19 +32,35 @@ class ProPlayerTest extends PlayerTest {
     Game g1, g2;
     SinglePlayerGameStub g;
     MultiPlayerGameStub gm1;
+    ControllerStub cs1, cs2, c1, c2;
     @BeforeEach
     public void testSetup(){
-        gm1 = new MultiPlayerGameStub();
-        g = new SinglePlayerGameStub();
-        g1 = new SinglePlayerGame(controller);
-        g2 = new MultiPlayerGame(controller);
+        c1 = new ControllerStub();
+        c2 = new ControllerStub();
+        cs1 = new ControllerStub();
+        cs2 = new ControllerStub();
+        gm1 = new MultiPlayerGameStub(cs1);
+        cs1.registerGame(gm1);
+        g = new SinglePlayerGameStub(cs2);
+        cs2.registerGame(g);
+        g1 = new SinglePlayerGame(c1);
+        c1.registerGame(g1);
+        g2 = new MultiPlayerGame(c2);
+        c2.registerGame(g2);
         p = new ProPlayerStub("Gatto", 1, g);
+        g.registerPlayer(p);
         p.registerObserver(g);
-        p1 = new ProPlayer("Anacleto", 1, g1);
+        g1.createPlayer("Anacleto");
+        //p1 = new ProPlayer("Anacleto", 1, g1);
+        p1 = g1.getPlayers().get(0);
         p1.registerObserver(g1);
-        p2 = new ProPlayer("Coco", 1, g2);
-        p2.registerObserver((ModelObserver)g2);
-        p3 = new ProPlayer("Noob", 2, g2);
+        g2.createPlayer("Coco");
+        //p2 = new ProPlayer("Coco", 1, g2);
+        p2 = g2.getPlayers().get(0);
+        p2.registerObserver(g2);
+        g2.createPlayer("Noob");
+        //p3 = new ProPlayer("Noob", 2, g2);
+        p3 = g2.getPlayers().get(1);
         p3.registerObserver(g2);
     }
 
@@ -145,7 +162,7 @@ class ProPlayerTest extends PlayerTest {
     @Test
     void getVictoryPoints() {
         p1.addFaithPoints(24);
-        assertEquals(20, p1.getVictoryPoints());
+        assertEquals(22, p1.getVictoryPoints()); //because adding 24 faith point immediately cause the 1° vatican report and the pope pass activation
     }
 
 
@@ -280,7 +297,7 @@ class ProPlayerTest extends PlayerTest {
         playerList.add((LeaderCard) g.leaderDeck.getFirst());
         p.chooseLeaders(playerList);
         p.activateLeader(leaderCard);
-        assertThrows(RuntimeException.class, () -> p.discardLeaderCard(leaderCard));
+        assertFalse(p.discardLeaderCard(leaderCard));
         p.disableLeader(leaderCard);
         p.discardLeaderCard(leaderCard);
         playerList.remove(leaderCard);

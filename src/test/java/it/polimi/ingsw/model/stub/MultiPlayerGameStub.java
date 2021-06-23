@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.stub;
 
-import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.MultiPlayerGame;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.ProPlayer;
@@ -10,9 +9,9 @@ import java.util.stream.Collectors;
 
 public class MultiPlayerGameStub extends MultiPlayerGame {
 
-    private static Controller controller = new Controller();
+    //private static Controller controller = new Controller();
 
-    public MultiPlayerGameStub() {
+    public MultiPlayerGameStub(ControllerStub controller) {
         super(controller);
     }
 

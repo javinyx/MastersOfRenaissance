@@ -2,6 +2,7 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.stub.ControllerStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -9,13 +10,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerTest {
     Player player;
-    Controller controller = new Controller();
+    Controller controller = new ControllerStub();
     Game singleGame = new SinglePlayerGame(controller);
     Game multiGame = new MultiPlayerGame(controller);
     @BeforeEach
     void setUp() {
-       player = new Player("Gatto", singleGame);
-       player.registerObserver((ModelObserver)singleGame);
+        singleGame.createPlayer("Gatto");
+        player = singleGame.getPlayers().get(0);
+       //player = new Player("Gatto", singleGame);
+       player.registerObserver(singleGame);
     }
 
     @Test

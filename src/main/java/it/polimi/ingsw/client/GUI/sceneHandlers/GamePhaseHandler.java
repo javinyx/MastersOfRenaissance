@@ -24,7 +24,9 @@ import javafx.scene.effect.SepiaTone;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Modality;
@@ -33,13 +35,10 @@ import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static it.polimi.ingsw.client.GUI.sceneHandlers.ScenesEnum.*;
 import static it.polimi.ingsw.misc.Storage.*;
-import static it.polimi.ingsw.misc.Storage.WAREHOUSE_LARGE;
 import static it.polimi.ingsw.model.market.Resource.*;
-import static it.polimi.ingsw.model.market.Resource.SHIELD;
 
 public class GamePhaseHandler extends PhaseHandler {
     /* MAIN ***********************************************************************************************************/
@@ -96,10 +95,10 @@ public class GamePhaseHandler extends PhaseHandler {
     @FXML
     private Button opBackBtn;
     @FXML
-    private ImageView opLead1Img, opLead2Img, opShelf1Img, opShelf2Img, opShelf3Img;
+    private ImageView opLead1Img, opLead2Img, opShelf1Img, opShelf2Img, opShelf3Img, opStack1Img, opStack2Img, opStack3Img;
     @FXML
     private Label opLbl, opQtyShelf1Lbl, opQtyShelf2Lbl, opQtyShelf3Lbl, opQtyStoneLbl, opQtyCoinLbl, opQtyServantLbl,
-            opQtyShieldLbl;
+            opQtyShieldLbl, opTotalProdCardsLbl;
 
     /* MESSAGE BOARD **************************************************************************************************/
     @FXML
@@ -482,6 +481,33 @@ public class GamePhaseHandler extends PhaseHandler {
             LeaderCard lead2 = player.getLeaders().get(1);
             opLead2Img.setImage(new Image("img/leaderCards/" + (lead2.isActive() ? String.valueOf(lead2.getId())
                     : "leaderBack") + ".png"));
+        }
+
+        Deque<ConcreteProductionCard> stack1 = player.getProductionStack(1);
+        Deque<ConcreteProductionCard> stack2 = player.getProductionStack(2);
+        Deque<ConcreteProductionCard> stack3 = player.getProductionStack(3);
+
+        opTotalProdCardsLbl.setText("Total development cards: " + (stack1.size() + stack2.size() + stack3.size()));
+
+        if(stack1.size()>0){
+            opStack1Img.setImage(new Image("img/productionCardsFront/" + stack1.peekFirst().getId() + ".png"));
+            opStack1Img.setVisible(true);
+        }else{
+            opStack1Img.setVisible(false);
+        }
+
+        if(stack2.size()>0){
+            opStack2Img.setImage(new Image("img/productionCardsFront/" + stack2.peekFirst().getId() + ".png"));
+            opStack2Img.setVisible(true);
+        }else{
+            opStack2Img.setVisible(false);
+        }
+
+        if(stack3.size()>0){
+            opStack3Img.setImage(new Image("img/productionCardsFront/" + stack3.peekFirst().getId() + ".png"));
+            opStack3Img.setVisible(true);
+        }else{
+            opStack3Img.setVisible(false);
         }
 
         Map<BiElement<Resource, Storage>, Integer> loot = player.getLootchest();

@@ -147,13 +147,17 @@ public class GuiController extends ClientController {
     public void setSelectedLeaders(List<Boolean> leadersChoice) {
         Platform.runLater(initialPhaseHandler::waitStartGame);
         List<LeaderCard> availableLeaders = getPlayer().getLeaders();
+        List<LeaderCard> chosenLeaders = new ArrayList<>();
 
         for (int i = 0; i < leadersChoice.size(); i++) {
             if (leadersChoice.get(i)) {
                 chosenLeadersId.add(availableLeaders.get(i).getId());
+                chosenLeaders.add(availableLeaders.get(i));
             }
         }
+
         synchronized (lock) {
+            getPlayer().setLeaders(chosenLeaders);
             messageToServerHandler.generateEnvelope(MessageID.CHOOSE_LEADER_CARDS, chosenLeadersId.toString());
             lock.notifyAll();
         }
@@ -182,6 +186,7 @@ public class GuiController extends ClientController {
     /* START GAME PHASE ***********************************************************************************************/
     @Override
     public void startGame() {
+        normalTurn = true;
         if (isRegistrationPhase() && gameSize == 1) {
             initialGameStart();
         } else if (isRegistrationPhase() && gameSize != 1) {
@@ -278,6 +283,10 @@ public class GuiController extends ClientController {
     @Override
     public void displayWaitMessage() {
         Platform.runLater(() -> gamePhaseHandler.updateBoard());
+    }
+
+    public boolean getNormalTurn() {
+        return normalTurn;
     }
 
     /* ERROR REQUESTS *************************************************************************************************/

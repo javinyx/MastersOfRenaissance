@@ -102,7 +102,7 @@ ToggleButton {
 }
 
 .leaderToggle:selected {
-    -fx-effect: dropshadow(one-pass-box, rgba(37, 242, 255, 0.5), 20, 0, 0, 0);
+    -fx-effect: dropshadow(one-pass-box, rgba(37, 242, 255, 0.7), 40, 0, 0, 0);
 }
 
 .leaderToggle:hover {
@@ -161,6 +161,14 @@ ToggleButton {
 
 .text-area .scroll-pane, .text-area .scroll-pane .viewport, .text-area .scroll-pane .content {
     -fx-background-color: transparent;
+}
+
+.lorenzo {
+    -fx-font-size: 24px;
+}
+
+.lorenzo:hover {
+    -fx-effect: none;
 }
 
 /* MARKET SCENE *******************************************************************************************************/

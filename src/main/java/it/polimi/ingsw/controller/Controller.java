@@ -1098,12 +1098,9 @@ public class Controller implements Observer<MessageID> {
         MessageEnvelope env = new MessageEnvelope(REJOIN_UPDATE, gson.toJson(msg, UpdateMessage.class));
 
         updateBroadCast(env);
-
-        //TODO: ha creato il messaggio di update ma come glielo mandiamo? Con il metodo update
     }
 
     public void rejoin(SinglePlayerGame game, String nickname) {
-        //TODO: che politica usiamo per il rejoin del single player?
     }
 
     public Game getGame() {

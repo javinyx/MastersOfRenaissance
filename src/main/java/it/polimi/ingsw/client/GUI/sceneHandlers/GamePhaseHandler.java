@@ -177,8 +177,8 @@ public class GamePhaseHandler extends PhaseHandler {
     }
 
     /* MAIN BOARD *****************************************************************************************************/
-    public void initiateBoard(List<Integer> chosenProduceId) {
-        setProduce(chosenProduceId);
+    public void initiateBoard(List<Integer> chosenLeaderId) {
+        setLeader(chosenLeaderId);
         setWarehouse();
         setMarket();
         setProductionCards(controller.getAvailableProductionCards());
@@ -207,7 +207,7 @@ public class GamePhaseHandler extends PhaseHandler {
         observePlayerActions();
 
         if (controller.getPlayer().isMyTurn()) {
-            sendToMsgBoard("It is now your turn, please either buy from market, buy production cards or" +
+            sendToMsgBoard("It is now your turn, please either buy from market, buy development cards or" +
                     " activate production.");
         } else {
             sendToMsgBoard("It is not your turn yet, please wait for the other players.");
@@ -216,13 +216,22 @@ public class GamePhaseHandler extends PhaseHandler {
 
     public void observePlayerActions() {
         marketRegion.setOnMouseClicked(event -> {
-            mainBoard.setEffect(new GaussianBlur());
-            marketPopUp();
+            if (controller.getNormalTurn() && controller.getPlayer().isMyTurn()) {
+                mainBoard.setEffect(new GaussianBlur());
+                marketPopUp();
+            } else {
+                sendToMsgBoard("You have already completed a main action for this turn," +
+                        "please end your turn when you're ready.");
+            }
         });
 
-        endTurnBtn.setOnAction(actionEvent -> {
-            tmpRes.clear();
-            controller.passTurn();
+        produceBtn.setOnAction(actionEvent -> {
+            if (controller.getNormalTurn() && controller.getPlayer().isMyTurn()) {
+                producePopup();
+            } else {
+                sendToMsgBoard("You have already completed a main action for this turn," +
+                        "please end your turn when you're ready.");
+            }
         });
 
         productionCardsOpen.setOnAction(actionEvent -> {
@@ -230,8 +239,9 @@ public class GamePhaseHandler extends PhaseHandler {
             productionCardsPopup();
         });
 
-        produceBtn.setOnAction(actionEvent -> {
-            producePopup();
+        endTurnBtn.setOnAction(actionEvent -> {
+            tmpRes.clear();
+            controller.passTurn();
         });
 
         activateLeaderBtn.setOnAction(actionEvent -> activateLeader());
@@ -243,10 +253,10 @@ public class GamePhaseHandler extends PhaseHandler {
         player3Btn.setOnAction(event -> otherPlayersPopUp(controller.getOtherPlayers().get(2)));
     }
 
-    private void setProduce(List<Integer> chosenProduceId) {
-        leader1Show.setImage(new Image("img/leaderCards/" + chosenProduceId.get(0) + ".png"));
+    private void setLeader(List<Integer> chosenLeaderId) {
+        leader1Show.setImage(new Image("img/leaderCards/" + chosenLeaderId.get(0) + ".png"));
         leader1Show.setEffect(new SepiaTone(0.6));
-        leader2Show.setImage(new Image("img/leaderCards/" + chosenProduceId.get(1) + ".png"));
+        leader2Show.setImage(new Image("img/leaderCards/" + chosenLeaderId.get(1) + ".png"));
         leader2Show.setEffect(new SepiaTone(0.6));
     }
 
@@ -518,12 +528,14 @@ public class GamePhaseHandler extends PhaseHandler {
                 player3FaithImg));
 
         int ctr = 0;
-        if(controller.getOtherPlayers().size()==0){
+        if (controller.getOtherPlayers().size() == 0) {
             playersBtns.get(0).setText("Lorenzo");
+            playersBtns.get(0).getStyleClass().remove("btn");
+            playersBtns.get(0).getStyleClass().add("lorenzo");
             playersFaithLbls.get(0).setText(String.valueOf(controller.getLorenzoPos()));
             playersFaithImgs.get(0).setImage(new Image("img/pawns/blackCrossNew.png"));
             ctr++;
-        }else {
+        } else {
             for (NubPlayer p : controller.getOtherPlayers()) {
                 playersBtns.get(ctr).setText(p.getNickname() + "(#" + p.getTurnNumber() + ")");
                 playersFaithLbls.get(ctr).setText(String.valueOf(p.getCurrPos()));
@@ -544,6 +556,12 @@ public class GamePhaseHandler extends PhaseHandler {
 
     /* OTHER PLAYERS POPUP ********************************************************************************************/
     private void otherPlayersPopUp(NubPlayer player) {
+
+        // This only happens if it's a single player game and the player clicks on Lorenzo
+        if (controller.getOtherPlayers().size() == 0) {
+            return;
+        }
+
         Stage popUpStage = new Stage(StageStyle.TRANSPARENT);
         mainBoard.setEffect(new GaussianBlur());
         popUpStage.initOwner(stage);
@@ -551,6 +569,11 @@ public class GamePhaseHandler extends PhaseHandler {
         popUpStage.centerOnScreen();
         popUpStage.setScene(getScene(OTHER_PLAYERS));
         popUpStage.show();
+
+        opBackBtn.setOnAction(actionEvent -> {
+            mainBoard.setEffect(null);
+            popUpStage.close();
+        });
 
         opLbl.setText("You're viewing " + player.getNickname() + "'s status");
         if (player.getLeaders().size() > 0) {
@@ -620,10 +643,6 @@ public class GamePhaseHandler extends PhaseHandler {
             }
         });
 
-        opBackBtn.setOnAction(event -> {
-            mainBoard.setEffect(null);
-            popUpStage.close();
-        });
     }
 
     /* MESSAGE BOARD **************************************************************************************************/
@@ -862,7 +881,12 @@ public class GamePhaseHandler extends PhaseHandler {
         popUpStage.show();
 
         productionCards.setOnMouseClicked(mouseEvent -> {
-            clickGrid(mouseEvent, popUpStage);
+            if (controller.getNormalTurn() && controller.getPlayer().isMyTurn()) {
+                clickGrid(mouseEvent, popUpStage);
+            } else {
+                sendToMsgBoard("You have already completed a main action for this turn," +
+                        "please end your turn when you're ready.");
+            }
         });
 
         productionCardBackBtn.setOnAction(actionEvent -> {
@@ -1116,15 +1140,15 @@ public class GamePhaseHandler extends PhaseHandler {
         List<BoostAbility> leaderCards = new ArrayList<>();
         List<Resource> leaderOutputs = new ArrayList<>();
 
-        if(controller.getPlayer().getProductionStacks().get(0).size() != 0)
+        if (controller.getPlayer().getProductionStacks().get(0).size() != 0)
             produce2Img.setImage(new Image("/img/productionCardsFront/" + controller.getPlayer().getProductionStacks()
                     .get(0).peekFirst().getId() + ".png"));
 
-        if(controller.getPlayer().getProductionStacks().get(1).size() != 0)
+        if (controller.getPlayer().getProductionStacks().get(1).size() != 0)
             produce3Img.setImage(new Image("/img/productionCardsFront/" + controller.getPlayer().getProductionStacks()
                     .get(1).peekFirst().getId() + ".png"));
 
-        if(controller.getPlayer().getProductionStacks().get(2).size() != 0)
+        if (controller.getPlayer().getProductionStacks().get(2).size() != 0)
             produce4Img.setImage(new Image("/img/productionCardsFront/" + controller.getPlayer().getProductionStacks()
                     .get(2).peekFirst().getId() + ".png"));
 
@@ -1186,6 +1210,8 @@ public class GamePhaseHandler extends PhaseHandler {
 
         DALConfirmBtn.setOnAction(actionEvent -> {
             controller.sendActivateLeader(chosenLeaderGrp.getSelectedToggle().getUserData().toString());
+            mainBoard.setEffect(null);
+            popUpStage.close();
         });
 
         DALBackBtn.setOnAction(actionEvent -> {
@@ -1201,15 +1227,14 @@ public class GamePhaseHandler extends PhaseHandler {
                 if(!led.isActive())
                     leaderCards.add(led);
 
-            discardLeadPopUp(leaderCards);
-            //controller.getPlayer().setCurrPos(controller.getPlayer().getCurrPos()+1);
+            //discardLeadPopUp(leaderCards);
 
         } else {
             sendToMsgBoard("You don't have any leader cards to discard!");
         }
     }
 
-    private void discardLeadPopUp(List<LeaderCard> lead) {
+    private void discardLeadPopUp() {
         Stage popUpStage = new Stage(StageStyle.TRANSPARENT);
         popUpStage.initOwner(stage);
         popUpStage.initModality(Modality.APPLICATION_MODAL);
@@ -1218,22 +1243,18 @@ public class GamePhaseHandler extends PhaseHandler {
         popUpStage.show();
 
         DALLbl.setText("Select the leader you want to DISCARD");
-        if(lead.size() > 0) {
-            if (lead.get(0) != null) {
-                DAL1Img.setImage(new Image("/img/leaderCards/" + controller.getPlayer().getLeaders().get(0).getId() + ".png"));
-                DAL1Toggle.setUserData(controller.getPlayer().getLeaders().get(0).getId());
-            }
-            if (lead.get(1) != null){
-                DAL2Img.setImage(new Image("/img/leaderCards/" + controller.getPlayer().getLeaders().get(1).getId() + ".png"));
-                DAL2Toggle.setUserData(controller.getPlayer().getLeaders().get(0).getId());
-            }
-        }
+
+        DAL1Img.setImage(new Image("/img/leaderCards/" + controller.getPlayer().getLeaders().get(0).getId() + ".png"));
+        DAL1Toggle.setUserData(controller.getPlayer().getLeaders().get(0).getId());
+        DAL2Img.setImage(new Image("/img/leaderCards/" + controller.getPlayer().getLeaders().get(1).getId() + ".png"));
+        DAL2Toggle.setUserData(controller.getPlayer().getLeaders().get(0).getId());
 
         DALConfirmBtn.setOnAction(actionEvent -> {
             int c = Integer.parseInt(chosenLeaderGrp.getSelectedToggle().getUserData().toString());
             controller.getPlayer().getLeaders().removeIf(led -> led.getId() == c);
             controller.sendDiscardLeader(chosenLeaderGrp.getSelectedToggle().getUserData().toString());
             sendToMsgBoard("You have earned a Faith Point!");
+            mainBoard.setEffect(null);
             popUpStage.close();
         });
 

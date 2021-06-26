@@ -722,6 +722,7 @@ public class CliController extends ClientController {
 
     public void leaderNotActivable(){
         displayMessage("This leader is not activable, you don't have enough resources.");
+        cli.pressEnter();
         startTurnPhase();
     }
 

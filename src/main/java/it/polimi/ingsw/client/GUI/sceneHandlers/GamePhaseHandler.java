@@ -1190,7 +1190,12 @@ public class GamePhaseHandler extends PhaseHandler {
 
     private void discardLeader() {
         if (!controller.getPlayer().getLeaders().get(0).isActive() || !controller.getPlayer().getLeaders().get(1).isActive()) {
-            discardLeadPopUp();
+            List<LeaderCard> leaderCards = new ArrayList<>();
+            for (LeaderCard led : controller.getPlayer().getLeaders())
+                if(!led.isActive())
+                    leaderCards.add(led);
+
+            discardLeadPopUp(leaderCards);
             //controller.getPlayer().setCurrPos(controller.getPlayer().getCurrPos()+1);
 
         } else {
@@ -1198,7 +1203,7 @@ public class GamePhaseHandler extends PhaseHandler {
         }
     }
 
-    private void discardLeadPopUp() {
+    private void discardLeadPopUp(List<LeaderCard> lead) {
         Stage popUpStage = new Stage(StageStyle.TRANSPARENT);
         popUpStage.initOwner(stage);
         popUpStage.initModality(Modality.APPLICATION_MODAL);
@@ -1207,15 +1212,23 @@ public class GamePhaseHandler extends PhaseHandler {
         popUpStage.show();
 
         DALLbl.setText("Select the leader you want to DISCARD");
-
-        DAL1Img.setImage(new Image("/img/leaderCards/" + controller.getPlayer().getLeaders().get(0).getId() + ".png"));
-        DAL1Toggle.setUserData(controller.getPlayer().getLeaders().get(0).getId());
-        DAL2Img.setImage(new Image("/img/leaderCards/" + controller.getPlayer().getLeaders().get(1).getId() + ".png"));
-        DAL2Toggle.setUserData(controller.getPlayer().getLeaders().get(0).getId());
+        if(lead.size() > 0) {
+            if (lead.get(0) != null) {
+                DAL1Img.setImage(new Image("/img/leaderCards/" + controller.getPlayer().getLeaders().get(0).getId() + ".png"));
+                DAL1Toggle.setUserData(controller.getPlayer().getLeaders().get(0).getId());
+            }
+            if (lead.get(1) != null){
+                DAL2Img.setImage(new Image("/img/leaderCards/" + controller.getPlayer().getLeaders().get(1).getId() + ".png"));
+                DAL2Toggle.setUserData(controller.getPlayer().getLeaders().get(0).getId());
+            }
+        }
 
         DALConfirmBtn.setOnAction(actionEvent -> {
+            int c = Integer.parseInt(chosenLeaderGrp.getSelectedToggle().getUserData().toString());
+            controller.getPlayer().getLeaders().removeIf(led -> led.getId() == c);
             controller.sendDiscardLeader(chosenLeaderGrp.getSelectedToggle().getUserData().toString());
             sendToMsgBoard("You have earned a Faith Point!");
+            popUpStage.close();
         });
 
         DALBackBtn.setOnAction(actionEvent -> {

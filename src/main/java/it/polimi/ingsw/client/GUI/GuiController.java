@@ -391,7 +391,23 @@ public class GuiController extends ClientController {
 
     @Override
     public void updatePositionAction(PlayersPositionMessage msg) {
+        List<NubPlayer> allPlayers = getTotalPlayers();
 
+        for(BiElement<Integer, Integer> pos : msg.getNewPlayersPosition()){
+            if(pos.getFirstValue()==0){
+            }else{
+                for(NubPlayer p : allPlayers){
+                    if(p.getTurnNumber()== pos.getFirstValue() && p.getCurrPos()!=pos.getSecondValue()){
+                        p.setCurrPos(pos.getSecondValue());
+                        break;
+                    }else if(p.getTurnNumber()==pos.getFirstValue() && p.equals(getPlayer())){
+                        player.setCurrPos(pos.getSecondValue());
+                        break;
+                    }
+                }
+            }
+        }
+        Platform.runLater(gamePhaseHandler::updateBoard);
     }
 
     @Override

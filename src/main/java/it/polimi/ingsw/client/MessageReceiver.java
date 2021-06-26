@@ -36,28 +36,16 @@ public class MessageReceiver implements Runnable{
         try {
             while (controller.isActive()) {
                 String inputObject = (String)socketIn.readObject();
-                controller.setWaitingServerUpdate(false);
                 MessageEnvelope envelope = gson.fromJson(inputObject, MessageEnvelope.class);
-                System.out.println("message incoming: " + envelope.getMessageID());
-                /*if(envelope.getMessageID().equals(MessageID.PING)){
-                    synchronized (pongLock){
-                        try {
-                            pongLock.notifyAll();
-                        }catch(Exception e){
-                            System.err.println("Pong notify Exception");
-                        }
-                    }*/
-                    //executor.execute(this::pongBack);
-                //}else {
                 controller.setWaitingServerUpdate(false);
                 if (controller.isRegistrationPhase()) {
                     readRegistrationMessage(envelope);
                 }else {
                     readGameMessage(envelope);
                 }
-                //}
             }
         } catch (Exception e){
+            System.err.println("A player crashed: disconnecting the whole party");
             controller.connectionError();
         }
 

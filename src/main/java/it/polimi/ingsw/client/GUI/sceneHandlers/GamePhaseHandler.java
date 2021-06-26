@@ -295,7 +295,38 @@ public class GamePhaseHandler extends PhaseHandler {
         //TODO: Pope Favours
     }
 
+    private void resetWarehouseMBPU(){
+        shelf1MB.setDisable(false);
+        shelf21MB.setDisable(false);
+        shelf22MB.setDisable(false);
+        shelf31MB.setDisable(false);
+        shelf32MB.setDisable(false);
+        shelf33MB.setDisable(false);
+
+        shelf1MB.setImage(null);
+        shelf21MB.setImage(null);
+        shelf22MB.setImage(null);
+        shelf31MB.setImage(null);
+        shelf32MB.setImage(null);
+        shelf33MB.setImage(null);
+
+        shelf1PU.setDisable(false);
+        shelf21PU.setDisable(false);
+        shelf22PU.setDisable(false);
+        shelf31PU.setDisable(false);
+        shelf32PU.setDisable(false);
+        shelf33PU.setDisable(false);
+
+        shelf1ImgPU.setImage(null);
+        shelf21ImgPU.setImage(null);
+        shelf22ImgPU.setImage(null);
+        shelf31ImgPU.setImage(null);
+        shelf32ImgPU.setImage(null);
+        shelf33ImgPU.setImage(null);
+    }
+
     private void setWarehouse() {
+        resetWarehouseMBPU();
         Map<BiElement<Resource, Storage>, Integer> wh = controller.getPlayer().getWarehouse();
         wh.forEach((x, y) -> {
             Image img = new Image("img/pawns/" + x.getFirstValue().toString().toLowerCase() + ".png");

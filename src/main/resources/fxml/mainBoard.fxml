@@ -47,7 +47,13 @@
         <Image url="@../img/ui/mainBoard.png"/>
     </ImageView>
 
-    <Button fx:id="endTurnBtn" layoutX="1106.0" layoutY="330.0" styleClass="btn" text="End Turn"/>
+    <!-- BUTTON SIDEBAR -->
+    <Button fx:id="endTurnBtn" layoutX="1100.0" layoutY="200.0" styleClass="btn" text="End Turn"/>
+    <Button fx:id="productionCardsOpen" layoutX="1100.0" layoutY="280.0" styleClass="btn"
+            text="View&#10;Production&#10;Cards"/>
+    <Button fx:id="produceBtn" layoutX="1100.0" layoutY="380.0" styleClass="btn" text="Start&#10;Produce"/>
+    <Button fx:id="activateLeaderBtn" layoutX="1100.0" layoutY="450.0" styleClass="btn" text="Activate&#10;Leader"/>
+    <Button fx:id="discardLeaderBtn" layoutX="1100.0" layoutY="530.0" styleClass="btn" text="Discard&#10;Leader"/>
 
     <!-- PRODUCTION CARDS -->
     <ImageView fx:id="productionStack11" fitWidth="140" layoutX="468.0" layoutY="470.0" preserveRatio="true"/>
@@ -75,6 +81,28 @@
     <ImageView fx:id="shelf32MB" fitHeight="30" layoutX="232.0" layoutY="516.0" preserveRatio="true"/>
     <ImageView fx:id="shelf33MB" fitHeight="30" layoutX="262.0" layoutY="516.0" preserveRatio="true"/>
 
+    <!-- LOOT CHEST -->
+    <ImageView fitWidth="30" layoutX="193.0" layoutY="616.0" preserveRatio="true">
+        <Image url="@../img/pawns/coin.png"/>
+    </ImageView>
+    <Label fx:id="coinLblLC" layoutX="213.0" layoutY="616.0" text="x0"/>
+
+    <ImageView fitWidth="30" layoutX="243.0" layoutY="616.0" preserveRatio="true">
+        <Image url="@../img/pawns/shield.png"/>
+    </ImageView>
+    <Label fx:id="shieldLblLC" layoutX="263.0" layoutY="616.0" text="x0"/>
+
+    <ImageView fitWidth="30" layoutX="193.0" layoutY="666.0" preserveRatio="true">
+        <Image url="@../img/pawns/servant.png"/>
+    </ImageView>
+    <Label fx:id="servantLblLC" layoutX="213.0" layoutY="666.0" text="x0"/>
+
+    <ImageView fitWidth="30" layoutX="243.0" layoutY="666.0" preserveRatio="true">
+        <Image url="@../img/pawns/stone.png"/>
+    </ImageView>
+    <Label fx:id="stoneLblLC" layoutX="263.0" layoutY="666.0" text="x0"/>
+
+
     <!-- MARKET -->
     <Circle fx:id="extraMarble" layoutX="1050.0" layoutY="50.0" radius="20" styleClass="marble"/>
     <GridPane fx:id="marketMarbles" hgap="2" layoutX="1082.0" layoutY="30.0" vgap="2">
@@ -92,10 +120,6 @@
         <Circle radius="20" styleClass="marble" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
     </GridPane>
     <Region id="marketRegion" fx:id="marketRegion" layoutX="1020.0" layoutY="20.0" prefHeight="160" prefWidth="250"/>
-
-    <!-- PRODUCTION CARDS -->
-    <Button fx:id="productionCardsOpen" layoutX="1100.0" layoutY="200.0" styleClass="btn"
-            text="View&#10;Production&#10;Cards"/>
 
     <!-- LEADER CARDS -->
     <ImageView fx:id="leader1Show" fitWidth="120" layoutX="10.0" layoutY="380.0" preserveRatio="true"

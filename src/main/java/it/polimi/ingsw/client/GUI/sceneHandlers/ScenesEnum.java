@@ -13,7 +13,9 @@ public enum ScenesEnum {
     OTHER_PLAYERS("playerPopUp.fxml"),
     CHOOSE_PAYMENT("choosePaymentMethod.fxml"),
     STORAGE("chooseStoragePopUp.fxml"),
-    PRODUCTION_CARDS("productionCardsPopUp.fxml");
+    PRODUCTION_CARDS("productionCardsPopUp.fxml"),
+    PRODUCE("producePopUp.fxml"),
+    DISCARD_ACTIVATE_LEADER("discActLeaderPopUp.fxml");
 
     private String path;
 

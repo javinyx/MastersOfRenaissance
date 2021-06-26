@@ -10,16 +10,15 @@ import it.polimi.ingsw.client.MessageReceiver;
 import it.polimi.ingsw.client.MessageToServerHandler;
 import it.polimi.ingsw.client.model.NubPlayer;
 import it.polimi.ingsw.messages.MessageID;
-import it.polimi.ingsw.messages.concreteMessages.BuyMarketMessage;
-import it.polimi.ingsw.messages.concreteMessages.BuyProductionMessage;
-import it.polimi.ingsw.messages.concreteMessages.PlayersPositionMessage;
-import it.polimi.ingsw.messages.concreteMessages.StoreResourcesMessage;
+import it.polimi.ingsw.messages.concreteMessages.*;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
+import it.polimi.ingsw.model.cards.leader.BoostAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
+import it.polimi.ingsw.model.cards.production.ProductionCard;
 import it.polimi.ingsw.model.market.Resource;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
@@ -263,8 +262,16 @@ public class GuiController extends ClientController {
         messageToServerHandler.generateEnvelope(MessageID.BUY_PRODUCTION_CARD, gson.toJson(msg));
     }
 
-    public List<ConcreteProductionCard> getAvailableProductionCards () {
+    public List<ConcreteProductionCard> getAvailableProductionCards() {
         return availableProductionCard;
+    }
+
+    /* PRODUCE PHASE **************************************************************************************************/
+    public void sendProductionMessage(List<ConcreteProductionCard> prodCards, ResourcesWallet resWal,
+                                      List<BoostAbility> leaderCards, List<Resource> leaderOutputs, boolean basicProd,
+                                      Resource basicOutput, List<Resource> basicInput) {
+        ProduceMessage msg = new ProduceMessage(prodCards, resWal, leaderCards, leaderOutputs, basicProd,
+                basicOutput, basicInput);
     }
 
     /* GENERAL ACTIONS ************************************************************************************************/
@@ -371,7 +378,15 @@ public class GuiController extends ClientController {
 
     @Override
     public void activateLeader() {
+        //UNUSED HERE
+    }
 
+    public void sendActivateLeader(String leaderCard) {
+        messageToServerHandler.generateEnvelope(MessageID.ACTIVATE_LEADER, leaderCard);
+    }
+
+    public void sendDiscardLeader(String leaderCard) {
+        messageToServerHandler.generateEnvelope(MessageID.DISCARD_LEADER, leaderCard);
     }
 
     @Override

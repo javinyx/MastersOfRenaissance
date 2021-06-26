@@ -2,7 +2,6 @@ package it.polimi.ingsw.client.GUI.sceneHandlers;
 
 import it.polimi.ingsw.client.GUI.GuiController;
 import it.polimi.ingsw.client.model.NubPlayer;
-import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.ResourcesWallet;
@@ -519,10 +518,17 @@ public class GamePhaseHandler extends PhaseHandler {
                 player3FaithImg));
 
         int ctr = 0;
-        for (NubPlayer p : controller.getOtherPlayers()) {
-            playersBtns.get(ctr).setText(p.getNickname() + "(#" + p.getTurnNumber() + ")");
-            playersFaithLbls.get(ctr).setText(String.valueOf(p.getCurrPos()));
+        if(controller.getOtherPlayers().size()==0){
+            playersBtns.get(0).setText("Lorenzo");
+            playersFaithLbls.get(0).setText(String.valueOf(controller.getLorenzoPos()));
+            playersFaithImgs.get(0).setImage(new Image("img/pawns/blackCrossNew.png"));
             ctr++;
+        }else {
+            for (NubPlayer p : controller.getOtherPlayers()) {
+                playersBtns.get(ctr).setText(p.getNickname() + "(#" + p.getTurnNumber() + ")");
+                playersFaithLbls.get(ctr).setText(String.valueOf(p.getCurrPos()));
+                ctr++;
+            }
         }
         //if the game is not of size 4, then hide other buttons
         while (ctr < 3) {

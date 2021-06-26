@@ -91,6 +91,7 @@ public abstract class ClientController {
 
     protected void connectionError() {setActive(false);}
 
+    public int getLorenzoPos(){return lorenzoPos;}
     public List<NubPlayer> getOtherPlayers(){return otherPlayers;}
     public void setOtherPlayers(List<NubPlayer> otherPlayers) {this.otherPlayers = otherPlayers;}
 

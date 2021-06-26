@@ -261,11 +261,12 @@ public class Controller implements Observer<MessageID> {
         try {
             ConcreteProductionCard card = null;
             List<LeaderCard> leaderCards = new ArrayList<>();
+            List<ConcreteProductionCard> buyableProdCard = new ArrayList<>(game.getBuyableProductionCards());
 
             for (int i = 0; i < 12; i++) {
-                if (game.getBuyableProductionCards().get(i).getId() == buyProdMsg.getProdCardId()) {
+                if (buyableProdCard.get(i).getId() == buyProdMsg.getProdCardId()) {
                     card = game.getBuyableProductionCards().get(i);
-                    System.out.println("level: " + card.getLevel());
+                    //System.out.println("level: " + card.getLevel());
                 }
             }
 

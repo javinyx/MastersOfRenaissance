@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 
 public class SinglePlayerGame extends Game implements ModelObserver {
-    private ProPlayer player;
+    protected ProPlayer player;
     private Player lorenzo;
     private Deck tokenDeck;
     private Player winner;

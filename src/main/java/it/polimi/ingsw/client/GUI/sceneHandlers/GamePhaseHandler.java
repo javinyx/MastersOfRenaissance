@@ -1110,12 +1110,17 @@ public class GamePhaseHandler extends PhaseHandler {
         List<BoostAbility> leaderCards = new ArrayList<>();
         List<Resource> leaderOutputs = new ArrayList<>();
 
-        produce2Img.setImage(new Image("/img/productionCardsFront/" + controller.getPlayer().getProductionStacks()
-                .get(0).peekFirst().getId() + ".png"));
-        produce3Img.setImage(new Image("/img/productionCardsFront/" + controller.getPlayer().getProductionStacks()
-                .get(1).peekFirst().getId() + ".png"));
-        produce4Img.setImage(new Image("/img/productionCardsFront/" + controller.getPlayer().getProductionStacks()
-                .get(2).peekFirst().getId() + ".png"));
+        if(controller.getPlayer().getProductionStacks().get(0).size() != 0)
+            produce2Img.setImage(new Image("/img/productionCardsFront/" + controller.getPlayer().getProductionStacks()
+                    .get(0).peekFirst().getId() + ".png"));
+
+        if(controller.getPlayer().getProductionStacks().get(1).size() != 0)
+            produce3Img.setImage(new Image("/img/productionCardsFront/" + controller.getPlayer().getProductionStacks()
+                    .get(1).peekFirst().getId() + ".png"));
+
+        if(controller.getPlayer().getProductionStacks().get(2).size() != 0)
+            produce4Img.setImage(new Image("/img/productionCardsFront/" + controller.getPlayer().getProductionStacks()
+                    .get(2).peekFirst().getId() + ".png"));
 
         produceConfirmBtn.setOnAction(actionEvent -> {
             /*if (produce1Toggle.isSelected()) {

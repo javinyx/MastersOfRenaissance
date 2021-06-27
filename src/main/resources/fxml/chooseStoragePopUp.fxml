@@ -35,7 +35,7 @@
                styleClass="resImg"/>
 
     <ImageView fx:id="bin" fitHeight="50.0" layoutX="31.0" layoutY="325.0" preserveRatio="true">
-        <Image url="@../img/ui/bin.png"/>
+        <Image url="@../img/ui/whiteBin.png"/>
     </ImageView>
 
     <Button fx:id="chooseStorageBtnPU" layoutX="187.0" layoutY="337.0" text="Confirm" styleClass="btn"/>

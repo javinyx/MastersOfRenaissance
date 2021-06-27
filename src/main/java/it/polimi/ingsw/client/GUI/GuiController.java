@@ -18,7 +18,6 @@ import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
 import it.polimi.ingsw.model.cards.leader.BoostAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
-import it.polimi.ingsw.model.cards.production.ProductionCard;
 import it.polimi.ingsw.model.market.Resource;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
@@ -273,9 +272,9 @@ public class GuiController extends ClientController {
     /* PRODUCE PHASE **************************************************************************************************/
     public void sendProductionMessage(List<ConcreteProductionCard> prodCards, ResourcesWallet resWal,
                                       List<BoostAbility> leaderCards, List<Resource> leaderOutputs, boolean basicProd,
-                                      Resource basicOutput, List<Resource> basicInput) {
+                                      Resource basicOutput) {
         ProduceMessage msg = new ProduceMessage(prodCards, resWal, leaderCards, leaderOutputs, basicProd,
-                basicOutput, basicInput);
+                basicOutput);
     }
 
     /* GENERAL ACTIONS ************************************************************************************************/

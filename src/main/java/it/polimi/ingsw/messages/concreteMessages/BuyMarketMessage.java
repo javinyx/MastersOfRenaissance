@@ -3,7 +3,6 @@ package it.polimi.ingsw.messages.concreteMessages;
 import it.polimi.ingsw.messages.SimpleMessage;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.model.cards.leader.MarbleAbility;
-import it.polimi.ingsw.model.player.ProPlayer;
 
 import java.util.List;
 
@@ -26,6 +25,10 @@ public class BuyMarketMessage extends SimpleMessage {
         return index;
     }
 
+    /**
+     * @return a {@link BiElement} containing the MarbleAbility leaderCard and the quantity of white marbles
+     * to convert with that card.
+     */
     public List<BiElement<MarbleAbility, Integer>> getMarbleUsage(){
         if(marbleUsage==null || marbleUsage.isEmpty()){
             return null;

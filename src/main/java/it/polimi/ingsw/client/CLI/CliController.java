@@ -422,7 +422,7 @@ public class CliController extends ClientController {
             resWal.setExtraStorage(fromLeader1, 0);
             resWal.setExtraStorage(fromLeader2, 1);
 
-            ProduceMessage msg = new ProduceMessage(prodCard, resWal, betterLeaderCard, leadOut, basic, basicOut, basicIn);
+            ProduceMessage msg = new ProduceMessage(prodCard, resWal, betterLeaderCard, leadOut, basic, basicOut);
 
             messageToServerHandler.generateEnvelope(MessageID.PRODUCE, gson.toJson(msg));
         }

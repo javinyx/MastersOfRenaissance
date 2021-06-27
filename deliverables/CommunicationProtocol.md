@@ -78,24 +78,7 @@ Once it's filled, we clear that map allowing room for the creation of a new lobb
 ![Game initiation](img/gameinit.png)
 
 There are a few things to do upon game initiation:
-* Update each player's view with their initial position on the faith track based on their turn order, with messages like the following:
-```
-// Message: server -> client
-{
-	"messageID" : "PLAYER_POSITION",
-	"payload" : {
-		[
-			"player" : 1,
-			"boardCell" : 2
-		],
-		[
-			"player" : 2,
-			"boardCell" : 1
-		]
-	}
-}
-```
-* Each player needs to choose 2 out of their 4 given LeaderCards, the messages will look as such:
+* Each player needs to choose 2 out of 4 LeaderCards given randomly by the Server. The messages will look as such:
 ```
 // Message: server -> client
 {
@@ -113,7 +96,7 @@ There are a few things to do upon game initiation:
 	}
 }
 ```
-Each card has a unique ID defined in the [JSON configuration files](https://github.com/Javinyx/ingswAM2021-Barone-Belotti-Braccini/tree/main/src/main/resources/json) used both by Server and Client to build each Java Object representing those cards. We use the corresponding IDs instead of the whole card serialized in order to keep the messages lightweight.
+Each card has a unique ID defined in the [JSON configuration files](https://github.com/Javinyx/ingswAM2021-Barone-Belotti-Braccini/tree/main/src/main/resources/json) used both by Server and Client to build each Java Object representing those cards. We use the corresponding IDs instead of the whole serialized card in order to keep the messages lightweight.
 
 * Request players' preferred resources based on their turn order, with messages like the following: 
 ```
@@ -140,7 +123,7 @@ Each card has a unique ID defined in the [JSON configuration files](https://gith
 	}
 }
 
-//If the player's requests cannot be processed because malformed
+//If the player's requests cannot be processed because it's malformed
 // Message: server -> client
 {
 	"messageID" : "BAD_STORAGE_REQUEST"
@@ -157,13 +140,31 @@ Every value and faithPoint assignment follows the ruleset in the table below:
 |   4th  |              2             |       1      |
 
 
+* Update each player's view with their initial position on the faith track based on their turn order, with messages like the following:
+```
+// Message: server -> client
+{
+	"messageID" : "PLAYER_POSITION",
+	"payload" : {
+		[
+			"player" : 1,
+			"boardCell" : 0
+		],
+		[
+			"player" : 2,
+			"boardCell" : 1
+		]
+	}
+}
+```
 
-# Mid-game messages
+Before actually starting the game, as many [UPDATE](#update-message)  messages as players in game are sent to everyone in the party so that they can have an overall view of the starting situation. Then a `START_INITIAL_GAME` is sent to everyone.
+
+## Mid-game messages
 
 ![Mid-Game](img/midgame.png)
 
-## 3. Server to Client Messages
-### 3.1 Client View Update
+### Messages in broadcast
 The following messages are sent to each player in the game, because everyone has to see the changes in the model caused by other players as well:
 
 #### Update Message
@@ -180,11 +181,11 @@ public class UpdateMessage extends SimpleMessage{
 }
 ```
 Usually this message is sent by the server at the end of each player's turn to all the players, but it's occasionally used even in registrationPhase to communicate the initial status. This class is one of the Messages class that will be serialized in JSON and the resulting string will be squished into the `payload` field of `MessageEnvelope`.
-* `playerId`and `playerPos`are the id and current position of the player who has triggered this update message (at the end of the turn);
-* `nextPlayerId`is the id of the player who has to play next;
-* `marketBoard`, `extraMarble` and `availableProductionCards` are included since they're global information that concern every player. In fact, after a market action or a development card's purchasen done by `playerId`, the market state or the cards still available have been through changes that the other must know, so their client status has to be updated as well since the model has changed;
-* `productionCards`is a list of pairs of cardId bought and in which of the 3 stacks on the `playerId` board has been put;
-* `leadersId`is a list of pairs of leadersId and their activation status represeted through a boolean. This can be used to communicate how many leaders the `playerId` has, which are active and which not;
+* `playerId` and `playerPos` are the id and current position of the player who has triggered this update message (at the end of the turn);
+* `nextPlayerId` is the id of the player who has to play next;
+* `marketBoard`, `extraMarble` and `availableProductionCards` are included since they're global information that concern every player. In fact, after a market action or a development card's purchase done by `playerId`, the market state or the cards still available have been through changes that the other must know, so their client status has to be updated as well since the model has changed;
+* `productionCards` is a list of pairs of card ID bought and in which of the 3 stacks on the `playerId` board the card has been put;
+* `leadersId` is a list of pairs of leaders ID and their activation status represeted through a boolean. This can be used to communicate how many leaders the `playerId` has, which are active and which not;
 * `addedResources` and `removedResources` represents the modification that the player storage has been through during his/her turn. So everyone can update their local storage status of `playerId` accordingly by adding those resources specified in `addedresources` and removing those in `removedResources`. The map contains a pair of Resource and Storage type as key and the quantity.
 
 So this message incapsulate the player's id that has to play the next turn as well as the modifications and progression happened last turn.
@@ -195,8 +196,11 @@ So this message incapsulate the player's id that has to play the next turn as we
 {
 	"messageID" : “PLAYER_POSITION",
 	"payload" : {
-		"player" : 1,
-		"boardCell" : 17
+		[
+			"player" : 1,
+			"boardCell" : 17
+		],
+		...
 	}
 }
 ```
@@ -204,43 +208,6 @@ So this message incapsulate the player's id that has to play the next turn as we
    if some faith points are generated, or from someone else discarding resources;
 * `boardCell` is the updated position on the player's board.
 
-#### Purchase from Market
-```
-{
-	"messageID" : "MARKET_UPDATE",
-	"payload" : {
-		"dimension" : "column/row",
-		"index" : 2,
-		"changes" : ["BLANK", "FAITH", "SHIELD"],
-		"extra" : "COIN"
-	}
-}
-```
-* `dimension` and `index` are the coordinates on the market board where some changes have been applied because somobody has bought resources from there.
-* new setup of market (only changes notification).
-
-#### Purchase of Production Cards
-```
-{
-	"messageID" : "AVAILABLE_PRODUCTION_CARDS",
-	"payload" : {
-		{
-			"deck" : 1,
-			"cardID" : 3
-		},
-		
-		...
-		
-		{
-			"deck" : 12,
-			"cardID" : 3
-		}
-	}
-}
-```
-The payload displays all 12 decks containing the currently available production cards. A player can buy only the card on top of all the others belonging to the same deck, so the view can just show the 12 available ones. If a deck is empty, then `"cardID" : 0`.
-* `deck` indicates the deck among the (initial) 12 available;
-* `cardID` is the ID of the card to show on that deck.
 
 #### End game
 ```
@@ -253,124 +220,131 @@ The payload displays all 12 decks containing the currently available production 
 ```
 In a singleplayer game, if Lorenzo wins, then `"winner" : 0`.
 
-### 3.2 Requests for current player turn
-#### Production
-```
-{
-	"messageID" : "PRODUCTION_RESULT",
-	"payload" : {
-		"state" : boolean,
-		"outcome" : {"SHIELD", "STONE", "SHIELD"}
-	}
-}
-```
-* `state` signals the success of the production asked by the player;
-* `outcome` is the actual production that will be put in the player's lootchest; if state is negative, then this will be empty.
-
-#### Resources placement
-```
-{
-	"messageID" : "RESOURCES_PLACEMENTS",
-	"payload" : {}
-}
-```
-The server notifies the players that they have to place the resources that they previously acquired, for example, from the market.
-
-## 4. Client to Server Messages
-### Leader card activation
+### 1-to-1 message exchanges
+#### Leader card activation
 ```
 {
   "messageID" : "ACTIVATE_LEADER",
   "payload" : {
-       "leaderCard" : id
+       "leaderCardId" : 15
   }
 }
 ```
-### Production
+If the card is not activable for that player, the server will respond with an error, otherwise with and `ACK`.
+
+#### Production
 ```
 {
-	"messageID" : "PRODUCTION",
+	"messageID" : "PRODUCE",
 	"payload" : {
 		"productionCards" : [id1, id2...],
-		"fromWarehouse" : {"STONE"},
-		"fromLootchest" : {"SHIELD", "STONE"},
-		"fromExtraStorage1" : {"SERVANT"},
-		"fromExtraStorage2" : {},
-		"boostAbilityCards" : [id1, id2],
-		"outputLeader" : [out1, out2],
-		"basicProduction" : boolean,
+		"resourcesWallet" : {...},
+		"leaderCards" : [5, 7],
+		"leadersOutput" : [SHIELD, COIN],
+		"basicProduction" : true,
 		"outputBasic" : "COIN"
 	}
 }
 ```
 * `productionCards` contains the cards that the user wants to use for production.
-* `fromWarehouse` indicates the resources that should be taken from the warehouse.
-* `fromLootchest` indicates the resources that should be taken from the lootchest.
-* `fromExtraStorage1` and `fromExtraStorage2` indicate the resource that should be taken from the extra storage supplied by an active leader card of StorageAbility.
+* `resourcesWallet` is a class that wrap the information about how the players want to spend their resources for buying the card
 * `boostAbilityCards` contains the leader cards of type BoostAbility that will be used during production.
 * `outputLeader` contains all the BoostAbility leaderCards outputs of player's choice as a list of resources.
 * `basicProduction` indicates if the user would like to use the standard production given by the game board.
 * `outputBasic` indicates the type of Resource the user wants to receive from basicProduction.
 
-### Buy from Market
+The respective Java class is:
+```Java
+public class ProduceMessage extends SimpleMessage {
+    private final List<ConcreteProductionCard> productionCards;
+    private final ResourcesWallet resourcesWallet;
+    private final List<BoostAbility> leaderCards;
+    private final List<Resource> leaderOutputs;
+    private final boolean basicProduction;
+    private final Resource basicOutput;
+}
+```
+
+#### Buy from Market
 ```
 {
-	"messageID" : "BUY_MARKET",
+	"messageID" : "BUY_FROM_MARKET",
 	"payload" : {
-        "info" : {
+        "info" : 
+		{
             "dimension" : "row",
             "index" : 2
-		},
-		{
-		"leaders" : [
+			"marbleUsage" : [
             {
                 "marbleLeader" : id,
-                "quantity" : 1
+                "quantityToConvert" : 1
             },
             {
                 "marbleLeader" : id,
-                "quantity" : 2
+                "quantityToConvert" : 2
             }
 		]
 	}
 }
 ```
-`leaders` contains the information regarding active MarbleAbility leader cards
-which the player would like to use upon the specified quantity of 
-blank marbles collected from the market.
+* `dimension` and `index` are the coordinates identifying the resources chosen on the Market Board
+* `marbleUsage` contains the information regarding active MarbleAbility leader cards which the player would like to use onto the specified quantity of blank marbles collected from the market.
 
-### Buy Production Cards
+#### Resources placement
+The server notifies the players that they have to place the resources that they previously acquired, for example, from the market.
+
+The client responds with this kind of message:
 ```
 {
-	"messageID" : "BUY_PRODUCTION",
+	"messageID" : "STORE_RESOURCES",
 	"payload" : {
-		"prodCards" : [id1, id2, id3],
-		"fromWarehouse" : ["SHIELD"],
-		"fromLootchest" : ["COIN", "COIN"],
-		"fromExtraStorage1" : [],
-		"fromExtraStorage2" : [],
-		"discountAbility" : [id1, id2]
+		"placements" : [
+			{
+				"resource" : STONE,
+				"storage" : WAREHOUSE_SMALL
+			},
+			{
+				"resource" : SHIELD,
+				"storage" : WAREHOUSE_MID
+			},
+			...
+		],
+		"turnID" : 1
 	}
 }
 ```
-* `prodCards` contains the cards that the user wants to buy.
-* `fromWarehouse` indicates the resources that should be taken from the warehouse.
-* `fromLootchest` indicates the resources that should be taken from the lootchest.
-* `fromExtraStorage1` and `fromExtraStorage2` indicate the resource that should be taken from the extra storage supplied by an active leader card of StorageAbility.
-* `discountAbility` indicates the leader cards of Discount type that the player wants
-to use during this phase.
+The payload in the Client message version is a `StoreResourceMessage` Java object instead of a simple list of resources as sent by the server.
+
+#### Buy Production Cards
+```
+{
+	"messageID" : "BUY_PRODUCTION_CARD",
+	"payload" : {
+		"prodCardId" : 37,
+		"stack" : 2,
+		"leaderId" : [5, 6],
+		"resourcesWallet" : {...} 
+	}
+}
+```
+* `prodCardId` contains the card that the user wants to buy
+* `stack` is the index of where the card should be placed on the Player's Board once it has been bought
+* `resourcesWallet` is a class that wrap the information about how the players want to spend their resources for buying the card
+* `leaderId` indicates the leader cards of Discount type that the player wants to use during this phase.
 
 ## Message classes mapping to MessageIDs
 Most important messages are reported below. Mind that some error messages are not included in the list since they don't have any `Payload` associeted to them and are self-explanatory.
 
-Furthermore, some messages are used 
+Furthermore, some messageIDs are used both directions (from Client to Server and vice versa) for questions and answers, so they have slight differences in the paylod.
 
 | MessageID | Payload | Meaning |
-|-----------|:---------:|:-------|
-|ASK_NICK |String|
+|:-----------:|:---------:|:-------|
+|ASK_NICK|String|
 |PLAYER_NUM | Integer| The size the player wants the game to be|
 |CONFIRM_REGISTRATION|| Player is now registered correctly in the server|
 |UPDATE| UpdateMessage| Used to show the status of a player or just the changes between turns|
 |CHOOSE_LEADER_CARD| List\<Integer\>| List of 4 leaders to choose and the 2 in response
 |ACK | Boolean | Player's request has been fullfilled by the server. `True` if the action is a major one (that can be done just once per turn), `False` otherwise.|
-|
+|STORE_RESOURCES | List\<Resource> or StoreResourcesMessage ||
+|BUY_PRODUCTION_CARD| BuyProductionMessage | |
+|PRODUCE| ProduceMessage | |

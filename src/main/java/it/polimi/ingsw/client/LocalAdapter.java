@@ -64,7 +64,7 @@ public class LocalAdapter implements Observer<MessageEnvelope>, MessageDispatche
             case STORE_RESOURCES -> viewController.chooseStorageAfterMarketAction(envelope.getPayload());
             case UPDATE -> viewController.updateAction(envelope.deserializeUpdateMessage());
 
-            case LORENZO_POSITION -> viewController.upLorenzoToken(envelope.getPayload());
+            case LORENZO_POSITION -> viewController.upLorenzoToken(gson.fromJson(envelope.getPayload(), LorenzoInformationsMessage.class));
             case PLAYERS_POSITION -> viewController.updatePositionAction(gson.fromJson(envelope.getPayload(), PlayersPositionMessage.class));
 
             case VATICAN_REPORT -> viewController.infoVaticanReport(gson.fromJson(envelope.getPayload(), VaticanReportMessage.class));

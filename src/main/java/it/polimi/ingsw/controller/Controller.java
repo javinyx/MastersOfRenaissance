@@ -17,6 +17,7 @@ import it.polimi.ingsw.model.MultiPlayerGame;
 import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.SinglePlayerGame;
 import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
+import it.polimi.ingsw.model.cards.actiontoken.DiscardToken;
 import it.polimi.ingsw.model.cards.leader.*;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
@@ -54,6 +55,7 @@ public class Controller implements Observer<MessageID> {
     private boolean mustChoosePlacements = false;
     private boolean basicActionDone = false;
     private boolean initializationPhase;
+    private ActionToken act;
 
     /**
      * The following attributes are needed for generating the UpdateMessage. They're filled during the player turn and cleared everytime
@@ -217,10 +219,7 @@ public class Controller implements Observer<MessageID> {
         }
         if (game.getTotalPlayers() == 1) {
             infoTokenLorenzo.clear();
-            ActionToken act = ((SinglePlayerGame) game).drawActionToken();
-
-            infoTokenLorenzo.add(act.getId());
-            infoTokenLorenzo.add(((SinglePlayerGame) game).getLorenzoPosition());
+            act = ((SinglePlayerGame) game).drawActionToken();
 
             update(LORENZO_POSITION);
         }
@@ -266,7 +265,6 @@ public class Controller implements Observer<MessageID> {
             for (int i = 0; i < 12; i++) {
                 if (buyableProdCard.get(i).getId() == buyProdMsg.getProdCardId()) {
                     card = game.getBuyableProductionCards().get(i);
-                    //System.out.println("level: " + card.getLevel());
                 }
             }
 
@@ -910,7 +908,8 @@ public class Controller implements Observer<MessageID> {
             }
 
             case LORENZO_POSITION -> {
-                MessageEnvelope env = new MessageEnvelope(LORENZO_POSITION, infoTokenLorenzo.toString());
+                LorenzoInformationsMessage msg = new LorenzoInformationsMessage(act.getId(), ((SinglePlayerGame) game).getLorenzoPosition(), game.getBuyableProductionCards());
+                MessageEnvelope env = new MessageEnvelope(LORENZO_POSITION, gson.toJson(msg, LorenzoInformationsMessage.class));
                 remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(env);
             }
 

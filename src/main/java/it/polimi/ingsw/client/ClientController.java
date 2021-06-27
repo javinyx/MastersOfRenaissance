@@ -412,12 +412,13 @@ public abstract class ClientController {
      * Update Lorenzo situation and show the token that he has drawn
      * @param msg message from the server with all the Lorenzo's information
      */
-    public void upLorenzoToken (String msg){
+    public void upLorenzoToken (LorenzoInformationsMessage msg){
 
-        List<Integer> num = convertStringToListInteger(msg);
-        ActionToken act = convertIdToActionToken(num.get(0));
 
-        lorenzoPos = num.get(1);
+        ActionToken act = convertIdToActionToken(msg.getTokenId());
+        lorenzoPos = msg.getLorenzoPosition();
+
+        availableProductionCard = msg.getBuyableProd();
 
         showLorenzoStatus(act);
     }

@@ -3,10 +3,7 @@ package it.polimi.ingsw.client;
 import com.google.gson.Gson;
 import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
-import it.polimi.ingsw.messages.concreteMessages.EndTurnMessage;
-import it.polimi.ingsw.messages.concreteMessages.PlayersPositionMessage;
-import it.polimi.ingsw.messages.concreteMessages.TurnNumberMessage;
-import it.polimi.ingsw.messages.concreteMessages.VaticanReportMessage;
+import it.polimi.ingsw.messages.concreteMessages.*;
 
 import java.io.ObjectInputStream;
 
@@ -118,7 +115,7 @@ public class MessageReceiver implements Runnable{
             case UPDATE -> controller.updateAction(envelope.deserializeUpdateMessage());
             case CONFIRM_END_TURN -> controller.endTurn(gson.fromJson(envelope.getPayload(), EndTurnMessage.class));
 
-            case LORENZO_POSITION -> controller.upLorenzoToken(envelope.getPayload());
+            case LORENZO_POSITION -> controller.upLorenzoToken(gson.fromJson(envelope.getPayload(), LorenzoInformationsMessage.class));
             case VATICAN_REPORT -> controller.infoVaticanReport(gson.fromJson(envelope.getPayload(), VaticanReportMessage.class));
             case PLAYERS_POSITION -> controller.updatePositionAction(gson.fromJson(envelope.getPayload(), PlayersPositionMessage.class));
 

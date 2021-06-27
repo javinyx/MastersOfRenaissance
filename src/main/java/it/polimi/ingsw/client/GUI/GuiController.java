@@ -40,7 +40,6 @@ public class GuiController extends ClientController {
     private final InitialPhaseHandler initialPhaseHandler;
     private final GamePhaseHandler gamePhaseHandler;
     private final Object lock = new Object();
-    List<Integer> chosenLeadersId = new ArrayList<>();
 
     private String nickName;
     private Integer gameSize;
@@ -105,7 +104,6 @@ public class GuiController extends ClientController {
         } catch (IOException e) {
             System.err.println(e.getClass() + "Socket error");
         }
-
     }
 
     /* REGISTRATION PHASE *********************************************************************************************/
@@ -148,6 +146,7 @@ public class GuiController extends ClientController {
         Platform.runLater(initialPhaseHandler::waitStartGame);
         List<LeaderCard> availableLeaders = getPlayer().getLeaders();
         List<LeaderCard> chosenLeaders = new ArrayList<>();
+        List<Integer> chosenLeadersId = new ArrayList<>();
 
         for (int i = 0; i < leadersChoice.size(); i++) {
             if (leadersChoice.get(i)) {
@@ -207,7 +206,7 @@ public class GuiController extends ClientController {
 
         Platform.runLater(() -> {
             gamePhaseHandler.setScene(ScenesEnum.MAIN_BOARD);
-            gamePhaseHandler.initiateBoard(chosenLeadersId);
+            gamePhaseHandler.initiateBoard();
         });
     }
 
@@ -241,7 +240,7 @@ public class GuiController extends ClientController {
             }
         }
 
-        Platform.runLater(() -> gamePhaseHandler.chooseStoragePopUp(tbdRes, false));
+        Platform.runLater(() -> gamePhaseHandler.chooseStoragePopUp(tbdRes, false, false));
     }
 
     public void sendBuyMarketMessage(char dim, int index) {
@@ -289,10 +288,20 @@ public class GuiController extends ClientController {
         return normalTurn;
     }
 
+    public List<Integer> getPopeFavours() {
+        return popeStatusGeneral;
+    }
+
+    public void sendRearrangeMessage(List<BiElement<Resource, Storage>> placements) {
+        StoreResourcesMessage msg = new StoreResourcesMessage(placements, getPlayer().getTurnNumber());
+        messageToServerHandler.generateEnvelope(MessageID.REARRANGE_WAREHOUSE, gson.toJson(msg, StoreResourcesMessage
+                .class));
+    }
+
     /* ERROR REQUESTS *************************************************************************************************/
     @Override
     public void badStorageRequest() {
-        Platform.runLater(() -> gamePhaseHandler.chooseStoragePopUp(null, true));
+        Platform.runLater(() -> gamePhaseHandler.chooseStoragePopUp(null, true, false));
     }
 
     @Override
@@ -357,7 +366,7 @@ public class GuiController extends ClientController {
 
     @Override
     public void updateAvailableProductionCards() {
-        gamePhaseHandler.setProductionCards(availableProductionCard);
+        gamePhaseHandler.setProductionCards();
     }
 
     @Override

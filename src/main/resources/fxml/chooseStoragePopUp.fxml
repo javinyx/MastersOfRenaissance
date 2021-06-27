@@ -33,6 +33,10 @@
                styleClass="resImg"/>
     <ImageView fx:id="resource4ImgPU" fitHeight="30.0" layoutX="109.0" layoutY="267.0" preserveRatio="true"
                styleClass="resImg"/>
+    <ImageView fx:id="resource5ImgPU" fitHeight="30.0" layoutX="59.0" layoutY="117.0" preserveRatio="true"
+               styleClass="resImg"/>
+    <ImageView fx:id="resource6ImgPU" fitHeight="30.0" layoutX="59.0" layoutY="167.0" preserveRatio="true"
+               styleClass="resImg"/>
 
     <ImageView fx:id="bin" fitHeight="50.0" layoutX="31.0" layoutY="325.0" preserveRatio="true">
         <Image url="@../img/ui/whiteBin.png"/>

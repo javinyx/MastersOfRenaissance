@@ -54,6 +54,7 @@
     <Button fx:id="produceBtn" layoutX="1100.0" layoutY="380.0" styleClass="btn" text="Start&#10;Production"/>
     <Button fx:id="activateLeaderBtn" layoutX="1100.0" layoutY="450.0" styleClass="btn" text="Activate&#10;Leader"/>
     <Button fx:id="discardLeaderBtn" layoutX="1100.0" layoutY="530.0" styleClass="btn" text="Discard&#10;Leader"/>
+    <Button fx:id="rearrangeBtn" layoutX="1100.0" layoutY="610.0" styleClass="btn" text="Rearrange&#10;Warehouse"/>
 
     <!-- PRODUCTION CARDS -->
     <ImageView fx:id="productionStack11" fitWidth="140" layoutX="468.0" layoutY="470.0" preserveRatio="true"/>
@@ -71,6 +72,17 @@
     <!-- FAITH TRACK -->
     <ImageView fx:id="redCross" fitWidth="30" layoutX="177.0" layoutY="272.0" preserveRatio="true">
         <Image url="@../img/pawns/redCrossNew.png"/>
+    </ImageView>
+
+    <!-- POPE FAVOURS -->
+    <ImageView fx:id="popeFav1" fitWidth="56" layoutX="348.0" layoutY="239.0" preserveRatio="true">
+        <Image url="@../img/ui/noPope2.png" />
+    </ImageView>
+    <ImageView fx:id="popeFav2" fitWidth="56" layoutX="554.0" layoutY="196.0" preserveRatio="true">
+        <Image url="@../img/ui/noPope3.png" />
+    </ImageView>
+    <ImageView fx:id="popeFav3" fitWidth="56" layoutX="801.0" layoutY="239.0" preserveRatio="true">
+        <Image url="@../img/ui/noPope4.png" />
     </ImageView>
 
     <!-- WAREHOUSE -->

@@ -4,7 +4,7 @@
 This document's aim is to provide a clear overview of *Maestri del Rinascimento* project's communication protocol. Most relevant and crucial exchanges are going to be highlighted here. 
 <br>
 
-Each message that goes through the network is a `MesssageEnvelope` class that has been serialized with JSON. So all of them follow the JSON format shown below:
+Each message that goes through the network is a `MesssageEnvelope` class object that has been serialized with JSON. So all of them follow the JSON format shown below:
 
 ```
 {
@@ -20,16 +20,16 @@ public class MessageEnvelope{
 }
 ```
 
-The `messageID` gives information about the type of event that has arisen in the sender, the `payload` field adds useful information for the receiver in order for it to react correctly. The `payload` could be a simple String or one of the Message class serializd with JSON as well if the `MessageId` has one associated to it (see below).
+The `messageID` gives information about the type of event that has arisen in the sender, the `payload` field adds content or useful information for the receiver in order for it to react correctly. The `payload` could be a simple String or one of the Message class object serializd with JSON as well if the `MessageId` has one associated to it ([see below](#message-classes-mapping-to-messageids)).
 <br/>
 
-Whether it's an event occurred whithin the Client or a Server's response, respective messages will be created. For more complex messages that has to be sent through the network, we use ad hoc Java classes to incapsulate all the information in an organized way.  
+Whether it's an event occurred whithin the Client or a Server's response, respective messages will be created. For more complex messages that has to be sent through the network, we use ad hoc Java classes to incapsulate all the information in an organized way as MessageEnvelope's payload.  
 <br/>
 
-Thanks to the `MessageEnvelope` we always know how to immediately deserialize a package coming from the network. Once we have extracted the Json Object into a `MessageEnvelope` Java object, we can deserialize also the payload into a "primitive" type (i.e. String, Integer) or into one of our `Message` Java object based on the messageID (the effective type of the event).
+Thanks to the `MessageEnvelope` we always know how to immediately deserialize a package coming from the network. Once we have extracted the Json Object into a `MessageEnvelope` Java object, we can deserialize also the payload into a "primitive" type (i.e. String, Integer) or into one of our `Message` Java object based on the messageID (the representative type of the event).
 <br/>
 
-We decided to use Json as means of serialization instead of Java serialization because it is universally manageable, allowing us the potential of rewrite the client app in another programming languages in the future. Furthermore is readable, easing the debug process for us.
+We decided to use Json as means of serialization instead of Java serialization because it is universally manageable, allowing us the potential of rewrite the client app in other programming languages in the future. Furthermore is readable, easing the debug process for us.
 
 
 # Table of Contents
@@ -55,14 +55,22 @@ We decided to use Json as means of serialization instead of Java serialization b
     + [Production](#production-1)
     + [Buy from Market](#buy-from-market)
     + [Buy Production Cards](#buy-production-cards)
+- [Message classes mapping to MessageIDs](#Message-classes-mapping-to-MessageIDs)
 
 # Initialization
 ## 1. Player registration
-The connection phase is executed upon the players' insertion of their IP address and port. They will contact the server on the default port (which can be configured through the config.json file), that has the purpose of listening for new incoming players. Once the connection is accepted, it submits the respective `ClientSocketConnection` (which implements `Runnable` interface) of that player to a ThreadPool which will be in charge of serving the player throughout the game. This lets the Server keep listening for new connection requests without beign interrupted by players already registered. 
-<br/>
-Now the ClientConnetionSocket begins the RegistrationPhase by sending the Client some requests of which we report here the respective messageIds: `ASK_NICK`, `PLAYER_NUM` and `CONFIRM_REGISTRATION`.
+The connection phase is executed upon the players' insertion of their IP address and port. They will contact the server on the default port **27001** (if no custom option is given) or through the port chosen upon Server configuration from cmd, that has the purpose of listening for new incoming players. 
 
-Once this is done, if the multiplayer option has been chosen, the player is put into a lobby waiting for other players whom would like to play with the same game size. The *waiting lobby* structure is a map (i.e. `Map<String, ClientConnection> threePlayerWait`) in which each entry is the the nickname and the ClientConnection of players waiting to find a group. We keep filling this map as play requests for the same size arrives until the number of players in it equates the lobby capacity (for example, the `threePlayerWait` has a capacity of 3 people). Once it's filled, we clear that map, and move the players to an another map since the game can be finally started. Following the previous example, the new map is a `Map<ClientConnection, List<ClientConnection>> threePlayerPlay` and it has one entry for each player currently in a game of size 3 and, as value, has a list of his/her opponents. This expedient has been thought as a way to allow the server to host multiple games at the same time. In fact, we  allow just one room waiting for a game of size 3 to start as we wish to fill quickly the lobby, but multiple games of size 3 going on at the same time.
+The pair `ClientSocketConnection` and `RemoteView` forms the interface through which the server sees each player.
+
+Once the connection is accepted, it submits the respective `ClientSocketConnection` (which implements `Runnable` interface) of that player to a Thread from a ThreadPool which will be in charge of serving the player throughout the game. This lets the Server keep listening for new connection requests without beign interrupted by players already registered. 
+<br/>
+
+Now the ClientConnetionSocket begins the RegistrationPhase by sending the Client some requests of which we report here the respective messageIds: `ASK_NICK`, `PLAYER_NUM` and `CONFIRM_REGISTRATION`. It expects that these requests will be replied with the data to indentify the player and the game type.
+
+Once this is done, if the multiplayer option has been chosen, the player is put into a lobby waiting for other players whom would like to play with the same game size. The *waiting lobby* structure is a map (i.e. `Map<String, ClientConnection> threePlayerWait`) in which each entry is the the nickname and the ClientConnection of players waiting to find a group. We keep filling this map as play requests for the same size arrives, until the number of players in it equates the lobby capacity (for example, the `threePlayerWait` has a capacity of 3 people).
+<br> 
+Once it's filled, we clear that map allowing room for the creation of a new lobby of the same size if needed, and move the players to an another map since the game can be finally started. Following the previous example, the new map is a `Map<ClientConnection, List<ClientConnection>> threePlayerPlay` and it has one entry for each player currently in a game of size 3 and, as value, has a list of his/her opponents. This expedient has been thought as a way to allow the server to host multiple games at the same time. In fact, we  allow just one room at a time waiting for a game of size 3 to start as we wish to fill quickly the lobby, but multiple games of size 3 going on at the same time.
 
  
 ## 2. Game initiation
@@ -76,8 +84,14 @@ There are a few things to do upon game initiation:
 {
 	"messageID" : "PLAYER_POSITION",
 	"payload" : {
-		"player" : 1,
-		"boardCell" : 2
+		[
+			"player" : 1,
+			"boardCell" : 2
+		],
+		[
+			"player" : 2,
+			"boardCell" : 1
+		]
 	}
 }
 ```
@@ -99,6 +113,7 @@ There are a few things to do upon game initiation:
 	}
 }
 ```
+Each card has a unique ID defined in the [JSON configuration files](https://github.com/Javinyx/ingswAM2021-Barone-Belotti-Braccini/tree/main/src/main/resources/json) used both by Server and Client to build each Java Object representing those cards. We use the corresponding IDs instead of the whole card serialized in order to keep the messages lightweight.
 
 * Request players' preferred resources based on their turn order, with messages like the following: 
 ```

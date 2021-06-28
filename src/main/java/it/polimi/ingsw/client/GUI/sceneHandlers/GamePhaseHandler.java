@@ -1081,6 +1081,8 @@ public class GamePhaseHandler extends PhaseHandler {
         stack3Btn.setVisible(true);
         stack3Btn.setDisable(false);
         stack2Btn.setText("Stack 2");
+
+        backPaymentBtnCP.setVisible(true);
     }
 
     public void choosePaymentPopUp(int cardId) {
@@ -1319,14 +1321,10 @@ public class GamePhaseHandler extends PhaseHandler {
         produceConfirmBtn.setOnAction(actionEvent -> {
             if (produce1Toggle.isSelected()) {
                 isBasicProd = true;
-                Platform.runLater(() -> askProductionOutput(popUpStage));
+                Platform.runLater(() -> askProductionOutput(popUpStage, prodCards, leaderCards, leaderOutputs));
+            } else {
+                Platform.runLater(() -> choosePaymentPopUp(popUpStage, prodCards, leaderCards, leaderOutputs));
             }
-            Platform.runLater(() -> choosePaymentPopUp(popUpStage));
-
-            //TODO: CHECK WITH COCO FOR RESWAL
-            controller.sendProductionMessage(prodCards, resWal, leaderCards, leaderOutputs, isBasicProd, basicOut);
-            mainBoard.setEffect(null);
-            popUpStage.close();
         });
 
         produceBackBtn.setOnAction(actionEvent -> {
@@ -1335,7 +1333,8 @@ public class GamePhaseHandler extends PhaseHandler {
         });
     }
 
-    private void askProductionOutput(Stage currStage) {
+    private void askProductionOutput(Stage currStage, List<ConcreteProductionCard> prodCards,
+                                     List<BoostAbility> leaderCards, List<Resource> leaderOutputs) {
         currStage.setScene(getScene(BASIC_OUTPUT));
 
         stoneToggleBO.setUserData(STONE);
@@ -1343,17 +1342,16 @@ public class GamePhaseHandler extends PhaseHandler {
         coinToggleBO.setUserData(COIN);
         shieldToggleBO.setUserData(SHIELD);
 
+        BOBackBtn.setVisible(false);
+
         BOConfirmBtn.setOnAction(actionEvent -> {
             basicOut = (Resource) chosenOutputGrp.getSelectedToggle().getUserData();
-            currStage.setScene(getScene(PRODUCE));
-        });
-
-        BOBackBtn.setOnAction(actionEvent -> {
-            currStage.setScene(getScene(PRODUCE));
+            Platform.runLater(() -> choosePaymentPopUp(currStage, prodCards, leaderCards, leaderOutputs));
         });
     }
 
-    private void choosePaymentPopUp(Stage currStage) {
+    private void choosePaymentPopUp(Stage currStage, List<ConcreteProductionCard> prodCards,
+                                    List<BoostAbility> leaderCards, List<Resource> leaderOutputs) {
         currStage.setScene(getScene(CHOOSE_PAYMENT));
         resetChoosePayment();
 
@@ -1503,13 +1501,12 @@ public class GamePhaseHandler extends PhaseHandler {
             wallet.setWarehouseTray(fromWar);
             resWal = wallet;
 
-            currStage.setScene(getScene(PRODUCE));
+            controller.sendProductionMessage(prodCards, resWal, leaderCards, leaderOutputs, isBasicProd, basicOut);
+            mainBoard.setEffect(null);
+            currStage.close();
         });
 
-        backPaymentBtnCP.setOnAction(actionEvent -> {
-            currStage.setScene(getScene(PRODUCE));
-        });
-
+        backPaymentBtnCP.setVisible(false);
     }
 
     /* ACTIVATE & DISCARD LEADER **************************************************************************************/

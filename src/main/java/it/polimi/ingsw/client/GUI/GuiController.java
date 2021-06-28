@@ -33,7 +33,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The GUI Controller which handles all messages and errors.
+ */
 public class GuiController extends ClientController {
+    /**
+     * The actual GUI application.
+     */
     protected final Gui gui;
     private final Stage stage;
     private final InitialPhaseHandler initialPhaseHandler;
@@ -43,8 +49,14 @@ public class GuiController extends ClientController {
     private String nickName;
     private Integer gameSize;
 
-    public final Gson gson = new Gson();
+    private final Gson gson = new Gson();
 
+    /**
+     * Instantiates a new Gui controller with the given stage, also adds a font and the different phase handlers.
+     *
+     * @param stage the stage
+     * @param gui   the gui
+     */
     public GuiController(Stage stage, Gui gui) {
         this.stage = stage;
         this.gui = gui;
@@ -78,6 +90,12 @@ public class GuiController extends ClientController {
         return true;
     }
 
+    /**
+     * Sets ip and port and starts the connection.
+     *
+     * @param ip   the ip
+     * @param port the port
+     */
     public void setIpAndPort(String ip, String port) {
         if (ip.equals("0") && port.equals("0")) {
             startLocalGame();
@@ -112,6 +130,11 @@ public class GuiController extends ClientController {
         initialPhaseHandler.getNickNameAndGameSize();
     }
 
+    /**
+     * Sets the nickname of the player.
+     *
+     * @param receivedName the received name
+     */
     public void setNickname(String receivedName) {
         nickName = receivedName;
         messageToServerHandler.sendMessageToServer(receivedName);
@@ -126,6 +149,11 @@ public class GuiController extends ClientController {
         }
     }
 
+    /**
+     * Sets the requested game size to enter the correct lobby.
+     *
+     * @param size the game size
+     */
     public void setGameSize(String size) {
         gameSize = Integer.parseInt(size);
     }
@@ -141,6 +169,11 @@ public class GuiController extends ClientController {
         }
     }
 
+    /**
+     * Sets the selected leaders by the player, which will later show in the game.
+     *
+     * @param leadersChoice the chosen leaders
+     */
     public void setSelectedLeaders(List<Boolean> leadersChoice) {
         Platform.runLater(initialPhaseHandler::waitStartGame);
         List<LeaderCard> availableLeaders = getPlayer().getLeaders();
@@ -174,6 +207,12 @@ public class GuiController extends ClientController {
         }
     }
 
+    //TODO: riprendere Javadoc da qui, rimangono poi i 2 phase handler
+    /**
+     * Sets the initial
+     *
+     * @param placements the placements
+     */
     public void setInitialResourcePlacements(List<BiElement<Resource, Storage>> placements) {
         Platform.runLater(initialPhaseHandler::waitStartGame);
         StoreResourcesMessage msg = new StoreResourcesMessage(placements, getPlayer().getTurnNumber());
@@ -242,6 +281,12 @@ public class GuiController extends ClientController {
         Platform.runLater(() -> gamePhaseHandler.chooseStoragePopUp(tbdRes, false, false));
     }
 
+    /**
+     * Send buy market message.
+     *
+     * @param dim   the dim
+     * @param index the index
+     */
     public void sendBuyMarketMessage(char dim, int index) {
         //TODO: option for active leader
         BuyMarketMessage msg = new BuyMarketMessage(dim, index, null);
@@ -253,22 +298,50 @@ public class GuiController extends ClientController {
         gamePhaseHandler.setMarket();
     }
 
+    /**
+     * Send place resources message.
+     *
+     * @param placements the placements
+     */
     public void sendPlaceResourcesMessage(List<BiElement<Resource, Storage>> placements) {
         StoreResourcesMessage msg = new StoreResourcesMessage(placements, getPlayer().getTurnNumber());
         messageToServerHandler.generateEnvelope(MessageID.STORE_RESOURCES, gson.toJson(msg, StoreResourcesMessage
                 .class));
     }
 
+    /**
+     * Buy production card.
+     *
+     * @param cardId    the card id
+     * @param stack     the stack
+     * @param leaderIds the leader ids
+     * @param wallet    the wallet
+     */
     /* PRODUCTION CARDS ***********************************************************************************************/
     public void buyProductionCard(int cardId, int stack, List<Integer> leaderIds, ResourcesWallet wallet) {
         BuyProductionMessage msg = new BuyProductionMessage(cardId, stack, leaderIds, wallet);
         messageToServerHandler.generateEnvelope(MessageID.BUY_PRODUCTION_CARD, gson.toJson(msg));
     }
 
+    /**
+     * Gets available production cards.
+     *
+     * @return the available production cards
+     */
     public List<ConcreteProductionCard> getAvailableProductionCards() {
         return availableProductionCard;
     }
 
+    /**
+     * Send production message.
+     *
+     * @param prodCards     the prod cards
+     * @param resWal        the res wal
+     * @param leaderCards   the leader cards
+     * @param leaderOutputs the leader outputs
+     * @param basicProd     the basic prod
+     * @param basicOutput   the basic output
+     */
     /* PRODUCE PHASE **************************************************************************************************/
     public void sendProductionMessage(List<ConcreteProductionCard> prodCards, ResourcesWallet resWal,
                                       List<BoostAbility> leaderCards, List<Resource> leaderOutputs, boolean basicProd,
@@ -284,14 +357,29 @@ public class GuiController extends ClientController {
         Platform.runLater(() -> gamePhaseHandler.updateBoard());
     }
 
+    /**
+     * Gets normal turn.
+     *
+     * @return the normal turn
+     */
     public boolean getNormalTurn() {
         return normalTurn;
     }
 
+    /**
+     * Gets pope favours.
+     *
+     * @return the pope favours
+     */
     public List<Integer> getPopeFavours() {
         return popeStatusGeneral;
     }
 
+    /**
+     * Send rearrange message.
+     *
+     * @param placements the placements
+     */
     public void sendRearrangeMessage(List<BiElement<Resource, Storage>> placements) {
         StoreResourcesMessage msg = new StoreResourcesMessage(placements, getPlayer().getTurnNumber());
         messageToServerHandler.generateEnvelope(MessageID.REARRANGE_WAREHOUSE, gson.toJson(msg, StoreResourcesMessage
@@ -399,10 +487,20 @@ public class GuiController extends ClientController {
         //UNUSED HERE
     }
 
+    /**
+     * Send activate leader.
+     *
+     * @param leaderCard the leader card
+     */
     public void sendActivateLeader(String leaderCard) {
         messageToServerHandler.generateEnvelope(MessageID.ACTIVATE_LEADER, leaderCard);
     }
 
+    /**
+     * Send discard leader.
+     *
+     * @param leaderCard the leader card
+     */
     public void sendDiscardLeader(String leaderCard) {
         messageToServerHandler.generateEnvelope(MessageID.DISCARD_LEADER, leaderCard);
     }

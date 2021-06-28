@@ -378,7 +378,7 @@ public class CliController extends ClientController {
         boolean basic = false;
         ResourcesWallet resWal = new ResourcesWallet();
 
-        if (player.getProductionStacks().get(0).size() != 0 && player.getProductionStacks().get(1).size() != 0 && player.getProductionStacks().get(2).size() != 0){
+        if (player.getProductionStacks().get(0).size() != 0 || player.getProductionStacks().get(1).size() != 0 || player.getProductionStacks().get(2).size() != 0){
             System.out.println("Select the Development Card you want to use");
             prodCard = cli.selectProdCard();
 
@@ -428,7 +428,7 @@ public class CliController extends ClientController {
         }
 
         else{
-            displayMessage("You have no leader cards");
+            displayMessage("You have no Development cards");
             cli.pressEnter();
             startTurnPhase();
         }

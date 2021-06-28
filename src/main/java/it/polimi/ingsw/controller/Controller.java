@@ -254,6 +254,7 @@ public class Controller implements Observer<MessageID> {
             update(MessageID.INFO);
             return;
         }*/
+        boolean t = false;
         addedResources.clear();
         removedResources.clear();
 
@@ -292,25 +293,31 @@ public class Controller implements Observer<MessageID> {
             //player has no resources
             removedResources.clear();
             update(MessageID.BAD_PAYMENT_REQUEST);
+            t = true;
         } catch (IllegalArgumentException e) {
             //prodcard have no cards
             removedResources.clear();
             update(MessageID.CARD_NOT_AVAILABLE);
+            t = true;
         } catch (IndexOutOfBoundsException e) {
             //stack < 1 || stack > 3
             removedResources.clear();
             update(MessageID.WRONG_STACK_CHOICE);
+            t = true;
         } catch (WrongLevelException e) {
             //prodcard has wrong level
             System.out.println("card id: " + buyProdMsg.getProdCardId());
             removedResources.clear();
             update(MessageID.WRONG_LEVEL_REQUEST);
+            t = true;
         }
 
-        basicActionDone = true;
-        playerToAck = game.getCurrPlayer();
-        update(UPDATE);
-        update(MessageID.ACK);
+        if (!t){
+            basicActionDone = true;
+            playerToAck = game.getCurrPlayer();
+            update(UPDATE);
+            update(MessageID.ACK);
+        }
     }
 
     /**
@@ -321,6 +328,7 @@ public class Controller implements Observer<MessageID> {
             update(MessageID.INFO);
             return;
         }*/
+        boolean t = false;
         removedResources.clear();
         addedResources.clear();
 
@@ -338,64 +346,6 @@ public class Controller implements Observer<MessageID> {
         BiElement<Resource, Storage> elem;
         try {
             if (cards != null && !cards.isEmpty() && wallet != null) {
-                /*for (ConcreteProductionCard c : cards) {
-                    for (Resource r : c.getProduction()) {
-                        if (r.isValidForTrading()) {
-                            elem = new BiElement<>(r, Storage.LOOTCHEST);
-                            addResources(elem, 1);
-                        }
-                    }
-                }*/
-                /*
-                if (extraPowerProd != null && !extraPowerProd.isEmpty() && extraOutput != null && !extraOutput.isEmpty()) {
-                    if (extraPowerProd.size() == extraOutput.size()) {
-                        for (Resource r : extraOutput) {
-                            elem = new BiElement<>(r, Storage.LOOTCHEST);
-                            addResources(elem, 1);
-                        }
-                    } else {
-                        throw new BadStorageException();
-                    }
-                }
-
-                if (produce.isBasicProduction() && basicOut.isPresent()) {
-                    elem = new BiElement<>(basicOut.get(), Storage.LOOTCHEST);
-                    addResources(elem, 1);
-                }
-                if (wallet.anyFromLootchestTray()) {
-                    for (Resource r : wallet.getLootchestTray()) {
-                        elem = new BiElement<>(r, Storage.LOOTCHEST);
-                        removeResources(elem, 1);
-                    }
-                }
-                if (wallet.anyFromWarehouseTray()) {
-                    Warehouse w = game.getCurrPlayer().getWarehouse();
-                    Storage s = null;
-                    for (Resource r : wallet.getWarehouseTray()) {
-                        if(r.equals(w.getSmallInventory())){
-                            s = Storage.WAREHOUSE_SMALL;
-                        }else if(w.getMidInventory().contains(r)){
-                            s = Storage.WAREHOUSE_MID;
-                        }else if(w.getLargeInventory().contains(r)){
-                            s = Storage.WAREHOUSE_LARGE;
-                        }
-                        if(s!=null) {
-                            elem = new BiElement<>(r, s);
-                            removeResources(elem, 1);
-                        }
-
-                    }
-                }
-                if (wallet.anyFromExtraStorage()) {
-                    for (int index = wallet.extraStorageSize() - 1; index >= 0; index--) {
-                        Storage extra = index == 0 ? Storage.EXTRA1 : Storage.EXTRA2;
-                        for (Resource r : wallet.getExtraStorage(index)) {
-                            elem = new BiElement<>(r, extra);
-                            removeResources(elem, 1);
-                        }
-                    }
-                }*/
-
                 game.getCurrPlayer().startProduction(cards, wallet, extraPowerProd, extraOutput, produce.isBasicProduction(), basicOut);
             }
         } catch (BadStorageException e1) {
@@ -403,16 +353,20 @@ public class Controller implements Observer<MessageID> {
             addedResources.clear();
             removedResources.clear();
             update(MessageID.BAD_PRODUCTION_REQUEST);
+            t = true;
         } catch (RuntimeException e2) {
             //notify that some cards in production cards chosen by the player for this task cannot produce
             addedResources.clear();
             removedResources.clear();
             update(MessageID.CARD_NOT_AVAILABLE);
+            t = true;
         }
 
-        basicActionDone = true;
-        update(UPDATE);
-        update(MessageID.ACK);
+        if(!t) {
+            basicActionDone = true;
+            update(UPDATE);
+            update(MessageID.ACK);
+        }
     }
 
     /**
@@ -425,19 +379,24 @@ public class Controller implements Observer<MessageID> {
             update(MessageID.INFO);
             return;
         }*/
+        boolean t = false;
         playerToAck = game.getCurrPlayer();
         try {
             game.getCurrPlayer().buyFromMarket(buyMark.getDimension(), buyMark.getIndex(), buyMark.getMarbleUsage());
         } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             update(MessageID.BAD_DIMENSION_REQUEST);
+            t = true;
         } catch (RuntimeException e) {
             update(MessageID.CARD_NOT_AVAILABLE);
+            t = true;
         }
 
-        mustChoosePlacements = true;
-        basicActionDone = true;
+        if (!t){
+            mustChoosePlacements = true;
+            basicActionDone = true;
 
-        update(MessageID.STORE_RESOURCES);
+            update(MessageID.STORE_RESOURCES);
+        }
     }
 
     // END TURN STRUCTURE ----------------------------------------------------------------------------------------------

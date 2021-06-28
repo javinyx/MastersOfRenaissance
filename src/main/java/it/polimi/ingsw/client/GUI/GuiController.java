@@ -538,7 +538,8 @@ public class GuiController extends ClientController {
 
     @Override
     public void showLorenzoStatus(ActionToken act) {
-
+        gamePhaseHandler.sendToMsgBoard("Lorenzo now is in position: " + lorenzoPos);
+        gamePhaseHandler.sendToMsgBoard(act.print());
     }
 
     @Override

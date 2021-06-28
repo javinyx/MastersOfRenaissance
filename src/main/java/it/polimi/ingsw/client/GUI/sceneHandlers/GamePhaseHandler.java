@@ -1323,6 +1323,13 @@ public class GamePhaseHandler extends PhaseHandler {
                 isBasicProd = true;
                 Platform.runLater(() -> askProductionOutput(popUpStage, prodCards, leaderCards, leaderOutputs));
             } else {
+                if(produce2Toggle.isSelected())
+                    prodCards.add(controller.getPlayer().getProductionStacks().get(0).peekFirst());
+                if(produce3Toggle.isSelected())
+                    prodCards.add(controller.getPlayer().getProductionStacks().get(1).peekFirst());
+                if(produce4Toggle.isSelected())
+                    prodCards.add(controller.getPlayer().getProductionStacks().get(2).peekFirst());
+
                 Platform.runLater(() -> choosePaymentPopUp(popUpStage, prodCards, leaderCards, leaderOutputs));
             }
         });
@@ -1546,12 +1553,12 @@ public class GamePhaseHandler extends PhaseHandler {
         DALLbl.setText("Select the leader you want to ACTIVATE");
 
         if (activable.size() >= 1) {
-            DAL1Img.setImage(new Image("/img/leaderCards/" + controller.getPlayer().getLeaders().get(0).getId() + ".png"));
-            DAL1Toggle.setUserData(controller.getPlayer().getLeaders().get(0).getId());
+            DAL1Img.setImage(new Image("/img/leaderCards/" + activable.get(0).getId() + ".png"));
+            DAL1Toggle.setUserData(activable.get(0).getId());
         }
         if (activable.size() == 2) {
-            DAL2Img.setImage(new Image("/img/leaderCards/" + controller.getPlayer().getLeaders().get(1).getId() + ".png"));
-            DAL2Toggle.setUserData(controller.getPlayer().getLeaders().get(1).getId());
+            DAL2Img.setImage(new Image("/img/leaderCards/" + activable.get(1).getId() + ".png"));
+            DAL2Toggle.setUserData(activable.get(1).getId());
         }
 
         DALConfirmBtn.setOnAction(actionEvent -> {

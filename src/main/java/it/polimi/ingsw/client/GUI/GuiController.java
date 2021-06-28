@@ -275,6 +275,7 @@ public class GuiController extends ClientController {
                                       Resource basicOutput) {
         ProduceMessage msg = new ProduceMessage(prodCards, resWal, leaderCards, leaderOutputs, basicProd,
                 basicOutput);
+        messageToServerHandler.generateEnvelope(MessageID.PRODUCE, gson.toJson(msg, ProduceMessage.class));
     }
 
     /* GENERAL ACTIONS ************************************************************************************************/

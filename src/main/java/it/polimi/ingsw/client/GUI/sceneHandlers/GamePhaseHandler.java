@@ -260,6 +260,9 @@ public class GamePhaseHandler extends PhaseHandler {
     }
 
     private void setLeader() {
+        leader1Show.setImage(null);
+        leader2Show.setImage(null);
+
         List<LeaderCard> currLeads = controller.getPlayer().getLeaders();
         if (currLeads.size() >= 1) {
             leader1Show.setImage(new Image("img/leaderCards/" + currLeads.get(0).getId() + ".png"));
@@ -1551,7 +1554,7 @@ public class GamePhaseHandler extends PhaseHandler {
         }
         if (activable.size() == 2) {
             DAL2Img.setImage(new Image("/img/leaderCards/" + controller.getPlayer().getLeaders().get(1).getId() + ".png"));
-            DAL2Toggle.setUserData(controller.getPlayer().getLeaders().get(0).getId());
+            DAL2Toggle.setUserData(controller.getPlayer().getLeaders().get(1).getId());
         }
 
         DALConfirmBtn.setOnAction(actionEvent -> {

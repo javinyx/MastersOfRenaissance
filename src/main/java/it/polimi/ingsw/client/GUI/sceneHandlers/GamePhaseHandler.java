@@ -1044,7 +1044,12 @@ public class GamePhaseHandler extends PhaseHandler {
         List<ConcreteProductionCard> availableProductionCards = controller.getAvailableProductionCards();
         for (int x = 0, i = 0; x < 3; x++) {
             for (int y = 0; y < 4; y++, i++) {
-                setProductionCardImg(x, y, productionCards, availableProductionCards.get(i).getId());
+                if (availableProductionCards.get(i) != null) {
+                    setProductionCardImg(x, y, productionCards, availableProductionCards.get(i).getId());
+                } else {
+                    //Test
+                    setProductionCardNullImg(x, y, productionCards);
+                }
             }
         }
     }
@@ -1055,6 +1060,17 @@ public class GamePhaseHandler extends PhaseHandler {
         for (Node node : children) {
             if (gridPane.getRowIndex(node) == row && gridPane.getColumnIndex(node) == column) {
                 ((ImageView) node).setImage(new Image("img/productionCardsFront/" + imgId + ".png"));
+                break;
+            }
+        }
+    }
+
+    private void setProductionCardNullImg(int row, int column, GridPane gridPane) {
+        ObservableList<Node> children = gridPane.getChildren();
+
+        for (Node node : children) {
+            if (gridPane.getRowIndex(node) == row && gridPane.getColumnIndex(node) == column) {
+                ((ImageView) node).setImage(new Image("img/productionCardsBack/blue1.png"));
                 break;
             }
         }
@@ -1303,32 +1319,46 @@ public class GamePhaseHandler extends PhaseHandler {
         if (controller.getPlayer().getProductionStacks().get(0).size() != 0) {
             produce2Img.setImage(new Image("/img/productionCardsFront/" + controller.getPlayer()
                     .getProductionStacks().get(0).peekFirst().getId() + ".png"));
-            produce2Toggle.setUserData(controller.getPlayer().getProductionStacks().get(0).peekFirst().getId());
+            produce2Toggle.setUserData(controller.getPlayer().getProductionStacks().get(0).peekFirst());
         }
 
         if (controller.getPlayer().getProductionStacks().get(1).size() != 0) {
             produce3Img.setImage(new Image("/img/productionCardsFront/" + controller.getPlayer()
                     .getProductionStacks().get(1).peekFirst().getId() + ".png"));
-            produce3Toggle.setUserData(controller.getPlayer().getProductionStacks().get(0).peekFirst().getId());
+            produce3Toggle.setUserData(controller.getPlayer().getProductionStacks().get(0).peekFirst());
         }
 
         if (controller.getPlayer().getProductionStacks().get(2).size() != 0) {
             produce4Img.setImage(new Image("/img/productionCardsFront/" + controller.getPlayer()
                     .getProductionStacks().get(2).peekFirst().getId() + ".png"));
-            produce4Toggle.setUserData(controller.getPlayer().getProductionStacks().get(0).peekFirst().getId());
+            produce4Toggle.setUserData(controller.getPlayer().getProductionStacks().get(0).peekFirst());
         }
 
         produceConfirmBtn.setOnAction(actionEvent -> {
             if (produce1Toggle.isSelected()) {
                 isBasicProd = true;
+
+                if(produce2Toggle.isSelected()) {
+                    prodCards.add((ConcreteProductionCard) produce2Toggle.getUserData());
+                }
+                if(produce3Toggle.isSelected()) {
+                    prodCards.add((ConcreteProductionCard) produce3Toggle.getUserData());
+                }
+                if(produce4Toggle.isSelected()) {
+                    prodCards.add((ConcreteProductionCard) produce4Toggle.getUserData());
+                }
+
                 Platform.runLater(() -> askProductionOutput(popUpStage, prodCards, leaderCards, leaderOutputs));
             } else {
-                if(produce2Toggle.isSelected())
-                    prodCards.add(controller.getPlayer().getProductionStacks().get(0).peekFirst());
-                if(produce3Toggle.isSelected())
-                    prodCards.add(controller.getPlayer().getProductionStacks().get(1).peekFirst());
-                if(produce4Toggle.isSelected())
-                    prodCards.add(controller.getPlayer().getProductionStacks().get(2).peekFirst());
+                if(produce2Toggle.isSelected()) {
+                    prodCards.add((ConcreteProductionCard) produce2Toggle.getUserData());
+                }
+                if(produce3Toggle.isSelected()) {
+                    prodCards.add((ConcreteProductionCard) produce3Toggle.getUserData());
+                }
+                if(produce4Toggle.isSelected()) {
+                    prodCards.add((ConcreteProductionCard) produce4Toggle.getUserData());
+                }
 
                 Platform.runLater(() -> choosePaymentPopUp(popUpStage, prodCards, leaderCards, leaderOutputs));
             }

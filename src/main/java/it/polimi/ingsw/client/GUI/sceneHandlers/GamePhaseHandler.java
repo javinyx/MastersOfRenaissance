@@ -2,9 +2,6 @@ package it.polimi.ingsw.client.GUI.sceneHandlers;
 
 import it.polimi.ingsw.client.GUI.GuiController;
 import it.polimi.ingsw.client.model.NubPlayer;
-import it.polimi.ingsw.exception.BadStorageException;
-import it.polimi.ingsw.messages.MessageID;
-import it.polimi.ingsw.messages.concreteMessages.StoreResourcesMessage;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.ResourcesWallet;
@@ -12,6 +9,7 @@ import it.polimi.ingsw.model.cards.leader.BoostAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -37,6 +35,7 @@ import javafx.stage.StageStyle;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static it.polimi.ingsw.client.GUI.sceneHandlers.ScenesEnum.*;
 import static it.polimi.ingsw.misc.Storage.*;
@@ -111,7 +110,7 @@ public class GamePhaseHandler extends PhaseHandler {
     private TextArea msgBoard;
 
     /* FAITH TRACK ****************************************************************************************************/
-    private List<BiElement<Double, Double>> faithCoords;
+    private List<BiElement<Double, Double>> faithCoords = new ArrayList<>();
     @FXML
     private ImageView redCross;
 
@@ -130,12 +129,19 @@ public class GamePhaseHandler extends PhaseHandler {
             shelf33ToggleCP;
 
     /* PRODUCE ********************************************************************************************************/
+    private ResourcesWallet resWal;
+    private Resource basicOut;
+    private boolean isBasicProd;
     @FXML
-    private Button produceBackBtn, produceConfirmBtn;
+    private Button produceBackBtn, produceConfirmBtn, BOConfirmBtn, BOBackBtn;
+    @FXML
+    private RadioButton stoneToggleBO, servantToggleBO, coinToggleBO, shieldToggleBO;
     @FXML
     private ImageView produce1Img, produce2Img, produce3Img, produce4Img;
     @FXML
     private ToggleButton produce1Toggle, produce2Toggle, produce3Toggle, produce4Toggle;
+    @FXML
+    private ToggleGroup chosenOutputGrp;
 
     /* DISCARD & ACTIVATE LEADER **************************************************************************************/
     @FXML
@@ -154,7 +160,7 @@ public class GamePhaseHandler extends PhaseHandler {
         super(controller, stage);
 
         List<ScenesEnum> allPaths = new ArrayList<>(Arrays.asList(MAIN_BOARD, MARKET, STORAGE, OTHER_PLAYERS,
-                PRODUCTION_CARDS, CHOOSE_PAYMENT, CHOOSE_LEADERS, PRODUCE, DISCARD_ACTIVATE_LEADER));
+                PRODUCTION_CARDS, CHOOSE_PAYMENT, CHOOSE_LEADERS, PRODUCE, DISCARD_ACTIVATE_LEADER, BASIC_OUTPUT));
         for (ScenesEnum path : allPaths) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + path.getPath()));
             loader.setController(this);
@@ -225,7 +231,7 @@ public class GamePhaseHandler extends PhaseHandler {
 
         produceBtn.setOnAction(actionEvent -> {
             if (controller.getNormalTurn() && controller.getPlayer().isMyTurn()) {
-                producePopup();
+                producePopUp();
             } else {
                 sendToMsgBoard("You have already completed a main action for this turn," +
                         "please end your turn when you're ready.");
@@ -274,7 +280,6 @@ public class GamePhaseHandler extends PhaseHandler {
         double x = 177;
         double y = 272;
 
-        faithCoords = new ArrayList<>();
         faithCoords.add(new BiElement(x, y)); //Pos 0
 
         for (int i = 0; i <= 24; i++) {
@@ -310,7 +315,7 @@ public class GamePhaseHandler extends PhaseHandler {
 
         for (int i = 0; i < passes.size(); i++) {
             switch (passes.get(i)) {
-                case 0 -> popeFavList.get(i).setImage(new Image("img/ui/pope" + (i+2) + ".png"));
+                case 0 -> popeFavList.get(i).setImage(new Image("img/ui/pope" + (i + 2) + ".png"));
                 case 1 -> popeFavList.get(i).setImage(null);
             }
         }
@@ -449,7 +454,6 @@ public class GamePhaseHandler extends PhaseHandler {
     private void setLootChest() {
         Map<BiElement<Resource, Storage>, Integer> lc = controller.getPlayer().getLootchest();
         lc.forEach((x, y) -> {
-            System.out.println("resource: " + x.getFirstValue() + "; storage: " + x.getSecondValue() + "; amount: " + y);
             switch (x.getFirstValue()) {
                 case COIN: {
                     if (y != null) {
@@ -661,32 +665,39 @@ public class GamePhaseHandler extends PhaseHandler {
                     : "leaderBack") + ".png"));
         }
 
-        Deque<ConcreteProductionCard> stack1 = player.getProductionStack(1);
-        Deque<ConcreteProductionCard> stack2 = player.getProductionStack(2);
-        Deque<ConcreteProductionCard> stack3 = player.getProductionStack(3);
-
-        opTotalProdCardsLbl.setText("Total development cards: " + (stack1.size() + stack2.size() + stack3.size()));
-
-        if (stack1.size() > 0) {
-            opStack1Img.setImage(new Image("img/productionCardsFront/" + stack1.peekFirst().getId() + ".png"));
-            opStack1Img.setVisible(true);
-        } else {
-            opStack1Img.setVisible(false);
+        int cardCount = 0;
+        List<Deque<ConcreteProductionCard>> prodStacks = player.getProductionStacks();
+        if (prodStacks != null && prodStacks.size() >= 1) {
+            Deque<ConcreteProductionCard> stack1 = player.getProductionStack(0);
+            if (stack1.size() > 0) {
+                opStack1Img.setVisible(true);
+                opStack1Img.setImage(new Image("img/productionCardsFront/" + stack1.peekFirst().getId() + ".png"));
+                cardCount += stack1.size();
+            } else {
+                opStack1Img.setVisible(false);
+            }
         }
-
-        if (stack2.size() > 0) {
-            opStack2Img.setImage(new Image("img/productionCardsFront/" + stack2.peekFirst().getId() + ".png"));
-            opStack2Img.setVisible(true);
-        } else {
-            opStack2Img.setVisible(false);
+        if (prodStacks.size() >= 2) {
+            Deque<ConcreteProductionCard> stack2 = player.getProductionStack(1);
+            if (stack2.size() > 0) {
+                opStack2Img.setVisible(true);
+                opStack2Img.setImage(new Image("img/productionCardsFront/" + stack2.peekFirst().getId() + ".png"));
+                cardCount += stack2.size();
+            } else {
+                opStack2Img.setVisible(false);
+            }
         }
-
-        if (stack3.size() > 0) {
-            opStack3Img.setImage(new Image("img/productionCardsFront/" + stack3.peekFirst().getId() + ".png"));
-            opStack3Img.setVisible(true);
-        } else {
-            opStack3Img.setVisible(false);
+        if (prodStacks.size() == 3) {
+            Deque<ConcreteProductionCard> stack3 = player.getProductionStack(2);
+            if (stack3.size() > 0) {
+                opStack3Img.setVisible(true);
+                opStack3Img.setImage(new Image("img/productionCardsFront/" + stack3.peekFirst().getId() + ".png"));
+                cardCount += stack3.size();
+            } else {
+                opStack3Img.setVisible(false);
+            }
         }
+        opTotalProdCardsLbl.setText("Total development cards: " + cardCount);
 
         Map<BiElement<Resource, Storage>, Integer> loot = player.getLootchest();
         loot.forEach((x, y) -> {
@@ -716,7 +727,6 @@ public class GamePhaseHandler extends PhaseHandler {
                 }
             }
         });
-
     }
 
     /* MESSAGE BOARD **************************************************************************************************/
@@ -862,7 +872,7 @@ public class GamePhaseHandler extends PhaseHandler {
             tbdResourcePlacement.add(new BiElement<>(targetDragDropped(event), Storage.WAREHOUSE_LARGE));
         });
 
-        if (isBadStorageRequest || isRearrangeRequest) {
+        if (isRearrangeRequest) {
             bin.setDisable(true);
             bin.setVisible(false);
         } else {
@@ -880,6 +890,7 @@ public class GamePhaseHandler extends PhaseHandler {
                     mainBoard.setEffect(null);
                     popUpStage.close();
                     resetStoragePopUp();
+                    setWarehouse();
 
                     if (isRearrangeRequest) {
                         controller.sendRearrangeMessage(tbdResourcePlacement);
@@ -892,6 +903,7 @@ public class GamePhaseHandler extends PhaseHandler {
                     mainBoard.setEffect(null);
                     popUpStage.close();
                     resetStoragePopUp();
+                    setWarehouse();
 
                     if (isRearrangeRequest) {
                         controller.sendRearrangeMessage(tbdResourcePlacement);
@@ -942,8 +954,6 @@ public class GamePhaseHandler extends PhaseHandler {
         shelf31ImgPU.setImage(null);
         shelf32ImgPU.setImage(null);
         shelf33ImgPU.setImage(null);
-
-        setWarehouse();
     }
 
     private void sourceDragDetected(Event event, Resource resource) {
@@ -1021,15 +1031,10 @@ public class GamePhaseHandler extends PhaseHandler {
             String url = ((ImageView) clickedNode).getImage().getUrl();
             String cardIdS = url.substring(url.lastIndexOf("/") + 1).split("\\.")[0];
             Integer cardId = Integer.parseInt(cardIdS);
-            Integer stack = askStack();
 
             popUpStage.close();
-            choosePaymentPopUp(cardId, stack);
+            choosePaymentPopUp(cardId);
         }
-    }
-
-    private Integer askStack() {
-        return 1;
     }
 
     public void setProductionCards() {
@@ -1052,7 +1057,32 @@ public class GamePhaseHandler extends PhaseHandler {
         }
     }
 
-    public void choosePaymentPopUp(int cardId, int stack) {
+    private void resetChoosePayment() {
+        shelf1CP.setImage(null);
+        shelf21CP.setImage(null);
+        shelf22CP.setImage(null);
+        shelf31CP.setImage(null);
+        shelf32CP.setImage(null);
+        shelf33CP.setImage(null);
+
+        shelf1ToggleCP.setSelected(false);
+        shelf21ToggleCP.setSelected(false);
+        shelf22ToggleCP.setSelected(false);
+        shelf31ToggleCP.setSelected(false);
+        shelf32ToggleCP.setSelected(false);
+        shelf33ToggleCP.setSelected(false);
+
+        resWal = new ResourcesWallet();
+        stack1Btn.setVisible(true);
+        stack1Btn.setDisable(false);
+        stack3Btn.setVisible(true);
+        stack3Btn.setDisable(false);
+        stack2Btn.setText("Stack 2");
+    }
+
+    public void choosePaymentPopUp(int cardId) {
+        resetChoosePayment();
+
         Stage popUpStage = new Stage(StageStyle.TRANSPARENT);
         popUpStage.initOwner(stage);
         popUpStage.initModality(Modality.APPLICATION_MODAL);
@@ -1079,8 +1109,6 @@ public class GamePhaseHandler extends PhaseHandler {
         Resource res = player.getResourceFromStorage(WAREHOUSE_SMALL);
         if (res != null) {
             shelf1CP.setImage(new Image("/img/pawns/" + res + ".png"));
-        } else {
-            shelf1ToggleCP.setDisable(true);
         }
 
         res = player.getResourceFromStorage(WAREHOUSE_MID);
@@ -1091,10 +1119,6 @@ public class GamePhaseHandler extends PhaseHandler {
             shelf22CP.setImage(new Image("/img/pawns/" + res + ".png"));
         } else if (res != null && qty == 1) {
             shelf21CP.setImage(new Image("/img/pawns/" + res + ".png"));
-            shelf22CP.setDisable(true);
-        } else {
-            shelf21CP.setDisable(true);
-            shelf22CP.setDisable(true);
         }
 
         res = player.getResourceFromStorage(WAREHOUSE_LARGE);
@@ -1108,16 +1132,9 @@ public class GamePhaseHandler extends PhaseHandler {
             } else if (qty == 2) {
                 shelf31CP.setImage(new Image("/img/pawns/" + res + ".png"));
                 shelf32CP.setImage(new Image("/img/pawns/" + res + ".png"));
-                shelf33CP.setDisable(true);
             } else {
                 shelf31CP.setImage(new Image("/img/pawns/" + res + ".png"));
-                shelf32CP.setDisable(true);
-                shelf33CP.setDisable(true);
             }
-        } else {
-            shelf31CP.setDisable(true);
-            shelf32CP.setDisable(true);
-            shelf33CP.setDisable(true);
         }
 
         //choose from warehouse
@@ -1247,47 +1264,249 @@ public class GamePhaseHandler extends PhaseHandler {
     }
 
     /* PRODUCE ********************************************************************************************************/
-    private void producePopup() {
+    private void resetProducePopUp() {
+        produce2Img.setImage(null);
+        produce3Img.setImage(null);
+        produce4Img.setImage(null);
+
+        produce2Toggle.setUserData(null);
+        produce3Toggle.setUserData(null);
+        produce4Toggle.setUserData(null);
+
+        produce1Toggle.setSelected(false);
+        produce2Toggle.setSelected(false);
+        produce3Toggle.setSelected(false);
+        produce4Toggle.setSelected(false);
+    }
+
+    private void producePopUp() {
+        resetProducePopUp();
+
         Stage popUpStage = new Stage(StageStyle.TRANSPARENT);
+        mainBoard.setEffect(new GaussianBlur());
         popUpStage.initOwner(stage);
         popUpStage.initModality(Modality.APPLICATION_MODAL);
         popUpStage.centerOnScreen();
         popUpStage.setScene(getScene(PRODUCE));
         popUpStage.show();
 
+        isBasicProd = false;
         List<ConcreteProductionCard> prodCards = new ArrayList<>();
-        ResourcesWallet resWal = new ResourcesWallet();
-        AtomicBoolean basicProd = new AtomicBoolean(false);
         List<BoostAbility> leaderCards = new ArrayList<>();
         List<Resource> leaderOutputs = new ArrayList<>();
 
-        if (controller.getPlayer().getProductionStacks().get(0).size() != 0)
-            produce2Img.setImage(new Image("/img/productionCardsFront/" + controller.getPlayer().getProductionStacks()
-                    .get(0).peekFirst().getId() + ".png"));
+        if (controller.getPlayer().getProductionStacks().get(0).size() != 0) {
+            produce2Img.setImage(new Image("/img/productionCardsFront/" + controller.getPlayer()
+                    .getProductionStacks().get(0).peekFirst().getId() + ".png"));
+            produce2Toggle.setUserData(controller.getPlayer().getProductionStacks().get(0).peekFirst().getId());
+        }
 
-        if (controller.getPlayer().getProductionStacks().get(1).size() != 0)
-            produce3Img.setImage(new Image("/img/productionCardsFront/" + controller.getPlayer().getProductionStacks()
-                    .get(1).peekFirst().getId() + ".png"));
+        if (controller.getPlayer().getProductionStacks().get(1).size() != 0) {
+            produce3Img.setImage(new Image("/img/productionCardsFront/" + controller.getPlayer()
+                    .getProductionStacks().get(1).peekFirst().getId() + ".png"));
+            produce3Toggle.setUserData(controller.getPlayer().getProductionStacks().get(0).peekFirst().getId());
+        }
 
-        if (controller.getPlayer().getProductionStacks().get(2).size() != 0)
-            produce4Img.setImage(new Image("/img/productionCardsFront/" + controller.getPlayer().getProductionStacks()
-                    .get(2).peekFirst().getId() + ".png"));
+        if (controller.getPlayer().getProductionStacks().get(2).size() != 0) {
+            produce4Img.setImage(new Image("/img/productionCardsFront/" + controller.getPlayer()
+                    .getProductionStacks().get(2).peekFirst().getId() + ".png"));
+            produce4Toggle.setUserData(controller.getPlayer().getProductionStacks().get(0).peekFirst().getId());
+        }
 
         produceConfirmBtn.setOnAction(actionEvent -> {
-            /*if (produce1Toggle.isSelected()) {
-                basicProd.set(true);
+            if (produce1Toggle.isSelected()) {
+                isBasicProd = true;
+                Platform.runLater(() -> askProductionOutput(popUpStage));
             }
+            Platform.runLater(() -> choosePaymentPopUp(popUpStage));
 
-            choosePaymentPopUp(0, 0); //da fare una versione customizzata che ritorna resWal e gli viene passato anche basic production da scegliere
-
-            controller.sendProductionMessage(prodCards, resWal, leaderCards, leaderOutputs, basicProd.get(),
-                    null, null);*/
+            //TODO: CHECK WITH COCO FOR RESWAL
+            controller.sendProductionMessage(prodCards, resWal, leaderCards, leaderOutputs, isBasicProd, basicOut);
+            mainBoard.setEffect(null);
+            popUpStage.close();
         });
 
         produceBackBtn.setOnAction(actionEvent -> {
             mainBoard.setEffect(null);
             popUpStage.close();
         });
+    }
+
+    private void askProductionOutput(Stage currStage) {
+        currStage.setScene(getScene(BASIC_OUTPUT));
+
+        stoneToggleBO.setUserData(STONE);
+        servantToggleBO.setUserData(SERVANT);
+        coinToggleBO.setUserData(COIN);
+        shieldToggleBO.setUserData(SHIELD);
+
+        BOConfirmBtn.setOnAction(actionEvent -> {
+            basicOut = (Resource) chosenOutputGrp.getSelectedToggle().getUserData();
+            currStage.setScene(getScene(PRODUCE));
+        });
+
+        BOBackBtn.setOnAction(actionEvent -> {
+            currStage.setScene(getScene(PRODUCE));
+        });
+    }
+
+    private void choosePaymentPopUp(Stage currStage) {
+        currStage.setScene(getScene(CHOOSE_PAYMENT));
+        resetChoosePayment();
+
+        NubPlayer player = controller.getPlayer();
+        Map<BiElement<Resource, Storage>, Integer> loot = player.getLootchest();
+        ResourcesWallet wallet = new ResourcesWallet();
+
+        //showing loot status
+        loot.forEach((x, y) -> {
+            switch (x.getFirstValue()) {
+                case COIN -> qtyCoinLblCP.setText("x" + y);
+                case SERVANT -> qtyServantLblCP.setText("x" + y);
+                case SHIELD -> qtyShieldLblCP.setText("x" + y);
+                case STONE -> qtyStoneLblCP.setText("x" + y);
+            }
+        });
+
+        //set Images in war
+        Resource res = player.getResourceFromStorage(WAREHOUSE_SMALL);
+        if (res != null) {
+            shelf1CP.setImage(new Image("/img/pawns/" + res + ".png"));
+        }
+
+        res = player.getResourceFromStorage(WAREHOUSE_MID);
+        int qty = player.getQtyInStorage(res, WAREHOUSE_MID);
+
+        if (res != null && qty == 2) {
+            shelf21CP.setImage(new Image("/img/pawns/" + res + ".png"));
+            shelf22CP.setImage(new Image("/img/pawns/" + res + ".png"));
+        } else if (res != null && qty == 1) {
+            shelf21CP.setImage(new Image("/img/pawns/" + res + ".png"));
+        }
+
+        res = player.getResourceFromStorage(WAREHOUSE_LARGE);
+        qty = player.getQtyInStorage(res, WAREHOUSE_LARGE);
+
+        if (res != null) {
+            if (qty == 3) {
+                shelf31CP.setImage(new Image("/img/pawns/" + res + ".png"));
+                shelf32CP.setImage(new Image("/img/pawns/" + res + ".png"));
+                shelf33CP.setImage(new Image("/img/pawns/" + res + ".png"));
+            } else if (qty == 2) {
+                shelf31CP.setImage(new Image("/img/pawns/" + res + ".png"));
+                shelf32CP.setImage(new Image("/img/pawns/" + res + ".png"));
+            } else {
+                shelf31CP.setImage(new Image("/img/pawns/" + res + ".png"));
+            }
+        }
+
+        //choose from warehouse
+        List<Resource> fromWar = new ArrayList<>();
+
+        shelf1ToggleCP.setOnAction(event -> {
+            if (shelf1ToggleCP.isSelected()) {
+                fromWar.add(player.getResourceFromStorage(WAREHOUSE_SMALL));
+            } else {
+                fromWar.remove(player.getResourceFromStorage(WAREHOUSE_SMALL));
+            }
+        });
+        shelf21ToggleCP.setOnAction(event -> {
+            if (shelf21ToggleCP.isSelected()) {
+                fromWar.add(player.getResourceFromStorage(WAREHOUSE_MID));
+            } else {
+                fromWar.remove(player.getResourceFromStorage(WAREHOUSE_MID));
+            }
+        });
+        shelf22ToggleCP.setOnAction(event -> {
+            if (shelf22ToggleCP.isSelected()) {
+                fromWar.add(player.getResourceFromStorage(WAREHOUSE_MID));
+            } else {
+                fromWar.remove(player.getResourceFromStorage(WAREHOUSE_MID));
+            }
+        });
+        shelf31ToggleCP.setOnAction(event -> {
+            if (shelf31ToggleCP.isSelected()) {
+                fromWar.add(player.getResourceFromStorage(WAREHOUSE_LARGE));
+            } else {
+                fromWar.remove(player.getResourceFromStorage(WAREHOUSE_LARGE));
+            }
+        });
+        shelf32ToggleCP.setOnAction(event -> {
+            if (shelf32ToggleCP.isSelected()) {
+                fromWar.add(player.getResourceFromStorage(WAREHOUSE_LARGE));
+            } else {
+                fromWar.remove(player.getResourceFromStorage(WAREHOUSE_LARGE));
+            }
+        });
+        shelf33ToggleCP.setOnAction(event -> {
+            if (shelf33ToggleCP.isSelected()) {
+                fromWar.add(player.getResourceFromStorage(WAREHOUSE_LARGE));
+            } else {
+                fromWar.remove(player.getResourceFromStorage(WAREHOUSE_LARGE));
+            }
+        });
+
+        //choose from loot
+        List<Resource> fromLoot = new ArrayList<>();
+        stoneAddBtnCP.setOnAction(actionEvent -> {
+            stoneLblCP.setText(String.valueOf((Integer.parseInt(stoneLblCP.getText()) + 1)));
+            fromLoot.add(STONE);
+        });
+        stoneSubBtnCP.setOnAction(actionEvent -> {
+            if (Integer.parseInt(stoneLblCP.getText()) != 0) {
+                stoneLblCP.setText(String.valueOf((Integer.parseInt(stoneLblCP.getText()) - 1)));
+                fromLoot.remove(STONE);
+            }
+        });
+        servantAddBtnCP.setOnAction(actionEvent -> {
+            servantLblCP.setText(String.valueOf((Integer.parseInt(servantLblCP.getText()) + 1)));
+            fromLoot.add(SERVANT);
+        });
+        servantSubBtnCP.setOnAction(actionEvent -> {
+            if (Integer.parseInt(servantLblCP.getText()) != 0) {
+                servantLblCP.setText(String.valueOf((Integer.parseInt(servantLblCP.getText()) - 1)));
+                fromLoot.remove(SERVANT);
+            }
+        });
+        coinAddBtnCP.setOnAction(actionEvent -> {
+            coinLblCP.setText(String.valueOf((Integer.parseInt(coinLblCP.getText()) + 1)));
+            fromLoot.add(COIN);
+        });
+        coinSubBtnCP.setOnAction(actionEvent -> {
+            if (Integer.parseInt(coinLblCP.getText()) != 0) {
+                coinLblCP.setText(String.valueOf((Integer.parseInt(coinLblCP.getText()) - 1)));
+                fromLoot.remove(COIN);
+            }
+        });
+        shieldAddBtnCP.setOnAction(actionEvent -> {
+            shieldLblCP.setText(String.valueOf((Integer.parseInt(shieldLblCP.getText()) + 1)));
+            fromLoot.add(SHIELD);
+        });
+        shieldSubBtnCP.setOnAction(actionEvent -> {
+            if (Integer.parseInt(shieldLblCP.getText()) != 0) {
+                shieldLblCP.setText(String.valueOf((Integer.parseInt(shieldLblCP.getText()) - 1)));
+                fromLoot.remove(SHIELD);
+            }
+        });
+
+        //recycle stack button for confirm
+        stack1Btn.setVisible(false);
+        stack1Btn.setDisable(true);
+        stack3Btn.setVisible(false);
+        stack3Btn.setDisable(true);
+        stack2Btn.setText("Confirm");
+        stack2Btn.setOnAction(actionEvent -> {
+            wallet.setLootchestTray(fromLoot);
+            wallet.setWarehouseTray(fromWar);
+            resWal = wallet;
+
+            currStage.setScene(getScene(PRODUCE));
+        });
+
+        backPaymentBtnCP.setOnAction(actionEvent -> {
+            currStage.setScene(getScene(PRODUCE));
+        });
+
     }
 
     /* ACTIVATE & DISCARD LEADER **************************************************************************************/

@@ -4,26 +4,27 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane id="popUp" xmlns="https://javafx.com/javafx" xmlns:fx="https://javafx.com/fxml" prefHeight="450.0" prefWidth="450.0">
+<StackPane id="popUp" xmlns="https://javafx.com/javafx" xmlns:fx="https://javafx.com/fxml" prefHeight="450.0"
+           prefWidth="450.0">
     <VBox alignment="CENTER" spacing="20">
-        <Label fx:id="DALLbl" styleClass="inputLabelSmall" text="Select the leaders you want to" />
+        <Label fx:id="DALLbl" styleClass="inputLabelSmall" text="Select the leaders you want to"/>
 
         <HBox alignment="CENTER" spacing="20">
             <RadioButton fx:id="DAL1Toggle" styleClass="leaderToggle">
                 <toggleGroup>
-                    <ToggleGroup fx:id="chosenLeaderGrp" />
+                    <ToggleGroup fx:id="chosenLeaderGrp"/>
                 </toggleGroup>
                 <graphic>
-                    <ImageView fx:id="DAL1Img" fitWidth="150.0" preserveRatio="true" styleClass="leaderImg" />
+                    <ImageView fx:id="DAL1Img" fitWidth="150.0" preserveRatio="true" styleClass="leaderImg"/>
                 </graphic>
             </RadioButton>
             <RadioButton fx:id="DAL2Toggle" styleClass="leaderToggle" toggleGroup="$chosenLeaderGrp">
                 <graphic>
-                    <ImageView fx:id="DAL2Img" fitWidth="150.0" preserveRatio="true" styleClass="leaderImg" />
+                    <ImageView fx:id="DAL2Img" fitWidth="150.0" preserveRatio="true" styleClass="leaderImg"/>
                 </graphic>
             </RadioButton>
         </HBox>
-        <Button fx:id="DALConfirmBtn" styleClass="btn" text="Confirm" />
-        <Button fx:id="DALBackBtn" styleClass="btn" text="Back" />
+        <Button fx:id="DALConfirmBtn" styleClass="btn" text="Confirm"/>
+        <Button fx:id="DALBackBtn" styleClass="btn" text="Back"/>
     </VBox>
 </StackPane>

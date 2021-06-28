@@ -15,7 +15,8 @@ public enum ScenesEnum {
     STORAGE("chooseStoragePopUp.fxml"),
     PRODUCTION_CARDS("productionCardsPopUp.fxml"),
     PRODUCE("producePopUp.fxml"),
-    DISCARD_ACTIVATE_LEADER("discActLeaderPopUp.fxml");
+    DISCARD_ACTIVATE_LEADER("discActLeaderPopUp.fxml"),
+    BASIC_OUTPUT("basicOutputPopUp.fxml");
 
     private String path;
 

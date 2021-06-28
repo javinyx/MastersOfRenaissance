@@ -38,7 +38,7 @@
     <ImageView fx:id="resource6ImgPU" fitHeight="30.0" layoutX="59.0" layoutY="167.0" preserveRatio="true"
                styleClass="resImg"/>
 
-    <ImageView fx:id="bin" fitHeight="50.0" layoutX="31.0" layoutY="325.0" preserveRatio="true">
+    <ImageView fx:id="bin" fitWidth="50.0" layoutX="31.0" layoutY="325.0" preserveRatio="true" pickOnBounds="true">
         <Image url="@../img/ui/whiteBin.png"/>
     </ImageView>
 

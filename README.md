@@ -1,6 +1,6 @@
 # Masters of Renaissance Board Game
 
-This project is the digitalised version of "*Masters of Renaissance*" board game. It has been developed as final test of Software Engineering, course of Computer Science Engineering at Politecnico di Milano during the A.Y. 2020/21.
+This project is the digitalised version of "*Masters of Renaissance*" board game. It has been developed as final test of Software Engineering, course of Computer Science Engineering at Politecnico di Milano during the 2020/21 A.Y.
 <br/>
 ## Game
 The original board game is by *Cranio Creations s.r.l.* and allows at maximum 4 players to play together. 
@@ -19,11 +19,12 @@ Professor Supervisor: Alessandro Margara
 
 | Feature       | Status        |
 |---------------|:---------------:|
+|Basic Rules| Done|
+|Full Rules | Done|
 |Command Line Interface| Done |
 |Graphing User Interface| Implementing|
 |Local Game     | Done|
 |Multiple Games | Done|
-|Disconnection Resilience| Probably dropped|
 
 ## JAR usage
 The game is splitted into two JAR files, both can be downloaded form Deliverables directory.
@@ -48,13 +49,13 @@ To start the client app, either click on the `MasterOfRenaissance.jar` file (GUI
 Once the client app is running and the connection with the server is established, both CLI and GUI mode will ask the player for the in-game nickname and game size wished. The nickname must be unique within the lobby in which the player is put, but multiple players can share the same nickname if they're in different lobbies.
 <br>
 
-Players will be kept waiting until the lobby reaches the capacity asked upon starting the session. Once the server has gathered as many players as necessary, it starts the initialization phase: all players have to choose 2 *Leader Cards* among a set of four chosen randomly by the server for each them. Furthermore, some players have the right to own starting resources and *Faith Points* based on their turn, so if the players are eligible, they should choose as many initial resources as stated by the server.
+Players will be kept waiting until the lobby reaches the capacity asked upon starting the session. Once the server has gathered as many players as necessary, it starts the initialization phase: all players have to choose 2 *Leader Cards* among a set of four chosen randomly by the server for each of them. Furthermore, some players have the right to own "starting resources" and *Faith Points* based on their turn, so if the players are eligible, they should choose as many initial resources as stated by the server.
 <br>
 
 Once every player has ended the initial phase, the actual game can finally start. The server communicate who has to start, while the others will wait for their turn.
 
 ## Mid-game Phase
-Once it's the player turn, different actions can be done (some just once at turn):
+Once it's the player turn, different actions can be done (some just once every turn):
 1. Buy resources from the shared market
 2.  Buy a *Development Card* from the ones available at that moment
 3. Activate one or more *Production Power* given by the player's *Development Cards* owned
@@ -70,8 +71,8 @@ Actions 1 through 3 can be executed just once every turn and in mutual exclusion
 For more detailed rules, please refer to the official *Masters of Renaissance* [Ruleset (IT)](http://www.craniocreations.it/wp-content/uploads/2021/04/Lorenzo_Cardgame_Rules_ITA_small-3.pdf).
 
 ### SinglePlayer Mode
-A side note for the solo mode is that all the rules above apply as well, plus some twists due to Lorenzo De Medici being your enemy. Each turn, the game draws an *Action Token* from a randomized deck which represents Lorenzo's move. There are three types of token:
-* Discard 2 *Development Cards* from the available pool. They can not be purchased anymore
+As a side note for the solo mode, all the rules above apply as well, plus some twists due to Lorenzo De Medici being your enemy. Each turn, the game draws an *Action Token* from a randomized deck which represents Lorenzo's move. There are three types of token:
+* Discard 2 *Development Cards* from the available pool, so they can not be purchased anymore
 * Move Lorenzo forward of 2 cells onto the *Faith Track*
 * Move Lorenzo forward of 1 cell onto the *Faith Track* and shuffle the *Action Token* deck
 
@@ -84,3 +85,7 @@ The player can choose to play locally. A single player match will be instantiate
 
 ### Multiple Games
 Once the players have chosen the game size whished, the server will prioritize filling the already existing lobby of that exact size that are still waiting for other people to join in order to start. If no lobby of that size need to be filled at the moment, then it will proceed with the creation of a new lobby.
+
+Once the player has been placed into a *waiting lobby* and that has been filled, then all the players in that lobby are moved into a new one for the ongoing game, this *game lobby* will keep track of all the players' connections for that party and for other parties of the same size as well without mixing them. 
+<br>
+In fact, the game can finally start for those players in the *game lobby*, but in the meantime other players can register themselves for a game of the same size going thourgh the same process just described above.

@@ -9,7 +9,6 @@ import it.polimi.ingsw.messages.MessageEnvelope;
 import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.concreteMessages.*;
 import it.polimi.ingsw.misc.BiElement;
-import it.polimi.ingsw.misc.Observable;
 import it.polimi.ingsw.misc.Observer;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.Game;
@@ -17,7 +16,6 @@ import it.polimi.ingsw.model.MultiPlayerGame;
 import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.SinglePlayerGame;
 import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
-import it.polimi.ingsw.model.cards.actiontoken.DiscardToken;
 import it.polimi.ingsw.model.cards.leader.*;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
@@ -328,7 +326,7 @@ public class Controller implements Observer<MessageID> {
             update(MessageID.INFO);
             return;
         }*/
-        boolean t = false;
+        //boolean t = false;
         removedResources.clear();
         addedResources.clear();
 
@@ -345,7 +343,7 @@ public class Controller implements Observer<MessageID> {
         ResourcesWallet wallet = produce.getResourcesWallet();
         BiElement<Resource, Storage> elem;
         try {
-            if (cards != null && !cards.isEmpty() && wallet != null) {
+            if ((cards != null && !cards.isEmpty() || produce.isBasicProduction()) && wallet != null) {
                 game.getCurrPlayer().startProduction(cards, wallet, extraPowerProd, extraOutput, produce.isBasicProduction(), basicOut);
             }
         } catch (BadStorageException e1) {
@@ -353,20 +351,20 @@ public class Controller implements Observer<MessageID> {
             addedResources.clear();
             removedResources.clear();
             update(MessageID.BAD_PRODUCTION_REQUEST);
-            t = true;
+            return;
         } catch (RuntimeException e2) {
             //notify that some cards in production cards chosen by the player for this task cannot produce
             addedResources.clear();
             removedResources.clear();
             update(MessageID.CARD_NOT_AVAILABLE);
-            t = true;
+            return;
         }
 
-        if(!t) {
+
             basicActionDone = true;
             update(UPDATE);
             update(MessageID.ACK);
-        }
+
     }
 
     /**

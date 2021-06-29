@@ -34,8 +34,6 @@ import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static it.polimi.ingsw.client.GUI.sceneHandlers.ScenesEnum.*;
 import static it.polimi.ingsw.misc.Storage.*;
@@ -458,32 +456,32 @@ public class GamePhaseHandler extends PhaseHandler {
         Map<BiElement<Resource, Storage>, Integer> lc = controller.getPlayer().getLootchest();
         lc.forEach((x, y) -> {
             switch (x.getFirstValue()) {
-                case COIN: {
+                case COIN -> {
                     if (y != null) {
                         coinLblLC.setText("x" + y);
                     } else {
                         coinLblLC.setText("x0");
                     }
                 }
-                case SHIELD: {
+                case SHIELD -> {
                     if (y != null) {
-                        shieldLblCP.setText("x" + y);
+                        shieldLblLC.setText("x" + y);
                     } else {
-                        shieldLblCP.setText("x0");
+                        shieldLblLC.setText("x0");
                     }
                 }
-                case STONE: {
+                case STONE -> {
                     if (y != null) {
                         stoneLblLC.setText("x" + y);
                     } else {
-                        stoneLblCP.setText("x0");
+                        stoneLblLC.setText("x0");
                     }
                 }
-                case SERVANT: {
+                case SERVANT -> {
                     if (y != null) {
-                        servantLblCP.setText("x" + y);
+                        servantLblLC.setText("x" + y);
                     } else {
-                        servantLblCP.setText("x0");
+                        servantLblLC.setText("x0");
                     }
                 }
             }

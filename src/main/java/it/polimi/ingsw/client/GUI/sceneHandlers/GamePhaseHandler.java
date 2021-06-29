@@ -1041,7 +1041,26 @@ public class GamePhaseHandler extends PhaseHandler {
     }
 
     public void setProductionCards() {
-        List<ConcreteProductionCard> availableProductionCards = controller.getAvailableProductionCards();
+        List<ConcreteProductionCard> availableProductionCards = new ArrayList<>();
+        for (int i = 0, j = 0; i < 12; i++, j++) {
+            switch (i){
+                case 0,1,2,3 -> { if(controller.getAvailableProductionCards().get(j).getLevel() == 1)
+                                        availableProductionCards.add(controller.getAvailableProductionCards().get(j));
+                                     else {
+                                        availableProductionCards.add(null);
+                                        j--; }}
+                case 4,5,6,7 -> { if(controller.getAvailableProductionCards().get(j).getLevel() == 2)
+                                        availableProductionCards.add(controller.getAvailableProductionCards().get(j));
+                                 else {
+                                        availableProductionCards.add(null);
+                                        j--; }}
+                case 8,9,10,11 -> { if(controller.getAvailableProductionCards().get(j).getLevel() == 3)
+                                        availableProductionCards.add(controller.getAvailableProductionCards().get(j));
+                                    else {
+                                        availableProductionCards.add(null);
+                                        j--; }}
+            }
+        }
         for (int x = 0, i = 0; x < 3; x++) {
             for (int y = 0; y < 4; y++, i++) {
                 if (availableProductionCards.get(i) != null) {
@@ -1049,6 +1068,7 @@ public class GamePhaseHandler extends PhaseHandler {
                 } else {
                     //Test
                     setProductionCardNullImg(x, y, productionCards);
+
                 }
             }
         }
@@ -1071,6 +1091,7 @@ public class GamePhaseHandler extends PhaseHandler {
         for (Node node : children) {
             if (gridPane.getRowIndex(node) == row && gridPane.getColumnIndex(node) == column) {
                 ((ImageView) node).setImage(new Image("img/productionCardsBack/blue1.png"));
+                node.setDisable(true);
                 break;
             }
         }

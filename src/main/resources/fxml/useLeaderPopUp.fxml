@@ -4,8 +4,8 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane id="popUp" xmlns="https://javafx.com/javafx" xmlns:fx="https://javafx.com/fxml" prefHeight="300.0"
-           prefWidth="350.0">
+<StackPane id="popUp" xmlns="https://javafx.com/javafx" xmlns:fx="https://javafx.com/fxml" prefHeight="450.0"
+           prefWidth="400.0">
     <VBox alignment="CENTER" spacing="20">
         <Label styleClass="inputLabelSmall" textAlignment="CENTER" text="Choose the leaders you would like to use"/>
 

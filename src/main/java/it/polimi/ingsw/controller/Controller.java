@@ -300,6 +300,7 @@ public class Controller implements Observer<MessageID> {
         } catch (IndexOutOfBoundsException e) {
             //stack < 1 || stack > 3
             removedResources.clear();
+            e.printStackTrace();
             update(MessageID.WRONG_STACK_CHOICE);
             t = true;
         } catch (WrongLevelException e) {

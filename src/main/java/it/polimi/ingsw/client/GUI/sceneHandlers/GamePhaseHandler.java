@@ -6,6 +6,7 @@ import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.cards.leader.BoostAbility;
+import it.polimi.ingsw.model.cards.leader.DiscountAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
@@ -34,6 +35,7 @@ import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static it.polimi.ingsw.client.GUI.sceneHandlers.ScenesEnum.*;
 import static it.polimi.ingsw.misc.Storage.*;
@@ -153,6 +155,14 @@ public class GamePhaseHandler extends PhaseHandler {
     @FXML
     private Label DALLbl;
 
+    /* USE LEADERS ****************************************************************************************************/
+    @FXML
+    private Button useLeaderBtn;
+    @FXML
+    private ImageView useLeader1Img, useLeader2Img;
+    @FXML
+    private ToggleButton useLeader1Toggle, useLeader2Toggle;
+
 
     public GamePhaseHandler(GuiController controller, Stage stage) {
         super(controller, stage);
@@ -261,8 +271,13 @@ public class GamePhaseHandler extends PhaseHandler {
     private void setLeader() {
         leader1Show.setImage(null);
         leader2Show.setImage(null);
+        leader1Show.setEffect(null);
+        leader2Show.setEffect(null);
 
         List<LeaderCard> currLeads = controller.getPlayer().getLeaders();
+
+        System.out.println(currLeads);
+
         if (currLeads.size() >= 1) {
             leader1Show.setImage(new Image("img/leaderCards/" + currLeads.get(0).getId() + ".png"));
             if (!currLeads.get(0).isActive()) {
@@ -1035,8 +1050,65 @@ public class GamePhaseHandler extends PhaseHandler {
             Integer cardId = Integer.parseInt(cardIdS);
 
             popUpStage.close();
-            choosePaymentPopUp(cardId);
+
+            // Check if player has active Discount Ability Leader Cards
+            List<LeaderCard> active = controller.getPlayer().getLeaders().stream().filter(LeaderCard::isActive)
+                    .collect(Collectors.toList());
+            List<LeaderCard> toPick = new ArrayList<>();
+            for(LeaderCard lead : active) {
+                if(lead instanceof DiscountAbility) {
+                    toPick.add(lead);
+                }
+            }
+            if (toPick.size() > 0) {
+                useDiscountLeader(cardId, toPick);
+            } else {
+                choosePaymentPopUp(cardId, new ArrayList<>());
+            }
         }
+    }
+
+    private void resetUseLeader() {
+        useLeader1Toggle.setSelected(false);
+        useLeader2Toggle.setSelected(false);
+        useLeader1Toggle.setUserData(null);
+        useLeader2Toggle.setUserData(null);
+        useLeader1Img.setImage(null);
+        useLeader2Img.setImage(null);
+    }
+
+    private void useDiscountLeader(int prodCardId, List<LeaderCard> toPick) {
+        resetUseLeader();
+
+        Stage popUpStage = new Stage(StageStyle.TRANSPARENT);
+        popUpStage.initOwner(stage);
+        popUpStage.initModality(Modality.APPLICATION_MODAL);
+        popUpStage.centerOnScreen();
+        popUpStage.setScene(getScene(USE_LEADER));
+        popUpStage.show();
+
+        List<Integer> leaderIds = new ArrayList<>();
+
+        if (toPick.size() >= 1) {
+            useLeader1Img.setImage(new Image("img/leaderCards/" + toPick.get(0).getId() + ".png"));
+            useLeader1Toggle.setUserData(toPick.get(0).getId());
+        }
+        if (toPick.size() == 2) {
+            useLeader2Img.setImage(new Image("img/leaderCards/" + toPick.get(1).getId() + ".png"));
+            useLeader2Toggle.setUserData(toPick.get(1).getId());
+        }
+
+        useLeaderBtn.setOnAction(actionEvent -> {
+            if(useLeader1Toggle.getUserData() != null) {
+                leaderIds.add((Integer) useLeader1Toggle.getUserData());
+            }
+            if(useLeader2Toggle.getUserData() != null) {
+                leaderIds.add((Integer) useLeader2Toggle.getUserData());
+            }
+
+            popUpStage.close();
+            choosePaymentPopUp(prodCardId, leaderIds);
+        });
     }
 
     public void setProductionCards() {
@@ -1070,21 +1142,30 @@ public class GamePhaseHandler extends PhaseHandler {
         }*/
         for (int i = 0, j = 0; i < 12; i++, j++) {
             switch (i) {
-                case 0,1,2,3 -> { if(controller.getAvailableProductionCards().get(j).getLevel() == 1)
-                                        availableProductionCards.add(i, controller.getAvailableProductionCards().get(j));
-                                     else {
-                                        availableProductionCards.add(i, null);
-                                        j--; }}
-                case 4,5,6,7 -> { if(controller.getAvailableProductionCards().get(j).getLevel() == 2)
-                                        availableProductionCards.add(i, controller.getAvailableProductionCards().get(j));
-                                 else {
-                                        availableProductionCards.add(i, null);
-                                        j--; }}
-                case 8,9,10,11 -> { if(controller.getAvailableProductionCards().get(j).getLevel() == 3)
-                                        availableProductionCards.add(i, controller.getAvailableProductionCards().get(j));
-                                    else {
-                                        availableProductionCards.add(i, null);
-                                        j--; }}
+                case 0, 1, 2, 3 -> {
+                    if (controller.getAvailableProductionCards().get(j).getLevel() == 1)
+                        availableProductionCards.add(i, controller.getAvailableProductionCards().get(j));
+                    else {
+                        availableProductionCards.add(i, null);
+                        j--;
+                    }
+                }
+                case 4, 5, 6, 7 -> {
+                    if (controller.getAvailableProductionCards().get(j).getLevel() == 2)
+                        availableProductionCards.add(i, controller.getAvailableProductionCards().get(j));
+                    else {
+                        availableProductionCards.add(i, null);
+                        j--;
+                    }
+                }
+                case 8, 9, 10, 11 -> {
+                    if (controller.getAvailableProductionCards().get(j).getLevel() == 3)
+                        availableProductionCards.add(i, controller.getAvailableProductionCards().get(j));
+                    else {
+                        availableProductionCards.add(i, null);
+                        j--;
+                    }
+                }
             }
         }
         for (int x = 0, i = 0; x < 3; x++) {
@@ -1099,11 +1180,15 @@ public class GamePhaseHandler extends PhaseHandler {
     }
 
     private int getIndexByColor(ConcreteProductionCard card) {
-        switch(card.getColor()) {
-            case GREEN  : return 0;
-            case PURPLE : return 1;
-            case BLUE   : return 2;
-            case YELLOW : return 3;
+        switch (card.getColor()) {
+            case GREEN:
+                return 0;
+            case PURPLE:
+                return 1;
+            case BLUE:
+                return 2;
+            case YELLOW:
+                return 3;
         }
         return -1;
     }
@@ -1156,7 +1241,7 @@ public class GamePhaseHandler extends PhaseHandler {
         backPaymentBtnCP.setVisible(true);
     }
 
-    public void choosePaymentPopUp(int cardId) {
+    public void choosePaymentPopUp(int cardId, List<Integer> leaderIds) {
         resetChoosePayment();
 
         Stage popUpStage = new Stage(StageStyle.TRANSPARENT);
@@ -1169,7 +1254,6 @@ public class GamePhaseHandler extends PhaseHandler {
         NubPlayer player = controller.getPlayer();
         Map<BiElement<Resource, Storage>, Integer> loot = player.getLootchest();
         ResourcesWallet wallet = new ResourcesWallet();
-        List<Integer> leaderIds = new ArrayList<>();
 
         //showing loot status
         loot.forEach((x, y) -> {
@@ -1389,29 +1473,44 @@ public class GamePhaseHandler extends PhaseHandler {
             produce4Toggle.setUserData(controller.getPlayer().getProductionStacks().get(0).peekFirst());
         }
 
+        // Check if player has active Boost Ability Leader Cards
+        List<LeaderCard> active = controller.getPlayer().getLeaders().stream().filter(LeaderCard::isActive)
+                .collect(Collectors.toList());
+        List<LeaderCard> toPick = new ArrayList<>();
+        for(LeaderCard lead : active) {
+            if(lead instanceof BoostAbility) {
+                toPick.add(lead);
+            }
+        }
+
         produceConfirmBtn.setOnAction(actionEvent -> {
             if (produce1Toggle.isSelected()) {
                 isBasicProd = true;
 
-                if(produce2Toggle.isSelected()) {
+                if (produce2Toggle.isSelected()) {
                     prodCards.add((ConcreteProductionCard) produce2Toggle.getUserData());
                 }
-                if(produce3Toggle.isSelected()) {
+                if (produce3Toggle.isSelected()) {
                     prodCards.add((ConcreteProductionCard) produce3Toggle.getUserData());
                 }
-                if(produce4Toggle.isSelected()) {
+                if (produce4Toggle.isSelected()) {
                     prodCards.add((ConcreteProductionCard) produce4Toggle.getUserData());
                 }
 
-                Platform.runLater(() -> askProductionOutput(popUpStage, prodCards, leaderCards, leaderOutputs));
+                if (toPick.size() > 0) {
+                    Platform.runLater(() -> useBoostLeader(toPick, prodCards, popUpStage));
+                } else {
+                    Platform.runLater(() -> askProductionOutput(popUpStage, prodCards, leaderCards, leaderOutputs));
+                }
+
             } else {
-                if(produce2Toggle.isSelected()) {
+                if (produce2Toggle.isSelected()) {
                     prodCards.add((ConcreteProductionCard) produce2Toggle.getUserData());
                 }
-                if(produce3Toggle.isSelected()) {
+                if (produce3Toggle.isSelected()) {
                     prodCards.add((ConcreteProductionCard) produce3Toggle.getUserData());
                 }
-                if(produce4Toggle.isSelected()) {
+                if (produce4Toggle.isSelected()) {
                     prodCards.add((ConcreteProductionCard) produce4Toggle.getUserData());
                 }
 
@@ -1422,6 +1521,61 @@ public class GamePhaseHandler extends PhaseHandler {
         produceBackBtn.setOnAction(actionEvent -> {
             mainBoard.setEffect(null);
             popUpStage.close();
+        });
+    }
+
+    private void useBoostLeader(List<LeaderCard> toPick, List<ConcreteProductionCard> prodCards, Stage currStage) {
+        resetUseLeader();
+        currStage.setScene(getScene(USE_LEADER));
+
+        List<BoostAbility> leaderCards = new ArrayList<>();
+
+        if (toPick.size() >= 1) {
+            useLeader1Img.setImage(new Image("img/leaderCards/" + toPick.get(0).getId() + ".png"));
+            useLeader1Toggle.setUserData(toPick.get(0));
+        }
+        if (toPick.size() == 2) {
+            useLeader2Img.setImage(new Image("img/leaderCards/" + toPick.get(1).getId() + ".png"));
+            useLeader2Toggle.setUserData(toPick.get(1));
+        }
+
+        useLeaderBtn.setOnAction(actionEvent -> {
+            if(useLeader1Toggle.getUserData() != null) {
+                leaderCards.add((BoostAbility) useLeader1Toggle.getUserData());
+            }
+            if(useLeader2Toggle.getUserData() != null) {
+                leaderCards.add((BoostAbility) useLeader2Toggle.getUserData());
+            }
+
+            List<Resource> leaderOut = new ArrayList<>();
+
+            askLeaderOutput(currStage, prodCards, leaderCards, leaderOut, leaderCards.size());
+        });
+    }
+
+    private void askLeaderOutput(Stage currStage, List<ConcreteProductionCard> prodCards,
+                                 List<BoostAbility> leaderCards, List<Resource> leaderOutputs, int cycle) {
+        currStage.setScene(getScene(BASIC_OUTPUT));
+
+        stoneToggleBO.setUserData(STONE);
+        servantToggleBO.setUserData(SERVANT);
+        coinToggleBO.setUserData(COIN);
+        shieldToggleBO.setUserData(SHIELD);
+
+        BOBackBtn.setVisible(false);
+
+        int tempCycle = cycle - 1;
+
+        BOConfirmBtn.setOnAction(actionEvent -> {
+            leaderOutputs.add((Resource) chosenOutputGrp.getSelectedToggle().getUserData());
+
+            if(tempCycle > 0) {
+                askLeaderOutput(currStage, prodCards, leaderCards, leaderOutputs, tempCycle);
+            } else if (isBasicProd) {
+                Platform.runLater(() -> askProductionOutput(currStage, prodCards, leaderCards, leaderOutputs));
+            } else {
+                Platform.runLater(() -> choosePaymentPopUp(currStage, prodCards, leaderCards, leaderOutputs));
+            }
         });
     }
 
@@ -1648,6 +1802,7 @@ public class GamePhaseHandler extends PhaseHandler {
 
         DALConfirmBtn.setOnAction(actionEvent -> {
             controller.sendActivateLeader(chosenLeaderGrp.getSelectedToggle().getUserData().toString());
+
             mainBoard.setEffect(null);
             popUpStage.close();
         });
@@ -1660,13 +1815,15 @@ public class GamePhaseHandler extends PhaseHandler {
 
     private void discardLeader() {
         if (controller.getPlayer().getLeaders().size() != 0) {
-            if (!controller.getPlayer().getLeaders().get(0).isActive() || !controller.getPlayer().getLeaders().get(1).isActive()) {
-                List<LeaderCard> leaderCards = new ArrayList<>();
-                for (LeaderCard led : controller.getPlayer().getLeaders())
-                    if (!led.isActive())
-                        leaderCards.add(led);
+            List<LeaderCard> leaderCards = new ArrayList<>();
+            for (LeaderCard led : controller.getPlayer().getLeaders())
+                if (!led.isActive())
+                    leaderCards.add(led);
 
+            if (leaderCards.size() >= 1) {
                 discardLeadPopUp(leaderCards);
+            } else {
+                sendToMsgBoard("You don't have any leader cards to discard!");
             }
         } else {
             sendToMsgBoard("You don't have any leader cards to discard!");
@@ -1686,22 +1843,26 @@ public class GamePhaseHandler extends PhaseHandler {
         DALLbl.setText("Select the leader you want to DISCARD");
 
         if (lead.size() == 2) {
-            DAL1Img.setImage(new Image("/img/leaderCards/" + controller.getPlayer().getLeaders().get(0).getId() + ".png"));
-            DAL1Toggle.setUserData(controller.getPlayer().getLeaders().get(0).getId());
-            DAL2Img.setImage(new Image("/img/leaderCards/" + controller.getPlayer().getLeaders().get(1).getId() + ".png"));
-            DAL2Toggle.setUserData(controller.getPlayer().getLeaders().get(1).getId());
+            DAL1Img.setImage(new Image("/img/leaderCards/" + lead.get(0).getId() + ".png"));
+            DAL1Toggle.setUserData(lead.get(0).getId());
+            DAL2Img.setImage(new Image("/img/leaderCards/" + lead.get(1).getId() + ".png"));
+            DAL2Toggle.setUserData(lead.get(1).getId());
         } else if (lead.size() == 1) {
-            DAL1Img.setImage(new Image("/img/leaderCards/" + controller.getPlayer().getLeaders().get(0).getId() + ".png"));
-            DAL1Toggle.setUserData(controller.getPlayer().getLeaders().get(0).getId());
-            DAL2Img.setDisable(true);
-        } else
+            DAL1Img.setImage(new Image("/img/leaderCards/" + lead.get(0).getId() + ".png"));
+            DAL1Toggle.setUserData(lead.get(0).getId());
+            DAL2Img.setVisible(false);
+            DAL2Toggle.setVisible(false);
+        } else {
             sendToMsgBoard("You don't have any leaders to discard");
+        }
 
         DALConfirmBtn.setOnAction(actionEvent -> {
             int c = Integer.parseInt(chosenLeaderGrp.getSelectedToggle().getUserData().toString());
             controller.sendDiscardLeader(chosenLeaderGrp.getSelectedToggle().getUserData().toString());
             controller.getPlayer().getLeaders().removeIf(led -> led.getId() == c);
+
             sendToMsgBoard("You have earned a Faith Point!");
+
             mainBoard.setEffect(null);
             popUpStage.close();
         });
@@ -1717,5 +1878,7 @@ public class GamePhaseHandler extends PhaseHandler {
         DAL1Toggle.setUserData(null);
         DAL2Img.setImage(null);
         DAL2Toggle.setUserData(null);
+        DAL2Img.setVisible(true);
+        DAL2Toggle.setVisible(true);
     }
 }

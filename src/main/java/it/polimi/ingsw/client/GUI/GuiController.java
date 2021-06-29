@@ -484,7 +484,7 @@ public class GuiController extends ClientController {
 
     @Override
     public void activateLeader() {
-        //UNUSED HERE
+        Platform.runLater(() -> gamePhaseHandler.updateBoard());
     }
 
     /**

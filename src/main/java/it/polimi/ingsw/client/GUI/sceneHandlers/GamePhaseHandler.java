@@ -158,7 +158,8 @@ public class GamePhaseHandler extends PhaseHandler {
         super(controller, stage);
 
         List<ScenesEnum> allPaths = new ArrayList<>(Arrays.asList(MAIN_BOARD, MARKET, STORAGE, OTHER_PLAYERS,
-                PRODUCTION_CARDS, CHOOSE_PAYMENT, CHOOSE_LEADERS, PRODUCE, DISCARD_ACTIVATE_LEADER, BASIC_OUTPUT));
+                PRODUCTION_CARDS, CHOOSE_PAYMENT, CHOOSE_LEADERS, PRODUCE, DISCARD_ACTIVATE_LEADER, BASIC_OUTPUT,
+                USE_LEADER));
         for (ScenesEnum path : allPaths) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + path.getPath()));
             loader.setController(this);
@@ -1040,22 +1041,49 @@ public class GamePhaseHandler extends PhaseHandler {
 
     public void setProductionCards() {
         List<ConcreteProductionCard> availableProductionCards = new ArrayList<>();
+        /*int col;
+        int k = 0;
+        for (ConcreteProductionCard cpc : controller.getAvailableProductionCards()) {
+            if (cpc.getLevel() == 1) {
+                col = getIndexByColor(cpc);
+                if (k != col) {
+                    availableProductionCards.add(col, null);
+                } else {
+                    availableProductionCards.add(col, cpc);
+                }
+            } else if (cpc.getLevel() == 2) {
+                col = getIndexByColor(cpc);
+                if (k != 4 + col) {
+                    availableProductionCards.add(4 + col, null);
+                } else {
+                    availableProductionCards.add(4 + col, cpc);
+                }
+            } else if (cpc.getLevel() == 3) {
+                col = getIndexByColor(cpc);
+                if (k != 8 + col) {
+                    availableProductionCards.add(8 + col, null);
+                } else {
+                    availableProductionCards.add(8 + col, cpc);
+                }
+            }
+            k++;
+        }*/
         for (int i = 0, j = 0; i < 12; i++, j++) {
-            switch (i){
+            switch (i) {
                 case 0,1,2,3 -> { if(controller.getAvailableProductionCards().get(j).getLevel() == 1)
-                                        availableProductionCards.add(controller.getAvailableProductionCards().get(j));
+                                        availableProductionCards.add(i, controller.getAvailableProductionCards().get(j));
                                      else {
-                                        availableProductionCards.add(null);
+                                        availableProductionCards.add(i, null);
                                         j--; }}
                 case 4,5,6,7 -> { if(controller.getAvailableProductionCards().get(j).getLevel() == 2)
-                                        availableProductionCards.add(controller.getAvailableProductionCards().get(j));
+                                        availableProductionCards.add(i, controller.getAvailableProductionCards().get(j));
                                  else {
-                                        availableProductionCards.add(null);
+                                        availableProductionCards.add(i, null);
                                         j--; }}
                 case 8,9,10,11 -> { if(controller.getAvailableProductionCards().get(j).getLevel() == 3)
-                                        availableProductionCards.add(controller.getAvailableProductionCards().get(j));
+                                        availableProductionCards.add(i, controller.getAvailableProductionCards().get(j));
                                     else {
-                                        availableProductionCards.add(null);
+                                        availableProductionCards.add(i, null);
                                         j--; }}
             }
         }
@@ -1064,12 +1092,20 @@ public class GamePhaseHandler extends PhaseHandler {
                 if (availableProductionCards.get(i) != null) {
                     setProductionCardImg(x, y, productionCards, availableProductionCards.get(i).getId());
                 } else {
-                    //Test
                     setProductionCardNullImg(x, y, productionCards);
-
                 }
             }
         }
+    }
+
+    private int getIndexByColor(ConcreteProductionCard card) {
+        switch(card.getColor()) {
+            case GREEN  : return 0;
+            case PURPLE : return 1;
+            case BLUE   : return 2;
+            case YELLOW : return 3;
+        }
+        return -1;
     }
 
     private void setProductionCardImg(int row, int column, GridPane gridPane, int imgId) {

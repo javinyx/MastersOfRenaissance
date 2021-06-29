@@ -47,7 +47,7 @@ public enum ScenesEnum {
     /**
      * Choose Payment scene.
      */
-    CHOOSE_PAYMENT("choosePaymentMethod.fxml"),
+    CHOOSE_PAYMENT("choosePaymentPopUp.fxml"),
     /**
      * Choose Storage scene.
      */
@@ -67,7 +67,11 @@ public enum ScenesEnum {
     /**
      * Choose basic output scene.
      */
-    BASIC_OUTPUT("basicOutputPopUp.fxml");
+    BASIC_OUTPUT("basicOutputPopUp.fxml"),
+    /**
+     * Choose which leader to use during main actions.
+     */
+    USE_LEADER("useLeaderPopUp.fxml");
 
     private String path;
 

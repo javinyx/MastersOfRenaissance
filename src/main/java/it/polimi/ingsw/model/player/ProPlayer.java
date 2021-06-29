@@ -848,39 +848,39 @@ public class ProPlayer extends Player{
             input2 = fromExtra.get(1).get(1);
             basicProductionFromExtra(input1, input2, 2);
             controller.removeResources(new BiElement<>(input1, Storage.EXTRA2), 2);
-        }else if(resAsCash.anyFromLootchestTray() && resAsCash.anyFromWarehouseTray()){
+        }else if(resourcesWallet.anyFromLootchestTray() && resourcesWallet.anyFromWarehouseTray()){
             input1 = fromLoot.get(0);
             input2 = fromWar.get(0);
             partialBasicProdFromLoot(input1);
             controller.removeResources(new BiElement<>(input1, Storage.LOOTCHEST), 1);
             partialBasicProdFromWarehouse(input2);
-        }else if(resAsCash.anyFromLootchestTray() && resAsCash.anyFromExtraStorage(0)){
+        }else if(resourcesWallet.anyFromLootchestTray() && resourcesWallet.anyFromExtraStorage(0)){
             input1 = fromLoot.get(0);
             input2 = fromExtra.get(0).get(0);
             partialBasicProdFromLoot(input1);
             controller.removeResources(new BiElement<>(input1, Storage.LOOTCHEST), 1);
             partialBasicProdFromExtra(input2, 1);
             controller.removeResources(new BiElement<>(input2, Storage.EXTRA1), 1);
-        }else if(resAsCash.anyFromLootchestTray() && resAsCash.anyFromExtraStorage(1)){
+        }else if(resourcesWallet.anyFromLootchestTray() && resourcesWallet.anyFromExtraStorage(1)){
             input1 = fromLoot.get(0);
             input2 = fromExtra.get(1).get(0);
             partialBasicProdFromLoot(input1);
             controller.removeResources(new BiElement<>(input1, Storage.LOOTCHEST), 1);
             partialBasicProdFromExtra(input2, 2);
             controller.removeResources(new BiElement<>(input2, Storage.EXTRA2), 1);
-        }else if(resAsCash.anyFromWarehouseTray() && resAsCash.anyFromExtraStorage(0)){
+        }else if(resourcesWallet.anyFromWarehouseTray() && resourcesWallet.anyFromExtraStorage(0)){
             input1 = fromWar.get(0);
             input2 = fromExtra.get(0).get(0);
             partialBasicProdFromWarehouse(input1);
             partialBasicProdFromExtra(input2, 1);
             controller.removeResources(new BiElement<>(input2, Storage.EXTRA1), 1);
-        }else if(resAsCash.anyFromWarehouseTray() && resAsCash.anyFromExtraStorage(1)){
+        }else if(resourcesWallet.anyFromWarehouseTray() && resourcesWallet.anyFromExtraStorage(1)){
             input1 = fromWar.get(0);
             input2 = fromExtra.get(1).get(0);
             partialBasicProdFromWarehouse(input1);
             partialBasicProdFromExtra(input2, 2);
             controller.removeResources(new BiElement<>(input2, Storage.EXTRA2), 1);
-        }else if(resAsCash.anyFromExtraStorage(0) && resAsCash.anyFromExtraStorage(1)){
+        }else if(resourcesWallet.anyFromExtraStorage(0) && resourcesWallet.anyFromExtraStorage(1)){
             input1 = fromExtra.get(0).get(0);
             input2 = fromExtra.get(1).get(0);
             partialBasicProdFromExtra(input1, 1);

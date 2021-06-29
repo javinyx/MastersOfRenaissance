@@ -356,6 +356,7 @@ public class Controller implements Observer<MessageID> {
             //notify that some cards in production cards chosen by the player for this task cannot produce
             addedResources.clear();
             removedResources.clear();
+            e2.printStackTrace();
             update(MessageID.CARD_NOT_AVAILABLE);
             return;
         }

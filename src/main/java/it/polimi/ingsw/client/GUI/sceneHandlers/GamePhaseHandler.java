@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.cards.leader.BoostAbility;
 import it.polimi.ingsw.model.cards.leader.DiscountAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
+import it.polimi.ingsw.model.cards.production.ColorEnum;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
 import javafx.application.Platform;
@@ -1113,7 +1114,7 @@ public class GamePhaseHandler extends PhaseHandler {
     }
 
     public void setProductionCards() {
-        List<ConcreteProductionCard> availableProductionCards = new ArrayList<>();
+        ConcreteProductionCard[] availableProductionCards = {null,null,null,null,null,null,null,null,null,null,null,null,};
         /*int col;
         int k = 0;
         for (ConcreteProductionCard cpc : controller.getAvailableProductionCards()) {
@@ -1143,36 +1144,72 @@ public class GamePhaseHandler extends PhaseHandler {
         }*/
         for (int i = 0, j = 0; i < 12; i++, j++) {
             switch (i) {
-                case 0, 1, 2, 3 -> {
-                    if (controller.getAvailableProductionCards().get(j).getLevel() == 1)
-                        availableProductionCards.add(i, controller.getAvailableProductionCards().get(j));
-                    else {
-                        availableProductionCards.add(i, null);
-                        j--;
-                    }
-                }
-                case 4, 5, 6, 7 -> {
-                    if (controller.getAvailableProductionCards().get(j).getLevel() == 2)
-                        availableProductionCards.add(i, controller.getAvailableProductionCards().get(j));
-                    else {
-                        availableProductionCards.add(i, null);
-                        j--;
-                    }
-                }
-                case 8, 9, 10, 11 -> {
-                    if (controller.getAvailableProductionCards().get(j).getLevel() == 3)
-                        availableProductionCards.add(i, controller.getAvailableProductionCards().get(j));
-                    else {
-                        availableProductionCards.add(i, null);
-                        j--;
-                    }
-                }
+                case 0-> { if(controller.getAvailableProductionCards().get(j).getLevel() == 1 && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.GREEN))
+                                availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
+                            else {
+                                availableProductionCards[i] = null;
+                                j--; }}
+                case 1-> { if(controller.getAvailableProductionCards().get(j).getLevel() == 1  && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.PURPLE))
+                                availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
+                            else {
+                                availableProductionCards[i] = null;
+                                j--; }}
+                case 2-> { if(controller.getAvailableProductionCards().get(j).getLevel() == 1  && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.BLUE))
+                                availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
+                            else {
+                                availableProductionCards[i] = null;
+                                j--; }}
+                case 3-> { if(controller.getAvailableProductionCards().get(j).getLevel() == 1  && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.YELLOW))
+                                availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
+                            else {
+                                availableProductionCards[i] = null;
+                                j--; }}
+                case 4-> { if(controller.getAvailableProductionCards().get(j).getLevel() == 2 && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.GREEN))
+                                availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
+                            else {
+                                availableProductionCards[i] = null;
+                                j--; }}
+                case 5-> { if(controller.getAvailableProductionCards().get(j).getLevel() == 2  && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.PURPLE))
+                                availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
+                            else {
+                                availableProductionCards[i] = null;
+                                j--; }}
+                case 6-> { if(controller.getAvailableProductionCards().get(j).getLevel() == 2  && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.BLUE))
+                                availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
+                            else {
+                                availableProductionCards[i] = null;
+                                j--; }}
+                case 7-> { if(controller.getAvailableProductionCards().get(j).getLevel() == 2  && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.YELLOW))
+                                availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
+                            else {
+                                availableProductionCards[i] = null;
+                                j--; }}
+                case 8-> { if(controller.getAvailableProductionCards().get(j).getLevel() == 3 && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.GREEN))
+                                availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
+                            else {
+                                availableProductionCards[i] = null;
+                                j--; }}
+                case 9-> { if(controller.getAvailableProductionCards().get(j).getLevel() == 3  && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.PURPLE))
+                                availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
+                            else {
+                                availableProductionCards[i] = null;
+                                j--; }}
+                case 10-> { if(controller.getAvailableProductionCards().get(j).getLevel() == 3  && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.BLUE))
+                                availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
+                            else {
+                                availableProductionCards[i] = null;
+                                j--; }}
+                case 11-> { if(controller.getAvailableProductionCards().get(j).getLevel() == 3  && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.YELLOW))
+                                availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
+                            else {
+                                availableProductionCards[i] = null;
+                                j--; }}
             }
         }
         for (int x = 0, i = 0; x < 3; x++) {
             for (int y = 0; y < 4; y++, i++) {
-                if (availableProductionCards.get(i) != null) {
-                    setProductionCardImg(x, y, productionCards, availableProductionCards.get(i).getId());
+                if (availableProductionCards[i] != null) {
+                    setProductionCardImg(x, y, productionCards, availableProductionCards[i].getId());
                 } else {
                     setProductionCardNullImg(x, y, productionCards);
                 }

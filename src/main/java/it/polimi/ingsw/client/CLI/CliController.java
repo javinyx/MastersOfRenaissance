@@ -13,6 +13,7 @@ import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
 import it.polimi.ingsw.model.cards.leader.*;
+import it.polimi.ingsw.model.cards.production.ColorEnum;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
 
@@ -364,7 +365,7 @@ public class CliController extends ClientController {
         List<Resource> prod11 = new ArrayList<>();
         prod11.add(Resource.SERVANT);
         ConcreteProductionCard prod = new ConcreteProductionCard(5,2, ColorEnum.GREEN,1, cost, reqRes, prod11);
-        player.addProductionCard(prod, 0);*/
+        player.addProductionCard(prod, 1);*/
 
         List<ConcreteProductionCard> prodCard;
         List<LeaderCard> leadCard = null;

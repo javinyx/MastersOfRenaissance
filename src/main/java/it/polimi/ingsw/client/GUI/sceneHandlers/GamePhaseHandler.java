@@ -6,10 +6,7 @@ import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
-import it.polimi.ingsw.model.cards.leader.BoostAbility;
-import it.polimi.ingsw.model.cards.leader.DiscountAbility;
-import it.polimi.ingsw.model.cards.leader.LeaderCard;
-import it.polimi.ingsw.model.cards.leader.MarbleAbility;
+import it.polimi.ingsw.model.cards.leader.*;
 import it.polimi.ingsw.model.cards.production.ColorEnum;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
@@ -54,7 +51,8 @@ public class GamePhaseHandler extends PhaseHandler {
     private Button endTurnBtn, productionCardsOpen, produceBtn, activateLeaderBtn, discardLeaderBtn, rearrangeBtn;
     @FXML
     private ImageView productionStack11, productionStack12, productionStack13, productionStack21, productionStack22,
-            productionStack23, productionStack31, productionStack32, productionStack33, popeFav1, popeFav2, popeFav3;
+            productionStack23, productionStack31, productionStack32, productionStack33, popeFav1, popeFav2, popeFav3,
+            extraStorage11ImgMB, extraStorage12ImgMB, extraStorage21ImgMB, extraStorage22ImgMB;
     @FXML
     private Label coinLblLC, servantLblLC, shieldLblLC, stoneLblLC;
 
@@ -88,7 +86,8 @@ public class GamePhaseHandler extends PhaseHandler {
             extraStorage21, extraStorage22;
     @FXML
     private ImageView shelf1MB, shelf21MB, shelf22MB, shelf31MB, shelf32MB, shelf33MB,
-            shelf1ImgPU, shelf21ImgPU, shelf22ImgPU, shelf31ImgPU, shelf32ImgPU, shelf33ImgPU;
+            shelf1ImgPU, shelf21ImgPU, shelf22ImgPU, shelf31ImgPU, shelf32ImgPU, shelf33ImgPU, extraStorage11Img,
+            extraStorage12Img, extraStorage21Img, extraStorage22Img;
     @FXML
     private AnchorPane chooseStoragePU;
 
@@ -387,10 +386,71 @@ public class GamePhaseHandler extends PhaseHandler {
         shelf31ImgPU.setImage(null);
         shelf32ImgPU.setImage(null);
         shelf33ImgPU.setImage(null);
+
+        extraStorage11.setDisable(false);
+        extraStorage12.setDisable(false);
+        extraStorage21.setDisable(false);
+        extraStorage22.setDisable(false);
+
+        extraStorage11Img.setImage(null);
+        extraStorage12Img.setImage(null);
+        extraStorage21Img.setImage(null);
+        extraStorage22Img.setImage(null);
+
+        extraStorage11ImgMB.setImage(null);
+        extraStorage12ImgMB.setImage(null);
+        extraStorage21ImgMB.setImage(null);
+        extraStorage22ImgMB.setImage(null);
     }
 
     public void setWarehouse() {
         resetWarehouseMBPU();
+
+        Resource r = controller.getPlayer().getResourceFromStorage(EXTRA1);
+        if (r != null) {
+            int extra1 = controller.getPlayer().getQtyInStorage(r, EXTRA1);
+            if (extra1 >= 1) {
+                extraStorage11Img.setImage(new Image("/img/pawns/" + r.toString().toLowerCase() + ".png"));
+                extraStorage11ImgMB.setImage(new Image("/img/pawns/" + r.toString().toLowerCase() + ".png"));
+                extraStorage11.setDisable(true);
+            } else {
+                extraStorage11Img.setImage(null);
+                extraStorage11ImgMB.setImage(null);
+                extraStorage11.setDisable(false);
+            }
+            if (extra1 == 2) {
+                extraStorage12Img.setImage(new Image("/img/pawns/" + r.toString().toLowerCase() + ".png"));
+                extraStorage12ImgMB.setImage(new Image("/img/pawns/" + r.toString().toLowerCase() + ".png"));
+                extraStorage12.setDisable(true);
+            } else {
+                extraStorage22Img.setImage(null);
+                extraStorage22ImgMB.setImage(null);
+                extraStorage22.setDisable(false);
+            }
+        }
+
+        r = controller.getPlayer().getResourceFromStorage(EXTRA2);
+        if (r != null) {
+            int extra2 = controller.getPlayer().getQtyInStorage(r, EXTRA2);
+            if (extra2 >= 1) {
+                extraStorage21Img.setImage(new Image("/img/pawns/" + r.toString().toLowerCase() + ".png"));
+                extraStorage21ImgMB.setImage(new Image("/img/pawns/" + r.toString().toLowerCase() + ".png"));
+                extraStorage21.setDisable(true);
+            } else {
+                extraStorage21Img.setImage(null);
+                extraStorage21ImgMB.setImage(null);
+                extraStorage21.setDisable(false);
+            }
+            if (extra2 == 2) {
+                extraStorage22Img.setImage(new Image("/img/pawns/" + r.toString().toLowerCase() + ".png"));
+                extraStorage22ImgMB.setImage(new Image("/img/pawns/" + r.toString().toLowerCase() + ".png"));
+                extraStorage22.setDisable(true);
+            } else {
+                extraStorage22Img.setImage(null);
+                extraStorage22ImgMB.setImage(null);
+                extraStorage22.setDisable(false);
+            }
+        }
 
         Map<BiElement<Resource, Storage>, Integer> wh = controller.getPlayer().getWarehouse();
         wh.forEach((x, y) -> {
@@ -880,6 +940,15 @@ public class GamePhaseHandler extends PhaseHandler {
         popUpStage.setScene(getScene(STORAGE));
         popUpStage.show();
 
+        List<LeaderCard> active = controller.getPlayer().getLeaders().stream().filter(LeaderCard::isActive)
+                .collect(Collectors.toList());
+        List<StorageAbility> toPick = new ArrayList<>();
+        for (LeaderCard lead : active) {
+            if (lead instanceof StorageAbility) {
+                toPick.add((StorageAbility)lead);
+            }
+        }
+
         List<BiElement<Resource, Storage>> tbdResourcePlacement = new ArrayList<>();
 
         if (!isBadStorageRequest) {
@@ -1007,6 +1076,31 @@ public class GamePhaseHandler extends PhaseHandler {
         shelf33PU.setOnDragDropped(event -> {
             tbdResourcePlacement.add(new BiElement<>(targetDragDropped(event), Storage.WAREHOUSE_LARGE));
         });
+
+        if (toPick.size() >= 1) {
+            extraStorage1Img.setImage(new Image("/img/ui/" + toPick.get(0).getStorageType().toString().toLowerCase()
+                    + "Storage.png"));
+            extraStorage11.setOnDragOver(this::targetDragOver);
+            extraStorage11.setOnDragDropped(event -> {
+                tbdResourcePlacement.add(new BiElement<>(targetDragDropped(event), Storage.EXTRA1));
+            });
+            extraStorage12.setOnDragOver(this::targetDragOver);
+            extraStorage12.setOnDragDropped(event -> {
+                tbdResourcePlacement.add(new BiElement<>(targetDragDropped(event), Storage.EXTRA1));
+            });
+        }
+        if (toPick.size() == 2) {
+            extraStorage2Img.setImage(new Image("/img/ui/" + toPick.get(1).getStorageType().toString().toLowerCase()
+                    + "Storage.png"));
+            extraStorage21.setOnDragOver(this::targetDragOver);
+            extraStorage21.setOnDragDropped(event -> {
+                tbdResourcePlacement.add(new BiElement<>(targetDragDropped(event), Storage.EXTRA2));
+            });
+            extraStorage22.setOnDragOver(this::targetDragOver);
+            extraStorage22.setOnDragDropped(event -> {
+                tbdResourcePlacement.add(new BiElement<>(targetDragDropped(event), Storage.EXTRA2));
+            });
+        }
 
         if (isRearrangeRequest) {
             bin.setDisable(true);

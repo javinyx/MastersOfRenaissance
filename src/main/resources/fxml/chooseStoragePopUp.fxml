@@ -11,10 +11,14 @@
     <ImageView fx:id="extraStorage1Img" fitWidth="100.0" layoutX="185.0" layoutY="25.0" preserveRatio="true"/>
     <Region fx:id="extraStorage11" layoutX="185.0" layoutY="25.0" prefWidth="45.0" prefHeight="45.0"/>
     <Region fx:id="extraStorage12" layoutX="240.0" layoutY="25.0" prefWidth="45.0" prefHeight="45.0"/>
+    <ImageView fx:id="extraStorage11Img" fitHeight="30.0" preserveRatio="true" styleClass="resImg"/>
+    <ImageView fx:id="extraStorage12Img" fitHeight="30.0" preserveRatio="true" styleClass="resImg"/>
 
     <ImageView fx:id="extraStorage2Img" fitWidth="100.0" layoutX="300.0" layoutY="25.0" preserveRatio="true"/>
     <Region fx:id="extraStorage21" layoutX="300.0" layoutY="25.0" prefWidth="45.0" prefHeight="45.0"/>
     <Region fx:id="extraStorage22" layoutX="355.0" layoutY="25.0" prefWidth="45.0" prefHeight="45.0"/>
+    <ImageView fx:id="extraStorage21Img" fitHeight="30.0" preserveRatio="true" styleClass="resImg"/>
+    <ImageView fx:id="extraStorage22Img" fitHeight="30.0" preserveRatio="true" styleClass="resImg"/>
 
     <!-- Warehouse -->
     <ImageView id="wareHouseImg" fx:id="wareHouseImg" fitHeight="200.0" layoutX="188.0" layoutY="94.0"

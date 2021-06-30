@@ -117,7 +117,6 @@
     </ImageView>
     <Label fx:id="stoneLblLC" layoutX="263.0" layoutY="666.0" text="x0"/>
 
-
     <!-- MARKET -->
     <Circle fx:id="extraMarble" layoutX="1050.0" layoutY="50.0" radius="20" styleClass="marble"/>
     <GridPane fx:id="marketMarbles" hgap="2" layoutX="1082.0" layoutY="30.0" vgap="2">
@@ -141,5 +140,12 @@
                styleClass="leaderNotActive"/>
     <ImageView fx:id="leader2Show" fitWidth="120" layoutX="10.0" layoutY="570.0" preserveRatio="true"
                styleClass="leaderNotActive"/>
+
+    <!-- EXTRA STORAGE -->
+    <ImageView fx:id="extraStorage11ImgMB" layoutX="15.0" layoutY="480.0" fitHeight="30.0" preserveRatio="true" styleClass="resImg"/>
+    <ImageView fx:id="extraStorage12ImgMB" layoutX="45.0" layoutY="480.0" fitHeight="30.0" preserveRatio="true" styleClass="resImg"/>
+
+    <ImageView fx:id="extraStorage21ImgMB" layoutX="15.0" layoutY="670.0" fitHeight="30.0" preserveRatio="true" styleClass="resImg"/>
+    <ImageView fx:id="extraStorage22ImgMB" layoutX="45.0" layoutY="670.0" fitHeight="30.0" preserveRatio="true" styleClass="resImg"/>
 
 </AnchorPane>

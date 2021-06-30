@@ -5,6 +5,7 @@ import it.polimi.ingsw.client.model.NubPlayer;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
 import it.polimi.ingsw.model.ResourcesWallet;
+import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
 import it.polimi.ingsw.model.cards.leader.BoostAbility;
 import it.polimi.ingsw.model.cards.leader.DiscountAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
@@ -109,6 +110,8 @@ public class GamePhaseHandler extends PhaseHandler {
     /* MESSAGE BOARD **************************************************************************************************/
     @FXML
     private TextArea msgBoard;
+    @FXML
+    private ImageView actionTokenImg;
 
     /* FAITH TRACK ****************************************************************************************************/
     private List<BiElement<Double, Double>> faithCoords = new ArrayList<>();
@@ -198,6 +201,7 @@ public class GamePhaseHandler extends PhaseHandler {
 
     /* MAIN BOARD *****************************************************************************************************/
     public void initiateBoard() {
+        actionTokenImg.setImage(new Image("img/actionTokens/actTokenBack.png"));
         setLeader();
         setWarehouse();
         setMarket();
@@ -751,6 +755,17 @@ public class GamePhaseHandler extends PhaseHandler {
     /* MESSAGE BOARD **************************************************************************************************/
     public void sendToMsgBoard(String message) {
         msgBoard.appendText(message + '\n');
+    }
+
+    public void setActionToken(ActionToken act){
+        switch(act.getId()){
+            case 1 -> actionTokenImg.setImage(new Image("img/actionTokens/actTokenGreen.png"));
+            case 2 -> actionTokenImg.setImage(new Image("img/actionTokens/actTokenPurple.png"));
+            case 3 -> actionTokenImg.setImage(new Image("img/actionTokens/actTokenBlue.png"));
+            case 4 -> actionTokenImg.setImage(new Image("img/actionTokens/actTokenYellow.png"));
+            case 5, 6 -> actionTokenImg.setImage(new Image("img/actionTokens/actTokenDoubleMove.png"));
+            case 7 -> actionTokenImg.setImage(new Image("img/actionTokens/actTokenShuffle.png"));
+        }
     }
 
     /* CHOOSE STORAGE POPUP *******************************************************************************************/

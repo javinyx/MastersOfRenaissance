@@ -47,6 +47,9 @@
         <Image url="@../img/ui/mainBoard.png"/>
     </ImageView>
 
+    <!-- ACTION TOKENS -->
+    <ImageView fx:id="actionTokenImg" layoutX="1000.0" layoutY="200.0" preserveRatio="true" fitWidth="65"/>
+
     <!-- BUTTON SIDEBAR -->
     <Button fx:id="endTurnBtn" layoutX="1100.0" layoutY="200.0" styleClass="btn" text="End Turn"/>
     <Button fx:id="productionCardsOpen" layoutX="1100.0" layoutY="280.0" styleClass="btn"

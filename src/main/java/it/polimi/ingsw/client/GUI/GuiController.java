@@ -445,7 +445,7 @@ public class GuiController extends ClientController {
 
     @Override
     public void nickError() {
-
+        //Platform.runLater(() -> initialPhaseHandler.);
     }
 
     @Override
@@ -539,6 +539,7 @@ public class GuiController extends ClientController {
 
     @Override
     public void showLorenzoStatus(ActionToken act) {
+        Platform.runLater(() -> gamePhaseHandler.setActionToken(act));
         gamePhaseHandler.sendToMsgBoard("Lorenzo now is in position: " + lorenzoPos);
         gamePhaseHandler.sendToMsgBoard(act.print());
     }

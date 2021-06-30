@@ -354,7 +354,8 @@ public class GuiController extends ClientController {
     /* GENERAL ACTIONS ************************************************************************************************/
     @Override
     public void displayWaitMessage() {
-        Platform.runLater(() -> gamePhaseHandler.updateBoard());
+        if(!isRegistrationPhase())
+            Platform.runLater(() -> gamePhaseHandler.updateBoard());
     }
 
     /**

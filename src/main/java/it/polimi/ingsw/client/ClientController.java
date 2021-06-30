@@ -210,7 +210,18 @@ public abstract class ClientController {
      */
     public abstract void updateOtherPlayer(NubPlayer player);
 
-
+    /**
+     * Update the player status stated by the {@link UpdateMessage} and then gives the turn to the next player (always as
+     * stated by the message).
+     * <p>A recap of what it does:
+     * <li>Set the market;</li>
+     * <li>Set the available production cards pool;</li>
+     * <li>Update with the card the {@code playerId} bought;</li>
+     * <li>Update the {@code playerId} storage by removing spent resources and adding new ones;</li>
+     * </p>
+     * For more in depth structure of {@code msg}, see {@link UpdateMessage} class.
+     * @param msg message containing all the update information
+     */
     public synchronized void updateAction(UpdateMessage msg){
         if(market==null){
             market = new Market(msg.getMarketBoard(), msg.getExtraMarble());
@@ -233,7 +244,6 @@ public abstract class ClientController {
                 pp.setCurrPos(msg.getPlayerPos());
                 if(pp.equals(player)){
                     //updateFaithTrack();
-                    //System.out.println("You're now in position " + player.getCurrPos()); //for debugging
                 }
 
                 if (boughtProductionCard != null) {
@@ -277,16 +287,6 @@ public abstract class ClientController {
             displayWaitMessage();
 
         count++;
-
-        /*if (player.getTurnNumber() == 1) {
-            if (count == totalPlayers.size()) {
-                registrationPhase = false;
-            }
-        }
-        else {
-            if (count == totalPlayers.size() - 1)
-                registrationPhase = false;
-        }*/
     }
 
     /**

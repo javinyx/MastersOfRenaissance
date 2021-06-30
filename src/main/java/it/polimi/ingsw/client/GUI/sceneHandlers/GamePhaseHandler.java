@@ -509,6 +509,7 @@ public class GamePhaseHandler extends PhaseHandler {
 
         for (int i = 0; i < 3; i++) {
             tstack = new ArrayList<>(controller.getPlayer().getProductionStacks().get(i));
+            Collections.reverse(tstack);
             for (int j = 0, curr = (i * 3) + j; j < tstack.size(); j++, curr++) {
                 switch (curr) {
                     case 0 -> productionStack11.setImage(new Image("img/productionCardsFront/" +

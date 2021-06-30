@@ -119,6 +119,7 @@ public class GamePhaseHandler extends PhaseHandler {
     private ImageView redCross;
 
     /* PRODUCTION CARDS POPUP *****************************************************************************************/
+    private int coinQty, shieldQty, servantQty, stoneQty;
     @FXML
     private Label listCostLblCP, qtyStoneLblCP, qtyShieldLblCP, qtyCoinLblCP, qtyServantLblCP, stoneLblCP, servantLblCP,
             coinLblCP, shieldLblCP;
@@ -539,11 +540,6 @@ public class GamePhaseHandler extends PhaseHandler {
             }
         }
     }
-
-    public void resetBoard() {
-
-    }
-
 
     /* MARKET & MARKET POPUP ******************************************************************************************/
     //TODO: Select Leader
@@ -1129,34 +1125,7 @@ public class GamePhaseHandler extends PhaseHandler {
     }
 
     public void setProductionCards() {
-        ConcreteProductionCard[] availableProductionCards = {null,null,null,null,null,null,null,null,null,null,null,null,};
-        /*int col;
-        int k = 0;
-        for (ConcreteProductionCard cpc : controller.getAvailableProductionCards()) {
-            if (cpc.getLevel() == 1) {
-                col = getIndexByColor(cpc);
-                if (k != col) {
-                    availableProductionCards.add(col, null);
-                } else {
-                    availableProductionCards.add(col, cpc);
-                }
-            } else if (cpc.getLevel() == 2) {
-                col = getIndexByColor(cpc);
-                if (k != 4 + col) {
-                    availableProductionCards.add(4 + col, null);
-                } else {
-                    availableProductionCards.add(4 + col, cpc);
-                }
-            } else if (cpc.getLevel() == 3) {
-                col = getIndexByColor(cpc);
-                if (k != 8 + col) {
-                    availableProductionCards.add(8 + col, null);
-                } else {
-                    availableProductionCards.add(8 + col, cpc);
-                }
-            }
-            k++;
-        }*/
+        ConcreteProductionCard[] availableProductionCards = {null, null, null, null, null, null, null, null, null, null, null, null};
         for (int i = 0, j = 0; i < 12; i++, j++) {
             switch (i) {
                 case 0-> { if(controller.getAvailableProductionCards().get(j).getLevel() == 1 && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.GREEN))
@@ -1232,20 +1201,6 @@ public class GamePhaseHandler extends PhaseHandler {
         }
     }
 
-    private int getIndexByColor(ConcreteProductionCard card) {
-        switch (card.getColor()) {
-            case GREEN:
-                return 0;
-            case PURPLE:
-                return 1;
-            case BLUE:
-                return 2;
-            case YELLOW:
-                return 3;
-        }
-        return -1;
-    }
-
     private void setProductionCardImg(int row, int column, GridPane gridPane, int imgId) {
         ObservableList<Node> children = gridPane.getChildren();
 
@@ -1284,6 +1239,11 @@ public class GamePhaseHandler extends PhaseHandler {
         shelf32ToggleCP.setSelected(false);
         shelf33ToggleCP.setSelected(false);
 
+        stoneLblCP.setText("0");
+        coinLblCP.setText("0");
+        servantLblCP.setText("0");
+        shieldLblCP.setText("0");
+
         resWal = new ResourcesWallet();
         stack1Btn.setVisible(true);
         stack1Btn.setDisable(false);
@@ -1311,10 +1271,22 @@ public class GamePhaseHandler extends PhaseHandler {
         //showing loot status
         loot.forEach((x, y) -> {
             switch (x.getFirstValue()) {
-                case COIN -> qtyCoinLblCP.setText("x" + y);
-                case SERVANT -> qtyServantLblCP.setText("x" + y);
-                case SHIELD -> qtyShieldLblCP.setText("x" + y);
-                case STONE -> qtyStoneLblCP.setText("x" + y);
+                case COIN -> {
+                    qtyCoinLblCP.setText("x" + y);
+                    coinQty = y;
+                }
+                case SERVANT -> {
+                    qtyServantLblCP.setText("x" + y);
+                    servantQty = y;
+                }
+                case SHIELD -> {
+                    qtyShieldLblCP.setText("x" + y);
+                    shieldQty = y;
+                }
+                case STONE -> {
+                    qtyStoneLblCP.setText("x" + y);
+                    stoneQty = y;
+                }
             }
         });
 
@@ -1399,8 +1371,10 @@ public class GamePhaseHandler extends PhaseHandler {
         //choose from loot
         List<Resource> fromLoot = new ArrayList<>();
         stoneAddBtnCP.setOnAction(actionEvent -> {
-            stoneLblCP.setText(String.valueOf((Integer.parseInt(stoneLblCP.getText()) + 1)));
-            fromLoot.add(STONE);
+            if (Integer.parseInt(stoneLblCP.getText()) < stoneQty) {
+                stoneLblCP.setText(String.valueOf((Integer.parseInt(stoneLblCP.getText()) + 1)));
+                fromLoot.add(STONE);
+            }
         });
         stoneSubBtnCP.setOnAction(actionEvent -> {
             if (Integer.parseInt(stoneLblCP.getText()) != 0) {
@@ -1409,8 +1383,10 @@ public class GamePhaseHandler extends PhaseHandler {
             }
         });
         servantAddBtnCP.setOnAction(actionEvent -> {
-            servantLblCP.setText(String.valueOf((Integer.parseInt(servantLblCP.getText()) + 1)));
-            fromLoot.add(SERVANT);
+            if (Integer.parseInt(servantLblCP.getText()) < servantQty) {
+                servantLblCP.setText(String.valueOf((Integer.parseInt(servantLblCP.getText()) + 1)));
+                fromLoot.add(SERVANT);
+            }
         });
         servantSubBtnCP.setOnAction(actionEvent -> {
             if (Integer.parseInt(servantLblCP.getText()) != 0) {
@@ -1419,8 +1395,10 @@ public class GamePhaseHandler extends PhaseHandler {
             }
         });
         coinAddBtnCP.setOnAction(actionEvent -> {
-            coinLblCP.setText(String.valueOf((Integer.parseInt(coinLblCP.getText()) + 1)));
-            fromLoot.add(COIN);
+            if (Integer.parseInt(coinLblCP.getText()) < coinQty) {
+                coinLblCP.setText(String.valueOf((Integer.parseInt(coinLblCP.getText()) + 1)));
+                fromLoot.add(COIN);
+            }
         });
         coinSubBtnCP.setOnAction(actionEvent -> {
             if (Integer.parseInt(coinLblCP.getText()) != 0) {
@@ -1429,8 +1407,10 @@ public class GamePhaseHandler extends PhaseHandler {
             }
         });
         shieldAddBtnCP.setOnAction(actionEvent -> {
-            shieldLblCP.setText(String.valueOf((Integer.parseInt(shieldLblCP.getText()) + 1)));
-            fromLoot.add(SHIELD);
+            if (Integer.parseInt(shieldLblCP.getText()) < shieldQty) {
+                shieldLblCP.setText(String.valueOf((Integer.parseInt(shieldLblCP.getText()) + 1)));
+                fromLoot.add(SHIELD);
+            }
         });
         shieldSubBtnCP.setOnAction(actionEvent -> {
             if (Integer.parseInt(shieldLblCP.getText()) != 0) {
@@ -1661,10 +1641,22 @@ public class GamePhaseHandler extends PhaseHandler {
         //showing loot status
         loot.forEach((x, y) -> {
             switch (x.getFirstValue()) {
-                case COIN -> qtyCoinLblCP.setText("x" + y);
-                case SERVANT -> qtyServantLblCP.setText("x" + y);
-                case SHIELD -> qtyShieldLblCP.setText("x" + y);
-                case STONE -> qtyStoneLblCP.setText("x" + y);
+                case COIN -> {
+                    qtyCoinLblCP.setText("x" + y);
+                    coinQty = y;
+                }
+                case SERVANT -> {
+                    qtyServantLblCP.setText("x" + y);
+                    servantQty = y;
+                }
+                case SHIELD -> {
+                    qtyShieldLblCP.setText("x" + y);
+                    shieldQty = y;
+                }
+                case STONE -> {
+                    qtyStoneLblCP.setText("x" + y);
+                    stoneQty = y;
+                }
             }
         });
 
@@ -1749,8 +1741,10 @@ public class GamePhaseHandler extends PhaseHandler {
         //choose from loot
         List<Resource> fromLoot = new ArrayList<>();
         stoneAddBtnCP.setOnAction(actionEvent -> {
-            stoneLblCP.setText(String.valueOf((Integer.parseInt(stoneLblCP.getText()) + 1)));
-            fromLoot.add(STONE);
+            if (Integer.parseInt(stoneLblCP.getText()) < stoneQty) {
+                stoneLblCP.setText(String.valueOf((Integer.parseInt(stoneLblCP.getText()) + 1)));
+                fromLoot.add(STONE);
+            }
         });
         stoneSubBtnCP.setOnAction(actionEvent -> {
             if (Integer.parseInt(stoneLblCP.getText()) != 0) {
@@ -1759,8 +1753,10 @@ public class GamePhaseHandler extends PhaseHandler {
             }
         });
         servantAddBtnCP.setOnAction(actionEvent -> {
-            servantLblCP.setText(String.valueOf((Integer.parseInt(servantLblCP.getText()) + 1)));
-            fromLoot.add(SERVANT);
+            if (Integer.parseInt(servantLblCP.getText()) < servantQty) {
+                servantLblCP.setText(String.valueOf((Integer.parseInt(servantLblCP.getText()) + 1)));
+                fromLoot.add(SERVANT);
+            }
         });
         servantSubBtnCP.setOnAction(actionEvent -> {
             if (Integer.parseInt(servantLblCP.getText()) != 0) {
@@ -1769,8 +1765,10 @@ public class GamePhaseHandler extends PhaseHandler {
             }
         });
         coinAddBtnCP.setOnAction(actionEvent -> {
-            coinLblCP.setText(String.valueOf((Integer.parseInt(coinLblCP.getText()) + 1)));
-            fromLoot.add(COIN);
+            if (Integer.parseInt(coinLblCP.getText()) < coinQty) {
+                coinLblCP.setText(String.valueOf((Integer.parseInt(coinLblCP.getText()) + 1)));
+                fromLoot.add(COIN);
+            }
         });
         coinSubBtnCP.setOnAction(actionEvent -> {
             if (Integer.parseInt(coinLblCP.getText()) != 0) {
@@ -1779,8 +1777,10 @@ public class GamePhaseHandler extends PhaseHandler {
             }
         });
         shieldAddBtnCP.setOnAction(actionEvent -> {
-            shieldLblCP.setText(String.valueOf((Integer.parseInt(shieldLblCP.getText()) + 1)));
-            fromLoot.add(SHIELD);
+            if (Integer.parseInt(shieldLblCP.getText()) < shieldQty) {
+                shieldLblCP.setText(String.valueOf((Integer.parseInt(shieldLblCP.getText()) + 1)));
+                fromLoot.add(SHIELD);
+            }
         });
         shieldSubBtnCP.setOnAction(actionEvent -> {
             if (Integer.parseInt(shieldLblCP.getText()) != 0) {

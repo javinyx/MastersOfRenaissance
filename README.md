@@ -22,7 +22,7 @@ Professor Supervisor: Alessandro Margara
 |Basic Rules| Done|
 |Full Rules | Done|
 |Command Line Interface| Done |
-|Graphing User Interface| Done|
+|Graphical User Interface| Done|
 |Local Game     | Done|
 |Multiple Games | Done|
 

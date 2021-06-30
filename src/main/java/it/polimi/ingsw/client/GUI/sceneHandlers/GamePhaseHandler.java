@@ -175,13 +175,17 @@ public class GamePhaseHandler extends PhaseHandler {
     @FXML
     private HBox useLeaderMarbleChoices;
 
+    /* END *************/
+    @FXML
+    private Label endStatusLbl, winnerLbl;
+
 
     public GamePhaseHandler(GuiController controller, Stage stage) {
         super(controller, stage);
 
         List<ScenesEnum> allPaths = new ArrayList<>(Arrays.asList(MAIN_BOARD, MARKET, STORAGE, OTHER_PLAYERS,
                 PRODUCTION_CARDS, CHOOSE_PAYMENT, CHOOSE_LEADERS, PRODUCE, DISCARD_ACTIVATE_LEADER, BASIC_OUTPUT,
-                USE_LEADER));
+                USE_LEADER, END));
         for (ScenesEnum path : allPaths) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + path.getPath()));
             loader.setController(this);
@@ -1434,7 +1438,7 @@ public class GamePhaseHandler extends PhaseHandler {
         //set Images in war
         Resource res = player.getResourceFromStorage(WAREHOUSE_SMALL);
         if (res != null) {
-            shelf1CP.setImage(new Image("/img/pawns/" + res + ".png"));
+            shelf1CP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
         }
 
         res = player.getResourceFromStorage(WAREHOUSE_MID);
@@ -2084,5 +2088,22 @@ public class GamePhaseHandler extends PhaseHandler {
         DAL2Toggle.setUserData(null);
         DAL2Img.setVisible(true);
         DAL2Toggle.setVisible(true);
+    }
+
+    //---WINNER-------
+    public void displayWinner(String winner){
+        if(controller.getPlayer().getNickname().equals(winner)){
+            endStatusLbl.setText("VICTORY!");
+        }else{
+            endStatusLbl.setText("DEFEAT...");
+            winnerLbl.setText(winner + " won");
+        }
+
+        double x,y;
+        x = stage.getWidth();
+        y = stage.getHeight();
+        setScene(END);
+        stage.setWidth(x);
+        stage.setHeight(y);
     }
 }

@@ -772,6 +772,11 @@ public class Controller implements Observer<MessageID> {
             System.out.println("INIT END PHASE");
             endPhase = true;
             playersLeftToPlay = game.getTotalPlayers() - playerTriggerID;
+            if(playersLeftToPlay==0){
+                winner = game.getWinner();
+                System.out.println(winner.getNickname());
+                update(PLAYER_WIN);
+            }
         }
     }
 

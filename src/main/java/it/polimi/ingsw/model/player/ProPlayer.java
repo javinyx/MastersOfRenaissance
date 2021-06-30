@@ -461,15 +461,17 @@ public class ProPlayer extends Player{
             }
         }
         //System.out.println("REQUIREMENTS" + requirements);
-        int x;
+        int x = 0;
         //searching between storages
         for(int j=0; j<requirements.size(); j++){
             Buyable res = requirements.get(j).getBuyableResource();
             if(lootChest.getInventory().containsKey(res)){
                 requirements.get(j).subOccurrence(lootChest.getInventory().get(res));
-            }else if((x=warehouse.numberOf(requirements.get(j).getBuyableResource()))>0){
+            }
+            if((x=warehouse.numberOf(requirements.get(j).getBuyableResource()))>0){
                 requirements.get(j).subOccurrence(x);
-            }else if(extraStorage.isPresent() && (extraStorage.get().get(0).getStorageType().equals(res)
+            }
+            if(extraStorage.isPresent() && (extraStorage.get().get(0).getStorageType().equals(res)
                             || extraStorage.get().get(1).getStorageType().equals(res))){
                 if(extraStorage.get().get(0).getStorageType().equals(res)){
                     requirements.get(j).subOccurrence(extraStorage.get().get(0).size());

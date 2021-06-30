@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane fx:id="endScene" xmlns="https://javafx.com/javafx" xmlns:fx="https://javafx.com/fxml">
+    <VBox alignment="CENTER">
+        <Label fx:id="endStatusLbl" styleClass="inputLabelBig"/>
+        <Label fx:id="winnerLbl" styleClass="inputLabel"/>
+    </VBox>
+</StackPane>

@@ -50,13 +50,14 @@ public class Player implements Observable {
         }
         currPos = (report==3) ? 24 : newPos;
 
-        observer.updatePosition(this);
+
         if(report!=0){
             observer.alertVaticanReport(this, report);
         }
         if(report == 3){
             observer.updateEnd(this);
         }
+        observer.updatePosition(this);
     }
 
     /**

@@ -466,7 +466,8 @@ public class GuiController extends ClientController {
 
     @Override
     protected void winner(String winner) {
-
+        Platform.runLater(() -> gamePhaseHandler.displayWinner(winner));
+        setActive(false);
     }
 
     @Override

@@ -30,6 +30,4 @@ public interface ClientConnection {
      * <p>This method should be thread-safe on the {@code stillConnected} object.</p>*/
     void setStillConnected(boolean isStillConnected);
 
-    Thread getPingPongSystem();
-
 }

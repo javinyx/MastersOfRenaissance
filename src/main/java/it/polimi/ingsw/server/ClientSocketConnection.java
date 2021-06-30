@@ -10,8 +10,6 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Scanner;
 
-import static java.lang.Thread.sleep;
-
 public class ClientSocketConnection extends Observable<String> implements ClientConnection, Runnable {
     private final Socket socket;
     private ObjectOutputStream output;
@@ -134,37 +132,5 @@ public class ClientSocketConnection extends Observable<String> implements Client
             }*/
             close();
         }
-    }
-
-    @Override
-    public Thread getPingPongSystem(){
-        Gson gson = new Gson();
-        stillConnected = true;
-        Thread pingPong = new Thread(() -> {
-            while(!socket.isClosed() && stillConnected){
-                System.out.println("PING");
-                //MessageEnvelope pingEnvelope = new MessageEnvelope(MessageID.PING, "");
-                //send(gson.toJson(pingEnvelope, MessageEnvelope.class));
-                synchronized (stillConnected) {
-                    stillConnected = false;
-                }
-                try {
-                    sleep(10000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            //if we're here, then the socket has been closed because hasn't received any PONG back
-            //inform model and close socket
-            System.err.println("Ping not matched");
-            //server.playerCrashed(this, readName, gameSize);
-            try {
-                socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-
-        return pingPong;
     }
 }

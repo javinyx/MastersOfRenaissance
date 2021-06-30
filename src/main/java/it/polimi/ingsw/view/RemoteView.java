@@ -20,7 +20,6 @@ public class RemoteView extends View {
     private Controller controller;
     Gson gson = new Gson();
     private ClientConnection clientConnection;
-    private Thread ping;
 
     public RemoteView(String playerNickname, List<String> playerNames, ClientConnection clientConnection, Controller controller) {
         super(playerNickname);

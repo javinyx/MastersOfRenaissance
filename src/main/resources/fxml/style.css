@@ -73,6 +73,10 @@ ToggleButton {
     -fx-font-size: 16px;
 }
 
+.inputLabelBig {
+    -fx-font-size: 60px;
+}
+
 .inputArea {
 }
 
@@ -199,4 +203,9 @@ ToggleButton {
 
 .productionCard:hover {
     -fx-effect: dropshadow(one-pass-box, rgba(255, 255, 255, 0.5), 20, 0, 0, 0);
+}
+
+/* END SCENE------*/
+#endScene{
+    -fx-background-color: #2d0f08;
 }

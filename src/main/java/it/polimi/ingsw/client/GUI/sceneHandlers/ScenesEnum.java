@@ -71,7 +71,9 @@ public enum ScenesEnum {
     /**
      * Choose which leader to use during main actions.
      */
-    USE_LEADER("useLeaderPopUp.fxml");
+    USE_LEADER("useLeaderPopUp.fxml"),
+
+    END("end.fxml");
 
     private String path;
 

@@ -17,6 +17,7 @@ import it.polimi.ingsw.model.ResourcesWallet;
 import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
 import it.polimi.ingsw.model.cards.leader.BoostAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
+import it.polimi.ingsw.model.cards.leader.MarbleAbility;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
 import javafx.application.Platform;
@@ -287,9 +288,8 @@ public class GuiController extends ClientController {
      * @param dim   the dim
      * @param index the index
      */
-    public void sendBuyMarketMessage(char dim, int index) {
-        //TODO: option for active leader
-        BuyMarketMessage msg = new BuyMarketMessage(dim, index, null);
+    public void sendBuyMarketMessage(char dim, int index, List<BiElement<MarbleAbility, Integer>> leaders) {
+        BuyMarketMessage msg = new BuyMarketMessage(dim, index, leaders);
         messageToServerHandler.generateEnvelope(MessageID.BUY_FROM_MARKET, gson.toJson(msg, BuyMarketMessage.class));
     }
 

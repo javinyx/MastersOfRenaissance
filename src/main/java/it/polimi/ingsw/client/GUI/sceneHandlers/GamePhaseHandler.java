@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.cards.actiontoken.ActionToken;
 import it.polimi.ingsw.model.cards.leader.BoostAbility;
 import it.polimi.ingsw.model.cards.leader.DiscountAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
+import it.polimi.ingsw.model.cards.leader.MarbleAbility;
 import it.polimi.ingsw.model.cards.production.ColorEnum;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
@@ -28,6 +29,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -167,6 +169,10 @@ public class GamePhaseHandler extends PhaseHandler {
     private ImageView useLeader1Img, useLeader2Img;
     @FXML
     private ToggleButton useLeader1Toggle, useLeader2Toggle;
+    @FXML
+    private ChoiceBox useLeader1Choice, useLeader2Choice;
+    @FXML
+    private HBox useLeaderMarbleChoices;
 
 
     public GamePhaseHandler(GuiController controller, Stage stage) {
@@ -546,7 +552,6 @@ public class GamePhaseHandler extends PhaseHandler {
     }
 
     /* MARKET & MARKET POPUP ******************************************************************************************/
-    //TODO: Select Leader
     public void setMarket() {
         extraMarble.setFill(Color.web(controller.getMarket().getExtra().getHexCode()));
         extraMarblePU.setFill(Color.web(controller.getMarket().getExtra().getHexCode()));
@@ -578,46 +583,132 @@ public class GamePhaseHandler extends PhaseHandler {
         popUpStage.setScene(getScene(MARKET));
         popUpStage.show();
 
+        List<LeaderCard> active = controller.getPlayer().getLeaders().stream().filter(LeaderCard::isActive)
+                .collect(Collectors.toList());
+        List<LeaderCard> toPick = new ArrayList<>();
+        for (LeaderCard lead : active) {
+            if (lead instanceof MarbleAbility) {
+                toPick.add(lead);
+            }
+        }
+
         marketRow1Btn.setOnMouseClicked(mouseEvent -> {
-            controller.sendBuyMarketMessage('r', 1);
-            mainBoard.setEffect(null);
-            popUpStage.close();
+            if (toPick.isEmpty()) {
+                controller.sendBuyMarketMessage('r', 1, null);
+                mainBoard.setEffect(null);
+                popUpStage.close();
+            } else {
+                popUpStage.close();
+                useMarbleLeader('r', 1, toPick);
+            }
         });
         marketRow2Btn.setOnMouseClicked(mouseEvent -> {
-            controller.sendBuyMarketMessage('r', 2);
-            mainBoard.setEffect(null);
-            popUpStage.close();
+            if (toPick.isEmpty()) {
+                controller.sendBuyMarketMessage('r', 2, null);
+                mainBoard.setEffect(null);
+                popUpStage.close();
+            } else {
+                popUpStage.close();
+                useMarbleLeader('r', 2, toPick);
+            }
         });
         marketRow3Btn.setOnMouseClicked(mouseEvent -> {
-            controller.sendBuyMarketMessage('r', 3);
-            mainBoard.setEffect(null);
-            popUpStage.close();
+            if (toPick.isEmpty()) {
+                controller.sendBuyMarketMessage('r', 3, null);
+                mainBoard.setEffect(null);
+                popUpStage.close();
+            } else {
+                popUpStage.close();
+                useMarbleLeader('r', 3, toPick);
+            }
         });
         marketCol1Btn.setOnMouseClicked(mouseEvent -> {
-            controller.sendBuyMarketMessage('c', 1);
-            mainBoard.setEffect(null);
-            popUpStage.close();
+            if (toPick.isEmpty()) {
+                controller.sendBuyMarketMessage('c', 1, null);
+                mainBoard.setEffect(null);
+                popUpStage.close();
+            } else {
+                popUpStage.close();
+                useMarbleLeader('c', 1, toPick);
+            }
         });
         marketCol2Btn.setOnMouseClicked(mouseEvent -> {
-            controller.sendBuyMarketMessage('c', 2);
-            mainBoard.setEffect(null);
-            popUpStage.close();
+            if (toPick.isEmpty()) {
+                controller.sendBuyMarketMessage('c', 2, null);
+                mainBoard.setEffect(null);
+                popUpStage.close();
+            } else {
+                popUpStage.close();
+                useMarbleLeader('c', 2, toPick);
+            }
         });
         marketCol3Btn.setOnMouseClicked(mouseEvent -> {
-            controller.sendBuyMarketMessage('c', 3);
-            mainBoard.setEffect(null);
-            popUpStage.close();
+            if (toPick.isEmpty()) {
+                controller.sendBuyMarketMessage('c', 3, null);
+                mainBoard.setEffect(null);
+                popUpStage.close();
+            } else {
+                popUpStage.close();
+                useMarbleLeader('c', 3, toPick);
+            }
         });
         marketCol4Btn.setOnMouseClicked(mouseEvent -> {
-            controller.sendBuyMarketMessage('c', 4);
-            mainBoard.setEffect(null);
-            popUpStage.close();
+            if (toPick.isEmpty()) {
+                controller.sendBuyMarketMessage('c', 4, null);
+                mainBoard.setEffect(null);
+                popUpStage.close();
+            } else {
+                popUpStage.close();
+                useMarbleLeader('c', 4, toPick);
+            }
         });
 
         marketBackBtn.setOnAction(actionEvent -> {
             mainBoard.setEffect(null);
             popUpStage.close();
         });
+    }
+
+    private void useMarbleLeader(char dim, int index , List<LeaderCard> toPick) {
+        resetUseLeader();
+        useLeaderMarbleChoices.setVisible(true);
+        useLeader1Choice.setVisible(false);
+        useLeader2Choice.setVisible(false);
+
+        Stage popUpStage = new Stage(StageStyle.TRANSPARENT);
+        popUpStage.initOwner(stage);
+        popUpStage.initModality(Modality.APPLICATION_MODAL);
+        popUpStage.centerOnScreen();
+        popUpStage.setScene(getScene(USE_LEADER));
+        popUpStage.show();
+
+        List<BiElement<MarbleAbility, Integer>> marbleChoice = new ArrayList<>();
+
+        if (toPick.size() >= 1) {
+            useLeader1Img.setImage(new Image("/img/leaderCards/" + toPick.get(0).getId() + ".png"));
+            useLeader1Toggle.setUserData(toPick.get(0));
+            useLeader1Choice.setVisible(true);
+        }
+        if (toPick.size() == 2) {
+            useLeader2Img.setImage(new Image("/img/leaderCards/" + toPick.get(1).getId() + ".png"));
+            useLeader2Toggle.setUserData(toPick.get(1));
+            useLeader2Choice.setVisible(true);
+        }
+
+        useLeaderBtn.setOnAction(actionEvent -> {
+            if (useLeader1Toggle.getUserData() != null) {
+                marbleChoice.add(new BiElement<>((MarbleAbility) useLeader1Toggle.getUserData(), (Integer) useLeader1Choice.getValue()));
+            }
+            if (useLeader2Toggle.getUserData() != null) {
+                marbleChoice.add(new BiElement<>((MarbleAbility) useLeader2Toggle.getUserData(), (Integer) useLeader2Choice.getValue()));
+            }
+
+            controller.sendBuyMarketMessage(dim, index, marbleChoice);
+
+            popUpStage.close();
+        });
+
+
     }
 
     /* ENEMY BOARD ****************************************************************************************************/
@@ -1096,8 +1187,11 @@ public class GamePhaseHandler extends PhaseHandler {
         useLeader2Toggle.setSelected(false);
         useLeader1Toggle.setUserData(null);
         useLeader2Toggle.setUserData(null);
+
         useLeader1Img.setImage(null);
         useLeader2Img.setImage(null);
+
+        useLeaderMarbleChoices.setVisible(false);
     }
 
     private void useDiscountLeader(int prodCardId, List<LeaderCard> toPick) {

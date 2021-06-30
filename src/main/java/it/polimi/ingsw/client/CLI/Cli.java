@@ -10,6 +10,7 @@ import it.polimi.ingsw.model.cards.leader.BoostAbility;
 import it.polimi.ingsw.model.cards.leader.LeaderCard;
 import it.polimi.ingsw.model.cards.leader.MarbleAbility;
 import it.polimi.ingsw.model.cards.leader.StorageAbility;
+import it.polimi.ingsw.model.cards.production.ColorEnum;
 import it.polimi.ingsw.model.cards.production.ConcreteProductionCard;
 import it.polimi.ingsw.model.market.Resource;
 
@@ -333,7 +334,7 @@ public class Cli /*extends MessageDispatcher*/ {
         for (int i = 0; i < 3; i++) {
             if (controller.getPlayer().getProductionStacks().get(i).size() != 0) {
                 card.add(controller.getPlayer().getProductionStacks().get(i).peekFirst());
-                OSPrinter.printProductionCard(card.get(i));
+                OSPrinter.printProductionCard(controller.getPlayer().getProductionStacks().get(i).peekFirst());
             }
         }
 
@@ -763,6 +764,15 @@ public class Cli /*extends MessageDispatcher*/ {
     }
 
     public void showPlayerProdCard(List<Deque<ConcreteProductionCard>> prodStack){
+        /*List<Resource> cost = new ArrayList<>();
+        cost.add(Resource.SHIELD);cost.add(Resource.SERVANT);cost.add(Resource.STONE);
+        List<Resource> reqRes = new ArrayList<>();
+        reqRes.add(Resource.STONE);
+        List<Resource> prod11 = new ArrayList<>();
+        prod11.add(Resource.SERVANT);
+        ConcreteProductionCard prod = new ConcreteProductionCard(5,2, ColorEnum.GREEN,1, cost, reqRes, prod11);
+        controller.getPlayer().addProductionCard(prod, 1);*/
+
         System.out.println("Development cards:");
         if (prodStack.get(0).size() == 0 && prodStack.get(1).size() == 0 && prodStack.get(2).size() == 0)
             System.out.println("There are no Development card");
@@ -776,6 +786,8 @@ public class Cli /*extends MessageDispatcher*/ {
                     i++;
                     total += d.size();
                 }
+                else
+                    i++;
             }
             System.out.println("Player has " + total +" development card in total.");
         }

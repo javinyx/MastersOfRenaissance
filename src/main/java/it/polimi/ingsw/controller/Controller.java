@@ -261,7 +261,7 @@ public class Controller implements Observer<MessageID> {
             List<LeaderCard> leaderCards = new ArrayList<>();
             List<ConcreteProductionCard> buyableProdCard = new ArrayList<>(game.getBuyableProductionCards());
 
-            for (int i = 0; i < 12; i++) {
+            for (int i = 0; i < buyableProdCard.size(); i++) {
                 if (buyableProdCard.get(i).getId() == buyProdMsg.getProdCardId()) {
                     card = game.getBuyableProductionCards().get(i);
                 }
@@ -300,7 +300,6 @@ public class Controller implements Observer<MessageID> {
         } catch (IndexOutOfBoundsException e) {
             //stack < 1 || stack > 3
             removedResources.clear();
-            e.printStackTrace();
             update(MessageID.WRONG_STACK_CHOICE);
             t = true;
         } catch (WrongLevelException e) {

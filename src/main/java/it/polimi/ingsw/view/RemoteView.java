@@ -74,8 +74,6 @@ public class RemoteView extends View {
 
             case REARRANGE_WAREHOUSE -> controller.rearrangeWarehouse(gson.fromJson(envelope.getPayload(), StoreResourcesMessage.class));
 
-            //PING PONG
-            case PONG -> clientConnection.setStillConnected(true);
             default -> System.err.println("MessageID not recognised in class " + this.getClass());
         }
     }

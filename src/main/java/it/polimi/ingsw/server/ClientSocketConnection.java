@@ -143,8 +143,8 @@ public class ClientSocketConnection extends Observable<String> implements Client
         Thread pingPong = new Thread(() -> {
             while(!socket.isClosed() && stillConnected){
                 System.out.println("PING");
-                MessageEnvelope pingEnvelope = new MessageEnvelope(MessageID.PING, "");
-                send(gson.toJson(pingEnvelope, MessageEnvelope.class));
+                //MessageEnvelope pingEnvelope = new MessageEnvelope(MessageID.PING, "");
+                //send(gson.toJson(pingEnvelope, MessageEnvelope.class));
                 synchronized (stillConnected) {
                     stillConnected = false;
                 }

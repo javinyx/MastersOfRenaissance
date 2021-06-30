@@ -1052,9 +1052,9 @@ public class Controller implements Observer<MessageID> {
         UpdateMessage msg = new UpdateMessage(turnId, player.getCurrentPosition(), getCurrPlayerTurnID(),
                 game.getMarket().getMarketBoard(), game.getMarket().getExtraMarble(), game.getBuyableProductionID(),
                 prodCards, leadersIds, tempAddRes, null);
-        MessageEnvelope env = new MessageEnvelope(REJOIN_UPDATE, gson.toJson(msg, UpdateMessage.class));
+        //MessageEnvelope env = new MessageEnvelope(REJOIN_UPDATE, gson.toJson(msg, UpdateMessage.class));
 
-        updateBroadCast(env);
+        //updateBroadCast(env);
     }
 
     public void rejoin(SinglePlayerGame game, String nickname) {

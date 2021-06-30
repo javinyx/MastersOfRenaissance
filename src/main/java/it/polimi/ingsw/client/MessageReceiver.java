@@ -2,7 +2,6 @@ package it.polimi.ingsw.client;
 
 import com.google.gson.Gson;
 import it.polimi.ingsw.messages.MessageEnvelope;
-import it.polimi.ingsw.messages.MessageID;
 import it.polimi.ingsw.messages.concreteMessages.*;
 
 import java.io.ObjectInputStream;
@@ -76,7 +75,6 @@ public class MessageReceiver implements Runnable{
             case START_INITIAL_GAME -> controller.startInitialGame();
 
             case NICK_ERR -> controller.nickError();
-            case REJOIN_UPDATE -> System.out.println("REJOINING");
 
             default -> System.err.println("MessageID not recognised Registration");
         }
@@ -125,7 +123,6 @@ public class MessageReceiver implements Runnable{
 
             case PLAYER_WIN -> controller.winner(envelope.getPayload());
             case PLAYER_CRASHED -> controller.playerCrashed(gson.fromJson(envelope.getPayload(), EndTurnMessage.class).getNextPlayerId());
-            case REJOIN_UPDATE -> System.out.println("REJOINING");
 
             default -> System.err.println("MessageID not recognised Game");
         }
@@ -146,8 +143,8 @@ public class MessageReceiver implements Runnable{
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    MessageEnvelope pongEnvelope = new MessageEnvelope(MessageID.PONG, "");
-                    msgHandler.sendMessageToServer(gson.toJson(pongEnvelope, MessageEnvelope.class));
+                    //MessageEnvelope pongEnvelope = new MessageEnvelope(MessageID.PONG, "");
+                        //msgHandler.sendMessageToServer(gson.toJson(pongEnvelope, MessageEnvelope.class));
                 }
             }
         });

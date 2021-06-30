@@ -228,8 +228,12 @@ public class GamePhaseHandler extends PhaseHandler {
 
     public void observePlayerActions() {
         if (controller.getPlayer().isMyTurn()) {
-            sendToMsgBoard("It is now your turn, please either buy from market, buy development cards or" +
-                    " activate production.");
+            if(controller.getNormalTurn()) {
+                sendToMsgBoard("It is now your turn, please either buy from market, buy development cards or" +
+                        " activate production.");
+            }else{
+                sendToMsgBoard("You cannot do a main action anymore but you can browse. When you're ready, please end your turn.");
+            }
         } else {
             sendToMsgBoard("It is not your turn yet, please wait for the other players.");
         }
@@ -750,6 +754,12 @@ public class GamePhaseHandler extends PhaseHandler {
 
     /* MESSAGE BOARD **************************************************************************************************/
     public void sendToMsgBoard(String message) {
+        msgBoard.setStyle("");
+        msgBoard.appendText(message + '\n');
+    }
+
+    public void sendErrorToMsgBoard(String message){
+        msgBoard.setStyle("-fx-text-fill: red");
         msgBoard.appendText(message + '\n');
     }
 

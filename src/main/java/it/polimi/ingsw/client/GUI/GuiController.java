@@ -395,42 +395,43 @@ public class GuiController extends ClientController {
 
     @Override
     public void cardNotAvailable() {
-
+        gamePhaseHandler.sendErrorToMsgBoard("The card you chosen is not available. Please, try again with another one.");
     }
 
     @Override
     public void badProductionRequest() {
-
+        gamePhaseHandler.sendErrorToMsgBoard("The production could not be performed: your request was malformed. Please, try again.");
     }
 
     @Override
     public void badRearrangeRequest() {
-
+        gamePhaseHandler.sendErrorToMsgBoard("The rearrange could not be performed: a bad request has been sent to the server." +
+                "Please, try again.");
     }
 
     @Override
     public void badPaymentRequest() {
-
+        gamePhaseHandler.sendErrorToMsgBoard("The purchase could not be performed: a bad payment request has been sent to the server.");
     }
 
     @Override
     public void badDimensionRequest() {
-
+        gamePhaseHandler.sendErrorToMsgBoard("The action in the market could not be performed: check the dimension you chose and try again.");
     }
 
     @Override
     public void wrongStackRequest() {
-        gamePhaseHandler.sendToMsgBoard("The stack you have chosen is incorrect.");
+        gamePhaseHandler.sendErrorToMsgBoard("The stack you have chosen is incorrect.");
     }
 
     @Override
     public void wrongLevelRequest() {
-
+        gamePhaseHandler.sendErrorToMsgBoard("The level of the card you chose is not compatible with your status.");
     }
 
     @Override
     public void leaderNotActivable() {
-
+        gamePhaseHandler.sendErrorToMsgBoard("This leader can't be activated yet: you don't have enough resources or development cards");
     }
 
     @Override
@@ -475,7 +476,7 @@ public class GuiController extends ClientController {
 
     @Override
     public void showCurrentTurn(String s) {
-
+        gamePhaseHandler.sendToMsgBoard("Now is " + s + "'s turn. Please wait until it's your turn.");
     }
 
     @Override
@@ -546,6 +547,7 @@ public class GuiController extends ClientController {
 
     @Override
     public void startGameNotEndTurn() {
-
+        gamePhaseHandler.sendToMsgBoard("You can't skip the turn. Please do a main action: buy a development card, " +
+                "produce or buy resources from the market.");
     }
 }

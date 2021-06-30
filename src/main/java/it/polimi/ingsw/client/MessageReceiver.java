@@ -129,27 +129,4 @@ public class MessageReceiver implements Runnable{
 
     }
 
-    /**Return the thread that will send a PONG message to server through {@link MessageToServerHandler} class.
-     * <p>In order to send the pong, it must be awakened via {@code pongLock.notify()}. So when {@link MessageReceiver}
-     *'s thread gets a PING, it should invoke this thread.</p>*/
-    public Thread getPingPongSystem(){
-        Gson gson = new Gson();
-        MessageToServerHandler msgHandler = controller.getMessageToServerHandler();
-        Thread pong = new Thread(() -> {
-                while (true) {
-                    synchronized (pongLock){
-                    try {
-                        pongLock.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    //MessageEnvelope pongEnvelope = new MessageEnvelope(MessageID.PONG, "");
-                        //msgHandler.sendMessageToServer(gson.toJson(pongEnvelope, MessageEnvelope.class));
-                }
-            }
-        });
-
-        return pong;
-    }
-
 }

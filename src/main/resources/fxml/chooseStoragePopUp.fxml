@@ -6,11 +6,21 @@
 
 <AnchorPane id="popUp" fx:id="chooseStoragePU" prefHeight="400.0" prefWidth="425.0"
             xmlns="https://javafx.com/javafx" xmlns:fx="https://javafx.com/fxml">
+
+    <!-- Extra Storage from leaders -->
+    <ImageView fx:id="extraStorage1Img" fitWidth="100.0" layoutX="185.0" layoutY="25.0" preserveRatio="true"/>
+    <Region fx:id="extraStorage11" layoutX="185.0" layoutY="25.0" prefWidth="45.0" prefHeight="45.0"/>
+    <Region fx:id="extraStorage12" layoutX="240.0" layoutY="25.0" prefWidth="45.0" prefHeight="45.0"/>
+
+    <ImageView fx:id="extraStorage2Img" fitWidth="100.0" layoutX="300.0" layoutY="25.0" preserveRatio="true"/>
+    <Region fx:id="extraStorage21" layoutX="300.0" layoutY="25.0" prefWidth="45.0" prefHeight="45.0"/>
+    <Region fx:id="extraStorage22" layoutX="355.0" layoutY="25.0" prefWidth="45.0" prefHeight="45.0"/>
+
+    <!-- Warehouse -->
     <ImageView id="wareHouseImg" fx:id="wareHouseImg" fitHeight="200.0" layoutX="188.0" layoutY="94.0"
                preserveRatio="true">
         <Image url="@../img/ui/wareHouse.png"/>
     </ImageView>
-
     <Region fx:id="shelf1PU" layoutX="261.0" layoutY="104.0" prefHeight="50.0" prefWidth="50.0"/>
     <Region fx:id="shelf21PU" layoutX="235.0" layoutY="164.0" prefHeight="50.0" prefWidth="50.0"/>
     <Region fx:id="shelf22PU" layoutX="282.0" layoutY="164.0" prefHeight="50.0" prefWidth="50.0"/>
@@ -18,6 +28,7 @@
     <Region fx:id="shelf32PU" layoutX="260.0" layoutY="234.0" prefHeight="50.0" prefWidth="40.0"/>
     <Region fx:id="shelf33PU" layoutX="300.0" layoutY="234.0" prefHeight="50.0" prefWidth="50.0"/>
 
+    <!-- Resources inside warehouse -->
     <ImageView fx:id="shelf1ImgPU" fitHeight="30.0" preserveRatio="true" styleClass="resImg"/>
     <ImageView fx:id="shelf21ImgPU" fitHeight="30.0" preserveRatio="true" styleClass="resImg"/>
     <ImageView fx:id="shelf22ImgPU" fitHeight="30.0" preserveRatio="true" styleClass="resImg"/>
@@ -25,6 +36,7 @@
     <ImageView fx:id="shelf32ImgPU" fitHeight="30.0" preserveRatio="true" styleClass="resImg"/>
     <ImageView fx:id="shelf33ImgPU" fitHeight="30.0" preserveRatio="true" styleClass="resImg"/>
 
+    <!-- Resources to move -->
     <ImageView fx:id="resource1ImgPU" fitHeight="30.0" layoutX="109.0" layoutY="117.0" preserveRatio="true"
                styleClass="resImg"/>
     <ImageView fx:id="resource2ImgPU" fitHeight="30.0" layoutX="109.0" layoutY="167.0" preserveRatio="true"
@@ -38,6 +50,7 @@
     <ImageView fx:id="resource6ImgPU" fitHeight="30.0" layoutX="59.0" layoutY="167.0" preserveRatio="true"
                styleClass="resImg"/>
 
+    <!-- Discard bin -->
     <ImageView fx:id="bin" fitWidth="50.0" layoutX="31.0" layoutY="325.0" preserveRatio="true" pickOnBounds="true">
         <Image url="@../img/ui/whiteBin.png"/>
     </ImageView>

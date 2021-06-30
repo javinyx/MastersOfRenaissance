@@ -82,9 +82,10 @@ public class GamePhaseHandler extends PhaseHandler {
     private Button chooseStorageBtnPU;
     @FXML
     private ImageView resource1ImgPU, resource2ImgPU, resource3ImgPU, resource4ImgPU, resource5ImgPU, resource6ImgPU,
-            bin;
+            bin, extraStorage1Img, extraStorage2Img;
     @FXML
-    private Region shelf1PU, shelf21PU, shelf22PU, shelf31PU, shelf32PU, shelf33PU;
+    private Region shelf1PU, shelf21PU, shelf22PU, shelf31PU, shelf32PU, shelf33PU, extraStorage11, extraStorage12,
+            extraStorage21, extraStorage22;
     @FXML
     private ImageView shelf1MB, shelf21MB, shelf22MB, shelf31MB, shelf32MB, shelf33MB,
             shelf1ImgPU, shelf21ImgPU, shelf22ImgPU, shelf31ImgPU, shelf32ImgPU, shelf33ImgPU;
@@ -237,7 +238,7 @@ public class GamePhaseHandler extends PhaseHandler {
             if(controller.getNormalTurn()) {
                 sendToMsgBoard("It is now your turn, please either buy from market, buy development cards or" +
                         " activate production.");
-            }else{
+            } else {
                 sendToMsgBoard("You cannot do a main action anymore but you can browse. When you're ready, please end your turn.");
             }
         } else {
@@ -1663,7 +1664,7 @@ public class GamePhaseHandler extends PhaseHandler {
         }
 
         produceConfirmBtn.setOnAction(actionEvent -> {
-            if (!produce1Toggle.isSelected() && !produce2Toggle.isSelected() && !produce3Toggle.isSelected() && !produce4Toggle.isSelected()) {
+            if (produce1Toggle.isSelected() || produce2Toggle.isSelected() || produce3Toggle.isSelected() || produce4Toggle.isSelected()) {
                 if (produce1Toggle.isSelected()) {
                     isBasicProd = true;
 

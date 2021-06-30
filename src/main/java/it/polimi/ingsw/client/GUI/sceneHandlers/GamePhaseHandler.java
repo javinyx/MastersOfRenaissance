@@ -202,7 +202,7 @@ public class GamePhaseHandler extends PhaseHandler {
 
     /* MAIN BOARD *****************************************************************************************************/
     public void initiateBoard() {
-        actionTokenImg.setImage(new Image("img/actionTokens/actTokenBack.png"));
+        actionTokenImg.setImage(new Image("/img/actionTokens/actTokenBack.png"));
         setLeader();
         setWarehouse();
         setMarket();
@@ -285,13 +285,13 @@ public class GamePhaseHandler extends PhaseHandler {
         System.out.println(currLeads);
 
         if (currLeads.size() >= 1) {
-            leader1Show.setImage(new Image("img/leaderCards/" + currLeads.get(0).getId() + ".png"));
+            leader1Show.setImage(new Image("/img/leaderCards/" + currLeads.get(0).getId() + ".png"));
             if (!currLeads.get(0).isActive()) {
                 leader1Show.setEffect(new SepiaTone(0.6));
             }
         }
         if (currLeads.size() == 2) {
-            leader2Show.setImage(new Image("img/leaderCards/" + currLeads.get(1).getId() + ".png"));
+            leader2Show.setImage(new Image("/img/leaderCards/" + currLeads.get(1).getId() + ".png"));
             if (!currLeads.get(1).isActive()) {
                 leader2Show.setEffect(new SepiaTone(0.6));
             }
@@ -338,7 +338,7 @@ public class GamePhaseHandler extends PhaseHandler {
 
         for (int i = 0; i < passes.size(); i++) {
             switch (passes.get(i)) {
-                case 0 -> popeFavList.get(i).setImage(new Image("img/ui/pope" + (i + 2) + ".png"));
+                case 0 -> popeFavList.get(i).setImage(new Image("/img/ui/pope" + (i + 2) + ".png"));
                 case 1 -> popeFavList.get(i).setImage(null);
             }
         }
@@ -379,7 +379,7 @@ public class GamePhaseHandler extends PhaseHandler {
 
         Map<BiElement<Resource, Storage>, Integer> wh = controller.getPlayer().getWarehouse();
         wh.forEach((x, y) -> {
-            Image img = new Image("img/pawns/" + x.getFirstValue().toString().toLowerCase() + ".png");
+            Image img = new Image("/img/pawns/" + x.getFirstValue().toString().toLowerCase() + ".png");
             switch (x.getSecondValue()) {
                 case WAREHOUSE_SMALL -> {
                     if (y == 1) {
@@ -518,23 +518,23 @@ public class GamePhaseHandler extends PhaseHandler {
             Collections.reverse(tstack);
             for (int j = 0, curr = (i * 3) + j; j < tstack.size(); j++, curr++) {
                 switch (curr) {
-                    case 0 -> productionStack11.setImage(new Image("img/productionCardsFront/" +
+                    case 0 -> productionStack11.setImage(new Image("/img/productionCardsFront/" +
                             tstack.get(j).getId() + ".png"));
-                    case 1 -> productionStack12.setImage(new Image("img/productionCardsFront/" +
+                    case 1 -> productionStack12.setImage(new Image("/img/productionCardsFront/" +
                             tstack.get(j).getId() + ".png"));
-                    case 2 -> productionStack13.setImage(new Image("img/productionCardsFront/" +
+                    case 2 -> productionStack13.setImage(new Image("/img/productionCardsFront/" +
                             tstack.get(j).getId() + ".png"));
-                    case 3 -> productionStack21.setImage(new Image("img/productionCardsFront/" +
+                    case 3 -> productionStack21.setImage(new Image("/img/productionCardsFront/" +
                             tstack.get(j).getId() + ".png"));
-                    case 4 -> productionStack22.setImage(new Image("img/productionCardsFront/" +
+                    case 4 -> productionStack22.setImage(new Image("/img/productionCardsFront/" +
                             tstack.get(j).getId() + ".png"));
-                    case 5 -> productionStack23.setImage(new Image("img/productionCardsFront/" +
+                    case 5 -> productionStack23.setImage(new Image("/img/productionCardsFront/" +
                             tstack.get(j).getId() + ".png"));
-                    case 6 -> productionStack31.setImage(new Image("img/productionCardsFront/" +
+                    case 6 -> productionStack31.setImage(new Image("/img/productionCardsFront/" +
                             tstack.get(j).getId() + ".png"));
-                    case 7 -> productionStack32.setImage(new Image("img/productionCardsFront/" +
+                    case 7 -> productionStack32.setImage(new Image("/img/productionCardsFront/" +
                             tstack.get(j).getId() + ".png"));
-                    case 8 -> productionStack33.setImage(new Image("img/productionCardsFront/" +
+                    case 8 -> productionStack33.setImage(new Image("/img/productionCardsFront/" +
                             tstack.get(j).getId() + ".png"));
                 }
             }
@@ -630,7 +630,7 @@ public class GamePhaseHandler extends PhaseHandler {
             playersBtns.get(0).getStyleClass().remove("btn");
             playersBtns.get(0).getStyleClass().add("lorenzo");
             playersFaithLbls.get(0).setText(String.valueOf(controller.getLorenzoPos()));
-            playersFaithImgs.get(0).setImage(new Image("img/pawns/blackCrossNew.png"));
+            playersFaithImgs.get(0).setImage(new Image("/img/pawns/blackCrossNew.png"));
             ctr++;
         } else {
             for (NubPlayer p : controller.getOtherPlayers()) {
@@ -675,12 +675,12 @@ public class GamePhaseHandler extends PhaseHandler {
         opLbl.setText("You're viewing " + player.getNickname() + "'s status");
         if (player.getLeaders().size() > 0) {
             LeaderCard lead1 = player.getLeaders().get(0);
-            opLead1Img.setImage(new Image("img/leaderCards/" + (lead1.isActive() ? String.valueOf(lead1.getId())
+            opLead1Img.setImage(new Image("/img/leaderCards/" + (lead1.isActive() ? String.valueOf(lead1.getId())
                     : "leaderBack") + ".png"));
         }
         if (player.getLeaders().size() > 1) {
             LeaderCard lead2 = player.getLeaders().get(1);
-            opLead2Img.setImage(new Image("img/leaderCards/" + (lead2.isActive() ? String.valueOf(lead2.getId())
+            opLead2Img.setImage(new Image("/img/leaderCards/" + (lead2.isActive() ? String.valueOf(lead2.getId())
                     : "leaderBack") + ".png"));
         }
 
@@ -690,7 +690,7 @@ public class GamePhaseHandler extends PhaseHandler {
             Deque<ConcreteProductionCard> stack1 = player.getProductionStack(0);
             if (stack1.size() > 0) {
                 opStack1Img.setVisible(true);
-                opStack1Img.setImage(new Image("img/productionCardsFront/" + stack1.peekFirst().getId() + ".png"));
+                opStack1Img.setImage(new Image("/img/productionCardsFront/" + stack1.peekFirst().getId() + ".png"));
                 cardCount += stack1.size();
             } else {
                 opStack1Img.setVisible(false);
@@ -700,7 +700,7 @@ public class GamePhaseHandler extends PhaseHandler {
             Deque<ConcreteProductionCard> stack2 = player.getProductionStack(1);
             if (stack2.size() > 0) {
                 opStack2Img.setVisible(true);
-                opStack2Img.setImage(new Image("img/productionCardsFront/" + stack2.peekFirst().getId() + ".png"));
+                opStack2Img.setImage(new Image("/img/productionCardsFront/" + stack2.peekFirst().getId() + ".png"));
                 cardCount += stack2.size();
             } else {
                 opStack2Img.setVisible(false);
@@ -710,7 +710,7 @@ public class GamePhaseHandler extends PhaseHandler {
             Deque<ConcreteProductionCard> stack3 = player.getProductionStack(2);
             if (stack3.size() > 0) {
                 opStack3Img.setVisible(true);
-                opStack3Img.setImage(new Image("img/productionCardsFront/" + stack3.peekFirst().getId() + ".png"));
+                opStack3Img.setImage(new Image("/img/productionCardsFront/" + stack3.peekFirst().getId() + ".png"));
                 cardCount += stack3.size();
             } else {
                 opStack3Img.setVisible(false);
@@ -753,14 +753,14 @@ public class GamePhaseHandler extends PhaseHandler {
         msgBoard.appendText(message + '\n');
     }
 
-    public void setActionToken(ActionToken act){
-        switch(act.getId()){
-            case 1 -> actionTokenImg.setImage(new Image("img/actionTokens/actTokenGreen.png"));
-            case 2 -> actionTokenImg.setImage(new Image("img/actionTokens/actTokenPurple.png"));
-            case 3 -> actionTokenImg.setImage(new Image("img/actionTokens/actTokenBlue.png"));
-            case 4 -> actionTokenImg.setImage(new Image("img/actionTokens/actTokenYellow.png"));
-            case 5, 6 -> actionTokenImg.setImage(new Image("img/actionTokens/actTokenDoubleMove.png"));
-            case 7 -> actionTokenImg.setImage(new Image("img/actionTokens/actTokenShuffle.png"));
+    public void setActionToken(ActionToken act) {
+        switch (act.getId()) {
+            case 1 -> actionTokenImg.setImage(new Image("/img/actionTokens/actTokenGreen.png"));
+            case 2 -> actionTokenImg.setImage(new Image("/img/actionTokens/actTokenPurple.png"));
+            case 3 -> actionTokenImg.setImage(new Image("/img/actionTokens/actTokenBlue.png"));
+            case 4 -> actionTokenImg.setImage(new Image("/img/actionTokens/actTokenYellow.png"));
+            case 5, 6 -> actionTokenImg.setImage(new Image("/img/actionTokens/actTokenDoubleMove.png"));
+            case 7 -> actionTokenImg.setImage(new Image("/img/actionTokens/actTokenShuffle.png"));
         }
     }
 
@@ -780,22 +780,22 @@ public class GamePhaseHandler extends PhaseHandler {
             tmpRes.addAll(selectedRes);
 
             if (selectedRes.size() >= 1)
-                resource1ImgPU.setImage(new Image("img/pawns/" + selectedRes.get(0).toString().toLowerCase() +
+                resource1ImgPU.setImage(new Image("/img/pawns/" + selectedRes.get(0).toString().toLowerCase() +
                         ".png"));
             if (selectedRes.size() >= 2)
-                resource2ImgPU.setImage(new Image("img/pawns/" + selectedRes.get(1).toString().toLowerCase() +
+                resource2ImgPU.setImage(new Image("/img/pawns/" + selectedRes.get(1).toString().toLowerCase() +
                         ".png"));
             if (selectedRes.size() >= 3)
-                resource3ImgPU.setImage(new Image("img/pawns/" + selectedRes.get(2).toString().toLowerCase() +
+                resource3ImgPU.setImage(new Image("/img/pawns/" + selectedRes.get(2).toString().toLowerCase() +
                         ".png"));
             if (selectedRes.size() >= 4)
-                resource4ImgPU.setImage(new Image("img/pawns/" + selectedRes.get(3).toString().toLowerCase() +
+                resource4ImgPU.setImage(new Image("/img/pawns/" + selectedRes.get(3).toString().toLowerCase() +
                         ".png"));
             if (selectedRes.size() >= 5)
-                resource5ImgPU.setImage(new Image("img/pawns/" + selectedRes.get(4).toString().toLowerCase() +
+                resource5ImgPU.setImage(new Image("/img/pawns/" + selectedRes.get(4).toString().toLowerCase() +
                         ".png"));
             if (selectedRes.size() == 6)
-                resource6ImgPU.setImage(new Image("img/pawns/" + selectedRes.get(5).toString().toLowerCase() +
+                resource6ImgPU.setImage(new Image("/img/pawns/" + selectedRes.get(5).toString().toLowerCase() +
                         ".png"));
 
             resource1ImgPU.setOnDragDetected(event -> {
@@ -830,17 +830,17 @@ public class GamePhaseHandler extends PhaseHandler {
 
         } else {
             if (tmpRes.size() >= 1)
-                resource1ImgPU.setImage(new Image("img/pawns/" + tmpRes.get(0).toString().toLowerCase() + ".png"));
+                resource1ImgPU.setImage(new Image("/img/pawns/" + tmpRes.get(0).toString().toLowerCase() + ".png"));
             if (tmpRes.size() >= 2)
-                resource2ImgPU.setImage(new Image("img/pawns/" + tmpRes.get(1).toString().toLowerCase() + ".png"));
+                resource2ImgPU.setImage(new Image("/img/pawns/" + tmpRes.get(1).toString().toLowerCase() + ".png"));
             if (tmpRes.size() >= 3)
-                resource3ImgPU.setImage(new Image("img/pawns/" + tmpRes.get(2).toString().toLowerCase() + ".png"));
+                resource3ImgPU.setImage(new Image("/img/pawns/" + tmpRes.get(2).toString().toLowerCase() + ".png"));
             if (tmpRes.size() >= 4)
-                resource4ImgPU.setImage(new Image("img/pawns/" + tmpRes.get(3).toString().toLowerCase() + ".png"));
+                resource4ImgPU.setImage(new Image("/img/pawns/" + tmpRes.get(3).toString().toLowerCase() + ".png"));
             if (tmpRes.size() >= 5)
-                resource5ImgPU.setImage(new Image("img/pawns/" + tmpRes.get(4).toString().toLowerCase() + ".png"));
+                resource5ImgPU.setImage(new Image("/img/pawns/" + tmpRes.get(4).toString().toLowerCase() + ".png"));
             if (tmpRes.size() == 6)
-                resource6ImgPU.setImage(new Image("img/pawns/" + tmpRes.get(5).toString().toLowerCase() + ".png"));
+                resource6ImgPU.setImage(new Image("/img/pawns/" + tmpRes.get(5).toString().toLowerCase() + ".png"));
 
             resource1ImgPU.setOnDragDetected(event -> {
                 sourceDragDetected(event, tmpRes.get(0));
@@ -1068,8 +1068,8 @@ public class GamePhaseHandler extends PhaseHandler {
             List<LeaderCard> active = controller.getPlayer().getLeaders().stream().filter(LeaderCard::isActive)
                     .collect(Collectors.toList());
             List<LeaderCard> toPick = new ArrayList<>();
-            for(LeaderCard lead : active) {
-                if(lead instanceof DiscountAbility) {
+            for (LeaderCard lead : active) {
+                if (lead instanceof DiscountAbility) {
                     toPick.add(lead);
                 }
             }
@@ -1103,19 +1103,19 @@ public class GamePhaseHandler extends PhaseHandler {
         List<Integer> leaderIds = new ArrayList<>();
 
         if (toPick.size() >= 1) {
-            useLeader1Img.setImage(new Image("img/leaderCards/" + toPick.get(0).getId() + ".png"));
+            useLeader1Img.setImage(new Image("/img/leaderCards/" + toPick.get(0).getId() + ".png"));
             useLeader1Toggle.setUserData(toPick.get(0).getId());
         }
         if (toPick.size() == 2) {
-            useLeader2Img.setImage(new Image("img/leaderCards/" + toPick.get(1).getId() + ".png"));
+            useLeader2Img.setImage(new Image("/img/leaderCards/" + toPick.get(1).getId() + ".png"));
             useLeader2Toggle.setUserData(toPick.get(1).getId());
         }
 
         useLeaderBtn.setOnAction(actionEvent -> {
-            if(useLeader1Toggle.getUserData() != null) {
+            if (useLeader1Toggle.getUserData() != null) {
                 leaderIds.add((Integer) useLeader1Toggle.getUserData());
             }
-            if(useLeader2Toggle.getUserData() != null) {
+            if (useLeader2Toggle.getUserData() != null) {
                 leaderIds.add((Integer) useLeader2Toggle.getUserData());
             }
 
@@ -1128,66 +1128,102 @@ public class GamePhaseHandler extends PhaseHandler {
         ConcreteProductionCard[] availableProductionCards = {null, null, null, null, null, null, null, null, null, null, null, null};
         for (int i = 0, j = 0; i < 12; i++, j++) {
             switch (i) {
-                case 0-> { if(controller.getAvailableProductionCards().get(j).getLevel() == 1 && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.GREEN))
-                                availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
-                            else {
-                                availableProductionCards[i] = null;
-                                j--; }}
-                case 1-> { if(controller.getAvailableProductionCards().get(j).getLevel() == 1  && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.PURPLE))
-                                availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
-                            else {
-                                availableProductionCards[i] = null;
-                                j--; }}
-                case 2-> { if(controller.getAvailableProductionCards().get(j).getLevel() == 1  && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.BLUE))
-                                availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
-                            else {
-                                availableProductionCards[i] = null;
-                                j--; }}
-                case 3-> { if(controller.getAvailableProductionCards().get(j).getLevel() == 1  && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.YELLOW))
-                                availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
-                            else {
-                                availableProductionCards[i] = null;
-                                j--; }}
-                case 4-> { if(controller.getAvailableProductionCards().get(j).getLevel() == 2 && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.GREEN))
-                                availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
-                            else {
-                                availableProductionCards[i] = null;
-                                j--; }}
-                case 5-> { if(controller.getAvailableProductionCards().get(j).getLevel() == 2  && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.PURPLE))
-                                availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
-                            else {
-                                availableProductionCards[i] = null;
-                                j--; }}
-                case 6-> { if(controller.getAvailableProductionCards().get(j).getLevel() == 2  && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.BLUE))
-                                availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
-                            else {
-                                availableProductionCards[i] = null;
-                                j--; }}
-                case 7-> { if(controller.getAvailableProductionCards().get(j).getLevel() == 2  && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.YELLOW))
-                                availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
-                            else {
-                                availableProductionCards[i] = null;
-                                j--; }}
-                case 8-> { if(controller.getAvailableProductionCards().get(j).getLevel() == 3 && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.GREEN))
-                                availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
-                            else {
-                                availableProductionCards[i] = null;
-                                j--; }}
-                case 9-> { if(controller.getAvailableProductionCards().get(j).getLevel() == 3  && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.PURPLE))
-                                availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
-                            else {
-                                availableProductionCards[i] = null;
-                                j--; }}
-                case 10-> { if(controller.getAvailableProductionCards().get(j).getLevel() == 3  && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.BLUE))
-                                availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
-                            else {
-                                availableProductionCards[i] = null;
-                                j--; }}
-                case 11-> { if(controller.getAvailableProductionCards().get(j).getLevel() == 3  && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.YELLOW))
-                                availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
-                            else {
-                                availableProductionCards[i] = null;
-                                j--; }}
+                case 0 -> {
+                    if (controller.getAvailableProductionCards().get(j).getLevel() == 1 && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.GREEN))
+                        availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
+                    else {
+                        availableProductionCards[i] = null;
+                        j--;
+                    }
+                }
+                case 1 -> {
+                    if (controller.getAvailableProductionCards().get(j).getLevel() == 1 && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.PURPLE))
+                        availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
+                    else {
+                        availableProductionCards[i] = null;
+                        j--;
+                    }
+                }
+                case 2 -> {
+                    if (controller.getAvailableProductionCards().get(j).getLevel() == 1 && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.BLUE))
+                        availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
+                    else {
+                        availableProductionCards[i] = null;
+                        j--;
+                    }
+                }
+                case 3 -> {
+                    if (controller.getAvailableProductionCards().get(j).getLevel() == 1 && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.YELLOW))
+                        availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
+                    else {
+                        availableProductionCards[i] = null;
+                        j--;
+                    }
+                }
+                case 4 -> {
+                    if (controller.getAvailableProductionCards().get(j).getLevel() == 2 && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.GREEN))
+                        availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
+                    else {
+                        availableProductionCards[i] = null;
+                        j--;
+                    }
+                }
+                case 5 -> {
+                    if (controller.getAvailableProductionCards().get(j).getLevel() == 2 && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.PURPLE))
+                        availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
+                    else {
+                        availableProductionCards[i] = null;
+                        j--;
+                    }
+                }
+                case 6 -> {
+                    if (controller.getAvailableProductionCards().get(j).getLevel() == 2 && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.BLUE))
+                        availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
+                    else {
+                        availableProductionCards[i] = null;
+                        j--;
+                    }
+                }
+                case 7 -> {
+                    if (controller.getAvailableProductionCards().get(j).getLevel() == 2 && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.YELLOW))
+                        availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
+                    else {
+                        availableProductionCards[i] = null;
+                        j--;
+                    }
+                }
+                case 8 -> {
+                    if (controller.getAvailableProductionCards().get(j).getLevel() == 3 && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.GREEN))
+                        availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
+                    else {
+                        availableProductionCards[i] = null;
+                        j--;
+                    }
+                }
+                case 9 -> {
+                    if (controller.getAvailableProductionCards().get(j).getLevel() == 3 && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.PURPLE))
+                        availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
+                    else {
+                        availableProductionCards[i] = null;
+                        j--;
+                    }
+                }
+                case 10 -> {
+                    if (controller.getAvailableProductionCards().get(j).getLevel() == 3 && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.BLUE))
+                        availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
+                    else {
+                        availableProductionCards[i] = null;
+                        j--;
+                    }
+                }
+                case 11 -> {
+                    if (controller.getAvailableProductionCards().get(j).getLevel() == 3 && controller.getAvailableProductionCards().get(j).getColor().equals(ColorEnum.YELLOW))
+                        availableProductionCards[i] = controller.getAvailableProductionCards().get(j);
+                    else {
+                        availableProductionCards[i] = null;
+                        j--;
+                    }
+                }
             }
         }
         for (int x = 0, i = 0; x < 3; x++) {
@@ -1206,7 +1242,7 @@ public class GamePhaseHandler extends PhaseHandler {
 
         for (Node node : children) {
             if (gridPane.getRowIndex(node) == row && gridPane.getColumnIndex(node) == column) {
-                ((ImageView) node).setImage(new Image("img/productionCardsFront/" + imgId + ".png"));
+                ((ImageView) node).setImage(new Image("/img/productionCardsFront/" + imgId + ".png"));
                 break;
             }
         }
@@ -1217,7 +1253,7 @@ public class GamePhaseHandler extends PhaseHandler {
 
         for (Node node : children) {
             if (gridPane.getRowIndex(node) == row && gridPane.getColumnIndex(node) == column) {
-                ((ImageView) node).setImage(new Image("img/productionCardsBack/blue1.png"));
+                ((ImageView) node).setImage(new Image("/img/productionCardsBack/blue1.png"));
                 node.setDisable(true);
                 break;
             }
@@ -1300,10 +1336,10 @@ public class GamePhaseHandler extends PhaseHandler {
         int qty = player.getQtyInStorage(res, WAREHOUSE_MID);
 
         if (res != null && qty == 2) {
-            shelf21CP.setImage(new Image("/img/pawns/" + res + ".png"));
-            shelf22CP.setImage(new Image("/img/pawns/" + res + ".png"));
+            shelf21CP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
+            shelf22CP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
         } else if (res != null && qty == 1) {
-            shelf21CP.setImage(new Image("/img/pawns/" + res + ".png"));
+            shelf21CP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
         }
 
         res = player.getResourceFromStorage(WAREHOUSE_LARGE);
@@ -1311,14 +1347,14 @@ public class GamePhaseHandler extends PhaseHandler {
 
         if (res != null) {
             if (qty == 3) {
-                shelf31CP.setImage(new Image("/img/pawns/" + res + ".png"));
-                shelf32CP.setImage(new Image("/img/pawns/" + res + ".png"));
-                shelf33CP.setImage(new Image("/img/pawns/" + res + ".png"));
+                shelf31CP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
+                shelf32CP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
+                shelf33CP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
             } else if (qty == 2) {
-                shelf31CP.setImage(new Image("/img/pawns/" + res + ".png"));
-                shelf32CP.setImage(new Image("/img/pawns/" + res + ".png"));
+                shelf31CP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
+                shelf32CP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
             } else {
-                shelf31CP.setImage(new Image("/img/pawns/" + res + ".png"));
+                shelf31CP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
             }
         }
 
@@ -1421,33 +1457,39 @@ public class GamePhaseHandler extends PhaseHandler {
 
         //choose stack
         stack1Btn.setOnAction(actionEvent -> {
-            wallet.setLootchestTray(fromLoot);
-            wallet.setWarehouseTray(fromWar);
+            if (!(fromLoot.isEmpty() && fromWar.isEmpty())) {
+                wallet.setLootchestTray(fromLoot);
+                wallet.setWarehouseTray(fromWar);
 
-            controller.buyProductionCard(cardId, 1, leaderIds, wallet);
+                controller.buyProductionCard(cardId, 1, leaderIds, wallet);
 
-            mainBoard.setEffect(null);
-            popUpStage.close();
+                mainBoard.setEffect(null);
+                popUpStage.close();
+            }
         });
 
         stack2Btn.setOnAction(actionEvent -> {
-            wallet.setLootchestTray(fromLoot);
-            wallet.setWarehouseTray(fromWar);
+            if (!(fromLoot.isEmpty() && fromWar.isEmpty())) {
+                wallet.setLootchestTray(fromLoot);
+                wallet.setWarehouseTray(fromWar);
 
-            controller.buyProductionCard(cardId, 2, leaderIds, wallet);
+                controller.buyProductionCard(cardId, 2, leaderIds, wallet);
 
-            mainBoard.setEffect(null);
-            popUpStage.close();
+                mainBoard.setEffect(null);
+                popUpStage.close();
+            }
         });
 
         stack3Btn.setOnAction(actionEvent -> {
-            wallet.setLootchestTray(fromLoot);
-            wallet.setWarehouseTray(fromWar);
+            if (!(fromLoot.isEmpty() && fromWar.isEmpty())) {
+                wallet.setLootchestTray(fromLoot);
+                wallet.setWarehouseTray(fromWar);
 
-            controller.buyProductionCard(cardId, 3, leaderIds, wallet);
+                controller.buyProductionCard(cardId, 3, leaderIds, wallet);
 
-            mainBoard.setEffect(null);
-            popUpStage.close();
+                mainBoard.setEffect(null);
+                popUpStage.close();
+            }
         });
 
         backPaymentBtnCP.setOnAction(actionEvent -> {
@@ -1510,44 +1552,46 @@ public class GamePhaseHandler extends PhaseHandler {
         List<LeaderCard> active = controller.getPlayer().getLeaders().stream().filter(LeaderCard::isActive)
                 .collect(Collectors.toList());
         List<LeaderCard> toPick = new ArrayList<>();
-        for(LeaderCard lead : active) {
-            if(lead instanceof BoostAbility) {
+        for (LeaderCard lead : active) {
+            if (lead instanceof BoostAbility) {
                 toPick.add(lead);
             }
         }
 
         produceConfirmBtn.setOnAction(actionEvent -> {
-            if (produce1Toggle.isSelected()) {
-                isBasicProd = true;
+            if (!produce1Toggle.isSelected() && !produce2Toggle.isSelected() && !produce3Toggle.isSelected() && !produce4Toggle.isSelected()) {
+                if (produce1Toggle.isSelected()) {
+                    isBasicProd = true;
 
-                if (produce2Toggle.isSelected()) {
-                    prodCards.add((ConcreteProductionCard) produce2Toggle.getUserData());
-                }
-                if (produce3Toggle.isSelected()) {
-                    prodCards.add((ConcreteProductionCard) produce3Toggle.getUserData());
-                }
-                if (produce4Toggle.isSelected()) {
-                    prodCards.add((ConcreteProductionCard) produce4Toggle.getUserData());
-                }
+                    if (produce2Toggle.isSelected()) {
+                        prodCards.add((ConcreteProductionCard) produce2Toggle.getUserData());
+                    }
+                    if (produce3Toggle.isSelected()) {
+                        prodCards.add((ConcreteProductionCard) produce3Toggle.getUserData());
+                    }
+                    if (produce4Toggle.isSelected()) {
+                        prodCards.add((ConcreteProductionCard) produce4Toggle.getUserData());
+                    }
 
-                if (toPick.size() > 0) {
-                    Platform.runLater(() -> useBoostLeader(toPick, prodCards, popUpStage));
+                    if (toPick.size() > 0) {
+                        Platform.runLater(() -> useBoostLeader(toPick, prodCards, popUpStage));
+                    } else {
+                        Platform.runLater(() -> askProductionOutput(popUpStage, prodCards, leaderCards, leaderOutputs));
+                    }
+
                 } else {
-                    Platform.runLater(() -> askProductionOutput(popUpStage, prodCards, leaderCards, leaderOutputs));
-                }
+                    if (produce2Toggle.isSelected()) {
+                        prodCards.add((ConcreteProductionCard) produce2Toggle.getUserData());
+                    }
+                    if (produce3Toggle.isSelected()) {
+                        prodCards.add((ConcreteProductionCard) produce3Toggle.getUserData());
+                    }
+                    if (produce4Toggle.isSelected()) {
+                        prodCards.add((ConcreteProductionCard) produce4Toggle.getUserData());
+                    }
 
-            } else {
-                if (produce2Toggle.isSelected()) {
-                    prodCards.add((ConcreteProductionCard) produce2Toggle.getUserData());
+                    Platform.runLater(() -> choosePaymentPopUp(popUpStage, prodCards, leaderCards, leaderOutputs));
                 }
-                if (produce3Toggle.isSelected()) {
-                    prodCards.add((ConcreteProductionCard) produce3Toggle.getUserData());
-                }
-                if (produce4Toggle.isSelected()) {
-                    prodCards.add((ConcreteProductionCard) produce4Toggle.getUserData());
-                }
-
-                Platform.runLater(() -> choosePaymentPopUp(popUpStage, prodCards, leaderCards, leaderOutputs));
             }
         });
 
@@ -1564,19 +1608,19 @@ public class GamePhaseHandler extends PhaseHandler {
         List<BoostAbility> leaderCards = new ArrayList<>();
 
         if (toPick.size() >= 1) {
-            useLeader1Img.setImage(new Image("img/leaderCards/" + toPick.get(0).getId() + ".png"));
+            useLeader1Img.setImage(new Image("/img/leaderCards/" + toPick.get(0).getId() + ".png"));
             useLeader1Toggle.setUserData(toPick.get(0));
         }
         if (toPick.size() == 2) {
-            useLeader2Img.setImage(new Image("img/leaderCards/" + toPick.get(1).getId() + ".png"));
+            useLeader2Img.setImage(new Image("/img/leaderCards/" + toPick.get(1).getId() + ".png"));
             useLeader2Toggle.setUserData(toPick.get(1));
         }
 
         useLeaderBtn.setOnAction(actionEvent -> {
-            if(useLeader1Toggle.getUserData() != null) {
+            if (useLeader1Toggle.getUserData() != null) {
                 leaderCards.add((BoostAbility) useLeader1Toggle.getUserData());
             }
-            if(useLeader2Toggle.getUserData() != null) {
+            if (useLeader2Toggle.getUserData() != null) {
                 leaderCards.add((BoostAbility) useLeader2Toggle.getUserData());
             }
 
@@ -1602,7 +1646,7 @@ public class GamePhaseHandler extends PhaseHandler {
         BOConfirmBtn.setOnAction(actionEvent -> {
             leaderOutputs.add((Resource) chosenOutputGrp.getSelectedToggle().getUserData());
 
-            if(tempCycle > 0) {
+            if (tempCycle > 0) {
                 askLeaderOutput(currStage, prodCards, leaderCards, leaderOutputs, tempCycle);
             } else if (isBasicProd) {
                 Platform.runLater(() -> askProductionOutput(currStage, prodCards, leaderCards, leaderOutputs));
@@ -1663,17 +1707,17 @@ public class GamePhaseHandler extends PhaseHandler {
         //set Images in war
         Resource res = player.getResourceFromStorage(WAREHOUSE_SMALL);
         if (res != null) {
-            shelf1CP.setImage(new Image("/img/pawns/" + res + ".png"));
+            shelf1CP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
         }
 
         res = player.getResourceFromStorage(WAREHOUSE_MID);
         int qty = player.getQtyInStorage(res, WAREHOUSE_MID);
 
         if (res != null && qty == 2) {
-            shelf21CP.setImage(new Image("/img/pawns/" + res + ".png"));
-            shelf22CP.setImage(new Image("/img/pawns/" + res + ".png"));
+            shelf21CP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
+            shelf22CP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
         } else if (res != null && qty == 1) {
-            shelf21CP.setImage(new Image("/img/pawns/" + res + ".png"));
+            shelf21CP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
         }
 
         res = player.getResourceFromStorage(WAREHOUSE_LARGE);
@@ -1681,14 +1725,14 @@ public class GamePhaseHandler extends PhaseHandler {
 
         if (res != null) {
             if (qty == 3) {
-                shelf31CP.setImage(new Image("/img/pawns/" + res + ".png"));
-                shelf32CP.setImage(new Image("/img/pawns/" + res + ".png"));
-                shelf33CP.setImage(new Image("/img/pawns/" + res + ".png"));
+                shelf31CP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
+                shelf32CP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
+                shelf33CP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
             } else if (qty == 2) {
-                shelf31CP.setImage(new Image("/img/pawns/" + res + ".png"));
-                shelf32CP.setImage(new Image("/img/pawns/" + res + ".png"));
+                shelf31CP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
+                shelf32CP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
             } else {
-                shelf31CP.setImage(new Image("/img/pawns/" + res + ".png"));
+                shelf31CP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
             }
         }
 
@@ -1796,13 +1840,15 @@ public class GamePhaseHandler extends PhaseHandler {
         stack3Btn.setDisable(true);
         stack2Btn.setText("Confirm");
         stack2Btn.setOnAction(actionEvent -> {
-            wallet.setLootchestTray(fromLoot);
-            wallet.setWarehouseTray(fromWar);
-            resWal = wallet;
+            if (!(fromLoot.isEmpty() && fromWar.isEmpty())) {
+                wallet.setLootchestTray(fromLoot);
+                wallet.setWarehouseTray(fromWar);
+                resWal = wallet;
 
-            controller.sendProductionMessage(prodCards, resWal, leaderCards, leaderOutputs, isBasicProd, basicOut);
-            mainBoard.setEffect(null);
-            currStage.close();
+                controller.sendProductionMessage(prodCards, resWal, leaderCards, leaderOutputs, isBasicProd, basicOut);
+                mainBoard.setEffect(null);
+                currStage.close();
+            }
         });
 
         backPaymentBtnCP.setVisible(false);

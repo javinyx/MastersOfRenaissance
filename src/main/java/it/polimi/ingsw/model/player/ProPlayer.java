@@ -423,7 +423,7 @@ public class ProPlayer extends Player{
      * @param leader chosen leaderCard to activate */
     public boolean activateLeaderCard(LeaderCard leader){
         for(LeaderCard l : leaderCards){
-            System.out.println(l + "\n");
+            //System.out.println(l + "\n");
             if(l.equals(leader) && hasEnoughResources(leader.getCost())){
                 l.setStatus(true);
                 return true;
@@ -615,14 +615,14 @@ public class ProPlayer extends Player{
                 throw new BadStorageException();
             }
         }
-        if(smallShelf.equals(input1) && midShelf.contains(input2) || smallShelf.equals(input2) && midShelf.contains(input1)){
+        if(smallShelf != null && (smallShelf.equals(input1) && midShelf.contains(input2) || smallShelf.equals(input2) && midShelf.contains(input1))){
             Resource resSmol = warehouse.removeSmall();
             Resource resMid = warehouse.removeMid();
             controller.removeResources(new BiElement<>(resSmol, Storage.WAREHOUSE_SMALL), 1);
             controller.removeResources(new BiElement<>(resMid, Storage.WAREHOUSE_MID), 1);
             return;
         }
-        if(smallShelf.equals(input1) && largeShelf.contains(input2) || smallShelf.equals(input2) && largeShelf.contains(input1)){
+        if(smallShelf != null && (smallShelf.equals(input1) && largeShelf.contains(input2) || smallShelf.equals(input2) && largeShelf.contains(input1))){
             Resource resSmol = warehouse.removeSmall();
             Resource resTHICC = warehouse.removeLarge();
             controller.removeResources(new BiElement<>(resSmol, Storage.WAREHOUSE_SMALL), 1);

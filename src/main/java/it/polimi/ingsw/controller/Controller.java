@@ -290,22 +290,26 @@ public class Controller implements Observer<MessageID> {
         } catch (BadStorageException e) {
             //player has no resources
             removedResources.clear();
+            boughtCard = Optional.empty();
             update(MessageID.BAD_PAYMENT_REQUEST);
             t = true;
         } catch (IllegalArgumentException e) {
             //prodcard have no cards
             removedResources.clear();
+            boughtCard = Optional.empty();
             update(MessageID.CARD_NOT_AVAILABLE);
             t = true;
         } catch (IndexOutOfBoundsException e) {
             //stack < 1 || stack > 3
             removedResources.clear();
+            boughtCard = Optional.empty();
             update(MessageID.WRONG_STACK_CHOICE);
             t = true;
         } catch (WrongLevelException e) {
             //prodcard has wrong level
             System.out.println("card id: " + buyProdMsg.getProdCardId());
             removedResources.clear();
+            boughtCard = Optional.empty();
             update(MessageID.WRONG_LEVEL_REQUEST);
             t = true;
         }

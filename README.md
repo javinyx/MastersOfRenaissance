@@ -22,25 +22,27 @@ Professor Supervisor: Alessandro Margara
 |Basic Rules| Done|
 |Full Rules | Done|
 |Command Line Interface| Done |
-|Graphing User Interface| Implementing|
+|Graphing User Interface| Done|
 |Local Game     | Done|
 |Multiple Games | Done|
 
 ## JAR usage
 The game is splitted into two JAR files, both can be downloaded form Deliverables directory.
-<br>Unless it is desired to play a local game, one Server app instance must be running before the client can actually start playing.</br> 
+<br>Unless it is desired to play a local game, one Server app instance must be running before the client can actually start playing.</br>
+
+Both server and client app can run on Unix systems (Linux, macOS) or Windows system (on Powershell, cmd and WSL).
 
 ### Server app
 Run from console the `MasterOfRenaissanceServer.jar` file using the command:
 ```
 java -jar MasterOfRenaissanceServer.jar
 ```
-By default, if no extra argument is added in the command above, the server will listen for incoming connection on port **27001**. Otherwise, the user can choose the custom port on cmd:
+By default, if no extra argument is added in the command above, the server will listen for incoming connection on port **27001**. Otherwise, the user can choose the custom port on console:
 ```
 java -jar MasterOfRenaissanceServer.jar 2500
 ```
 ### Client app
-To start the client app, either click on the `MasterOfRenaissance.jar` file (GUI mode only) or use cmd for more options:
+To start the client app, either click on the `MasterOfRenaissance.jar` file (GUI mode only) or use the console for more options:
 * GUI mode: `java -jar MasterOfRenaissance.jar`
 * CLI mode: `java -jar MasterOfRenaissance.jar cli`
 * CLI mode local game: `java -jar MasterOfRenaissance.jar cli local`

@@ -31,8 +31,6 @@ public enum MessageID {
     BAD_REARRANGE_REQUEST,
     BAD_STORAGE_REQUEST,
     INFO,
-    PING,
-    PONG,
 
     CARD_NOT_AVAILABLE,
 
@@ -57,7 +55,6 @@ public enum MessageID {
     NICK_ERR,
 
     PLAYER_CRASHED,
-    REJOIN_UPDATE,
     UPDATE //to inform other players of the updates in the model
 
     }

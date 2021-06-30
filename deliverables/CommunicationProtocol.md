@@ -33,28 +33,21 @@ We decided to use Json as means of serialization instead of Java serialization b
 
 
 # Table of Contents
-- [Communication Protocol](#communication-protocol)
-  * [Group ID: AM13 - A.Y. 2020/21](#group-id--am13---ay-2020-21)
 - [Initialization](#initialization)
   * [1. Player registration](#1-player-registration)
-    + [Case (A)](#case--a--)
-    + [Case (B)](#case--b--)
   * [2. Game initiation](#2-game-initiation)
 - [Mid-game messages](#mid-game-messages)
-  * [3. Server to Client Messages](#3-server-to-client-messages)
-    + [3.1 Client View Update](#3-1-client-view-update)
-      - [Current player notification](#current-player-notification)
-      - [Progression inside the _Faith Track_](#progression-inside-the--faith-track-)
-      - [Purchase from Market](#purchase-from-market)
-      - [Purchase of Production Cards](#purchase-of-production-cards)
-      - [End game](#end-game)
-    + [Requests for current player turn](#requests-for-current-player-turn)
-      - [Production](#production)
-      - [Resources placement](#resources-placement)
-  * [4. Client to Server Messages](#4-client-to-server-messages)
-    + [Production](#production-1)
-    + [Buy from Market](#buy-from-market)
-    + [Buy Production Cards](#buy-production-cards)
+  	* [Messages in broadcast](#messages-in-broadcast)
+    	+ [Update Message](#update_message)
+    	+ [Progression onto the _Faith Track_](#progression-onto-the--faith-track-)
+		+ [Vatican Reports](#vatican-reports)
+    	+ [End game](#end-game)
+  	* [1-to-1 Message Exchanges](#1-to-1-message-exchanges)
+		+ [Leader Card Activation](#leader-card-activation)
+      	+ [Production](#production)
+		+ [Buy from Market](#buy-from-market)
+      	+ [Resources placement](#resources-placement)
+		+ [Buy Production Cards](#buy-production-cards)
 - [Message classes mapping to MessageIDs](#Message-classes-mapping-to-MessageIDs)
 
 # Initialization
@@ -208,6 +201,30 @@ So this message incapsulate the player's id that has to play the next turn as we
    if some faith points are generated, or from someone else discarding resources;
 * `boardCell` is the updated position on the player's board.
 
+#### Vatican Reports
+```
+{
+	"messageID" : "VATICAN_REPORT",
+	"payload" : {
+		"triggeringPlayerNick" : "nick1",
+		"reportId" : 2,
+		"allPlayerPopeFavorStatus" : [
+			{
+				"playerId" : 1,
+				"status" : active
+			},
+			{
+				"playerId" : 2,
+				"status" : false
+			}
+		]
+	}
+}
+```
+* `triggeringPlayerNick` contains the nickname of the player who has caused the *Vatican Report*;
+* `reportID` is the *Vatican Report* triggered so must be between 1 and 3;
+* `allPlayerPopeFavorStatus` is a list of pairs that tell for each player, represented through their ids, if their own *Pope Favor tile* reagarding the `reportId` has been activated (`true`) or discarded (`false`)
+
 
 #### End game
 ```
@@ -315,6 +332,13 @@ The client responds with this kind of message:
 ```
 The payload in the Client message version is a `StoreResourceMessage` Java object instead of a simple list of resources as sent by the server.
 
+```Java
+public class StoreResourcesMessage extends SimpleMessage {
+    List<BiElement<Resource, Storage>> placements;
+    int turnID;
+}
+```
+
 #### Buy Production Cards
 ```
 {
@@ -332,6 +356,7 @@ The payload in the Client message version is a `StoreResourceMessage` Java objec
 * `resourcesWallet` is a class that wrap the information about how the players want to spend their resources for buying the card
 * `leaderId` indicates the leader cards of Discount type that the player wants to use during this phase.
 
+
 ## Message classes mapping to MessageIDs
 Most important messages are reported below. Mind that some error messages are not included in the list since they don't have any `Payload` associeted to them and are self-explanatory.
 
@@ -339,12 +364,18 @@ Furthermore, some messageIDs are used both directions (from Client to Server and
 
 | MessageID | Payload | Meaning |
 |:-----------:|:---------:|:-------|
-|ASK_NICK|String|
+|ASK_NICK|String||
 |PLAYER_NUM | Integer| The size the player wants the game to be|
 |CONFIRM_REGISTRATION|| Player is now registered correctly in the server|
 |UPDATE| UpdateMessage| Used to show the status of a player or just the changes between turns|
-|CHOOSE_LEADER_CARD| List\<Integer\>| List of 4 leaders to choose and the 2 in response
+|TURN_NUMBER | TurnNumberMessage | List of all the players in the game and their playing order (ids)|
+|CHOOSE_LEADER_CARD| List\<Integer\>| List of 4 leaders to choose and the 2 in response|
 |ACK | Boolean | Player's request has been fullfilled by the server. `True` if the action is a major one (that can be done just once per turn), `False` otherwise.|
-|STORE_RESOURCES | List\<Resource> or StoreResourcesMessage ||
-|BUY_PRODUCTION_CARD| BuyProductionMessage | |
-|PRODUCE| ProduceMessage | |
+|END_TURN | EndTurnMessage | The player communicate that has finished the action he/she wanted to do and could do |
+|STORE_RESOURCES | List\<Resource> or StoreResourcesMessage |Ued by the server to ask the player to store some resources in their own storage (i.e. market purchase) or by the player to communicate how to arrange each resource specified among the different types of storage.|
+|BUY_PRODUCTION_CARD| BuyProductionMessage | Inform the server that the player wants to buy the Development Card stated in the message and how she/he will pay for it|
+|PRODUCE| ProduceMessage | Inform the server that the player wants to start the production of all the Development Cards stated in the message, how to pay for them and also if the Basic Production power is requested|
+|VATICAN_REPORT | VaticanReportMessage| |
+|REARRANGE_WAREHOUSE| StoreResourceMessage|Inform the server that the player wants to rearrange the resources in his/her Warehouse by giving a sorted list of all the resources previously held but with the new disposition.|
+
+All the messageIds and Messages class can be found [here](https://github.com/Javinyx/ingswAM2021-Barone-Belotti-Braccini/tree/main/src/main/java/it/polimi/ingsw/messages)

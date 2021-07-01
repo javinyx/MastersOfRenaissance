@@ -100,22 +100,22 @@
     <ImageView fitWidth="30" layoutX="193.0" layoutY="616.0" preserveRatio="true">
         <Image url="@../img/pawns/coin.png"/>
     </ImageView>
-    <Label fx:id="coinLblLC" layoutX="213.0" layoutY="616.0" text="x0"/>
+    <Label fx:id="coinLblLC" styleClass="inputLabelSmall" layoutX="213.0" layoutY="616.0" text="x0"/>
 
     <ImageView fitWidth="30" layoutX="243.0" layoutY="616.0" preserveRatio="true">
         <Image url="@../img/pawns/shield.png"/>
     </ImageView>
-    <Label fx:id="shieldLblLC" layoutX="263.0" layoutY="616.0" text="x0"/>
+    <Label fx:id="shieldLblLC" styleClass="inputLabelSmall" layoutX="263.0" layoutY="616.0" text="x0"/>
 
     <ImageView fitWidth="30" layoutX="193.0" layoutY="666.0" preserveRatio="true">
         <Image url="@../img/pawns/servant.png"/>
     </ImageView>
-    <Label fx:id="servantLblLC" layoutX="213.0" layoutY="666.0" text="x0"/>
+    <Label fx:id="servantLblLC" styleClass="inputLabelSmall" layoutX="213.0" layoutY="666.0" text="x0"/>
 
     <ImageView fitWidth="30" layoutX="243.0" layoutY="666.0" preserveRatio="true">
         <Image url="@../img/pawns/stone.png"/>
     </ImageView>
-    <Label fx:id="stoneLblLC" layoutX="263.0" layoutY="666.0" text="x0"/>
+    <Label fx:id="stoneLblLC" styleClass="inputLabelSmall" layoutX="263.0" layoutY="666.0" text="x0"/>
 
     <!-- MARKET -->
     <Circle fx:id="extraMarble" layoutX="1050.0" layoutY="50.0" radius="20" styleClass="marble"/>
@@ -142,10 +142,10 @@
                styleClass="leaderNotActive"/>
 
     <!-- EXTRA STORAGE -->
-    <ImageView fx:id="extraStorage11ImgMB" layoutX="15.0" layoutY="480.0" fitHeight="30.0" preserveRatio="true" styleClass="resImg"/>
-    <ImageView fx:id="extraStorage12ImgMB" layoutX="45.0" layoutY="480.0" fitHeight="30.0" preserveRatio="true" styleClass="resImg"/>
+    <ImageView fx:id="extraStorage11ImgMB" fitHeight="30.0" preserveRatio="true" styleClass="resImg"/>
+    <ImageView fx:id="extraStorage12ImgMB" fitHeight="30.0" preserveRatio="true" styleClass="resImg"/>
 
-    <ImageView fx:id="extraStorage21ImgMB" layoutX="15.0" layoutY="670.0" fitHeight="30.0" preserveRatio="true" styleClass="resImg"/>
-    <ImageView fx:id="extraStorage22ImgMB" layoutX="45.0" layoutY="670.0" fitHeight="30.0" preserveRatio="true" styleClass="resImg"/>
+    <ImageView fx:id="extraStorage21ImgMB" fitHeight="30.0" preserveRatio="true" styleClass="resImg"/>
+    <ImageView fx:id="extraStorage22ImgMB" fitHeight="30.0" preserveRatio="true" styleClass="resImg"/>
 
 </AnchorPane>

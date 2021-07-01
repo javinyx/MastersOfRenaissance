@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 
 <StackPane id="popUp" xmlns="https://javafx.com/javafx" xmlns:fx="https://javafx.com/fxml" prefHeight="250.0"
-           prefWidth="400.0">
+           prefWidth="450.0">
     <VBox alignment="CENTER" spacing="20">
         <Label fx:id="msg1Lbl" styleClass="inputLabel" textAlignment="CENTER"/>
         <Label fx:id="msg2Lbl" styleClass="inputLabel" textAlignment="CENTER"/>

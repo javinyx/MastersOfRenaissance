@@ -1529,12 +1529,42 @@ public class GamePhaseHandler extends PhaseHandler {
 
         for (Node node : children) {
             if (gridPane.getRowIndex(node) == row && gridPane.getColumnIndex(node) == column) {
-                ((ImageView) node).setImage(new Image("/img/productionCardsBack/blue1.png"));
-                node.setDisable(true);
-                break;
+                switch (row) {
+                    case 1 -> {
+                        switch (column) {
+                            case 1 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/green1.png"));
+                            case 2 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/green2.png"));
+                            case 3 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/green3.png"));
+                        }
+                    }
+                    case 2 -> {
+                        switch (column) {
+                            case 1 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/purple1.png"));
+                            case 2 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/purple2.png"));
+                            case 3 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/purple3.png"));
+                        }
+                    }
+                    case 3 -> {
+                        switch (column) {
+                            case 1 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/blue1.png"));
+                            case 2 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/blue2.png"));
+                            case 3 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/blue3.png"));
+                        }
+                    }
+                    case 4 -> {
+                        switch (column) {
+                            case 1 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/yellow1.png"));
+                            case 2 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/yellow2.png"));
+                            case 3 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/yellow3.png"));
+                        }
+                    }
+                }
             }
+            node.setDisable(true);
+            break;
         }
     }
+
 
     private void resetChoosePayment() {
         shelf1CP.setImage(null);

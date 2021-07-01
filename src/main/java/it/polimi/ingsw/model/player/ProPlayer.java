@@ -473,7 +473,7 @@ public class ProPlayer extends Player{
                 requirements.get(j).subOccurrence(x);
             }
             if(extraStorage.isPresent() && (extraStorage.get().get(0).getStorageType().equals(res)
-                            || extraStorage.get().get(1).getStorageType().equals(res))){
+                            || (extraStorage.get().size()>1 && extraStorage.get().get(1).getStorageType().equals(res)))){
                 if(extraStorage.get().get(0).getStorageType().equals(res)){
                     requirements.get(j).subOccurrence(extraStorage.get().get(0).size());
                 }else if(extraStorage.get().get(1).getStorageType().equals(res)){

@@ -37,7 +37,7 @@ import static it.polimi.ingsw.client.GUI.sceneHandlers.ScenesEnum.*;
 /**
  * This class is the handler for the welcome, connection, registration, waiting room, leaders choice, resource choice
  * and storage choice action during the initial phase.
- ***/
+ */
 public class InitialPhaseHandler extends PhaseHandler {
     /* MAIN ***********************************************************************************************************/
     private int ctr;
@@ -118,6 +118,11 @@ public class InitialPhaseHandler extends PhaseHandler {
         buildGeneralSceneMap(sceneMap);
     }
 
+    /**
+     * Set the scene
+     * @param sceneName the scene name
+     * @return true if the scene is in the SceneMap
+     */
     public boolean setScene(ScenesEnum sceneName) {
         if (!sceneMap.containsKey(sceneName)) {
             return false;
@@ -127,6 +132,10 @@ public class InitialPhaseHandler extends PhaseHandler {
     }
 
     /* WELCOME SCENE **************************************************************************************************/
+
+    /**
+     * Call the {@link GuiController#setup()} method if the "Play" button is select
+     */
     public void start() {
         playBtn.setOnAction(actionEvent -> {
             try {
@@ -162,6 +171,10 @@ public class InitialPhaseHandler extends PhaseHandler {
     }
 
     /* REGISTRATION SCENE *********************************************************************************************/
+
+    /**
+     * Acquire the Nickname and the size of the game that a player want to create
+     */
     public void getNickNameAndGameSize() {
         singlePlayerBtn.setOnAction(this::setNickNameAndGameSize);
 
@@ -177,6 +190,10 @@ public class InitialPhaseHandler extends PhaseHandler {
         }
     }
 
+    /**
+     * Set Nickname and game in {@link GuiController}
+     * @param event the click of the button
+     */
     private void setNickNameAndGameSize(ActionEvent event) {
         if (nickNameField.getText().length() > 0 && nickNameField.getText().length() <= 12) {
             String nickname = nickNameField.getText();
@@ -193,12 +210,20 @@ public class InitialPhaseHandler extends PhaseHandler {
         waitingRoomLbl.setText("Hello, " + nickName);
     }
 
+    /**
+     * Set the waiting scene until all players are ready to start
+     */
     public void waitStartGame() {
         waitingRoomLbl.setText("The game is about to start!");
         setScene(WAITING_ROOM);
     }
 
     /* CHOOSE LEADERS SCENE *******************************************************************************************/
+
+    /**
+     * Set the scene that allow the leaders choice and let the player choose them
+     * @param availableLeaders leader from the server
+     */
     public void displayLeaders(List<LeaderCard> availableLeaders) {
         leader1Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(0).getId() + ".png"));
         leader2Img.setImage(new Image("img/leaderCards/" + availableLeaders.get(1).getId() + ".png"));
@@ -259,6 +284,11 @@ public class InitialPhaseHandler extends PhaseHandler {
     }
 
     /* CHOOSE RESOURCES SCENE *****************************************************************************************/
+
+    /**
+     * Let the player choose the extra resource if it have to do it
+     * @param resources the resources that the player has choose
+     */
     public void chooseResources(Integer resources) {
         List<Resource> selectedRes = new ArrayList<>();
 
@@ -361,6 +391,13 @@ public class InitialPhaseHandler extends PhaseHandler {
     }
 
     /* CHOOSE STORAGE *************************************************************************************************/
+
+    /**
+     * Let the player choose the shelf of the warehouse where he want to store the extra resource
+     * @param motherPane
+     * @param popUpScene the popup that show the warehouse
+     * @param selectedRes the selected resources
+     */
     private void chooseStorage(Pane motherPane, Scene popUpScene, List<Resource> selectedRes) {
         resource1Img.setImage(new Image("img/pawns/" + selectedRes.get(0).toString().toLowerCase() + ".png"));
         if (selectedRes.size() == 1) {

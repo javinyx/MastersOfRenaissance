@@ -72,7 +72,13 @@ public enum ScenesEnum {
      * Choose which leader to use during main actions.
      */
     USE_LEADER("useLeaderPopUp.fxml"),
-
+    /**
+     * A scene displaying important messages.
+     */
+    MSG("msgPopUp.fxml"),
+    /**
+     * The victory or defeat scene.
+     */
     END("end.fxml");
 
     private String path;

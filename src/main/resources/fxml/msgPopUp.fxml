@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane id="popUp" xmlns="https://javafx.com/javafx" xmlns:fx="https://javafx.com/fxml" prefHeight="250.0"
+           prefWidth="400.0">
+    <VBox alignment="CENTER" spacing="20">
+        <Label fx:id="msg1Lbl" styleClass="inputLabel" textAlignment="CENTER"/>
+        <Label fx:id="msg2Lbl" styleClass="inputLabel" textAlignment="CENTER"/>
+        <Button fx:id="msgOkBtn" styleClass="btn" text="Ok"/>
+    </VBox>
+</StackPane>

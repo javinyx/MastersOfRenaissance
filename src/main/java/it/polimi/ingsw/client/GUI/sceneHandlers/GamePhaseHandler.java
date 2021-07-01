@@ -174,7 +174,13 @@ public class GamePhaseHandler extends PhaseHandler {
     @FXML
     private HBox useLeaderMarbleChoices;
 
-    /* END *************/
+    /* MSG POPUP ******************************************************************************************************/
+    @FXML
+    private Label msg1Lbl, msg2Lbl;
+    @FXML
+    private Button msgOkBtn;
+
+    /* END ************************************************************************************************************/
     @FXML
     private Label endStatusLbl, winnerLbl;
 
@@ -184,7 +190,7 @@ public class GamePhaseHandler extends PhaseHandler {
 
         List<ScenesEnum> allPaths = new ArrayList<>(Arrays.asList(MAIN_BOARD, MARKET, STORAGE, OTHER_PLAYERS,
                 PRODUCTION_CARDS, CHOOSE_PAYMENT, CHOOSE_LEADERS, PRODUCE, DISCARD_ACTIVATE_LEADER, BASIC_OUTPUT,
-                USE_LEADER, END));
+                USE_LEADER, MSG, END));
         for (ScenesEnum path : allPaths) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + path.getPath()));
             loader.setController(this);
@@ -237,8 +243,9 @@ public class GamePhaseHandler extends PhaseHandler {
     }
 
     public void observePlayerActions() {
+        msgBoard.clear();
         if (controller.getPlayer().isMyTurn()) {
-            if(controller.getNormalTurn()) {
+            if (controller.getNormalTurn()) {
                 sendToMsgBoard("It is now your turn, please either buy from market, buy development cards or" +
                         " activate production.");
             } else {
@@ -295,8 +302,6 @@ public class GamePhaseHandler extends PhaseHandler {
         leader2Show.setEffect(null);
 
         List<LeaderCard> currLeads = controller.getPlayer().getLeaders();
-
-        System.out.println(currLeads);
 
         if (currLeads.size() >= 1) {
             leader1Show.setImage(new Image("/img/leaderCards/" + currLeads.get(0).getId() + ".png"));
@@ -734,7 +739,7 @@ public class GamePhaseHandler extends PhaseHandler {
         });
     }
 
-    private void useMarbleLeader(char dim, int index , List<LeaderCard> toPick) {
+    private void useMarbleLeader(char dim, int index, List<LeaderCard> toPick) {
         resetUseLeader();
         useLeaderMarbleChoices.setVisible(true);
         useLeader1Choice.setVisible(false);
@@ -914,7 +919,7 @@ public class GamePhaseHandler extends PhaseHandler {
         msgBoard.appendText(message + '\n');
     }
 
-    public void sendErrorToMsgBoard(String message){
+    public void sendErrorToMsgBoard(String message) {
         msgBoard.setStyle("-fx-text-fill: red");
         msgBoard.appendText(message + '\n');
     }
@@ -945,7 +950,7 @@ public class GamePhaseHandler extends PhaseHandler {
         List<StorageAbility> toPick = new ArrayList<>();
         for (LeaderCard lead : active) {
             if (lead instanceof StorageAbility) {
-                toPick.add((StorageAbility)lead);
+                toPick.add((StorageAbility) lead);
             }
         }
 
@@ -1290,6 +1295,8 @@ public class GamePhaseHandler extends PhaseHandler {
         useLeader1Img.setImage(null);
         useLeader2Img.setImage(null);
 
+        useLeader1Choice.getItems().addAll(1,2,3,4);
+        useLeader2Choice.getItems().addAll(1,2,3,4);
         useLeaderMarbleChoices.setVisible(false);
     }
 
@@ -2163,10 +2170,10 @@ public class GamePhaseHandler extends PhaseHandler {
             controller.sendDiscardLeader(chosenLeaderGrp.getSelectedToggle().getUserData().toString());
             controller.getPlayer().getLeaders().removeIf(led -> led.getId() == c);
 
-            sendToMsgBoard("You have earned a Faith Point!");
-
             mainBoard.setEffect(null);
             popUpStage.close();
+
+            sendMsgPopUp("You have earned a Faith Point!");
         });
 
         DALBackBtn.setOnAction(actionEvent -> {
@@ -2184,16 +2191,61 @@ public class GamePhaseHandler extends PhaseHandler {
         DAL2Toggle.setVisible(true);
     }
 
-    //---WINNER-------
-    public void displayWinner(String winner){
-        if(controller.getPlayer().getNickname().equals(winner)){
+    /* MESSAGE POP UP *************************************************************************************************/
+    private void resetMsgPopUp() {
+        msg1Lbl.setText("");
+        msg2Lbl.setText("");
+    }
+
+    public void sendMsgPopUp(String msg) {
+        resetMsgPopUp();
+
+        mainBoard.setEffect(new GaussianBlur());
+        Stage popUpStage = new Stage(StageStyle.TRANSPARENT);
+        popUpStage.initOwner(stage);
+        popUpStage.initModality(Modality.APPLICATION_MODAL);
+        popUpStage.centerOnScreen();
+        popUpStage.setScene(getScene(MSG));
+        popUpStage.show();
+
+        msg1Lbl.setText(msg);
+
+        msgOkBtn.setOnAction(actionEvent -> {
+            mainBoard.setEffect(null);
+            popUpStage.close();
+        });
+    }
+
+    public void sendMsgPopUp(String msg1, String msg2) {
+        resetMsgPopUp();
+
+        mainBoard.setEffect(new GaussianBlur());
+        Stage popUpStage = new Stage(StageStyle.TRANSPARENT);
+        popUpStage.initOwner(stage);
+        popUpStage.initModality(Modality.APPLICATION_MODAL);
+        popUpStage.centerOnScreen();
+        popUpStage.setScene(getScene(MSG));
+        popUpStage.show();
+
+        msg1Lbl.setText(msg1);
+        msg2Lbl.setText(msg2);
+
+        msgOkBtn.setOnAction(actionEvent -> {
+            mainBoard.setEffect(null);
+            popUpStage.close();
+        });
+    }
+
+    /* END ************************************************************************************************************/
+    public void displayWinner(String winner) {
+        if (controller.getPlayer().getNickname().equals(winner)) {
             endStatusLbl.setText("VICTORY!");
-        }else{
+        } else {
             endStatusLbl.setText("DEFEAT...");
             winnerLbl.setText(winner + " won");
         }
 
-        double x,y;
+        double x, y;
         x = stage.getWidth();
         y = stage.getHeight();
         setScene(END);

@@ -477,7 +477,7 @@ public class GuiController extends ClientController {
 
     @Override
     public void showCurrentTurn(String s) {
-        gamePhaseHandler.sendToMsgBoard("Now is " + s + "'s turn. Please wait until it's your turn.");
+        gamePhaseHandler.sendToMsgBoard("It is now " + s + "'s turn. Please wait until it's your turn.");
     }
 
     @Override
@@ -542,8 +542,7 @@ public class GuiController extends ClientController {
     @Override
     public void showLorenzoStatus(ActionToken act) {
         Platform.runLater(() -> gamePhaseHandler.setActionToken(act));
-        gamePhaseHandler.sendToMsgBoard("Lorenzo now is in position: " + lorenzoPos);
-        gamePhaseHandler.sendToMsgBoard(act.print());
+        Platform.runLater(() -> gamePhaseHandler.sendMsgPopUp("Lorenzo is now in position: " + lorenzoPos, act.print()));
     }
 
     @Override

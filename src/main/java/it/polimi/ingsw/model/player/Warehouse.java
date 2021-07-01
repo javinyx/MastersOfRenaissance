@@ -221,7 +221,7 @@ public class Warehouse {
     public int numberOf(Buyable res){
         int counter = 0;
         if(res instanceof Resource){
-            if(smallInventory.equals(res)){
+            if(smallInventory !=null && smallInventory.equals(res)){
                 counter++;
             }
             if(midInventory.contains(res)){

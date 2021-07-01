@@ -9,7 +9,8 @@
       "COIN",
       "COIN"
     ],
-    "storageType": "STONE"
+    "storageType": "STONE",
+    "resources" : []
   },
   {
     "id" : 6,
@@ -21,7 +22,8 @@
       "STONE",
       "STONE"
     ],
-    "storageType": "SERVANT"
+    "storageType": "SERVANT",
+    "resources" : []
   },
   {
     "id" : 7,
@@ -33,7 +35,8 @@
       "SERVANT",
       "SERVANT"
     ],
-    "storageType": "SHIELD"
+    "storageType": "SHIELD",
+    "resources" : []
   },
   {
     "id" : 8,
@@ -45,6 +48,7 @@
       "SHIELD",
       "SHIELD"
     ],
-    "storageType": "COIN"
+    "storageType": "COIN",
+    "resources" : []
   }
 ]

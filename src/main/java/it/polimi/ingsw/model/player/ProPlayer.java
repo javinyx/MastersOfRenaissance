@@ -426,6 +426,9 @@ public class ProPlayer extends Player{
             //System.out.println(l + "\n");
             if(l.equals(leader) && hasEnoughResources(leader.getCost())){
                 l.setStatus(true);
+                if(l instanceof StorageAbility){
+                    l.applyEffect(this);
+                }
                 return true;
             }
         }

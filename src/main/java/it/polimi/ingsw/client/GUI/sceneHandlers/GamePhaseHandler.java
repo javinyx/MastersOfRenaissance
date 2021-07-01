@@ -557,6 +557,7 @@ public class GamePhaseHandler extends PhaseHandler {
     private void setLootChest() {
         Map<BiElement<Resource, Storage>, Integer> lc = controller.getPlayer().getLootchest();
         lc.forEach((x, y) -> {
+            System.out.println("setLoot - R: " + x + ", Qty: " + y);
             switch (x.getFirstValue()) {
                 case COIN -> {
                     if (y != null) {
@@ -1749,13 +1750,13 @@ public class GamePhaseHandler extends PhaseHandler {
         if (controller.getPlayer().getProductionStacks().get(1).size() != 0) {
             produce3Img.setImage(new Image("/img/productionCardsFront/" + controller.getPlayer()
                     .getProductionStacks().get(1).peekFirst().getId() + ".png"));
-            produce3Toggle.setUserData(controller.getPlayer().getProductionStacks().get(0).peekFirst());
+            produce3Toggle.setUserData(controller.getPlayer().getProductionStacks().get(1).peekFirst());
         }
 
         if (controller.getPlayer().getProductionStacks().get(2).size() != 0) {
             produce4Img.setImage(new Image("/img/productionCardsFront/" + controller.getPlayer()
                     .getProductionStacks().get(2).peekFirst().getId() + ".png"));
-            produce4Toggle.setUserData(controller.getPlayer().getProductionStacks().get(0).peekFirst());
+            produce4Toggle.setUserData(controller.getPlayer().getProductionStacks().get(2).peekFirst());
         }
 
         // Check if player has active Boost Ability Leader Cards

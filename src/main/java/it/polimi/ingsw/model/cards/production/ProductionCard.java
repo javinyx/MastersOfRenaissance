@@ -33,10 +33,15 @@ public abstract class ProductionCard implements Buyable, Card {
     }
 
     public boolean isEquivalent(Buyable other){
-        if(other instanceof ProductionCard || other instanceof ConcreteProductionCard){
-            if(((ProductionCard) other).level==this.level && ((ProductionCard) other).color==this.color){
-                return true;
-            }
+        if(other instanceof ProductionCard){
+            return ((ProductionCard) other).level == this.level && ((ProductionCard) other).color == this.color;
+        }
+        return false;
+    }
+
+    public boolean isColorEquivalent(Buyable other){
+        if(other instanceof ProductionCard ){
+            return ((ProductionCard) other).color == this.color;
         }
         return false;
     }

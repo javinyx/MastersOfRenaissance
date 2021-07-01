@@ -423,8 +423,7 @@ public class ProPlayer extends Player{
      * @param leader chosen leaderCard to activate */
     public boolean activateLeaderCard(LeaderCard leader){
         for(LeaderCard l : leaderCards){
-            //System.out.println(l + "\n");
-            if(l.equals(leader) && hasEnoughResources(leader.getCost())){
+            if(l.equals(leader) && hasEnoughResources(leader.getCost(), l)){
                 l.setStatus(true);
                 if(l instanceof StorageAbility){
                     l.applyEffect(this);
@@ -435,7 +434,7 @@ public class ProPlayer extends Player{
         return false;
     }
 
-    private boolean hasEnoughResources(List<Buyable> cost){
+    private boolean hasEnoughResources(List<Buyable> cost, LeaderCard leader){
         BiFunction<Buyable, List<Buyable>, Boolean> isUnique = (x, list) -> {
             if(list.isEmpty()){
                 return true;
@@ -454,7 +453,6 @@ public class ProPlayer extends Player{
                 distinctBuyable.add(b);
             }
         }
-        //System.out.println("DISTINCT" + distinctBuyable);
         for(int j=0; j<distinctBuyable.size(); j++){
             requirements.add(new BuyableMap(distinctBuyable.get(j), 0));
             for(int i=0; i<cost.size(); i++){
@@ -463,8 +461,8 @@ public class ProPlayer extends Player{
                 }
             }
         }
-        //System.out.println("REQUIREMENTS" + requirements);
-        int x = 0;
+        System.out.println("REQUIREMENTS" + requirements);
+        int x;
         //searching between storages
         for(int j=0; j<requirements.size(); j++){
             Buyable res = requirements.get(j).getBuyableResource();
@@ -482,19 +480,23 @@ public class ProPlayer extends Player{
                     requirements.get(j).subOccurrence(extraStorage.get().get(1).size());
                 }
             }else{
-                //System.out.println("Res type" + res);
+                boolean anyLevel = false;
+                if(leader instanceof MarbleAbility){
+                    anyLevel = true;
+                }
+                System.out.println("Res type" + res);
                 for(ConcreteProductionCard pp : prodCards1){
-                    if(pp.isEquivalent(res)){
+                    if(pp.isEquivalent(res) || (anyLevel && pp.isColorEquivalent(res))){
                         requirements.get(j).subOccurrence(1);
                     }
                 }
                 for(ConcreteProductionCard pp : prodCards2){
-                    if(pp.isEquivalent(res)){
+                    if(pp.isEquivalent(res) || (anyLevel && pp.isColorEquivalent(res))){
                         requirements.get(j).subOccurrence(1);
                     }
                 }
                 for(ConcreteProductionCard pp : prodCards3){
-                    if(pp.isEquivalent(res)){
+                    if(pp.isEquivalent(res) || (anyLevel && pp.isColorEquivalent(res))){
                         requirements.get(j).subOccurrence(1);
                     }
                 }
@@ -502,7 +504,7 @@ public class ProPlayer extends Player{
         }
         //check
         for(BuyableMap b : requirements){
-            //System.out.println(b + "\n");
+            System.out.println(b + "\n");
             if(b.getOccurrence()>0)
                 return false;
         }

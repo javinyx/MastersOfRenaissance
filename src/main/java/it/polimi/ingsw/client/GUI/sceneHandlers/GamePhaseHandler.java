@@ -219,7 +219,6 @@ public class GamePhaseHandler extends PhaseHandler {
 
     /* MAIN BOARD *****************************************************************************************************/
     public void initiateBoard() {
-        actionTokenImg.setImage(new Image("/img/actionTokens/actTokenBack.png"));
         setLeaders();
         setWarehouse();
         setMarket();
@@ -304,7 +303,6 @@ public class GamePhaseHandler extends PhaseHandler {
         leader2Show.setEffect(null);
 
         List<LeaderCard> currLeads = controller.getPlayer().getLeaders();
-        int storageCtr = 0;
 
         //Set leader images
         if (currLeads.size() >= 1) {
@@ -319,6 +317,8 @@ public class GamePhaseHandler extends PhaseHandler {
                 leader2Show.setEffect(new SepiaTone(0.6));
             }
         }
+
+        int storageCtr = 0;
 
         //Count how many Storage leaders there are
         for (LeaderCard l : currLeads) {
@@ -607,7 +607,6 @@ public class GamePhaseHandler extends PhaseHandler {
 
         Map<BiElement<Resource, Storage>, Integer> lc = controller.getPlayer().getLootchest();
         lc.forEach((x, y) -> {
-            System.out.println("setLoot - R: " + x + ", Qty: " + y);
             switch (x.getFirstValue()) {
                 case COIN -> {
                     coinLblLC.setText("x" + y);
@@ -1190,22 +1189,27 @@ public class GamePhaseHandler extends PhaseHandler {
         resource1ImgPU.setLayoutY(117);
         resource1ImgPU.setDisable(false);
         resource1ImgPU.setImage(null);
+
         resource2ImgPU.setLayoutX(109);
         resource2ImgPU.setLayoutY(167);
         resource2ImgPU.setDisable(false);
         resource2ImgPU.setImage(null);
+
         resource3ImgPU.setLayoutX(109);
         resource3ImgPU.setLayoutY(217);
         resource3ImgPU.setDisable(false);
         resource3ImgPU.setImage(null);
+
         resource4ImgPU.setLayoutX(109);
         resource4ImgPU.setLayoutY(267);
         resource4ImgPU.setDisable(false);
         resource4ImgPU.setImage(null);
+
         resource5ImgPU.setLayoutX(59);
         resource5ImgPU.setLayoutY(117);
         resource5ImgPU.setDisable(false);
         resource5ImgPU.setImage(null);
+
         resource6ImgPU.setLayoutX(59);
         resource6ImgPU.setLayoutY(167);
         resource6ImgPU.setDisable(false);

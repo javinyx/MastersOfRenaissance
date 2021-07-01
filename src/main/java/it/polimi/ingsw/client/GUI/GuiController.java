@@ -208,11 +208,10 @@ public class GuiController extends ClientController {
         }
     }
 
-    //TODO: riprendere Javadoc da qui, rimangono poi i 2 phase handler
     /**
-     * Sets the initial
+     * Sets the initial resource placement for players other than the first.
      *
-     * @param placements the placements
+     * @param placements the resource placements in the storage
      */
     public void setInitialResourcePlacements(List<BiElement<Resource, Storage>> placements) {
         Platform.runLater(initialPhaseHandler::waitStartGame);
@@ -283,10 +282,10 @@ public class GuiController extends ClientController {
     }
 
     /**
-     * Send buy market message.
+     * Sends the buy from market message to the server specifying row/column and index.
      *
-     * @param dim   the dim
-     * @param index the index
+     * @param dim   'r' for row, 'c' for column
+     * @param index the index of the row/column
      */
     public void sendBuyMarketMessage(char dim, int index, List<BiElement<MarbleAbility, Integer>> leaders) {
         BuyMarketMessage msg = new BuyMarketMessage(dim, index, leaders);
@@ -299,9 +298,9 @@ public class GuiController extends ClientController {
     }
 
     /**
-     * Send place resources message.
+     * Sends the store resources message to the server, this happens after something is bought from the market.
      *
-     * @param placements the placements
+     * @param placements the resource placements in the storage
      */
     public void sendPlaceResourcesMessage(List<BiElement<Resource, Storage>> placements) {
         StoreResourcesMessage msg = new StoreResourcesMessage(placements, getPlayer().getTurnNumber());
@@ -310,12 +309,13 @@ public class GuiController extends ClientController {
     }
 
     /**
-     * Buy production card.
+     * Sends the buy production card message to the server, specifying the stack (1-3) where it will be placed,
+     * the card being bought, the leaderCards used for a potential discount and the resources used to pay for the card.
      *
-     * @param cardId    the card id
-     * @param stack     the stack
-     * @param leaderIds the leader ids
-     * @param wallet    the wallet
+     * @param cardId    the if of the card being bought
+     * @param stack     the stack where the card will be placed
+     * @param leaderIds the ids of the leaders used for the discount
+     * @param wallet    the wallet containing the resources used to pay for the card, and where they come from
      */
     /* PRODUCTION CARDS ***********************************************************************************************/
     public void buyProductionCard(int cardId, int stack, List<Integer> leaderIds, ResourcesWallet wallet) {
@@ -324,23 +324,25 @@ public class GuiController extends ClientController {
     }
 
     /**
-     * Gets available production cards.
+     * Gets all the available production cards to purchase.
      *
-     * @return the available production cards
+     * @return the list of all available production cards
      */
     public List<ConcreteProductionCard> getAvailableProductionCards() {
         return availableProductionCard;
     }
 
     /**
-     * Send production message.
+     * Sends the production message to the server, specifying the cards being used, the resources being used,
+     * the leader cards of the BoostAbility type, the leaderCard outputs chosen, basic production and if so the
+     * resource the player desires from it.
      *
-     * @param prodCards     the prod cards
-     * @param resWal        the res wal
-     * @param leaderCards   the leader cards
-     * @param leaderOutputs the leader outputs
-     * @param basicProd     the basic prod
-     * @param basicOutput   the basic output
+     * @param prodCards     the production cards being used
+     * @param resWal        the resource wallet containing resource and placement
+     * @param leaderCards   the leader cards used to boost output
+     * @param leaderOutputs the leader outputs being boosted
+     * @param basicProd     if basic production is chosen or not
+     * @param basicOutput   the output chosen by the player of the eventual basic production
      */
     /* PRODUCE PHASE **************************************************************************************************/
     public void sendProductionMessage(List<ConcreteProductionCard> prodCards, ResourcesWallet resWal,
@@ -359,7 +361,7 @@ public class GuiController extends ClientController {
     }
 
     /**
-     * Gets normal turn.
+     * Gets if the current turn is in the normal turn state, meaning you can only do main actions.
      *
      * @return the normal turn
      */
@@ -368,7 +370,7 @@ public class GuiController extends ClientController {
     }
 
     /**
-     * Gets pope favours.
+     * Gets the pope favours, useful for checking the state of pope spaces.
      *
      * @return the pope favours
      */
@@ -377,9 +379,9 @@ public class GuiController extends ClientController {
     }
 
     /**
-     * Send rearrange message.
+     * Send the rearrange message to the server, specifying the new placements of the resources.
      *
-     * @param placements the placements
+     * @param placements the new placements of the resources
      */
     public void sendRearrangeMessage(List<BiElement<Resource, Storage>> placements) {
         StoreResourcesMessage msg = new StoreResourcesMessage(placements, getPlayer().getTurnNumber());
@@ -446,7 +448,7 @@ public class GuiController extends ClientController {
 
     @Override
     public void nickError() {
-        //Platform.runLater(() -> initialPhaseHandler.);
+
     }
 
     @Override
@@ -491,18 +493,18 @@ public class GuiController extends ClientController {
     }
 
     /**
-     * Send activate leader.
+     * Sends the activate leader message to the server, specifying which leader card is being activated.
      *
-     * @param leaderCard the leader card
+     * @param leaderCard the leader card to be activated
      */
     public void sendActivateLeader(String leaderCard) {
         messageToServerHandler.generateEnvelope(MessageID.ACTIVATE_LEADER, leaderCard);
     }
 
     /**
-     * Send discard leader.
+     * Send the discard leader message to the server, specifying which leader card is being discarded.
      *
-     * @param leaderCard the leader card
+     * @param leaderCard the leader card to be discarded
      */
     public void sendDiscardLeader(String leaderCard) {
         messageToServerHandler.generateEnvelope(MessageID.DISCARD_LEADER, leaderCard);

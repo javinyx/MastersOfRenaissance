@@ -42,6 +42,9 @@ import static it.polimi.ingsw.client.GUI.sceneHandlers.ScenesEnum.*;
 import static it.polimi.ingsw.misc.Storage.*;
 import static it.polimi.ingsw.model.market.Resource.*;
 
+/**
+ * This class is the controller for all the JavaFX scenes used during the actual game phase.
+ */
 public class GamePhaseHandler extends PhaseHandler {
     /* MAIN ***********************************************************************************************************/
     private Map<ScenesEnum, Scene> sceneMap = new HashMap<>();
@@ -209,6 +212,10 @@ public class GamePhaseHandler extends PhaseHandler {
         buildGeneralSceneMap(sceneMap);
     }
 
+    /**
+     * @param sceneName the scene name
+     * @return true if the scene has been set correclty, false if {@link GamePhaseHandler} is not a controller for that scene
+     */
     public boolean setScene(ScenesEnum sceneName) {
         if (!sceneMap.containsKey(sceneName)) {
             return false;
@@ -218,6 +225,17 @@ public class GamePhaseHandler extends PhaseHandler {
     }
 
     /* MAIN BOARD *****************************************************************************************************/
+
+    /**
+     * Initiate the main board upon starting the game and then starts to listen for player's input.
+     * <p>
+     *     <li>Set the leaders held by the player;</li>
+     *     <li>Set the initial warehouse;</li>
+     *     <li>Set the market and the available Development cards;</li>
+     *     <li>Set the preview of the enemies;</li>
+     *     <li>Initiate the player's Faith Track</li>
+     * </p>
+     */
     public void initiateBoard() {
         setLeaders();
         setWarehouse();
@@ -228,7 +246,18 @@ public class GamePhaseHandler extends PhaseHandler {
         setFaithTrack();
         observePlayerActions();
     }
-
+    /**
+     * Initiate the main board upon starting the game and then starts to listen for player's input.
+     * <p>
+     *     <li>Update the leaders held by the player;</li>
+     *     <li>Update warehouse;</li>
+     *     <li>Set the market and the available Development cards;</li>
+     *     <li>Update the preview of the enemies;</li>
+     *     <li>Update the player's Faith Track</li>
+     *     <li>Update the pope passes status</li>
+     *     <li>Update the Development cards status</li>
+     * </p>
+     */
     public void updateBoard() {
         setLeaders();
         setWarehouse();
@@ -242,6 +271,12 @@ public class GamePhaseHandler extends PhaseHandler {
         observePlayerActions();
     }
 
+    /**
+     * Set all the behaviors in response to a player input from the main board.
+     * <p>
+     *     Furthermore, it informs the players about their turn through the message box.
+     * </p>
+     */
     public void observePlayerActions() {
         msgBoard.clear();
         if (controller.getPlayer().isMyTurn()) {
@@ -249,7 +284,7 @@ public class GamePhaseHandler extends PhaseHandler {
                 sendToMsgBoard("It is now your turn, please either buy from market, buy development cards or" +
                         " activate production.");
             } else {
-                sendToMsgBoard("You cannot do a main action anymore but you can browse. When you're ready, please end" +
+                sendToMsgBoard("You can't do a main action anymore but you can browse. When you're ready, please end" +
                         "your turn.");
             }
         } else {
@@ -441,7 +476,7 @@ public class GamePhaseHandler extends PhaseHandler {
         extraStorage22ImgMB.setImage(null);
     }
 
-    public void setWarehouse() {
+    private void setWarehouse() {
         resetWarehouse();
 
         Resource r = controller.getPlayer().getResourceFromStorage(EXTRA1);
@@ -578,7 +613,7 @@ public class GamePhaseHandler extends PhaseHandler {
         });
     }
 
-    public void rearrangeWarehouse() {
+    private void rearrangeWarehouse() {
         resetWarehouse();
         List<Resource> elem = new ArrayList<>();
 
@@ -656,6 +691,10 @@ public class GamePhaseHandler extends PhaseHandler {
     }
 
     /* MARKET & MARKET POPUP ******************************************************************************************/
+
+    /**
+     * Fill the market region with the current resources as set in {@link it.polimi.ingsw.client.ClientController}
+     */
     public void setMarket() {
         extraMarble.setFill(Color.web(controller.getMarket().getExtra().getHexCode()));
         extraMarblePU.setFill(Color.web(controller.getMarket().getExtra().getHexCode()));
@@ -948,16 +987,28 @@ public class GamePhaseHandler extends PhaseHandler {
     }
 
     /* MESSAGE BOARD **************************************************************************************************/
+
+    /**
+     * @param message info message that has to be displayed in the Message Box
+     */
     public void sendToMsgBoard(String message) {
         msgBoard.setStyle("");
         msgBoard.appendText(message + '\n');
     }
 
+    /**
+     * It will show the error message to the player through the Message Box. The text will turn red.
+     * @param message error message that has to be displayed in the Message Box
+     */
     public void sendErrorToMsgBoard(String message) {
         msgBoard.setStyle("-fx-text-fill: red");
         msgBoard.appendText(message + '\n');
     }
 
+    /**
+     * It display the image of the token {@code act} on the right side of the player's board.
+     * @param act the Action Token drawn during the last Lorenzo's turn
+     */
     public void setActionToken(ActionToken act) {
         switch (act.getId()) {
             case 1 -> actionTokenImg.setImage(new Image("/img/actionTokens/actTokenGreen.png"));
@@ -970,6 +1021,14 @@ public class GamePhaseHandler extends PhaseHandler {
     }
 
     /* CHOOSE STORAGE POPUP *******************************************************************************************/
+
+    /**
+     * It will open the pop-up that allows the player to place the resources in {@code selectedRes} into the Warehouse's shelves.
+     * @param selectedRes the list of resources that needs to be stored by the player
+     * @param isBadStorageRequest true if a {@link it.polimi.ingsw.exception.BadStorageException} has been thrown by the server
+     *                            sending a {@code BAD_STORAGE_REQUEST} and the resources need to be rearranged again
+     * @param isRearrangeRequest true if the player wants to rearrange the resources he/she already has in the Warehouse
+     */
     public void chooseStoragePopUp(List<Resource> selectedRes, boolean isBadStorageRequest, boolean isRearrangeRequest) {
         mainBoard.setEffect(new GaussianBlur());
         Stage popUpStage = new Stage(StageStyle.TRANSPARENT);
@@ -1387,6 +1446,11 @@ public class GamePhaseHandler extends PhaseHandler {
         });
     }
 
+    /**
+     * Place all the still available Development cards to purchase in the grid. The cards are chosen as the
+     * version represented in the {@code ClientController}.
+     * <p>The grid is divided into 12 decks, each of 4 cards. Once a deck is empty, it replace the image with a back card image.</p>
+     */
     public void setProductionCards() {
         ConcreteProductionCard[] availableProductionCards = {null, null, null, null, null, null, null, null, null,
                 null, null, null};
@@ -1616,7 +1680,7 @@ public class GamePhaseHandler extends PhaseHandler {
         backPaymentBtnCP.setVisible(true);
     }
 
-    public void choosePaymentPopUp(int cardId, List<Integer> leaderIds) {
+    private void choosePaymentPopUp(int cardId, List<Integer> leaderIds) {
         resetChoosePayment();
 
         Stage popUpStage = new Stage(StageStyle.TRANSPARENT);
@@ -2431,6 +2495,10 @@ public class GamePhaseHandler extends PhaseHandler {
         msg2Lbl.setText("");
     }
 
+    /**
+     * Display the message in a pop-up.
+     * @param msg the message to be displayed
+     */
     public void sendMsgPopUp(String msg) {
         resetMsgPopUp();
 
@@ -2450,6 +2518,11 @@ public class GamePhaseHandler extends PhaseHandler {
         });
     }
 
+    /**
+     * Display the messages for Lorenzo's actions in a pop-up.
+     * @param msg1 the main message
+     * @param msg2 the additional information to place under {@code msg1}
+     */
     public void sendMsgPopUp(String msg1, String msg2) {
         resetMsgPopUp();
 
@@ -2473,6 +2546,11 @@ public class GamePhaseHandler extends PhaseHandler {
     }
 
     /* END ************************************************************************************************************/
+
+    /**
+     * Change the scene displayed on the stage showing if the player has won or the "defeat" scene informing who has won the match.
+     * @param winner the name of the winner of the game
+     */
     public void displayWinner(String winner) {
         if (controller.getPlayer().getNickname().equals(winner)) {
             endStatusLbl.setText("VICTORY!");

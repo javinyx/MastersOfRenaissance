@@ -33,10 +33,16 @@ public class NubPlayer implements Comparator<NubPlayer> {
         }
     }
 
+    /**
+     * @param turnNumber the player's turn into the whole party order
+     */
     public void setTurnNumber(int turnNumber) {
         this.turnNumber = turnNumber;
     }
 
+    /**
+     * @return the array of status of each PopePass for the player: if true then it's active, otherwise inactive
+     */
     public Boolean[] getPopePasses(){return popePasses;}
 
     /**
@@ -53,8 +59,17 @@ public class NubPlayer implements Comparator<NubPlayer> {
     }
     public int getCurrPos(){return currPos;}
     public boolean isMyTurn(){return myTurn;}
+
+    /**
+     * @return the list of the deck of Development cards bought by the player
+     */
     public List<Deque<ConcreteProductionCard>> getProductionStacks(){return productionStacks;}
     public List<LeaderCard> getLeaders(){return leaders;}
+
+    /**
+     * @param index the index of which development cards' stack is needed (1 to 3).
+     * @return
+     */
     public Deque<ConcreteProductionCard> getProductionStack(int index){
         return productionStacks.get(index);
     }
@@ -150,6 +165,9 @@ public class NubPlayer implements Comparator<NubPlayer> {
         return res[0];
     }
 
+    /**
+     * @return the resources in the player's Lootchest
+     */
     public Map<BiElement<Resource, Storage>, Integer> getLootchest(){
         Map<BiElement<Resource, Storage>, Integer> loot = new HashMap<>();
         allResources.forEach((x,y) ->{
@@ -160,6 +178,9 @@ public class NubPlayer implements Comparator<NubPlayer> {
         return loot;
     }
 
+    /**
+     * @return all the resources currently spread among the player's storages.
+     */
     public Map<BiElement<Resource,Storage>,Integer> getAllResources(){return allResources;}
 
     public boolean setPosition(int pos){

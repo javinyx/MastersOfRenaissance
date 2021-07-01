@@ -24,14 +24,6 @@ public class Market {
     }
     public Resource getExtraResource(){return extra;}
 
-    public void printM() {
-        for (int i = 0; i < 3; i++){
-            for (int j = 0; j < 4; j++)
-                System.out.print(marketBoard[i][j]+" ");
-
-            System.out.println();}
-        System.out.println(extra);
-    }
 
     public Resource[][] getMarketBoard() {
         return marketBoard;

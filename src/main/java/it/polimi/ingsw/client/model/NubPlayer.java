@@ -208,6 +208,7 @@ public class NubPlayer implements Comparator<NubPlayer> {
     public void setLeaders(List<LeaderCard> leaders){
         this.leaders = leaders;
     }
+    public void resetLeaders(){this.leaders = new ArrayList<>();}
 
     //---------------------COMPARATOR---------------
 

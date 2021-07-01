@@ -251,8 +251,10 @@ public abstract class ClientController {
                     prodCardCounter++;
                 }
 
-                if (msg.getLeadersId() != null && !msg.getLeadersId().isEmpty())
-                    pp.setLeaders(convertIdToLeaderCard(msg.getLeadersId()));
+                if (msg.getLeadersId() != null && !msg.getLeadersId().isEmpty()) {
+                    pp.resetLeaders();
+                    pp.setLeaders(convertIdToLeaderCardAndActivate(msg.getLeadersIdAndStatus()));
+                }
 
                 Map<BiElement<Resource, Storage>, Integer> resources = msg.getAddedResources();
 
@@ -449,6 +451,20 @@ public abstract class ClientController {
 
         return leaders;
 
+    }
+
+    public List<LeaderCard> convertIdToLeaderCardAndActivate(List<BiElement<Integer, Boolean>> leadIdsStatus){
+        List<Integer> ids = leadIdsStatus.stream().map(BiElement::getFirstValue).collect(Collectors.toList());
+        List<LeaderCard> leaders =  convertIdToLeaderCard(ids);
+        for(LeaderCard l : leaders){
+            for(BiElement<Integer, Boolean> pair : leadIdsStatus){
+                if(pair.getFirstValue().equals(l.getId())){
+                    l.setStatus(pair.getSecondValue());
+                    break;
+                }
+            }
+        }
+        return leaders;
     }
 
     protected ActionToken convertIdToActionToken(int id){

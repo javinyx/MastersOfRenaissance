@@ -811,9 +811,10 @@ public class Controller implements Observer<MessageID> {
         //addedResources set by: organizeResourceAction,
         //removedResources set by:
         for (LeaderCard ld : previousPlayer.getLeaderCards()) {
-            if (ld.isActive()) {
+            thisPlayerActiveLeaders.add(new BiElement<>(ld.getId(), ld.isActive()));
+            /*if (ld.isActive()) {
                 thisPlayerActiveLeaders.add(new BiElement<>(ld.getId(), ld.isActive()));
-            }
+            }*/
         }
 
         UpdateMessage msg = new UpdateMessage(previousPlayer.getTurnID(), previousPlayer.getCurrentPosition(), game.getCurrPlayer().getTurnID(),

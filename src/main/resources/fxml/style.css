@@ -24,6 +24,10 @@ ToggleButton {
     -fx-focus-color: transparent;
 }
 
+ChoiceBox {
+    -fx-background-color: #414141;
+}
+
 #background {
     -fx-background-image: url("/img/ui/background.jpg");
     -fx-background-repeat: no-repeat;

@@ -25,11 +25,11 @@
         </HBox>
         <HBox alignment="CENTER" spacing="40" fx:id="useLeaderMarbleChoices">
             <VBox alignment="CENTER" spacing="10">
-                <Label styleClass="inputLabelSmall" textAlignment="CENTER" text="Leader 1 #"/>
+                <Label fx:id="useLeader1Lbl" styleClass="inputLabelSmall" textAlignment="CENTER" text="Leader 1 #"/>
                 <ChoiceBox fx:id="useLeader1Choice"/>
             </VBox>
             <VBox alignment="CENTER" spacing="10">
-                <Label styleClass="inputLabelSmall" textAlignment="CENTER" text="Leader 1 #"/>
+                <Label fx:id="useLeader2Lbl" styleClass="inputLabelSmall" textAlignment="CENTER" text="Leader 2 #"/>
                 <ChoiceBox fx:id="useLeader2Choice"/>
             </VBox>
         </HBox>

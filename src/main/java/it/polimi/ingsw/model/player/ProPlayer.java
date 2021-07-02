@@ -461,7 +461,7 @@ public class ProPlayer extends Player{
                 }
             }
         }
-        System.out.println("REQUIREMENTS" + requirements);
+
         int x;
         //searching between storages
         for(int j=0; j<requirements.size(); j++){
@@ -484,7 +484,7 @@ public class ProPlayer extends Player{
                 if(leader instanceof MarbleAbility){
                     anyLevel = true;
                 }
-                System.out.println("Res type" + res);
+
                 for(ConcreteProductionCard pp : prodCards1){
                     if(pp.isEquivalent(res) || (anyLevel && pp.isColorEquivalent(res))){
                         requirements.get(j).subOccurrence(1);
@@ -504,7 +504,6 @@ public class ProPlayer extends Player{
         }
         //check
         for(BuyableMap b : requirements){
-            System.out.println(b + "\n");
             if(b.getOccurrence()>0)
                 return false;
         }

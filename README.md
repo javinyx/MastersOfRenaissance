@@ -27,7 +27,7 @@ Professor Supervisor: Alessandro Margara
 |Multiple Games | Done|
 
 ## JAR usage
-The game is splitted into two JAR files, both can be downloaded form Deliverables directory.
+The game is splitted into two JAR files, both can be downloaded form [Deliverables directory](https://github.com/Javinyx/ingswAM2021-Barone-Belotti-Braccini/tree/main/deliverables/jar).
 <br>Unless it is desired to play a local game, one Server app instance must be running before the client can actually start playing.</br>
 
 Both server and client app can run on Unix systems (Linux, macOS) or Windows system (on Powershell, cmd and WSL).

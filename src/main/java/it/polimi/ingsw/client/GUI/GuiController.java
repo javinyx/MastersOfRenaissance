@@ -79,6 +79,7 @@ public class GuiController extends ClientController {
             System.exit(0);
         });
         stage.setScene(initialPhaseHandler.getScene(ScenesEnum.WELCOME));
+        stage.centerOnScreen();
         stage.show();
         initialPhaseHandler.start();
     }
@@ -146,6 +147,7 @@ public class GuiController extends ClientController {
         messageToServerHandler.sendMessageToServer(gameSize.toString());
         if (gameSize != 1) {
             Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.WAITING_ROOM));
+            stage.centerOnScreen();
             initialPhaseHandler.setWaitingRoomName(nickName);
         }
     }
@@ -166,6 +168,7 @@ public class GuiController extends ClientController {
         initialPhaseHandler.displayLeaders(availableLeaders);
         synchronized (lock) {
             Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.CHOOSE_LEADERS));
+            stage.centerOnScreen();
             initialPhaseHandler.chooseLeaders();
         }
     }
@@ -244,6 +247,7 @@ public class GuiController extends ClientController {
 
         Platform.runLater(() -> {
             gamePhaseHandler.setScene(ScenesEnum.MAIN_BOARD);
+            stage.centerOnScreen();
             gamePhaseHandler.initiateBoard();
         });
     }

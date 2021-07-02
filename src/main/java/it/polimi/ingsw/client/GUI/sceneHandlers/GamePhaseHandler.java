@@ -2182,18 +2182,18 @@ public class GamePhaseHandler extends PhaseHandler {
         //get cost of production cards
         if(!prodCards.isEmpty()) {
             for (ConcreteProductionCard c : prodCards) {
-                cost = cost + " " + c.getCost().toString();
+                cost = cost + " " + c.getRequiredResources();
             }
         }
         //get cost of leaders
         if(!leaderCards.isEmpty()) {
             for (BoostAbility c : leaderCards) {
-                cost = cost + " " + c.getResource();
+                cost = cost + " [" + c.getResource() + "] ";
             }
         }
         //get cost of basic production
         if(isBasicProd) {
-            cost = cost + ", Any 2 resources";
+            cost = cost + "[ANY 2 RESOURCES]";
         }
 
         listCostLblCP.setWrapText(true);

@@ -204,7 +204,8 @@ public class Controller implements Observer<MessageID> {
         if(endPhase && playersLeftToPlay>0){
             playersLeftToPlay--;
             System.out.println("END TURN 1: " + playersLeftToPlay);
-        }else if(endPhase){
+        }
+        if(endPhase && playersLeftToPlay==0){
             winner = game.countFinalPointsAndWinner();
             System.out.println("END TURN 2");
             update(PLAYER_WIN);

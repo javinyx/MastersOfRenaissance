@@ -298,6 +298,7 @@ public class GamePhaseHandler extends PhaseHandler {
         }
 
         marketRegion.setOnMouseClicked(event -> {
+            tmpRes.clear();
             if (controller.getNormalTurn() && controller.getPlayer().isMyTurn()) {
                 mainBoard.setEffect(new GaussianBlur());
                 marketPopUp();
@@ -923,7 +924,25 @@ public class GamePhaseHandler extends PhaseHandler {
     }
 
     /* OTHER PLAYERS POPUP ********************************************************************************************/
+    private void resetOtherPlayersPopUp() {
+        opLead1Img.setImage(null);
+        opLead2Img.setImage(null);
+
+        opQtyCoinLbl.setText("x0");
+        opQtyServantLbl.setText("x0");
+        opQtyShieldLbl.setText("x0");
+        opQtyStoneLbl.setText("x0");
+
+        opShelf1Img.setImage(null);
+        opQtyShelf1Lbl.setText("");
+        opShelf2Img.setImage(null);
+        opQtyShelf2Lbl.setText("");
+        opShelf3Img.setImage(null);
+        opQtyShelf3Lbl.setText("");
+    }
+
     private void otherPlayersPopUp(NubPlayer player) {
+        resetOtherPlayersPopUp();
 
         // This only happens if it's a single player game and the player clicks on Lorenzo
         if (controller.getOtherPlayers().size() == 0) {

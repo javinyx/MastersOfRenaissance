@@ -19,7 +19,7 @@
         <Label fx:id="opTotalProdCardsLbl"/>
 
         <HBox spacing="20" alignment="CENTER_LEFT">
-            <Label text="Development cards in produce position: "/>
+            <Label text="Development cards: "/>
             <ImageView fx:id="opStack1Img" fitWidth="50" preserveRatio="true"/>
             <ImageView fx:id="opStack2Img" fitWidth="50" preserveRatio="true"/>
             <ImageView fx:id="opStack3Img" fitWidth="50" preserveRatio="true"/>

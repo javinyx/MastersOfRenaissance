@@ -191,6 +191,13 @@ public class InitialPhaseHandler extends PhaseHandler {
     }
 
     /**
+     * Displays an error message when a player tries to join a lobby where a player has the same name.
+     */
+    public void setNicknameTakenError() {
+        badNameLbl.setText("Name is already taken in the selected lobby.");
+    }
+
+    /**
      * Set Nickname and game in {@link GuiController}
      * @param event the click of the button
      */

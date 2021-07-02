@@ -23,10 +23,7 @@ import javafx.scene.effect.SepiaTone;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Modality;
@@ -68,7 +65,7 @@ public class GamePhaseHandler extends PhaseHandler {
     @FXML
     private Circle extraMarble, extraMarblePU;
     @FXML
-    private GridPane marketMarbles, marketMarblesPU, productionCards;
+    private GridPane marketMarbles, marketMarblesPU;
     @FXML
     private ImageView marketRow1Btn, marketRow2Btn, marketRow3Btn, marketCol1Btn, marketCol2Btn, marketCol3Btn,
             marketCol4Btn;
@@ -98,6 +95,8 @@ public class GamePhaseHandler extends PhaseHandler {
     @FXML
     private ToggleButton shelf1ToggleCP, shelf21ToggleCP, shelf22ToggleCP, shelf31ToggleCP, shelf32ToggleCP,
             shelf33ToggleCP, extraStorage11CP, extraStorage12CP, extraStorage21CP, extraStorage22CP;
+    @FXML
+    private VBox extraStorageBox;
 
     /* ENEMY BOARD ****************************************************************************************************/
     @FXML
@@ -137,6 +136,8 @@ public class GamePhaseHandler extends PhaseHandler {
     private Button productionCardBackBtn, stoneSubBtnCP, stoneAddBtnCP, servantSubBtnCP, servantAddBtnCP, coinSubBtnCP,
             coinAddBtnCP, shieldSubBtnCP, shieldAddBtnCP, backPaymentBtnCP, stack1Btn, stack2Btn,
             stack3Btn;
+    @FXML
+    private GridPane productionCardsGrid;
 
     /* PRODUCE ********************************************************************************************************/
     private ResourcesWallet resWal;
@@ -1381,7 +1382,7 @@ public class GamePhaseHandler extends PhaseHandler {
         popUpStage.setScene(getScene(PRODUCTION_CARDS));
         popUpStage.show();
 
-        productionCards.setOnMouseClicked(mouseEvent -> {
+        productionCardsGrid.setOnMouseClicked(mouseEvent -> {
             if (controller.getNormalTurn() && controller.getPlayer().isMyTurn()) {
                 clickGrid(mouseEvent, popUpStage);
             } else {
@@ -1398,7 +1399,7 @@ public class GamePhaseHandler extends PhaseHandler {
 
     private void clickGrid(MouseEvent event, Stage popUpStage) {
         Node clickedNode = event.getPickResult().getIntersectedNode();
-        if (clickedNode != productionCards) {
+        if (clickedNode != productionCardsGrid) {
             String url = ((ImageView) clickedNode).getImage().getUrl();
             String cardIdS = url.substring(url.lastIndexOf("/") + 1).split("\\.")[0];
             Integer cardId = Integer.parseInt(cardIdS);
@@ -1594,67 +1595,56 @@ public class GamePhaseHandler extends PhaseHandler {
         }
         for (int x = 0, i = 0; x < 3; x++) {
             for (int y = 0; y < 4; y++, i++) {
-                if (availableProductionCards[i] != null) {
-                    setProductionCardImg(x, y, productionCards, availableProductionCards[i].getId());
-                } else {
-                    setProductionCardNullImg(x, y, productionCards);
-                }
+                setProductionCardImg(x, y, productionCardsGrid, availableProductionCards[i]);
             }
         }
     }
 
-    private void setProductionCardImg(int row, int column, GridPane gridPane, int imgId) {
-        ObservableList<Node> children = gridPane.getChildren();
+    private void setProductionCardImg(int row, int column, GridPane productionCardsGrid,
+                                      ConcreteProductionCard prodCard) {
+        ObservableList<Node> children = productionCardsGrid.getChildren();
 
         for (Node node : children) {
-            if (gridPane.getRowIndex(node) == row && gridPane.getColumnIndex(node) == column) {
-                ((ImageView) node).setImage(new Image("/img/productionCardsFront/" + imgId + ".png"));
+            if (productionCardsGrid.getRowIndex(node) == row && productionCardsGrid.getColumnIndex(node) == column) {
+                if (prodCard != null) {
+                    ((ImageView) node).setImage(new Image("/img/productionCardsFront/" + prodCard.getId() + ".png"));
+                } else {
+                    switch (row) {
+                        case 0 -> {
+                            switch (column) {
+                                case 0 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/green1.png"));
+                                case 1 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/green2.png"));
+                                case 2 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/green3.png"));
+                            }
+                        }
+                        case 1 -> {
+                            switch (column) {
+                                case 0 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/purple1.png"));
+                                case 1 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/purple2.png"));
+                                case 2 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/purple3.png"));
+                            }
+                        }
+                        case 2 -> {
+                            switch (column) {
+                                case 0 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/blue1.png"));
+                                case 1 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/blue2.png"));
+                                case 2 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/blue3.png"));
+                            }
+                        }
+                        case 3 -> {
+                            switch (column) {
+                                case 0 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/yellow1.png"));
+                                case 1 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/yellow2.png"));
+                                case 2 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/yellow3.png"));
+                            }
+                        }
+                    }
+                    node.setDisable(true);
+                }
                 break;
             }
         }
     }
-
-    private void setProductionCardNullImg(int row, int column, GridPane gridPane) {
-        ObservableList<Node> children = gridPane.getChildren();
-
-        for (Node node : children) {
-            if (gridPane.getRowIndex(node) == row && gridPane.getColumnIndex(node) == column) {
-                switch (row) {
-                    case 1 -> {
-                        switch (column) {
-                            case 1 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/green1.png"));
-                            case 2 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/green2.png"));
-                            case 3 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/green3.png"));
-                        }
-                    }
-                    case 2 -> {
-                        switch (column) {
-                            case 1 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/purple1.png"));
-                            case 2 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/purple2.png"));
-                            case 3 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/purple3.png"));
-                        }
-                    }
-                    case 3 -> {
-                        switch (column) {
-                            case 1 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/blue1.png"));
-                            case 2 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/blue2.png"));
-                            case 3 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/blue3.png"));
-                        }
-                    }
-                    case 4 -> {
-                        switch (column) {
-                            case 1 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/yellow1.png"));
-                            case 2 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/yellow2.png"));
-                            case 3 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/yellow3.png"));
-                        }
-                    }
-                }
-            }
-            node.setDisable(true);
-            break;
-        }
-    }
-
 
     private void resetChoosePayment() {
         shelf1CP.setImage(null);
@@ -1702,6 +1692,9 @@ public class GamePhaseHandler extends PhaseHandler {
         stack3Btn.setVisible(true);
         stack3Btn.setDisable(false);
         stack2Btn.setText("Stack 2");
+
+        extraStorageBox.setVisible(true);
+        extraStorageBox.setManaged(true);
 
         backPaymentBtnCP.setVisible(true);
     }
@@ -1775,24 +1768,31 @@ public class GamePhaseHandler extends PhaseHandler {
         }
 
         //set images in extra storage
-        res = player.getResourceFromStorage(EXTRA1);
-        qty = player.getQtyInStorage(res, EXTRA1);
+        Resource extraRes1 = player.getResourceFromStorage(EXTRA1);
+        Resource extraRes2 = player.getResourceFromStorage(EXTRA2);
 
-        if (res != null && qty == 2) {
-            extraStorage11ImgCP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
-            extraStorage12ImgCP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
-        } else if (res != null && qty == 1) {
-            extraStorage11ImgCP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
-        }
-
-        res = player.getResourceFromStorage(EXTRA2);
-        qty = player.getQtyInStorage(res, EXTRA2);
-
-        if (res != null && qty == 2) {
-            extraStorage21ImgCP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
-            extraStorage22ImgCP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
-        } else if (res != null && qty == 1) {
-            extraStorage21ImgCP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
+        if (extraRes1 != null || extraRes2 != null) {
+            qty = player.getQtyInStorage(res, EXTRA1);
+            if (extraRes1 != null) {
+                if (qty >= 1) {
+                    extraStorage11ImgCP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
+                }
+                if (qty == 2) {
+                    extraStorage12ImgCP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
+                }
+            }
+            qty = player.getQtyInStorage(res, EXTRA2);
+            if (extraRes2 != null) {
+                if (qty >= 1) {
+                    extraStorage21ImgCP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
+                }
+                if (qty == 2) {
+                    extraStorage22ImgCP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
+                }
+            }
+        } else {
+            extraStorageBox.setVisible(false);
+            extraStorageBox.setManaged(false);
         }
 
         //choose from warehouse
@@ -2108,7 +2108,7 @@ public class GamePhaseHandler extends PhaseHandler {
     }
 
     private void chooseLeaderOutput(List<ConcreteProductionCard> prodCards, List<BoostAbility> leaderCards,
-                                 List<Resource> leaderOutputs, int cycle) {
+                                    List<Resource> leaderOutputs, int cycle) {
         chooseOutputLbl.setText("Choose leader output");
 
         Stage popUpStage = new Stage(StageStyle.TRANSPARENT);
@@ -2135,7 +2135,7 @@ public class GamePhaseHandler extends PhaseHandler {
     }
 
     private void chooseBasicOutput(List<ConcreteProductionCard> prodCards,
-                                     List<BoostAbility> leaderCards, List<Resource> leaderOutputs) {
+                                   List<BoostAbility> leaderCards, List<Resource> leaderOutputs) {
         chooseOutputLbl.setText("Choose basic output");
 
         Stage popUpStage = new Stage(StageStyle.TRANSPARENT);
@@ -2222,24 +2222,31 @@ public class GamePhaseHandler extends PhaseHandler {
         }
 
         //set images in extra storage
-        res = player.getResourceFromStorage(EXTRA1);
-        qty = player.getQtyInStorage(res, EXTRA1);
+        Resource extraRes1 = player.getResourceFromStorage(EXTRA1);
+        Resource extraRes2 = player.getResourceFromStorage(EXTRA2);
 
-        if (res != null && qty == 2) {
-            extraStorage11ImgCP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
-            extraStorage12ImgCP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
-        } else if (res != null && qty == 1) {
-            extraStorage11ImgCP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
-        }
-
-        res = player.getResourceFromStorage(EXTRA2);
-        qty = player.getQtyInStorage(res, EXTRA2);
-
-        if (res != null && qty == 2) {
-            extraStorage21ImgCP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
-            extraStorage22ImgCP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
-        } else if (res != null && qty == 1) {
-            extraStorage21ImgCP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
+        if (extraRes1 != null || extraRes2 != null) {
+            qty = player.getQtyInStorage(res, EXTRA1);
+            if (extraRes1 != null) {
+                if (qty >= 1) {
+                    extraStorage11ImgCP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
+                }
+                if (qty == 2) {
+                    extraStorage12ImgCP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
+                }
+            }
+            qty = player.getQtyInStorage(res, EXTRA2);
+            if (extraRes2 != null) {
+                if (qty >= 1) {
+                    extraStorage21ImgCP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
+                }
+                if (qty == 2) {
+                    extraStorage22ImgCP.setImage(new Image("/img/pawns/" + res.toString().toLowerCase() + ".png"));
+                }
+            }
+        } else {
+            extraStorageBox.setVisible(false);
+            extraStorageBox.setManaged(false);
         }
 
         //choose from warehouse

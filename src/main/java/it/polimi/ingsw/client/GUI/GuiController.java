@@ -448,7 +448,9 @@ public class GuiController extends ClientController {
 
     @Override
     public void nickError() {
-
+        Platform.runLater(() -> stage.setScene(initialPhaseHandler.getScene(ScenesEnum.REGISTRATION)));
+        Platform.runLater(initialPhaseHandler::setNicknameTakenError);
+        initialPhaseHandler.getNickNameAndGameSize();
     }
 
     @Override

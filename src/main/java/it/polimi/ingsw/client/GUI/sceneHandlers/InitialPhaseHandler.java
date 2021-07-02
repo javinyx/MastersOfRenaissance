@@ -155,13 +155,18 @@ public class InitialPhaseHandler extends PhaseHandler {
      ***/
     public void retrieveIpAndPort() {
         connectBtn.setOnAction(actionEvent -> {
-            if (ipField.getText().length() > 0 && ipField.getText().length() > 0) {
+            if(ipField.getText().length() > 0) {
                 ip = ipField.getText();
-                port = portField.getText();
             } else {
                 ip = "localhost";
+            }
+
+            if(portField.getText().length() > 0) {
+                port = portField.getText();
+            } else {
                 port = "27001";
             }
+
             controller.setIpAndPort(ip, port);
         });
 

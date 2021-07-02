@@ -7,9 +7,10 @@ import it.polimi.ingsw.model.player.ProPlayer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MarbleAbilityTest {
 
@@ -61,10 +62,12 @@ class MarbleAbilityTest {
 
         bubu.setResAcquired(marble);
         bubu.setTurnType('m');
-        l.applyEffect(bubu);
-        l.applyEffect(bubu);
-        assertEquals(l.getReplacingResource(), marble.get(2));
-        assertEquals(l.getReplacingResource(), marble.get(3));
+        if(l!=null) {
+            l.applyEffect(bubu);
+            l.applyEffect(bubu);
+            assertEquals(l.getReplacingResource(), marble.get(2));
+            assertEquals(l.getReplacingResource(), marble.get(3));
+        }
 
     }
 

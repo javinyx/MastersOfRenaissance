@@ -227,7 +227,6 @@ public class ProPlayer extends Player{
         };
 
         if((prodStack.isEmpty() && card.getLevel()!=1) || (!prodStack.isEmpty() && card.getLevel()!= prodStack.peekFirst().getLevel()+1)){
-            //throw new RuntimeException("Cannot buy this card because of its level");
             throw new WrongLevelException();
         }
 
@@ -265,12 +264,6 @@ public class ProPlayer extends Player{
         }
 
         for(Resource r : removeFromLoot){
-            /*if(lootChest.removeResources(r)){
-                if(resAcquired.contains(r))
-                    resAcquired.remove(r);
-                else
-                    lootChest.addResources(r);
-            }*/
             if(resAcquired.contains(r) && lootChest.removeResources(r)){
                 resAcquired.remove(r);
                 controller.removeResources(new BiElement<>(r, Storage.LOOTCHEST), 1);
@@ -348,8 +341,6 @@ public class ProPlayer extends Player{
                 }
             }
         }
-        //call to controller notifying that the player has to organize the resources just bought
-        //controller.update(MessageID.STORE_RESOURCES);
     }
 
 //----------------------------------RESOURCES------------------------------------------
@@ -421,8 +412,8 @@ public class ProPlayer extends Player{
     }
     /**Call the controller passing to the player the 4 options he/she has for the leader.*/
     public void giveLeadersOptions(List<LeaderCard> leaders){
-        //call controller
     }
+
     /**Activate the leader card, only if the player has that card. From now on it's available for usage.
      * @param leader chosen leaderCard to activate */
     public boolean activateLeaderCard(LeaderCard leader){
@@ -775,7 +766,6 @@ public class ProPlayer extends Player{
                 for (LeaderCard lc : prodLeaders) {
                     resAcquired.clear();
                     if (checkLeaderAvailability(lc) && outputBoost.get(i).isValidForTrading()) {
-                        //resAcquired.add(outputBoost.get(i));
                         this.resAsCash = resAsCash;
                         if(!lc.applyEffect(this)){
                             //something went wrong in applying the effect

@@ -46,7 +46,6 @@ public class LocalAdapter implements Observer<MessageEnvelope>, MessageDispatche
             case CHOOSE_LEADER_CARDS -> viewController.setLeaderAvailable(envelope.getPayload());
             case CONFIRM_REGISTRATION -> viewController.confirmRegistration(envelope.getPayload());
 
-            //case CHOOSE_LEADER_CARDS -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "You have to choose a leader card"));
             case CHOOSE_RESOURCE -> viewController.chooseResourceAction((gson.fromJson(envelope.getPayload(), ChooseResourceMessage.class)).getQuantity());
 
             //GAME PHASES

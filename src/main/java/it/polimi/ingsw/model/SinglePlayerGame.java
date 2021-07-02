@@ -90,10 +90,8 @@ public class SinglePlayerGame extends Game implements ModelObserver {
         if(player.equals(lorenzo)){
             winner = lorenzo;
         }else {
-            //this.player.getVictoryPoints();
             winner = this.player;
         }
-        //end(winner);
         controller.initEndPhase(1);
     }
 
@@ -105,7 +103,7 @@ public class SinglePlayerGame extends Game implements ModelObserver {
         controller.update(MessageID.PLAYERS_POSITION);
     }
 
-    public void updateEndTurn(ProPlayer player){} //do nothing?
+    public void updateEndTurn(ProPlayer player){}
 
     /**Alert the observer that {@code player} has triggered the {@code vaticanReport}.
      * @param vaticanReport must be between 1 and 3. */

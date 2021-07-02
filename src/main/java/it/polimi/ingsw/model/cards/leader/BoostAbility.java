@@ -110,10 +110,6 @@ public class BoostAbility implements LeaderCard {
                     extra.remove(resourceNeeded);
                     wallet.getExtraStorage(0).remove(resourceNeeded);
                     playerController.removeResources(new BiElement<>(resourceNeeded, Storage.EXTRA1), 1);
-                /*}else if(extra2.isActive() && extra2.getStorageType().equals(resourceNeeded) && extra2.size()>0){
-                    //player might have swapped the extraStorage cards and teh extraStorage in Wallet
-                    extra2.remove(resourceNeeded);
-                    wallet.getExtraStorage1().remove(resourceNeeded);*/
                 }else{
                     return false;
                 }
@@ -127,10 +123,6 @@ public class BoostAbility implements LeaderCard {
                     extra.remove(resourceNeeded);
                     wallet.getExtraStorage(1).remove(resourceNeeded);
                     playerController.removeResources(new BiElement<>(resourceNeeded, Storage.EXTRA2), 1);
-                /*}else if(extra1.isActive() && extra1.getStorageType().equals(resourceNeeded) && extra1.size()>0){
-                    //player might have swapped the extraStorage cards and teh extraStorage in Wallet
-                    extra1.remove(resourceNeeded);
-                    wallet.getExtraStorage2().remove(resourceNeeded);*/
                 }else{
                     return false;
                 }

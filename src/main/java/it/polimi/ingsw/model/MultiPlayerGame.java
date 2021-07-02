@@ -38,12 +38,6 @@ public class MultiPlayerGame extends Game implements ModelObserver {
         this.controller = controller;
     }
 
-    /*
-    1 creare il player
-    2 distribuire le carte leader
-    4 inizializzare prodcard
-    5 mercato, gia fatto
-     */
 
     public Player getWinner(){
         return winner;
@@ -82,12 +76,6 @@ public class MultiPlayerGame extends Game implements ModelObserver {
 
         Warehouse war = p.getWarehouse();
 
-        /*if (war.getSmallInventory() != null)
-            addRes.put(new BiElement<>(war.getSmallInventory(), Storage.WAREHOUSE_SMALL), 1);
-        if (!war.getMidInventory().isEmpty())
-            addRes.put(new BiElement<>(war.getMidInventory().get(0), Storage.WAREHOUSE_MID), war.getMidInventory().size());
-        if (!war.getLargeInventory().isEmpty())
-            addRes.put(new BiElement<>(war.getLargeInventory().get(0), Storage.WAREHOUSE_LARGE), war.getLargeInventory().size());*/
 
         if (p.getWarehouse().getSmallInventory() != null)
             addRes.put(new BiElement<>(war.getSmallInventory(), Storage.WAREHOUSE_SMALL), 1);
@@ -109,10 +97,8 @@ public class MultiPlayerGame extends Game implements ModelObserver {
                 getMarket().getMarketBoard(), getMarket().getExtraMarble(), getBuyableProductionID(),
                 null, leaders, addRes, null);
 
-        //msg.setSerializedResources();
 
         p.setUpdate(msg);
-        //controller.update(MessageID.UPDATE);
 
     }
 

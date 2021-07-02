@@ -5,10 +5,8 @@ import com.google.gson.reflect.TypeToken;
 import it.polimi.ingsw.messages.concreteMessages.UpdateMessage;
 import it.polimi.ingsw.misc.BiElement;
 import it.polimi.ingsw.misc.Storage;
-import it.polimi.ingsw.model.market.Market;
 import it.polimi.ingsw.model.market.Resource;
 
-import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,11 +34,9 @@ public class MessageEnvelope {
     }
 
     /**
-     * @return the correct version of the update message serialized with {@link UpdateMessage#setSerializedResources()}
+     * @return the correct version of the update message serialized into tje {@link UpdateMessage}
      */
     public UpdateMessage deserializeUpdateMessage() {
-
-        Gson gson = new Gson();
 
         JsonObject jsonObject = new Gson().fromJson(payload, JsonObject.class);
 

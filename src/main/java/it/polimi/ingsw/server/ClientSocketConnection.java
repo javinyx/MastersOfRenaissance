@@ -86,7 +86,6 @@ public class ClientSocketConnection extends Observable<String> implements Client
         try{
             in = new Scanner(socket.getInputStream());
             output = new ObjectOutputStream(socket.getOutputStream());
-            //String readName = null;
             String readNumber = null;
             boolean correctRegistration = false;
 
@@ -124,10 +123,6 @@ public class ClientSocketConnection extends Observable<String> implements Client
             e.printStackTrace();
             send(gson.toJson(new MessageEnvelope(MessageID.INFO, "player SURRENDER")));
         } finally {
-            /*if(active) {
-                System.err.println("PLAYER CRASHED");
-                server.playerCrashed(this, readName, gameSize);
-            }*/
             close();
         }
     }

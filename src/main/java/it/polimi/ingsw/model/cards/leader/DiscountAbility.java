@@ -83,7 +83,7 @@ public class DiscountAbility implements LeaderCard {
     @Override
     public String toString(){
         List<ProductionCard> generalCost = cost.stream().map(x -> (ProductionCard)x).collect(Collectors.toList());
-        return "DiscountAbility(Victory Points: " + victoryPoints + "\nActivation Cost: " + (/*generalCost==null ? "null" :*/ generalCost)
+        return "DiscountAbility(Victory Points: " + victoryPoints + "\nActivation Cost: " + (generalCost)
                 + "\nDiscount Type: " + discountType + ")";
     }
 

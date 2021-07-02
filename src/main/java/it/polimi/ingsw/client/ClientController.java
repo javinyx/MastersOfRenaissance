@@ -243,9 +243,6 @@ public abstract class ClientController {
             //update last player state for this client
             if (pp.getTurnNumber() == msg.getPlayerId()) { //search player
                 pp.setCurrPos(msg.getPlayerPos());
-                if(pp.equals(player)){
-                    //updateFaithTrack();
-                }
 
                 if (boughtProductionCard != null) {
                     pp.addProductionCard(boughtProductionCard, msg.getProductionCardId().getSecondValue() - 1);

@@ -195,11 +195,6 @@ public class Controller implements Observer<MessageID> {
      * send all the updates of the things that has been done during the turn.
      */
     public synchronized void endTurn() {
-        /*if(!basicActionDone){
-            addedResources.clear();
-            removedResources.clear();
-            boughtCard = Optional.empty();
-        }*/
         basicActionDone = false;
         if (mustChoosePlacements) {
             update(MessageID.INFO);
@@ -223,8 +218,6 @@ public class Controller implements Observer<MessageID> {
         }
 
         update(CONFIRM_END_TURN);
-        //fine
-        //update(MessageID.UPDATE);
         addedResources.clear();
         removedResources.clear();
         boughtCard = Optional.empty();
@@ -250,10 +243,6 @@ public class Controller implements Observer<MessageID> {
      * @param buyProdMsg the message that carries all the information about: card, payment, production stack.
      */
     public synchronized void buyProdCardAction(BuyProductionMessage buyProdMsg) {
-        /*if (mustChoosePlacements || basicActionDone) {
-            update(MessageID.INFO);
-            return;
-        }*/
         boolean t = false;
         addedResources.clear();
         removedResources.clear();
@@ -328,11 +317,6 @@ public class Controller implements Observer<MessageID> {
      * Let the player play the produce phase accordingly to the {@code produce} message's content (see {@link ProduceMessage}).
      */
     public synchronized void activateProdAction(ProduceMessage produce) {
-        /*if (mustChoosePlacements || basicActionDone) {
-            update(MessageID.INFO);
-            return;
-        }*/
-        //boolean t = false;
         removedResources.clear();
         addedResources.clear();
 
@@ -380,10 +364,6 @@ public class Controller implements Observer<MessageID> {
      * and ask the player where to store the resources bought, otherwise generate various error messages.</p>
      */
     public synchronized void buyFromMarAction(BuyMarketMessage buyMark) {
-        /*if (mustChoosePlacements || basicActionDone) {
-            update(MessageID.INFO);
-            return;
-        }*/
         boolean t = false;
         playerToAck = game.getCurrPlayer();
         try {
@@ -414,18 +394,12 @@ public class Controller implements Observer<MessageID> {
      * @param message
      */
     public synchronized void organizeResourceAction(StoreResourcesMessage message) {
-        /*if (!mustChoosePlacements) {
-            //it doesn't have to store anything
-            update(MessageID.INFO);
-            return;
-        }*/
         int playerID = message.getTurnID();
         for(ProPlayer p : game.getPlayers()){
             if(p.getTurnID() == playerID){
                 playerToAck = p;
             }
         }
-        //playerForOrganizeRes = game.getCurrPlayer();
         if (game instanceof MultiPlayerGame)
             for(ProPlayer p : ((MultiPlayerGame) game).getActivePlayers())
                 if(p.getTurnID() == message.getTurnID())
@@ -553,7 +527,6 @@ public class Controller implements Observer<MessageID> {
                 playerToAck = p;
             }
         }
-        //playerForOrganizeRes = game.getCurrPlayer();
         if (game instanceof MultiPlayerGame)
             for(ProPlayer p : ((MultiPlayerGame) game).getActivePlayers())
                 if(p.getTurnID() == msg.getTurnID())
@@ -666,10 +639,6 @@ public class Controller implements Observer<MessageID> {
      * @param leaderCard the card to be activated.
      */
     public synchronized void activateLeader(LeaderCard leaderCard) {
-        /*if (mustChoosePlacements) {
-            update(MessageID.INFO);
-            return;
-        }*/
 
         for (int i = 0; i < ProPlayer.getMaxNumExtraStorage(); i++) {
             if (game.getCurrPlayer().getLeaderCards().get(i).equals(leaderCard)) {
@@ -814,16 +783,12 @@ public class Controller implements Observer<MessageID> {
         //removedResources set by:
         for (LeaderCard ld : previousPlayer.getLeaderCards()) {
             thisPlayerActiveLeaders.add(new BiElement<>(ld.getId(), ld.isActive()));
-            /*if (ld.isActive()) {
-                thisPlayerActiveLeaders.add(new BiElement<>(ld.getId(), ld.isActive()));
-            }*/
         }
 
         UpdateMessage msg = new UpdateMessage(previousPlayer.getTurnID(), previousPlayer.getCurrentPosition(), game.getCurrPlayer().getTurnID(),
                 game.getMarket().getMarketBoard(), game.getMarket().getExtraMarble(), game.getBuyableProductionID(),
                 boughtCard.orElse(null), thisPlayerActiveLeaders, addedResources, removedResources);
 
-        //msg.setSerializedResources();
         boughtCard = Optional.empty();
 
         return msg;
@@ -853,7 +818,6 @@ public class Controller implements Observer<MessageID> {
             //INITIALIZATION
 
             case TOO_MANY_PLAYERS -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, ""));
-            //case CHOOSE_LEADER_CARDS -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, "You have to choose a leader card"));
             case CHOOSE_RESOURCE -> remoteViews.get(game.getCurrPlayer().getTurnID() - 1).update(new MessageEnvelope(messageID, String.valueOf(game.getCurrPlayer().getTurnID())));
 
             //GAME PHASES
@@ -932,7 +896,7 @@ public class Controller implements Observer<MessageID> {
                 updateBroadCast(envelope);
             }
 
-            default -> System.out.println("No no no");
+            default -> System.out.println("MessageID not recognized");
         }
     }
 
@@ -977,99 +941,8 @@ public class Controller implements Observer<MessageID> {
      */
     public synchronized void abortGame() {
         gameOver = true;
-        //game.setRequest(GameMessagesToClient.ABORT_GAME.name());
     }
 
-    // REJOIN PART ---------------------------------------------------------
-
-    public void setInactivePlayer(String playerName) {
-        ProPlayer crashedP;
-
-        if (game instanceof MultiPlayerGame) {
-            crashedP = game.getPlayerFromNickname(playerName);
-            if(crashedP!=null){
-                if(crashedP.getTurnID() == game.getCurrPlayer().getTurnID()){
-                    game.updateEndTurn(crashedP);
-                    basicActionDone = false;
-                    addedResources.clear();
-                    removedResources.clear();
-                    boughtCard = Optional.empty();
-                }
-                ((MultiPlayerGame)game).removeFromActivePlayers(crashedP);
-                update(PLAYER_CRASHED);
-            }
-        } else {
-            //do nothing, unless we want reset the game instead of leaving it pending
-            //disconnect?
-        }
-    }
-
-    /**
-     * Let the player with this {@code nickname} rejoin the multiplayer game he/she was in before a disconnection.
-     */
-    public void rejoin(MultiPlayerGame game, String nickname) {
-        System.out.println("Rejoining");
-        List<ProPlayer> allPlayers = game.getPlayers();
-        int turnId = 0;
-        ProPlayer player = null;
-        for (ProPlayer p : allPlayers) {
-            if (p.getNickname().equals(nickname)) {
-                player = p;
-                turnId = p.getTurnID();
-                game.getActivePlayers().add(turnId - 1, p);
-                break;
-            }
-        }
-
-        if (player == null) {
-            throw new RuntimeException("Rejoin multiplayer error: player not found");
-        }
-
-        List<BiElement<Integer, Integer>> prodCards = new ArrayList<>();
-        prodCards.addAll(player.getProdCards1().stream().map(x -> new BiElement<>(x.getId(), 1)).collect(Collectors.toList()));
-        prodCards.addAll(player.getProdCards2().stream().map(x -> new BiElement<>(x.getId(), 2)).collect(Collectors.toList()));
-        prodCards.addAll(player.getProdCards3().stream().map(x -> new BiElement<>(x.getId(), 3)).collect(Collectors.toList()));
-
-        Map<BiElement<Resource, Storage>, Integer> tempAddRes = new HashMap<>();
-        Resource resource;
-        if ((resource = player.getWarehouse().getSmallInventory()) != null) {
-            setTempRes(new BiElement<>(resource, Storage.WAREHOUSE_SMALL), 1, tempAddRes);
-        }
-        for (Resource res : player.getWarehouse().getMidInventory()) {
-            setTempRes(new BiElement<>(res, Storage.WAREHOUSE_MID), 1, tempAddRes);
-        }
-        for (Resource res : player.getWarehouse().getLargeInventory()) {
-            setTempRes(new BiElement<>(res, Storage.WAREHOUSE_LARGE), 1, tempAddRes);
-        }
-        Map<Resource, Integer> inventory = player.getLootChest().getInventory();
-        setTempRes(new BiElement<>(Resource.SERVANT, Storage.LOOTCHEST), inventory.get(Resource.SERVANT), tempAddRes);
-        setTempRes(new BiElement<>(Resource.COIN, Storage.LOOTCHEST), inventory.get(Resource.COIN), tempAddRes);
-        setTempRes(new BiElement<>(Resource.SHIELD, Storage.LOOTCHEST), inventory.get(Resource.SHIELD), tempAddRes);
-        setTempRes(new BiElement<>(Resource.STONE, Storage.LOOTCHEST), inventory.get(Resource.STONE), tempAddRes);
-
-
-        List<LeaderCard> leaders = player.getLeaderCards();
-        List<BiElement<Integer, Boolean>> leadersIds = new ArrayList<>();
-        int qty = 0, size;
-
-        for (LeaderCard l : leaders) {
-            leadersIds.add(new BiElement<>(l.getId(), l.isActive()));
-            qty++;
-            if (l.isActive() && (l instanceof StorageAbility) && (size = ((StorageAbility) l).size()) > 0) {
-                addResources(new BiElement<>(((StorageAbility) l).getStorageType(), qty == 1 ? Storage.EXTRA1 : Storage.EXTRA2), size);
-            }
-        }
-
-        UpdateMessage msg = new UpdateMessage(turnId, player.getCurrentPosition(), getCurrPlayerTurnID(),
-                game.getMarket().getMarketBoard(), game.getMarket().getExtraMarble(), game.getBuyableProductionID(),
-                prodCards, leadersIds, tempAddRes, null);
-        //MessageEnvelope env = new MessageEnvelope(REJOIN_UPDATE, gson.toJson(msg, UpdateMessage.class));
-
-        //updateBroadCast(env);
-    }
-
-    public void rejoin(SinglePlayerGame game, String nickname) {
-    }
 
     public Game getGame() {
         return game;

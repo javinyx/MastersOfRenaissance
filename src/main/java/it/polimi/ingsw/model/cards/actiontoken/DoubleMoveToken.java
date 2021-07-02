@@ -2,8 +2,6 @@ package it.polimi.ingsw.model.cards.actiontoken;
 
 import it.polimi.ingsw.model.SinglePlayerGame;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.player.ProPlayer;
-import javafx.application.Platform;
 
 /**
  * The ActionToken with the DoubleMove ability.
@@ -17,9 +15,6 @@ public class DoubleMoveToken implements ActionToken {
         this.moves = moves;
     }
 
-    /* private void doubleMoveCross(ProPlayer player, SinglePlayerGame game){
-        player.moveOnBoard(2);
-    }*/
 
     /**
      * Draw a DoubleMoveToken, move the Black Cross forward by 2 spaces.

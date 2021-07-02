@@ -9,10 +9,16 @@ public class BiElement<T, V> {
         this.v = v;
     }
 
+    /**
+     * @return the first value of the pair
+     */
     public T getFirstValue(){
         return t;
     }
 
+    /**
+     * @return the second value of the pair
+     */
     public V getSecondValue(){
         return v;
     }

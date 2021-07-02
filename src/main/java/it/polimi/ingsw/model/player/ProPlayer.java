@@ -987,7 +987,7 @@ public class ProPlayer extends Player{
     private boolean checkLeaderAvailability(LeaderCard leader){
         if(leader!=null){
             for(LeaderCard c : leaderCards){
-                if(c.equals(leader) && c.isActive()){
+                if(c.getId() == leader.getId() && c.isActive()){
                     return true;
                 }
             }

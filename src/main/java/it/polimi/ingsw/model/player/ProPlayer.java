@@ -334,7 +334,7 @@ public class ProPlayer extends Player{
         if(resAcquired.contains(Resource.BLANK) && leaders!=null && !leaders.isEmpty()){
             for(BiElement<MarbleAbility, Integer> bi : leaders){
                 if(checkLeaderAvailability(bi.getFirstValue())) {
-                    for (int i = 0; i < bi.getSecondValue() - 1; i++) {
+                    for (int i = 0; i < bi.getSecondValue(); i++) {
                         if(!bi.getFirstValue().applyEffect(this)){
                             throw new RuntimeException("Invalid Leader");
                         }

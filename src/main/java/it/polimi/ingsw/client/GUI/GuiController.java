@@ -168,7 +168,6 @@ public class GuiController extends ClientController {
         initialPhaseHandler.displayLeaders(availableLeaders);
         synchronized (lock) {
             Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.CHOOSE_LEADERS));
-            stage.centerOnScreen();
             initialPhaseHandler.chooseLeaders();
         }
     }

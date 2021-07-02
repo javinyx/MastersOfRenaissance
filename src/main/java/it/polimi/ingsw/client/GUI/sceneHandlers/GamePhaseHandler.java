@@ -180,7 +180,7 @@ public class GamePhaseHandler extends PhaseHandler {
     @FXML
     private HBox useLeaderMarbleChoices;
     @FXML
-    private Label useLeader1Lbl, useLeader2Lbl;
+    private Label useLeader1Lbl, useLeader2Lbl, useLeaderChooseLbl;
 
     /* MSG POPUP ******************************************************************************************************/
     @FXML
@@ -427,6 +427,8 @@ public class GamePhaseHandler extends PhaseHandler {
         servantToggleBO.setUserData(SERVANT);
         coinToggleBO.setUserData(COIN);
         shieldToggleBO.setUserData(SHIELD);
+
+        useLeaderChooseLbl.setWrapText(true);
     }
 
     private void setFaithTrack() {
@@ -1609,9 +1611,9 @@ public class GamePhaseHandler extends PhaseHandler {
                 if (prodCard != null) {
                     ((ImageView) node).setImage(new Image("/img/productionCardsFront/" + prodCard.getId() + ".png"));
                 } else {
-                    switch (row) {
+                    switch (column) {
                         case 0 -> {
-                            switch (column) {
+                            switch (row) {
                                 case 0 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/green1.png"));
                                 case 1 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/green2.png"));
                                 case 2 -> ((ImageView) node).setImage(new Image("/img/productionCardsBack/green3.png"));
@@ -2099,19 +2101,27 @@ public class GamePhaseHandler extends PhaseHandler {
             useLeader2Toggle.setUserData(toPick.get(1));
         }
 
-        List<Resource> leaderOut = new ArrayList<>();
+        List<Resource> leaderOutputs = new ArrayList<>();
+        List<BoostAbility> leaderCards = new ArrayList<>();
 
         useLeaderBtn.setOnAction(actionEvent -> {
-            List<BoostAbility> leaderCards = new ArrayList<>();
-            if (useLeader1Toggle.isSelected()) {
-                leaderCards.add((BoostAbility) useLeader1Toggle.getUserData());
+            if (useLeader1Toggle.isSelected() || useLeader2Toggle.isSelected()) {
+                if (useLeader1Toggle.isSelected()) {
+                    leaderCards.add((BoostAbility) useLeader1Toggle.getUserData());
+                }
+                if (useLeader2Toggle.isSelected()) {
+                    leaderCards.add((BoostAbility) useLeader2Toggle.getUserData());
+                }
+                popUpStage.close();
+                chooseLeaderOutput(prodCards, leaderCards, leaderOutputs, leaderCards.size());
+            } else {
+                popUpStage.close();
+                if (isBasicProd) {
+                    chooseBasicOutput(prodCards, leaderCards, leaderOutputs);
+                } else {
+                    choosePaymentPopUp(prodCards, leaderCards, leaderOutputs);
+                }
             }
-            if (useLeader2Toggle.isSelected()) {
-                leaderCards.add((BoostAbility) useLeader2Toggle.getUserData());
-            }
-
-            popUpStage.close();
-            chooseLeaderOutput(prodCards, leaderCards, leaderOut, leaderCards.size());
 
         });
     }
@@ -2180,19 +2190,19 @@ public class GamePhaseHandler extends PhaseHandler {
         String cost = new String();
 
         //get cost of production cards
-        if(!prodCards.isEmpty()) {
+        if (!prodCards.isEmpty()) {
             for (ConcreteProductionCard c : prodCards) {
                 cost = cost + " " + c.getRequiredResources();
             }
         }
         //get cost of leaders
-        if(!leaderCards.isEmpty()) {
+        if (!leaderCards.isEmpty()) {
             for (BoostAbility c : leaderCards) {
                 cost = cost + " [" + c.getResource() + "] ";
             }
         }
         //get cost of basic production
-        if(isBasicProd) {
+        if (isBasicProd) {
             cost = cost + "[ANY 2 RESOURCES]";
         }
 

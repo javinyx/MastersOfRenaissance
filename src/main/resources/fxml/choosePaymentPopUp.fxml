@@ -10,8 +10,8 @@
 
         <!-- RESOURCES NEEDED -->
         <VBox alignment="CENTER" spacing="10">
-            <Label text="Resources needed: " styleClass="inputLabelSmall"/>
-            <Label fx:id="listCostLblCP" styleClass="inputLabelSmall"/>
+            <Label text="Resources needed: " styleClass="inputLabel"/>
+            <Label fx:id="listCostLblCP" styleClass="inputLabelSmaller"/>
         </VBox>
 
         <!-- WAREHOUSE & EXTRA STORAGE -->
@@ -19,7 +19,7 @@
 
             <!-- WAREHOUSE -->
             <VBox alignment="CENTER" spacing="10">
-                <Label text="Warehouse" styleClass="inputLabelSmall"/>
+                <Label text="Warehouse" styleClass="inputLabel"/>
 
                 <ToggleButton fx:id="shelf1ToggleCP" styleClass="leaderToggle">
                     <graphic>
@@ -59,7 +59,7 @@
 
             <!-- EXTRA STORAGE -->
             <VBox fx:id="extraStorageBox" alignment="CENTER" spacing="10">
-                <Label text="Extra Storage" styleClass="inputLabelSmall"/>
+                <Label text="Extra Storage" styleClass="inputLabel"/>
 
                 <HBox alignment="CENTER" spacing="20">
                     <ToggleButton fx:id="extraStorage11CP" styleClass="leaderToggle">
@@ -92,7 +92,7 @@
 
         <!-- LOOTCHEST -->
         <VBox spacing="10" alignment="CENTER">
-            <Label text="Lootchest status" styleClass="inputLabelSmall"/>
+            <Label text="Lootchest status" styleClass="inputLabel"/>
 
             <HBox alignment="CENTER" spacing="20">
                 <HBox spacing="10" alignment="CENTER">
@@ -129,7 +129,7 @@
 
         <!-- CHOOSE FROM LOOTCHEST -->
         <VBox alignment="CENTER" spacing="20">
-            <Label text="Choose resources from the lootchest" styleClass="inputLabelSmall"/>
+            <Label text="Choose resources from the lootchest" styleClass="inputLabel"/>
 
             <HBox alignment="CENTER" spacing="20">
                 <VBox alignment="CENTER" spacing="10">

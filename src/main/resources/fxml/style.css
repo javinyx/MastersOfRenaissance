@@ -78,6 +78,10 @@ ChoiceBox {
     -fx-font-size: 16px;
 }
 
+.inputLabelSmaller {
+    -fx-font-size: 14px;
+}
+
 .inputLabelBig {
     -fx-font-size: 60px;
 }

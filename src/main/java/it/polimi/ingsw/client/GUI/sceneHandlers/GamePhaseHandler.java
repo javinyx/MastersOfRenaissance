@@ -1713,6 +1713,17 @@ public class GamePhaseHandler extends PhaseHandler {
         Map<BiElement<Resource, Storage>, Integer> loot = player.getLootchest();
         ResourcesWallet wallet = new ResourcesWallet();
 
+        //set resources needed label
+        String cost = new String();
+        for (ConcreteProductionCard c : controller.getAvailableProductionCards()) {
+            if (c.getId() == cardId) {
+                cost = c.getCost().toString();
+                break;
+            }
+        }
+        listCostLblCP.setWrapText(true);
+        listCostLblCP.setText(cost);
+
         //showing loot status
         loot.forEach((x, y) -> {
             switch (x.getFirstValue()) {
@@ -1933,7 +1944,7 @@ public class GamePhaseHandler extends PhaseHandler {
                 wallet.setExtraStorage(fromExtra1, 0);
                 wallet.setExtraStorage(fromExtra2, 1);
 
-                controller.buyProductionCard(cardId, 1, leaderIds, wallet);
+                controller.sendBuyProductionCard(cardId, 1, leaderIds, wallet);
 
                 mainBoard.setEffect(null);
                 popUpStage.close();
@@ -1947,7 +1958,7 @@ public class GamePhaseHandler extends PhaseHandler {
                 wallet.setExtraStorage(fromExtra1, 0);
                 wallet.setExtraStorage(fromExtra2, 1);
 
-                controller.buyProductionCard(cardId, 2, leaderIds, wallet);
+                controller.sendBuyProductionCard(cardId, 2, leaderIds, wallet);
 
                 mainBoard.setEffect(null);
                 popUpStage.close();
@@ -1961,7 +1972,7 @@ public class GamePhaseHandler extends PhaseHandler {
                 wallet.setExtraStorage(fromExtra1, 0);
                 wallet.setExtraStorage(fromExtra2, 1);
 
-                controller.buyProductionCard(cardId, 3, leaderIds, wallet);
+                controller.sendBuyProductionCard(cardId, 3, leaderIds, wallet);
 
                 mainBoard.setEffect(null);
                 popUpStage.close();
@@ -2166,6 +2177,29 @@ public class GamePhaseHandler extends PhaseHandler {
         NubPlayer player = controller.getPlayer();
         Map<BiElement<Resource, Storage>, Integer> loot = player.getLootchest();
         ResourcesWallet wallet = new ResourcesWallet();
+
+        //set resources needed label
+        String cost = new String();
+
+        //get cost of production cards
+        if(!prodCards.isEmpty()) {
+            for (ConcreteProductionCard c : prodCards) {
+                cost = cost + " " + c.getCost().toString();
+            }
+        }
+        //get cost of leaders
+        if(!leaderCards.isEmpty()) {
+            for (BoostAbility c : leaderCards) {
+                cost = cost + " " + c.getResource();
+            }
+        }
+        //get cost of basic production
+        if(isBasicProd) {
+            cost = cost + " Any 2 resources";
+        }
+
+        listCostLblCP.setWrapText(true);
+        listCostLblCP.setText(cost);
 
         //showing loot status
         loot.forEach((x, y) -> {

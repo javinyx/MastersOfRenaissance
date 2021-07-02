@@ -318,7 +318,7 @@ public class GuiController extends ClientController {
      * @param wallet    the wallet containing the resources used to pay for the card, and where they come from
      */
     /* PRODUCTION CARDS ***********************************************************************************************/
-    public void buyProductionCard(int cardId, int stack, List<Integer> leaderIds, ResourcesWallet wallet) {
+    public void sendBuyProductionCard(int cardId, int stack, List<Integer> leaderIds, ResourcesWallet wallet) {
         BuyProductionMessage msg = new BuyProductionMessage(cardId, stack, leaderIds, wallet);
         messageToServerHandler.generateEnvelope(MessageID.BUY_PRODUCTION_CARD, gson.toJson(msg));
     }

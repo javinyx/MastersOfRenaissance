@@ -545,7 +545,7 @@ public class Cli /*extends MessageDispatcher*/ {
             System.out.println("Select the 2 resources you want to use");
             for (int i = 1; i < 3; i++) {
 
-                System.out.print("From where do you want to take the resource number "+i+" for the Basic Production?\n (1) Warehouse\n (2) StrongBox\n (3) Leader Extra storage");
+                System.out.print("From where do you want to take the resource number "+i+" for the Basic Production?\n (1) Warehouse\n (2) StrongBox\n (3) Leader Extra storage\n");
 
                 do {
                     lock = 1;

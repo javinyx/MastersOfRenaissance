@@ -367,7 +367,7 @@ public class CliController extends ClientController {
         ConcreteProductionCard prod = new ConcreteProductionCard(5,2, ColorEnum.GREEN,1, cost, reqRes, prod11);
         player.addProductionCard(prod, 1);*/
 
-        List<ConcreteProductionCard> prodCard;
+        List<ConcreteProductionCard> prodCard = new ArrayList<>();
         List<LeaderCard> leadCard = null;
         List<BoostAbility> betterLeaderCard = null;
         List<Resource> basicIn, leadOut = null;
@@ -379,7 +379,7 @@ public class CliController extends ClientController {
         boolean basic = false;
         ResourcesWallet resWal = new ResourcesWallet();
 
-        if (player.getProductionStacks().get(0).size() != 0 || player.getProductionStacks().get(1).size() != 0 || player.getProductionStacks().get(2).size() != 0){
+        if (player.getProductionStacks().get(0).size() != 0 || player.getProductionStacks().get(1).size() != 0 || player.getProductionStacks().get(2).size() != 0) {
             System.out.println("Select the Development Card you want to use");
             prodCard = cli.selectProdCard();
 
@@ -394,6 +394,11 @@ public class CliController extends ClientController {
                 b = resWal.setLootchestTray(fromLoot);
                 c = resWal.setExtraStorage(fromLeader1, 0);
                 d = resWal.setExtraStorage(fromLeader2, 1);
+
+                fromLoot.clear();
+                fromWare.clear();
+                fromLeader1.clear();
+                fromLeader2.clear();
 
                 if ((!a && !resWal.getWarehouseTray().isEmpty()) || (!b && !resWal.getLootchestTray().isEmpty()) || (!c && !resWal.getExtraStorage(0).isEmpty()) || (!d && !resWal.getExtraStorage(1).isEmpty()))
                     System.out.println("An error occur in the selection of the Resources");
@@ -411,29 +416,26 @@ public class CliController extends ClientController {
                         cli.selectLeadWalletProd((BoostAbility) led, fromWare, fromLoot, fromLeader1, fromLeader2);
                     }
             }
-
-            basicIn = cli.doBasicProd1(fromWare, fromLoot, fromLeader1, fromLeader2);
-            if (basicIn != null) {
-                basic = true;
-                basicOut = cli.doBasicProd2();
-            }
-
-            resWal.setWarehouseTray(fromWare);
-            resWal.setLootchestTray(fromLoot);
-            resWal.setExtraStorage(fromLeader1, 0);
-            resWal.setExtraStorage(fromLeader2, 1);
-
-            ProduceMessage msg = new ProduceMessage(prodCard, resWal, betterLeaderCard, leadOut, basic, basicOut);
-
-            messageToServerHandler.generateEnvelope(MessageID.PRODUCE, gson.toJson(msg));
         }
 
         else{
             displayMessage("You have no Development cards");
-            cli.pressEnter();
-            startTurnPhase();
         }
 
+        basicIn = cli.doBasicProd1(fromWare, fromLoot, fromLeader1, fromLeader2);
+        if (basicIn != null) {
+            basic = true;
+            basicOut = cli.doBasicProd2();
+        }
+
+        resWal.setWarehouseTray(fromWare);
+        resWal.setLootchestTray(fromLoot);
+        resWal.setExtraStorage(fromLeader1, 0);
+        resWal.setExtraStorage(fromLeader2, 1);
+
+        ProduceMessage msg = new ProduceMessage(prodCard, resWal, betterLeaderCard, leadOut, basic, basicOut);
+
+        messageToServerHandler.generateEnvelope(MessageID.PRODUCE, gson.toJson(msg));
     }
 
     /**

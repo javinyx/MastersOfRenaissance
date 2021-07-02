@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
-<?import com.sun.javafx.scene.control.IntegerField?>
-<StackPane id="popUp" xmlns="https://javafx.com/javafx" xmlns:fx="https://javafx.com/fxml" prefHeight="700"
-           prefWidth="600">
+
+<StackPane id="popUp" xmlns="https://javafx.com/javafx" xmlns:fx="https://javafx.com/fxml">
     <VBox spacing="50" alignment="CENTER">
         <Label fx:id="opLbl" />
 
@@ -26,8 +24,6 @@
             <ImageView fx:id="opStack2Img" fitWidth="50" preserveRatio="true"/>
             <ImageView fx:id="opStack3Img" fitWidth="50" preserveRatio="true"/>
         </HBox>
-
-
 
         <HBox spacing="20" alignment="TOP_LEFT">
             <Label text="Warehouse:"/>

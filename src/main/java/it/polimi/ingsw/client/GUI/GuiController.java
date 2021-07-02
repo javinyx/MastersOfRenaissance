@@ -147,7 +147,6 @@ public class GuiController extends ClientController {
         messageToServerHandler.sendMessageToServer(gameSize.toString());
         if (gameSize != 1) {
             Platform.runLater(() -> initialPhaseHandler.setScene(ScenesEnum.WAITING_ROOM));
-            stage.centerOnScreen();
             initialPhaseHandler.setWaitingRoomName(nickName);
         }
     }

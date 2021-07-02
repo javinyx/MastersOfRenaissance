@@ -1695,8 +1695,6 @@ public class GamePhaseHandler extends PhaseHandler {
 
         extraStorageBox.setVisible(true);
         extraStorageBox.setManaged(true);
-
-        backPaymentBtnCP.setVisible(true);
     }
 
     private void choosePaymentPopUp(int cardId, List<Integer> leaderIds) {
@@ -2195,7 +2193,7 @@ public class GamePhaseHandler extends PhaseHandler {
         }
         //get cost of basic production
         if(isBasicProd) {
-            cost = cost + " Any 2 resources";
+            cost = cost + ", Any 2 resources";
         }
 
         listCostLblCP.setWrapText(true);
@@ -2434,7 +2432,10 @@ public class GamePhaseHandler extends PhaseHandler {
             }
         });
 
-        backPaymentBtnCP.setVisible(false);
+        backPaymentBtnCP.setOnAction(actionEvent -> {
+            mainBoard.setEffect(null);
+            popUpStage.close();
+        });
     }
 
     /* ACTIVATE & DISCARD LEADER **************************************************************************************/

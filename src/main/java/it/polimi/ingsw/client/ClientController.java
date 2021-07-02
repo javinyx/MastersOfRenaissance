@@ -213,12 +213,13 @@ public abstract class ClientController {
     /**
      * Update the player status stated by the {@link UpdateMessage} and then gives the turn to the next player (always as
      * stated by the message).
-     * <p>A recap of what it does:
+     * <p>A recap of what it does: </p>
+     * <ul>
      * <li>Set the market;</li>
      * <li>Set the available production cards pool;</li>
      * <li>Update with the card the {@code playerId} bought;</li>
      * <li>Update the {@code playerId} storage by removing spent resources and adding new ones;</li>
-     * </p>
+     * </ul>
      * For more in depth structure of {@code msg}, see {@link UpdateMessage} class.
      * @param msg message containing all the update information
      */

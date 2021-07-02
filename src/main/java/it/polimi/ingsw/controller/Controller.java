@@ -237,6 +237,7 @@ public class Controller implements Observer<MessageID> {
 
     /**
      * Let the currentPlayer buy the single production card specified by the message.
+     * <ul>
      * <li>It checks if the selected card is available for purchase, if not it throws a
      * {@code CARD_NOT_AVAILABLE};</li>
      * <li>If the stack chosen is not suited for that card accordingly to the rules implemented by the model,
@@ -244,6 +245,7 @@ public class Controller implements Observer<MessageID> {
      * <li>If the payment foreseen by the player is not adequate for the card, send a
      * {@code BAD_PAYMENT_REQUEST};</li>
      * <li>Otherwise: {@code ACK}.</li>
+     * </ul>
      * Related: {@link MessageID}
      * @param buyProdMsg the message that carries all the information about: card, payment, production stack.
      */

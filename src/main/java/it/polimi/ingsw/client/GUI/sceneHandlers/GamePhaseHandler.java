@@ -232,13 +232,13 @@ public class GamePhaseHandler extends PhaseHandler {
 
     /**
      * Initiate the main board upon starting the game and then starts to listen for player's input.
-     * <p>
+     * <ul>
      * <li>Set the leaders held by the player;</li>
      * <li>Set the initial warehouse;</li>
      * <li>Set the market and the available Development cards;</li>
      * <li>Set the preview of the enemies;</li>
      * <li>Initiate the player's Faith Track</li>
-     * </p>
+     * </ul>
      */
     public void initiateBoard() {
         setLeaders();
@@ -254,7 +254,7 @@ public class GamePhaseHandler extends PhaseHandler {
 
     /**
      * Initiate the main board upon starting the game and then starts to listen for player's input.
-     * <p>
+     * <ul>
      * <li>Update the leaders held by the player;</li>
      * <li>Update warehouse;</li>
      * <li>Set the market and the available Development cards;</li>
@@ -262,7 +262,7 @@ public class GamePhaseHandler extends PhaseHandler {
      * <li>Update the player's Faith Track</li>
      * <li>Update the pope passes status</li>
      * <li>Update the Development cards status</li>
-     * </p>
+     * </ul>
      */
     public void updateBoard() {
         setLeaders();

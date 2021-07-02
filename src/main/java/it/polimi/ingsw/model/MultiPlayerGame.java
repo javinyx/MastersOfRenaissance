@@ -210,12 +210,15 @@ public class MultiPlayerGame extends Game implements ModelObserver {
      * that will act accordingly. It will activate the {@code player}'s PopePass.
      * <p>Furthermore, by calling this method all the other players' positions will be checked, even inactive players.
      * Accordingly to position ranges set by rules, their relative PopePass either will be activated or discarded.</p>
-     * <p>For reference:
+     * <p>For reference:</p>
+     * <ul>
      * <li>Must be in at least position 5 for 1st report;</li>
      * <li>Must be in at least position 12 for 2nd report;</li>
-     * <li>Must be in at least position 19 for 2rd report.</li></p>
+     * <li>Must be in at least position 19 for 2rd report.</li>
+     * </ul>
      * @param player player who triggered Vatican Report
-     * @param vaticanReport number in range 1-3 that specifies which vatican report is triggered*/
+     * @param vaticanReport number in range 1-3 that specifies which vatican report is triggered
+     * */
     public void alertVaticanReport(Player player, int vaticanReport){
         if(reportTriggered < vaticanReport) {
             triggerPlayerReport = player;

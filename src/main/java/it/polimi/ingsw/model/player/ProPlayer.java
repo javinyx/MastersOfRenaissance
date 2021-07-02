@@ -130,11 +130,15 @@ public class ProPlayer extends Player{
     public void setTurnType(char turnType) { this.turnType = turnType; }
     //-------------------------------VICTORY POINTS---------------------------------
     /**Returns the sum of player's victory points taking in consideration:
+     * <ul>
      * <li>productionCards (hidden or not); </li>
      * <li>leaderCards if active;</li>
      * <li>popePasses if active;</li>
      * <li>current position on board;</li>
-     * <li>all resources stored in warehouse,lootchest and StorageAbility LeaderCards. </li>*/
+     * <li>all resources stored in warehouse,lootchest and StorageAbility LeaderCards. </li>
+     * </ul>
+     * */
+
     public int getVictoryPoints(){
         int victoryPoints = 0;
         //sum all victory points from prodCards, leaderCards, faithTrack, Resources...

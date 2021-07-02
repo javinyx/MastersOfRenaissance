@@ -151,7 +151,7 @@ public class InitialPhaseHandler extends PhaseHandler {
 
     /* CONNECTION SCENE ***********************************************************************************************/
     /**
-     * @return a {@link BiElement} containing the IP as first value and the Port as second.
+     * Asks for {@link BiElement} containing the IP as first value and the Port as second.
      ***/
     public void retrieveIpAndPort() {
         connectBtn.setOnAction(actionEvent -> {

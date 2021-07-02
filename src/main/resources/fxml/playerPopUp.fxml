@@ -8,10 +8,10 @@
 
 <StackPane id="popUp" xmlns="https://javafx.com/javafx" xmlns:fx="https://javafx.com/fxml">
     <VBox spacing="50" alignment="CENTER">
-        <Label fx:id="opLbl" />
+        <Label fx:id="opLbl"/>
 
         <HBox spacing="20" alignment="CENTER_LEFT">
-            <Label text="Leaders:" />
+            <Label text="Leaders:"/>
             <ImageView fx:id="opLead1Img" fitWidth="50" preserveRatio="true"/>
             <ImageView fx:id="opLead2Img" fitWidth="50" preserveRatio="true"/>
         </HBox>
@@ -78,7 +78,7 @@
         </HBox>
 
         <HBox alignment="CENTER_LEFT" spacing="20">
-            <Label text="Extra storage (if present):"  />
+            <Label text="Extra storage (if present):"/>
         </HBox>
 
         <Button fx:id="opBackBtn" alignment="CENTER" contentDisplay="CENTER" styleClass="btn" text="Back"/>

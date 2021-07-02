@@ -400,9 +400,14 @@ public class GamePhaseHandler extends PhaseHandler {
 
         for (int i = 0; i <= 24; i++) {
             switch (i) {
-                case 1, 2, 5, 6, 7, 8, 9, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24 -> {
+                case 1, 2, 5, 6, 7, 8, 9, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24 -> {
                     // Move Right from previous cell
                     x = x + 40;
+                    faithCoords.add(new BiElement(x, y));
+                }
+                case 12 -> {
+                    // Move Right from previous cell and fix position
+                    x = x + 50;
                     faithCoords.add(new BiElement(x, y));
                 }
                 case 3, 4, 17, 18 -> {

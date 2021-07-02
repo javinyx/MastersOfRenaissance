@@ -55,6 +55,16 @@ ChoiceBox {
     -fx-background-image: url("/img/ui/btnPressed.png");
 }
 
+.btnSmall {
+    -fx-background-image: url("/img/ui/btn.png");
+    -fx-background-size: stretch;
+    -fx-font-size: 20px;
+}
+
+.btnSmall:pressed {
+    -fx-background-image: url("/img/ui/btnPressed.png");
+}
+
 .btnSq {
     -fx-background-image: url("/img/ui/btnSq.png");
     -fx-background-size: stretch;
@@ -160,7 +170,7 @@ ChoiceBox {
 }
 
 #enemyBoard {
-    -fx-background-color: #737777;
+    -fx-background-color: #48190e;
     -fx-padding: 20px;
 }
 

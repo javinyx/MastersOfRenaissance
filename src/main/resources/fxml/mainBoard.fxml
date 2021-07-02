@@ -39,7 +39,7 @@
     </HBox>
 
     <!-- MESSAGE BOARD -->
-    <TextArea fx:id="msgBoard" editable="false" layoutX="460.0" layoutY="20.0" prefHeight="100.0" prefWidth="520.0"
+    <TextArea fx:id="msgBoard" editable="false" layoutX="730.0" layoutY="20.0" prefHeight="100.0" prefWidth="500.0"
               text="&#10;" wrapText="true"/>
 
     <!-- MAIN BOARD -->
@@ -48,18 +48,16 @@
     </ImageView>
 
     <!-- ACTION TOKENS -->
-    <ImageView fx:id="actionTokenImg" layoutX="1000.0" layoutY="200.0" preserveRatio="true" fitWidth="65">
+    <ImageView fx:id="actionTokenImg" layoutX="1000.0" layoutY="180.0" preserveRatio="true" fitWidth="65">
         <Image url="@../img/actionTokens/actTokenBack.png"/>
     </ImageView>
 
     <!-- BUTTON SIDEBAR -->
-    <Button fx:id="endTurnBtn" layoutX="1100.0" layoutY="200.0" styleClass="btn" text="End Turn"/>
-    <Button fx:id="productionCardsOpen" layoutX="1100.0" layoutY="280.0" styleClass="btn"
+    <Button fx:id="productionCardsOpen" layoutX="1000.0" layoutY="435.0" styleClass="btn"
             text="View&#10;Development&#10;Cards"/>
-    <Button fx:id="produceBtn" layoutX="1100.0" layoutY="380.0" styleClass="btn" text="Start&#10;Production"/>
-    <Button fx:id="activateLeaderBtn" layoutX="1100.0" layoutY="450.0" styleClass="btn" text="Activate&#10;Leader"/>
-    <Button fx:id="discardLeaderBtn" layoutX="1100.0" layoutY="530.0" styleClass="btn" text="Discard&#10;Leader"/>
-    <Button fx:id="rearrangeBtn" layoutX="1100.0" layoutY="610.0" styleClass="btn" text="Rearrange&#10;Warehouse"/>
+    <Button fx:id="produceBtn" layoutX="1000.0" layoutY="540.0" styleClass="btn" text="Start&#10;Production"/>
+    <Button fx:id="rearrangeBtn" layoutX="1000.0" layoutY="620.0" styleClass="btn" text="Rearrange&#10;Warehouse"/>
+    <Button fx:id="endTurnBtn" layoutX="1000.0" layoutY="700.0" styleClass="btn" text="End Turn"/>
 
     <!-- PRODUCTION CARDS -->
     <ImageView fx:id="productionStack11" fitWidth="140" layoutX="468.0" layoutY="470.0" preserveRatio="true"/>
@@ -120,8 +118,8 @@
     <Label fx:id="stoneLblLC" styleClass="inputLabelSmall" layoutX="263.0" layoutY="666.0" text="x0"/>
 
     <!-- MARKET -->
-    <Circle fx:id="extraMarble" layoutX="1050.0" layoutY="50.0" radius="20" styleClass="marble"/>
-    <GridPane fx:id="marketMarbles" hgap="2" layoutX="1082.0" layoutY="30.0" vgap="2">
+    <Circle fx:id="extraMarble" layoutX="1020.0" layoutY="300.0" radius="20" styleClass="marble"/>
+    <GridPane fx:id="marketMarbles" hgap="2" layoutX="1055.0" layoutY="280.0" vgap="2">
         <Circle radius="20" styleClass="marble" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
         <Circle radius="20" styleClass="marble" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
         <Circle radius="20" styleClass="marble" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
@@ -135,9 +133,11 @@
         <Circle radius="20" styleClass="marble" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
         <Circle radius="20" styleClass="marble" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
     </GridPane>
-    <Region id="marketRegion" fx:id="marketRegion" layoutX="1020.0" layoutY="20.0" prefHeight="160" prefWidth="250"/>
+    <Region id="marketRegion" fx:id="marketRegion" layoutX="990.0" layoutY="260.0" prefHeight="160" prefWidth="250"/>
 
     <!-- LEADER CARDS -->
+    <Button fx:id="activateLeaderBtn" layoutX="10.0" layoutY="220.0" styleClass="btnSmall" text="Activate&#10;Leader"/>
+    <Button fx:id="discardLeaderBtn" layoutX="10.0" layoutY="300.0" styleClass="btnSmall" text="Discard&#10;Leader"/>
     <ImageView fx:id="leader1Show" fitWidth="120" layoutX="10.0" layoutY="380.0" preserveRatio="true"
                styleClass="leaderNotActive"/>
     <ImageView fx:id="leader2Show" fitWidth="120" layoutX="10.0" layoutY="570.0" preserveRatio="true"

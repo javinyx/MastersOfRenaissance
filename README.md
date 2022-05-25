@@ -1,13 +1,17 @@
+<img src="deliverables/img/inkwell.png" alt="logo" width="50" style="float:left;margin-right:20px" />
+
 # Masters of Renaissance Board Game
 
 This project is the digitalised version of "*Masters of Renaissance*" board game. It has been developed as final test of Software Engineering, course of Computer Science Engineering at Politecnico di Milano during the 2020/21 A.Y.
-<br/>
-## Game
-The original board game is by *Cranio Creations s.r.l.* and allows at maximum 4 players to play together. 
-<br>
-<br>
-The digital version here aims to mimic the original one adding those extra comforts given by online gaming. 
 
+## Game
+The original board game is by *[Cranio Creations s.r.l.](https://www.craniocreations.it/prodotto/masters-of-renaissance/)* and allows at maximum 4 players to play together. 
+
+The digital version here aims to mimic the original one adding those extra comforts given by online gaming.
+
+<img src="deliverables/img/menu.png" alt="logo" width="300" />
+<img src="deliverables/img/main-board.png" alt="logo" width="292" />
+<img src="deliverables/img/market-board.png" alt="logo" width="292" />
 
 ## Devs 
 AM13 team members: 
@@ -17,6 +21,8 @@ Professor Supervisor: Alessandro Margara
 
 ## Advanced Features
 
+<img src="deliverables/img/drag-and-drop.gif" alt="logo" width="280" style="float:right;" />
+
 | Feature       | Status        |
 |---------------|:---------------:|
 |Basic Rules| Done|
@@ -25,6 +31,8 @@ Professor Supervisor: Alessandro Margara
 |Graphical User Interface| Done|
 |Local Game     | Done|
 |Multiple Games | Done|
+
+
 
 ## JAR usage
 The game is splitted into two JAR files, both can be downloaded form [Deliverables directory](https://github.com/Javinyx/ingswAM2021-Barone-Belotti-Braccini/tree/main/deliverables/jar).
@@ -91,3 +99,4 @@ Once the players have chosen the game size whished, the server will prioritize f
 Once the player has been placed into a *waiting lobby* and that has been filled, then all the players in that lobby are moved into a new one for the ongoing game, this *game lobby* will keep track of all the players' connections for that party and for other parties of the same size as well without mixing them. 
 <br>
 In fact, the game can finally start for those players in the *game lobby*, but in the meantime other players can register themselves for a game of the same size going thourgh the same process just described above.
+

@@ -9,9 +9,9 @@ The original board game is by *[Cranio Creations s.r.l.](https://www.craniocreat
 
 The digital version here aims to mimic the original one adding those extra comforts given by online gaming.
 
-<img src="deliverables/img/menu.png" alt="logo" width="300" />
-<img src="deliverables/img/main-board.png" alt="logo" width="292" />
-<img src="deliverables/img/market-board.png" alt="logo" width="292" />
+<img src="deliverables/img/menu.png" alt="menu" width="300" />
+<img src="deliverables/img/main-board.png" alt="main board" width="292" />
+<img src="deliverables/img/market-board.png" alt="market board" width="292" />
 
 ## Devs 
 AM13 team members: 
@@ -30,7 +30,7 @@ Professor Supervisor: Alessandro Margara
 |Local Game     | Done|
 |Multiple Games | Done|
 
-<img src="deliverables/img/drag-and-drop.gif" alt="logo" width="280" />
+<img src="deliverables/img/drag-and-drop.gif" alt="drag & drop" width="280" />
 
 ## JAR usage
 The game is splitted into two JAR files, both can be downloaded form [Deliverables directory](https://github.com/Javinyx/ingswAM2021-Barone-Belotti-Braccini/tree/main/deliverables/jar).

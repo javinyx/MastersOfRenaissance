@@ -9,9 +9,9 @@ The original board game is by *[Cranio Creations s.r.l.](https://www.craniocreat
 
 The digital version here aims to mimic the original one adding those extra comforts given by online gaming.
 
-<img src="deliverables/img/menu.png" alt="menu" width="300" />
-<img src="deliverables/img/main-board.png" alt="main board" width="292" />
-<img src="deliverables/img/market-board.png" alt="market board" width="292" />
+<img src="deliverables/img/menu.png" alt="menu" />
+<img src="deliverables/img/main-board.png" alt="main board" />
+<img src="deliverables/img/market-board.png" alt="market board" />
 
 ## Devs 
 AM13 team members: 

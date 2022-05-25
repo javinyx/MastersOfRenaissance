@@ -1,4 +1,4 @@
-<img src="deliverables/img/inkwell.png" alt="logo" width="50" style="float:left;margin-right:20px" />
+<img src="deliverables/img/inkwell.png" alt="logo" width="50" />
 
 # Masters of Renaissance Board Game
 
@@ -21,8 +21,6 @@ Professor Supervisor: Alessandro Margara
 
 ## Advanced Features
 
-<img src="deliverables/img/drag-and-drop.gif" alt="logo" width="280" style="float:right;" />
-
 | Feature       | Status        |
 |---------------|:---------------:|
 |Basic Rules| Done|
@@ -32,7 +30,7 @@ Professor Supervisor: Alessandro Margara
 |Local Game     | Done|
 |Multiple Games | Done|
 
-
+<img src="deliverables/img/drag-and-drop.gif" alt="logo" width="280" />
 
 ## JAR usage
 The game is splitted into two JAR files, both can be downloaded form [Deliverables directory](https://github.com/Javinyx/ingswAM2021-Barone-Belotti-Braccini/tree/main/deliverables/jar).

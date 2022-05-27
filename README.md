@@ -2,7 +2,7 @@
 
 # Masters of Renaissance Board Game
 
-Digitalised version of the "*Masters of Renaissance*" board game. It has been developed as the final test of the Software Engineering course, Computer Science Engineering branch at Politecnico di Milano, A.Y. 2020/21.
+Digitalised version of the "*Masters of Renaissance*" board game. Final test of the Software Engineering course, Computer Science Engineering branch at Politecnico di Milano, A.Y. 2020/21.
 
 ## Game
 The original board game is by *[Cranio Creations s.r.l.](https://www.craniocreations.it/prodotto/masters-of-renaissance/)* and allows at maximum 4 players to play together. 
